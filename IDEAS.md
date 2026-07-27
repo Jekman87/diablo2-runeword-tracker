@@ -1,0 +1,220 @@
+# Ideas & Backlog
+
+Raw idea dump from the project owner, grouped and sliced into phases.
+Input for OpenSpec change proposals. Nothing here is binding until it lands
+in `openspec/specs/`.
+
+Reference site analysis: [`docs/REFERENCE.md`](docs/REFERENCE.md)
+Runeword data extract: [`docs/runewords-raw.md`](docs/runewords-raw.md)
+
+---
+
+## Product in one sentence
+
+A single-page site that tracks which Diablo II: Resurrected runewords the
+player has already crafted, so they can complete the runeword section of the
+in-game Chronicle log, and that tells them which runes and which socketed
+bases they still need.
+
+---
+
+## Decided
+
+- Repository and project name: **`diablo2-runeword-tracker`**
+- React + TypeScript, Vite, Tailwind CSS, ESLint, Prettier
+- Progress and view settings stored in `localStorage`
+- Deployed to GitHub Pages under the personal account `Jekman87`
+- Phase 1 ships English only; Russian in Phase 2
+- Visual style reads as Diablo II: black background, dark red table header,
+  tan small-caps rune text, green property text, serif display font, custom
+  cursor, ornamental divider
+- **Rune inventory is out of scope.** The reference site is built around
+  "which runes do I own"; we deliberately do not track that. It may never be
+  added. Nothing in the data model needs to reserve space for it.
+- Sorting is done by clicking column headers, as on the reference site
+- Search covers runeword name and item type. **Rune search is dropped** —
+  on the reference the rune relationship is expressed by highlighting driven
+  by the inventory, and without an inventory a tracker does not need it.
+- Borrowed from the reference, which is MIT licensed and therefore reusable
+  with attribution: the serif font, the black theme, the custom cursor, the
+  rune sprite, and the property-list styling. Everything else — table layout,
+  panels, controls — is ours, as long as it still reads as Diablo II.
+
+---
+
+## Phase 1 — usable tracker (MVP)
+
+### Layout, top to bottom
+
+1. Site title and patch line
+2. Help and Feedback links, link to official patch notes
+3. Overall progress bar — crafted runewords out of total
+4. Collapsible blocks, near the top, collapsed by default: remaining runes,
+   remaining bases
+5. Search
+6. Filters
+7. Runeword table
+
+### Runeword table
+
+- One row per runeword, 99 on the current patch
+- Columns: crafted state, name, runes, item types, required level
+- Every column header sortable; default sort by required level
+- Crafted state is its own column so it can be sorted on
+- Item types display as category plus restriction, e.g.
+  `Staves (Not Orbs/Wands)`, `Body Armors (Barbarian)`
+- Badges next to the name: patch of introduction, ladder-only marker
+- Clicking the name opens a popover with the granted properties in green
+- Runes column collapses on mobile and moves inline under the name
+
+### Marking a runeword as crafted
+
+- Control in the first column, styled as an empty vs filled socket
+- Whole row clickable for a larger hit target, but the control stays a real
+  button so Tab and Space work
+- A crafted row gets a green tint and a left accent border
+- Toggling updates the progress bar and both remaining panels immediately
+- Undo affordance for misclicks — short-lived toast with an undo action
+
+### Filters
+
+- Crafted / remaining / all
+- **By slot: helm, weapon, shield, body armour.** This is the only category
+  filter. Everything finer grained is handled by search instead.
+
+### Remaining runes block
+
+- Collapsible, near the top, collapsed by default
+- Every rune still needed, with a count and its sprite icon
+- Counts are small enough to show in full. Across all 99 runewords the
+  totals run from `Shael ×20` down to `Zod ×3`, 343 rune slots in total.
+  Note that the *high* runes have the *lowest* counts, so nothing here is
+  demotivating.
+- The source data carries a rune `tier` field (common / semirare / rare,
+  eleven each). Grouping the panel by tier turns a flat list of 33 into three
+  meaningful bands — worth doing.
+
+### Remaining bases block
+
+- Collapsible, near the top, collapsed by default
+- The bases still needed, with required socket count
+- Data caveat: a runeword specifies a base *category* plus a socket count,
+  never a specific item. "3 axes with 4 sockets" is really "3 four-socket
+  melee weapons". Group by (category, sockets).
+- Placement and grouping still to be designed
+
+### Persistence
+
+- Crafted runewords in `localStorage`
+- Filter and sort settings in `localStorage`
+
+---
+
+## Phase 2 — Russian localisation
+
+- Bilingual UI with a language switch
+- Runeword names, rune names and item properties must match the official
+  Russian game client exactly. Taken from official sources, never
+  machine-translated.
+- English names remain the canonical identifiers in the data layer
+
+---
+
+## Phase 3 — CSV import / export
+
+- Purpose: move progress between devices without a backend
+- Export: one crafted runeword name per line. No timestamp — agreed, it
+  carries no information the user needs.
+- Import: parse, match by name, mark matches as crafted
+- Two additions that cost almost nothing and prevent silent data loss:
+  - a first line marking format and version, e.g.
+    `# diablo2-runeword-tracker export v1`. Import ignores `#` lines. Without
+    it, a future format change has no way to announce itself.
+  - import must **report unmatched names** rather than skip them quietly. A
+    typo or a renamed runeword otherwise looks like a successful import that
+    lost entries.
+
+---
+
+## Phase 4 — polish
+
+- Row movement animation. Sorting by crafted state and toggling a row
+  animates it to its new position; a filter that hides it fades it out.
+- Further visual flourishes
+
+---
+
+## Data
+
+- Scope: the runewords tracked by the D2R Chronicle log. The reference site
+  lists **99** on patch 3.1.1 — note this contradicts the "~89" figure found
+  in secondary sources, which is why a second source is required.
+- A runeword record needs: name, ordered rune sequence, socket count, allowed
+  base categories with restrictions, required level, granted properties,
+  patch of introduction, ladder-only flag
+- Rune order matters and must be preserved
+- 33 runes total, in the canonical order listed in `docs/runewords-raw.md`
+- Rune icons: the reference packs all 33 into a single 440×120 sprite at
+  40×40 each, offsets driven by a CSS variable. Worth copying as a technique.
+  Licensing of both that repository and the underlying Blizzard artwork needs
+  checking before any asset is reused.
+
+---
+
+## Tooling
+
+Borrowed from the owner's `kwp-app`, already proven there:
+
+- `prettier-plugin-tailwindcss` — deterministic Tailwind class order
+- `@trivago/prettier-plugin-sort-imports` — import order
+- `clsx` + `tailwind-merge` — conditional classes without conflicts
+- `class-variance-authority` — typed style variants
+- `zod` — validate the runeword dataset rather than trusting it
+- `simple-git-hooks` + `lint-staged` — lightweight pre-commit hooks
+- `vitest` — the remaining-runes and remaining-bases aggregation is pure
+  logic and the place where a silent error would hide longest
+- `docs/CODE_RULES.md` pointed at from `AGENTS.md`
+
+Deliberately not borrowed: monorepo, Turborepo, Next.js, tRPC.
+
+---
+
+## Availability markers — decided
+
+**The progress bar always shows all 99.** No toggle, no shifting denominator.
+The Chronicle goal is 99, so that is the number.
+
+Availability is **presentation only**. The three fields below exist to render
+a badge with a tooltip and nothing else — no filter reads them, no counter
+subtracts them, no logic branches on them. They are optional, and a row with
+none of them set simply shows no badges.
+
+| Field | Meaning |
+| --- | --- |
+| `ladderOnly` | craftable on ladder only — 9 runewords |
+| `patch` | version that introduced it, e.g. `2.6`, `3.0` |
+| `note` | free-form caveat, for season-specific exceptions |
+
+The nine ladder-only ones: Bulwark, Cure, Ground, Hearth, Temper, Mosaic,
+Metamorphosis, Mania, Hysteria.
+
+### Why `note` has to be a data field and not hardcoded logic
+
+**Mosaic** is the case that proves it. The reference marks it ladder-only,
+patch 2.6, and then adds a note: *disabled in Season 13, can be crafted
+offline non-ladder*. So a runeword that is nominally ladder-only is currently
+impossible to craft on ladder, and possible only outside it.
+
+Availability flips between seasons, so it is information for the player to
+read, not a rule for the app to enforce. Keeping it purely decorative is what
+makes it safe: a stale badge is a cosmetic inaccuracy, whereas stale logic
+would silently miscount progress.
+
+Badges carry a tooltip with the full text, exactly as the reference does —
+`L` with "Ladder Only", the patch number, and `Note!` with the caveat.
+
+## Open questions
+
+None outstanding. Vendored data is in place and verified — see
+[`docs/DATA-SOURCES.md`](docs/DATA-SOURCES.md) for the confirmed schema.
+Ready for the first OpenSpec proposal.

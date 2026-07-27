@@ -1,0 +1,50 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+dist-ssr/
+*.local
+
+# environment
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# test / tooling caches
+coverage/
+.vitest/
+.eslintcache
+*.tsbuildinfo
+
+# OpenSpec leftovers
+.openspec-test-*
+
+# personal notes and machine-specific setup — not part of the project
+local/
+
+# credentials — belt and braces, these must never be committed
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+.ssh/

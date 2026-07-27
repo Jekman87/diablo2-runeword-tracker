@@ -1,0 +1,47 @@
+schema: spec-driven
+
+context: |
+  Project: Diablo II Resurrected runeword completion tracker.
+
+  Purpose: help a single player track which runewords they have already
+  crafted, in order to complete the runeword section of the in-game
+  Chronicle log. The Chronicle log is account-wide and only counts a
+  runeword once the runes have actually been socketed into a valid base
+  item, so the tracker mirrors that list.
+
+  Tech stack:
+    - React 18 + Vite (TypeScript)
+    - No backend, no database. Runeword data ships as a static JSON file.
+    - Progress is persisted in browser localStorage.
+    - Deployed as a static site (GitHub Pages / Netlify).
+
+  Language conventions:
+    - All specs, proposals, designs, tasks, code, comments and commit
+      messages are written in English.
+    - The UI is bilingual: Russian and English. All user-facing strings go
+      through an i18n layer; no hardcoded display text in components.
+    - Runeword names and rune names are kept in their original English form
+      as canonical identifiers, with Russian labels as additional
+      translations.
+
+  Domain notes:
+    - A runeword is defined by: name, ordered rune sequence, socket count,
+      allowed base item types, required character level, granted bonuses,
+      and the patch/game mode in which it is available.
+    - Rune order matters. "Ith Ral Ort Tal" is not interchangeable.
+    - Scope: all runewords tracked by the D2R Chronicle log (~89).
+
+  Conventions:
+    - Conventional commits, one line: type(scope): subject
+    - Keep the dependency list minimal; prefer plain React over extra
+      libraries unless a spec calls for one.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
