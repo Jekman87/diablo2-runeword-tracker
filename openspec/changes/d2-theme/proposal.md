@@ -20,7 +20,15 @@ icon that renders the right 40×40 cell.
   `src/index.css`, using the values read from the reference's `_colors.css`
   rather than eyeballed approximations — black ground `#000`, body text
   `#aca798`, the blood band `#400000` / `#200000`, the gold family `#8a8062` /
-  `#a79663` / `#bab197`, runeword green `#48ac3f` and property green `#5cbd4b`.
+  `#a79663` / `#bab197`, and the two property greens `#48ac3f` / `#5cbd4b`.
+- **Both greens belong to a granted-property line**, not one to the runeword's
+  name. The reference calls `#48ac3f` `--color-runeword-text`, which reads like
+  the name, but applies it to `.rw-RunewordPopup-body` — the property list — and
+  uses `#5cbd4b` for the numbers picked out within each line. A runeword's name
+  is drawn from the gold family: `gold-mid` in the popover title, `muted` in the
+  table cell, `gold-light` on hover. Taking the token's name at face value would
+  have shipped a `text-runeword` utility that renders green, which the reference
+  never does and the game does not either.
 - **Self-host Bellefair** as a single 400-weight `woff2` under
   `src/assets/fonts/`, loaded with `@font-face` and `font-display: swap`. The
   reference pulls it from `fonts.googleapis.com`; we do not, so the page makes no
@@ -93,22 +101,52 @@ Explicitly **not** in this change:
   path and the exact class of bug the sub-path assertion exists to catch. The
   guarantee needs to extend to them.
 
+  It also needs to say that those assets are **emitted as files at all**. A
+  sub-path guarantee is only meaningful for an asset that has a URL: Vite inlines
+  anything under 4 KB as a base64 data URI, which silently exempts the small
+  decorations from the very assertion being added here and makes the guarantee
+  depend on a file's byte count. Stating the file-emission requirement at spec
+  level is what gives the build setting a reason to exist, so it cannot later be
+  tidied away as an unexplained config line.
+
 ## Impact
 
 - **New**: `src/assets/fonts/` (the Bellefair `woff2` and its OFL text);
   `src/assets/images/` (the rune sprite, cursor and divider copies);
-  `src/components/RuneIcon.tsx` and its test.
+  `src/theme/rune-sprite.ts` (the cell function and the name-to-index map) and
+  its test; `src/components/RuneIcon.tsx` and its test;
+  `scripts/borrowed-assets.test.ts` (the byte-identity test).
+- **`scripts/`, not `src/`, for the byte-identity test.** It reads two files off
+  disk, and `tsconfig.app.json` deliberately withholds Node's types from
+  application code — its `types` field lists only `vite/client`,
+  `vitest/globals` and `@testing-library/jest-dom`, so `node:fs` and `Buffer` do
+  not resolve there. `tsconfig.node.json` already covers `scripts/`, and the
+  dataset drift test it sits beside is the same kind of check for the same
+  reason. Adding `"node"` to the app project to keep the test under `src/` would
+  hand every component `process` and `Buffer`, which is a worse trade than one
+  file living next to its analogue.
 - **Modified**: `src/index.css` (the `@theme` block, `@font-face`, the base and
-  cursor rules, the rune sprite rule); `NOTICE` (two assets and the font
-  licence); `README.md` and `docs/REFERENCE.md` (correct the three details this
-  change verified against the source: rune opacity is `0.5` not `0.75`, the
-  divider is a `repeat-x` band not a fixed 301×32 image, and the runeword text
-  colour is green `#48ac3f`, not the tan the table claims).
+  cursor rules, the rune sprite and divider utilities); `src/App.tsx`;
+  `vite.config.ts` (emit assets as files rather than inlining the small ones);
+  `NOTICE` (three assets and the font licence); `docs/REFERENCE.md` (correct the
+  details this change verified against the source: rune opacity is `0.5` not
+  `0.75`, the divider is a `repeat-x` band not a fixed 301×32 image, and the
+  green is the property list rather than the runeword's name); `IDEAS.md` (the
+  Planned changes row).
+- **`src/App.tsx` becomes the theme's acceptance surface.** Two tasks require
+  looking at the result — that the divider tiles at more than one width, and that
+  a rune from each tier band renders the right picture — and neither is possible
+  against a page that renders nothing. It shows all 33 runes as the sprite's own
+  11×3 grid, so every cell is checked at a glance rather than sampled, plus the
+  divider at two widths. It is interim: the table change replaces it.
 - **Added to `vendor/`**: `assets/mouse.png` and `assets/hr-gold.gif`, listed in
   the vendor README's file table like the existing four. `vendor/` stays
   read-only afterwards; nothing already in it is edited.
 - **Dependencies**: none added. Tailwind v4 already handles `@theme`, and Vite
-  already fingerprints and base-prefixes assets referenced from CSS.
+  already base-prefixes and fingerprints assets referenced from CSS — but only
+  those it emits as files. Its default inlines anything under 4 KB as a base64
+  data URI, which would have caught the cursor and the divider, so the build is
+  set to emit every asset as a file. See the `static-site-deployment` note above.
 - **Bundle**: roughly 100 KB of new assets — the 98 KB sprite dominates, the
   font is around 15 KB and the two decorations under 6 KB together. All are
   fingerprinted static files served once and cached, not parsed JavaScript.

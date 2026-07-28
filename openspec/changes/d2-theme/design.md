@@ -10,9 +10,18 @@ not assumed:
 
 - **The reference's exact token values are available.** `src/assets/css/_colors.css`
   declares them: ground `#000`, body text `#aca798`, blood `#400000` /
-  `#200000`, gold `#8a8062` / `#a79663` / `#bab197`, runeword name `#48ac3f`,
-  property text `#5cbd4b`, title `#d5d2d0`, accent `#bd8547`, ladder badge
+  `#200000`, gold `#8a8062` / `#a79663` / `#bab197`, property line `#48ac3f`,
+  property value `#5cbd4b`, title `#d5d2d0`, accent `#bd8547`, ladder badge
   `#501008` on `#a19999`, patch tag `#513b2c`, muted `#74706c` / `#24221c`.
+- **One of its token names is actively misleading.** `#48ac3f` is declared as
+  `--color-runeword-text`, which reads like the runeword's name, but `main.css`
+  applies it to `.rw-RunewordPopup-body` — the granted-properties list — with
+  `#5cbd4b` (`--color-runeword-mods`) on the `.is-mod` numbers nested inside each
+  line. The runeword name is never green: `--color-gold-mid` in the popover
+  title, `--color-gray` in the table cell, `--color-gold-light` on hover. Both
+  greens therefore describe one thing, a property line, at two emphases. Reading
+  the declarations without checking the call sites is what would have produced a
+  `text-runeword` utility that renders green.
 - **That file contradicts itself on one token.** `--color-gold` is `#8a8162` in
   its `@theme` block and `#8a8062` in its `:root` block. The `:root` declaration
   is unlayered while `@theme` is emitted into Tailwind's `theme` layer, and
@@ -78,9 +87,14 @@ it.
 _Alternative considered:_ mirror the reference's own token names one-for-one, so
 the two stylesheets can be diffed. Rejected in part — the role-shaped ones
 (`blood`, `gold`, `ladder`) are kept precisely because that diff is useful, but
-its `--color-green` / `--color-green-light` pair is dropped, because in our
-application those two are the runeword name and the property text and nothing
-else.
+`--color-runeword-text` and `--color-runeword-mods` are not kept, because
+neither names what it does. They become `property` and `property-value`: one
+granted line, and the numbers emphasised within it.
+
+This is the case that shows why the rule is worth having. Mirroring the upstream
+name would have encoded a misreading of the upstream stylesheet into a utility
+class, and `text-runeword` would then have looked correct at every call site
+that misused it.
 
 ### The token set covers what `IDEAS.md` already commits to, and stops there
 
@@ -191,6 +205,36 @@ imposition on the user — it overrides an OS-level affordance they chose — so
 should at least tell the truth about what is clickable. `IDEAS.md` settled that we
 want it; that does not settle copying the mechanism.
 
+### Every asset is emitted as a file, so the sub-path guarantee has something to hold
+
+Vite inlines any asset under 4 KB as a base64 data URI. That default would take
+the cursor (1 928 B) and the divider (3 482 B) and leave only the font and the
+sprite as files.
+
+Inlining is not wrong in itself — a data URI cannot break under a sub-path,
+which is arguably safer. The problem is what it does to the guarantee this change
+adds to `static-site-deployment`. That requirement exists because assets
+referenced from `url()` resolve differently from module imports, and this change
+is the first to have any. If the two small decorations inline, the scenario is
+exercised by the font alone — an asset that would have been a file regardless —
+and the images it was written for never produce a URL to assert. The check would
+pass while testing nothing new, which is worse than failing.
+
+It also makes the guarantee depend on a byte count. As more images arrive
+(`rune-bg2.gif`, a favicon), each would silently fall on one side or the other of
+4 KB, so whether an asset is covered by the deployment assertion would be decided
+by its size rather than by a rule.
+
+So the build emits all assets as fingerprinted files. The cost is two extra HTTP
+requests for decorations, both cached, on a static site whose sprite is already a
+98 KB file — against which a base64 cursor riding inside the render-blocking
+stylesheet is the more expensive option anyway.
+
+This is stated as a spec requirement rather than left as a build setting, because
+a lone `assetsInlineLimit: 0` in `vite.config.ts` reads like a preference and
+invites removal by anyone tidying config. A requirement gives it a reason that
+survives.
+
 ### `RuneIcon` is the acceptance evidence, and the geometry is tested as a pure function
 
 `src/components/RuneIcon.tsx` takes a rune name and renders its icon. The cell
@@ -206,10 +250,20 @@ gap; the browser check in the migration plan closes the rest.
 
 ### Three documentation corrections travel with the change
 
-`docs/REFERENCE.md` records the rune opacity as `0.75`, the divider as a 301×32
-image and the rune text as tan. The source says `0.5`, a `repeat-x` band, and
-`#48ac3f` green for the runeword name. Those are fixed here rather than left, so
-the next reader of that document is not designing against three wrong facts.
+`docs/REFERENCE.md` records the rune opacity as `0.75` and the divider as a
+301×32 image. The source says `0.5` — `0.75` is a popover-specific override, and
+an owned rune goes to `1` — and an 800×16 band tiled `repeat-x`. Both are fixed
+here rather than left, so the next reader of that document is not designing
+against wrong facts.
+
+The third correction runs the opposite way to how this change first framed it.
+`docs/REFERENCE.md`'s rows for rune text (tan small-caps) and properties text
+(green) were **already right**; what was wrong was reading
+`--color-runeword-text` as the runeword's name. So the document gains the
+property colours and an explicit note that the name is drawn from the gold
+family, rather than having a correct row replaced by an incorrect one. Recorded
+here because the misreading is an easy one to make twice: the token name invites
+it, and only the call site disproves it.
 
 ## Risks / Trade-offs
 
@@ -235,6 +289,11 @@ the next reader of that document is not designing against three wrong facts.
   check and breaks only once deployed, which is why CI already asserts the prefix
   for JS and CSS. Extended to fonts and images as a spec scenario, and verified in
   `dist/` before the change is accepted.
+- **A default that inlines small assets would hollow out that scenario** → Under
+  Vite's 4 KB threshold the cursor and divider become data URIs, leaving the new
+  assertion to be satisfied by the font alone and quietly making coverage a
+  function of file size. Both are emitted as files instead, and the requirement
+  says so, so the setting cannot be removed as unexplained config.
 - **Fetching three assets over the network may fail on this machine** →
   `docs/DATA-SOURCES.md` documents TLS interception breaking `curl` and `git`
   differently; `--ssl-no-revoke` and the schannel settings are the recorded

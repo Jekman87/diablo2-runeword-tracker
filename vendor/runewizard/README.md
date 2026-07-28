@@ -15,6 +15,8 @@ Copied on 2026-07-28. Sizes verified against the GitHub API.
 | `data/runes.ts` | 1 126 | the 33 runes with a tier field |
 | `assets/runes-sprite.png` | 98 434 | all 33 rune icons, 40×40 each, 11×3 grid |
 | `assets/runes.css` | 2 605 | sprite offset rules |
+| `assets/mouse.png` | 1 928 | the custom pointer, 32×29, hotspot `2 2` |
+| `assets/hr-gold.gif` | 3 482 | the ornamental divider, 800×16, tiled `repeat-x` |
 
 ## Do not edit these files
 

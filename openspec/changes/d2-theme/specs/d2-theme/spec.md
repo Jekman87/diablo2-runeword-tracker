@@ -6,9 +6,13 @@ The project SHALL declare its palette once as named theme tokens usable as
 utility classes throughout the application, so that no component carries a
 literal colour value. Token names SHALL describe the role a colour plays rather
 than the colour itself, and SHALL cover the surfaces the backlog has already
-settled: the page ground, body text, the table header band, the runeword name,
-the granted-property text, the gold display family, the patch and ladder badges,
-and the crafted-state accent.
+settled: the page ground, body text, the table header band, the gold display
+family a runeword's name is drawn from, the granted-property line and the
+emphasised values within it, the patch and ladder badges, and the crafted-state
+accent.
+
+Where a borrowed token's own name misdescribes what it is applied to, the role
+SHALL be taken from the use site rather than from the name.
 
 #### Scenario: Tokens are available as utilities
 
@@ -26,6 +30,14 @@ and the crafted-state accent.
 - **WHEN** the token set is read
 - **THEN** each name identifies what the colour is for, so a component reading it
   states its intent rather than a coincidence of hue
+
+#### Scenario: A role is taken from the use site, not from a borrowed name
+
+- **WHEN** a colour is adopted from the reference whose declared name does not
+  match the element it is applied to
+- **THEN** the token is named for what it actually styles
+- **AND** no token implies a role the reference never renders, so a component
+  cannot apply the wrong one and have it look deliberate
 
 ### Requirement: Self-hosted display font
 

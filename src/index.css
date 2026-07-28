@@ -1,1 +1,148 @@
 @import "tailwindcss";
+
+/* The display face, self-hosted. The reference pulls Bellefair from
+   fonts.googleapis.com; we do not, so the deployed page makes no third-party
+   request, renders offline and leaks no visitor IP.
+
+   Latin subset only. The dataset is 100 % ASCII across every name, item type,
+   property, restriction and note, so latin-ext (11 336 B) and hebrew (6 752 B)
+   would buy nothing. `unicode-range` is copied from the Google stylesheet so a
+   later subset can be added as a second @font-face without touching this one. */
+@font-face {
+  font-family: "Bellefair";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./assets/fonts/bellefair-latin-400.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+
+/* The palette, read from the reference's own `_colors.css` rather than
+   eyeballed. Every name states the role the colour plays, not its hue: a
+   component reading `text-property` states its intent, one reading
+   `text-green-400` states a coincidence.
+
+   Declared in `@theme` rather than `:root` so the values become real Tailwind
+   utilities — `bg-blood`, `text-gold` — that the editor completes and
+   `prettier-plugin-tailwindcss` sorts, instead of `bg-[var(--color-blood)]` at
+   every call site.
+
+   Scope: the surfaces `IDEAS.md` has already settled — the ground, body text,
+   the table band, the runeword name, property text, the gold family, the two
+   badges and the crafted accent. Nothing is added for the popover, the toast or
+   the panels, where no decision exists to encode yet. */
+@theme {
+  /* Page */
+  --color-ground: #000;
+  --color-body: #aca798;
+
+  /* The table band and its darker companion */
+  --color-blood: #400000;
+  --color-blood-dark: #200000;
+  --color-blood-light: #802000;
+
+  /* The gold display family — headings, rune labels, ornament. A runeword's
+     own name is drawn from here, not from the greens below: the reference
+     renders it `gold-mid` in its popover title and `muted` in the table cell,
+     going `gold-light` on hover. */
+  --color-gold: #8a8062;
+  --color-gold-mid: #a79663;
+  --color-gold-light: #bab197;
+  --color-title: #d5d2d0;
+
+  /* The two greens the game distinguishes, both inside a granted-property
+     line: the line itself, and the numbers within it picked out brighter.
+     Deliberately not `green` / `green-light` — in this application these two
+     are only ever those two things.
+
+     Read from the reference's `.rw-RunewordPopup-body` and its nested
+     `.is-mod`, not from its token names: it calls `#48ac3f`
+     `--color-runeword-text`, which reads like the runeword's name but is
+     applied to the property list. Naming it `property` here is the point of
+     naming tokens for their role. */
+  --color-property: #48ac3f;
+  --color-property-value: #5cbd4b;
+
+  /* Badges: the ladder marker's band and its label, and the patch tag */
+  --color-ladder: #501008;
+  --color-ladder-label: #a19999;
+  --color-patch: #513b2c;
+
+  /* Crafted state — the row accent `IDEAS.md` calls for */
+  --color-crafted: #44aa44;
+
+  /* Text and decoration */
+  --color-accent: #bd8547;
+  --color-danger: #ae2a1a;
+  --color-muted: #74706c;
+  --color-muted-dark: #24221c;
+  --color-link: #39a9f7;
+
+  /* Bellefair, then a fallback that is load-bearing rather than defensive:
+     Bellefair ships no Cyrillic subset, so every Russian glyph Phase 2 adds
+     renders from this stack. Chosen as a real reading serif for that reason —
+     Cambria and Georgia carry Cyrillic on Windows and macOS, Noto and
+     Liberation on Linux — not as `serif` and a shrug. */
+  --font-display:
+    "Bellefair", Cambria, Georgia, "Noto Serif", "Liberation Serif", serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-ground);
+    color: var(--color-body);
+
+    /* The custom pointer, applied once as the document default with the
+       reference's `2 2` hotspot. The reference instead uses
+       `div { cursor: … !important }` — a rule its own source has to silence
+       stylelint for — which makes every division of the page claim to be
+       clickable. Setting it here leaves interactive elements free to state
+       their own cursor, so the pointer still tells the truth about what can
+       actually be clicked. */
+    cursor:
+      url("./assets/images/mouse.png") 2 2,
+      default;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-gold);
+    font-family: var(--font-display);
+  }
+}
+
+/* One rune's icon, addressed by its cell in the 440×120 sprite. The component
+   emits only two integers — `--rune-col` and `--rune-row` — and every
+   dimension here is a multiple of `--rune-size`, so changing that one value
+   rescales the sprite with no offset restated anywhere.
+
+   Full opacity, deliberately. The reference's `opacity: 0.5` exists to fade
+   runes the player does not own; rune inventory is a feature `IDEAS.md`
+   explicitly decided against, so inheriting the value would ship every icon
+   permanently dimmed for a reason that does not apply. */
+@utility rune-icon {
+  --rune-size: 40px;
+  --rune-col: 0;
+  --rune-row: 0;
+
+  width: var(--rune-size);
+  height: var(--rune-size);
+  background-image: url("./assets/images/runes-sprite.png");
+  background-repeat: no-repeat;
+  background-size: calc(var(--rune-size) * 11) calc(var(--rune-size) * 3);
+  background-position: calc(var(--rune-size) * var(--rune-col) * -1)
+    calc(var(--rune-size) * var(--rune-row) * -1);
+}
+
+/* The ornamental divider: a band that tiles horizontally across whatever width
+   it is given, anchored to its own bottom edge. Not the fixed-width image
+   `docs/REFERENCE.md` described it as — the source is 800×16 and repeats. */
+@utility gold-divider {
+  height: 16px;
+  background: url("./assets/images/hr-gold.gif") repeat-x 0 100%;
+}

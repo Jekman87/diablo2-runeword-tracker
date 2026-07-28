@@ -59,18 +59,28 @@ site still deployable.
 | 1   | `project-scaffolding` | done   |
 | 2   | `deploy-github-pages` | done   |
 | 3   | `runeword-dataset`    | done   |
-| 4   | `d2-theme`            | next   |
-| 5   | `runeword-table`      |        |
+| 4   | `d2-theme`            | done   |
+| 5   | `runeword-table`      | next   |
 | 6   | `crafted-tracking`    |        |
 | 7   | `search-sort-filter`  |        |
 | 8   | `remaining-panels`    |        |
 
 - **`d2-theme`** — Tailwind colour tokens (black ground, dark red table band,
   tan rune text, green property text), the Bellefair display font, the custom
-  cursor, and the rune sprite moved out of `vendor/` into `src/assets` with
-  generated CSS offsets for all 33 runes. Verifiable by rendering a single rune
-  and getting the right icon. Theme lands before components so no component
-  gets built and then repainted.
+  cursor, and the rune sprite moved out of `vendor/` into `src/assets`.
+  Verifiable by rendering a single rune and getting the right icon. Theme lands
+  before components so no component gets built and then repainted.
+
+  Landed with the **ornamental divider** alongside the cursor, both vendored
+  from the reference as new assets. Two things went differently from the sketch
+  above: there are **no generated CSS offsets** — a rune's sprite cell is
+  `(index % 11, ⌊index / 11⌋)` over its position in `runes.json`, derived at the
+  use site, so no 33-rule stylesheet and no stored sprite index exist to drift
+  (this also closes the question `runeword-dataset` left open). And the font is
+  **self-hosted**, not loaded from Google Fonts as the reference does, so the
+  page makes no third-party request. Bellefair has no Cyrillic subset, so Phase
+  2's Russian text inherits a font question — see `docs/REFERENCE.md`.
+
 - **`runeword-table`** — the table: columns, badges with tooltips, the
   properties popover, the responsive collapse of the runes column. Read-only.
 - **`crafted-tracking`** — the socket toggle, `localStorage` persistence, the
