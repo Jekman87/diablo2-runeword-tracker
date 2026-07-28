@@ -110,7 +110,12 @@
 - [x] 8.1 Run the full local gate — `pnpm typecheck`, `pnpm lint`,
       `pnpm format:check`, `pnpm test`, `pnpm build` — and confirm all five
       exit zero
-- [ ] 8.2 Confirm a second push to `main` redeploys and the live site reflects
-      the new commit
+- [x] 8.2 Confirm a second push to `main` redeploys and the live site reflects
+      the new commit — commit `fd0fbb0`, run `30348609474`, both jobs green,
+      deployment `5637709833` recorded against it. The asset hashes are
+      unchanged because that commit touched only documentation, so the
+      redeploy is evidenced by the new deployment record rather than by new
+      filenames
 - [x] 8.3 Run `openspec validate --changes deploy-github-pages --strict`
-- [ ] 8.4 Commit as `ci(deploy): publish to github pages via actions`
+- [x] 8.4 Commit as `ci(deploy): publish to github pages via actions` — commit
+      `ef9e238`
