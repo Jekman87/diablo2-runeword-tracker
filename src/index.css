@@ -32,8 +32,10 @@
 
    Scope: the surfaces `IDEAS.md` has already settled — the ground, body text,
    the table band, the runeword name, property text, the gold family, the two
-   badges and the crafted accent. Nothing is added for the popover, the toast or
-   the panels, where no decision exists to encode yet. */
+   badges and the crafted accent — plus the four the runeword table introduces.
+   Nothing is added for the toast or the collapsible panels: the change that
+   builds each one adds its own token, which is the rule that keeps this a
+   single source rather than a starting point. */
 @theme {
   /* Page */
   --color-ground: #000;
@@ -73,6 +75,21 @@
 
   /* Crafted state — the row accent `IDEAS.md` calls for */
   --color-crafted: #44aa44;
+
+  /* The runeword table's own surfaces: the hairline between rows, the row's
+     hover state, and the detail panel with the dim behind it. No new hue — the
+     two row states are steps of the muted family and the panel is the blood
+     family's dark end, so the table reads as part of the same palette rather
+     than as four decisions taken separately.
+
+     Rows are separated rather than striped: alternating backgrounds on pure
+     black either disappear or turn muddy, and the reference does not stripe.
+     The hover sits below the line so a hovered row lifts off the ground
+     without swallowing its own separator. */
+  --color-row-line: #24221c;
+  --color-row-hover: #191712;
+  --color-panel: #200000;
+  --color-backdrop: rgb(0 0 0 / 0.75);
 
   /* Text and decoration */
   --color-accent: #bd8547;
@@ -118,25 +135,33 @@
 
 /* One rune's icon, addressed by its cell in the 440×120 sprite. The component
    emits only two integers — `--rune-col` and `--rune-row` — and every
-   dimension here is a multiple of `--rune-size`, so changing that one value
+   dimension here is a multiple of one edge length, so changing that one value
    rescales the sprite with no offset restated anywhere.
+
+   That edge length reaches the geometry through `--rune-cell`, which resolves
+   `--rune-size` with the default in its fallback rather than declaring it. The
+   difference matters: a declaration lands on the icon itself and would beat any
+   `--rune-size` an ancestor set, so a use site could not resize the icon at
+   all. Through the fallback, a row can set `--rune-size` on its rune list and
+   every icon inside it follows — which is what makes the size a property of the
+   use site and still a single value. The default is written once, here.
 
    Full opacity, deliberately. The reference's `opacity: 0.5` exists to fade
    runes the player does not own; rune inventory is a feature `IDEAS.md`
    explicitly decided against, so inheriting the value would ship every icon
    permanently dimmed for a reason that does not apply. */
 @utility rune-icon {
-  --rune-size: 40px;
+  --rune-cell: var(--rune-size, 40px);
   --rune-col: 0;
   --rune-row: 0;
 
-  width: var(--rune-size);
-  height: var(--rune-size);
+  width: var(--rune-cell);
+  height: var(--rune-cell);
   background-image: url("./assets/images/runes-sprite.png");
   background-repeat: no-repeat;
-  background-size: calc(var(--rune-size) * 11) calc(var(--rune-size) * 3);
-  background-position: calc(var(--rune-size) * var(--rune-col) * -1)
-    calc(var(--rune-size) * var(--rune-row) * -1);
+  background-size: calc(var(--rune-cell) * 11) calc(var(--rune-cell) * 3);
+  background-position: calc(var(--rune-cell) * var(--rune-col) * -1)
+    calc(var(--rune-cell) * var(--rune-row) * -1);
 }
 
 /* The ornamental divider: a band that tiles horizontally across whatever width

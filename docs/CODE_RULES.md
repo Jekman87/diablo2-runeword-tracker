@@ -14,8 +14,20 @@ everything at once. The pre-commit hook runs a staged-files subset of it.
 - Keep components presentational where you can; put logic that can be tested
   without a DOM in plain functions.
 - No hardcoded user-facing text in components. Every display string goes
-  through the i18n layer — see [`AGENTS.md`](../AGENTS.md). Runeword and rune
-  names are canonical identifiers in English, not display copy.
+  through the i18n layer in `src/i18n/`: components call `useStrings()`, and the
+  English copy lives in `src/i18n/en.ts`. Accessible names and `title` tooltips
+  are display copy too — a screen reader's reading of the page is part of the
+  interface, not an exception to it.
+
+  Runeword names, rune names and item categories are canonical identifiers in
+  English and come from the dataset, not from the layer. So is the game text the
+  dataset carries — properties, restrictions and notes. Punctuation _around_
+  those values is copy, which is why the item-type separator and its parentheses
+  are in `en.ts` and the categories are not.
+
+  A hook rather than an import so that Phase 2's language switch is a change to
+  one file. `Strings` is derived from the English record, so a locale missing a
+  key fails `pnpm typecheck` and names it.
 
 ## TypeScript
 

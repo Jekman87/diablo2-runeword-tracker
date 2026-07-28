@@ -60,8 +60,8 @@ site still deployable.
 | 2   | `deploy-github-pages` | done   |
 | 3   | `runeword-dataset`    | done   |
 | 4   | `d2-theme`            | done   |
-| 5   | `runeword-table`      | next   |
-| 6   | `crafted-tracking`    |        |
+| 5   | `runeword-table`      | done   |
+| 6   | `crafted-tracking`    | next   |
 | 7   | `search-sort-filter`  |        |
 | 8   | `remaining-panels`    |        |
 
@@ -83,6 +83,42 @@ site still deployable.
 
 - **`runeword-table`** — the table: columns, badges with tooltips, the
   properties popover, the responsive collapse of the runes column. Read-only.
+
+  Landed with three things worth carrying forward. It **created the i18n layer**
+  a change ahead of Phase 2 needing one, because it was the first change with
+  user-facing copy in it and the code rules already forbade the alternative — one
+  English record and a `useStrings()` hook in `src/i18n/`, no library and no
+  switch, so `russian-locale` adds a second record rather than editing every
+  component. It settled **`rune-bg2.gif` against adoption**, the question
+  `d2-theme` left for it: in the reference that tile is the background of a
+  clickable inventory slot, and our rune icons are an inert sequence, so the tile
+  would advertise a click that does nothing. And nothing here is **hover-only** —
+  each badge carries its full meaning as its accessible name as well as a
+  tooltip, and the popover restates patch, ladder status and the note in full
+  words, which is the path a phone takes.
+
+  **Still nothing builds the site header.** Items 1 and 2 of the Phase 1 layout
+  below — the patch line, and the Help, Feedback and Update Notes links — appear
+  in no change in the table above. `runeword-table` deliberately did not invent
+  one, so the next proposal picks this up or it never ships.
+
+  **It also surfaced a dataset defect, which it did not fix.** Three runewords —
+  `Fortitude`, `Phoenix` and `Spirit` — grant different properties depending on
+  which base they are socketed into, and the vendored source expresses that with
+  Markdown sub-headings inside the property list. The generator carried them
+  through verbatim, so `Fortitude`'s first property line is the literal text
+  `#### Weapons` and its fourteenth is `#### Body Armor`. The table renders the
+  dataset faithfully, which is exactly why this is visible: six of the 975 lines
+  are section headers masquerading as properties.
+
+  `runeword-table` reads and never writes `src/data/`, and no requirement of
+  either capability covers per-base property groups, so fixing it here would have
+  meant either editing the dataset out of scope or inventing a feature. It wants
+  its own change, and it is a real modelling question rather than a typo: either
+  the generator strips the headings and the three records lose information, or the
+  schema grows a notion of per-base property groups and the detail view learns to
+  present them.
+
 - **`crafted-tracking`** — the socket toggle, `localStorage` persistence, the
   progress bar out of 99, the undo toast.
 - **`search-sort-filter`** — search over name and item type, header-click

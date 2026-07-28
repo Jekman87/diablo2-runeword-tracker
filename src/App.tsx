@@ -1,35 +1,29 @@
-import { RuneIcon } from "@/components/RuneIcon";
-import { runes } from "@/data";
+import { RunewordTable } from "@/components/RunewordTable";
+import { useStrings } from "@/i18n";
 
-// Interim shell. Until the table lands this page is the theme's acceptance
-// surface: it renders all 33 runes as the sprite's own 11×3 grid, so every cell
-// can be compared against the reference at a glance rather than sampled — a
-// wrong offset renders a real rune icon that is simply the wrong rune, and that
-// is not something a test can see.
+// The page: a title, the divider, and the table of all 99 runewords.
 //
-// The divider appears at two container widths deliberately: it has to tile
-// across whatever width it is given, with no seam and no crop. Its eventual
-// placement in the page header belongs to the change that builds the header.
+// The 33-rune grid that stood here was `d2-theme`'s acceptance surface, and the
+// table replaces it comprehensively — 343 rune icons in real rows is a stricter
+// check on the sprite than eleven columns of it ever was.
+//
+// No header. `IDEAS.md` puts a patch line and Help, Feedback and Update Notes
+// links in the Phase 1 layout, but no change in its list builds them, and
+// inventing a header inside the table change is how a change stops being one
+// feature. The gap is recorded in `IDEAS.md` for the next proposal to find.
 
 export function App() {
+  const strings = useStrings();
+
   return (
     <main className="mx-auto grid min-h-dvh max-w-4xl content-start gap-6 p-6">
       <h1 className="text-3xl font-normal tracking-wide">
-        Diablo II Runeword Tracker
+        {strings.app.title}
       </h1>
 
       <div className="gold-divider" />
 
-      <ul className="grid grid-cols-11 justify-items-center gap-1">
-        {runes.map((rune) => (
-          <li key={rune.name} className="grid justify-items-center">
-            <RuneIcon name={rune.name} />
-            <span className="text-xs text-gold-mid">{rune.name}</span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="gold-divider max-w-xs" />
+      <RunewordTable />
     </main>
   );
 }
