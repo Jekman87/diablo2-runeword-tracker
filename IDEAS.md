@@ -44,6 +44,48 @@ bases they still need.
 
 ---
 
+## Planned changes
+
+The phases below describe _what_ to build. This is the sequence of OpenSpec
+changes that builds it. Change names are ours, not an OpenSpec convention —
+they are just kebab-case folder names. Capability names, which accumulate in
+`openspec/specs/`, are a separate namespace.
+
+The order is dependency order, not preference. Each change should end with the
+site still deployable.
+
+| #   | Change                | Status |
+| --- | --------------------- | ------ |
+| 1   | `project-scaffolding` | done   |
+| 2   | `deploy-github-pages` | done   |
+| 3   | `runeword-dataset`    | done   |
+| 4   | `d2-theme`            | next   |
+| 5   | `runeword-table`      |        |
+| 6   | `crafted-tracking`    |        |
+| 7   | `search-sort-filter`  |        |
+| 8   | `remaining-panels`    |        |
+
+- **`d2-theme`** — Tailwind colour tokens (black ground, dark red table band,
+  tan rune text, green property text), the Bellefair display font, the custom
+  cursor, and the rune sprite moved out of `vendor/` into `src/assets` with
+  generated CSS offsets for all 33 runes. Verifiable by rendering a single rune
+  and getting the right icon. Theme lands before components so no component
+  gets built and then repainted.
+- **`runeword-table`** — the table: columns, badges with tooltips, the
+  properties popover, the responsive collapse of the runes column. Read-only.
+- **`crafted-tracking`** — the socket toggle, `localStorage` persistence, the
+  progress bar out of 99, the undo toast.
+- **`search-sort-filter`** — search over name and item type, header-click
+  sorting, the slot filter, view settings persisted. Needs the item-type to
+  slot mapping, which `runeword-dataset` deliberately left out.
+- **`remaining-panels`** — the two collapsible blocks. Pure aggregation logic,
+  unit tested.
+
+Phases 2 to 4 become their own changes later: `russian-locale`,
+`csv-import-export`, `row-animations`.
+
+---
+
 ## Phase 1 — usable tracker (MVP)
 
 ### Layout, top to bottom
