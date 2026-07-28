@@ -1,0 +1,30 @@
+Diablo II Runeword Tracker
+==========================
+
+This project includes data derived from third-party work.
+
+Runewizard
+----------
+
+The runeword, rune and base-item-category data in `src/data/` is derived from
+Runewizard by Fabrice Denis, used under the MIT licence.
+
+    Copyright (c) 2014-present, Fabrice Denis
+    https://github.com/fabd/diablo2-runewizard
+
+The unmodified upstream snapshot the data is generated from, together with the
+full MIT licence text, is kept at `vendor/runewizard/`. The generator that
+performs the derivation is `scripts/generate-dataset.ts`, run with
+`pnpm data:build`; `docs/DATA-SOURCES.md` records the field mapping.
+
+The files under `src/data/` are a transformation of that snapshot into this
+project's own schema — renamed fields, normalised values, merged property
+lines — and ship inside the deployed bundle. They are not verbatim copies, and
+the attribution above travels with them.
+
+Blizzard Entertainment
+----------------------
+
+Diablo II, Diablo II: Resurrected, the runeword and rune names, and all related
+artwork are the property of Blizzard Entertainment. This is an unofficial fan
+project, not affiliated with or endorsed by Blizzard Entertainment.

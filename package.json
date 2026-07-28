@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "data:build": "node scripts/generate-dataset.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "prepare": "simple-git-hooks",

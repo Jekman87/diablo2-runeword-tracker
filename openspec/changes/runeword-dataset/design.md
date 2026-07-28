@@ -25,7 +25,7 @@ against the vendored files rather than assumed:
 - **The property blocks are template literals, not clean lines.** Across the 99
   blocks there are 201 blank lines and 974 indented lines. Splitting needs
   trimming and blank-dropping, and the results range from 4 property lines
-  (`Ancient's Pledge`) to 26 (`Last Wish`).
+  (`Wealth`) to 26 (`Fortitude`).
 - **Prettier owns the formatting of every committed file**, JSON included, via
   `lint-staged` and `format:check`. A generator that writes JSON is writing a
   file Prettier will then have an opinion about.
@@ -322,8 +322,8 @@ so the change is purely additive and there is no state to convert.
 
 1. Add the schemas, then the generator, then run `pnpm data:build` and read the
    emitted JSON — spot-check `Infinity` for repeat preservation, `Mosaic` for
-   all three availability fields, `Ancient's Pledge` for the shortest property
-   list and `Last Wish` for the longest.
+   all three availability fields, `Wealth` for the shortest property list and
+   `Fortitude` for the longest.
 2. Add the invariant tests and the drift test. Confirm the drift test fails when
    a value in the committed JSON is edited by hand, then restore it.
 3. Wire the tooling: `tsconfig.node.json` include, the ESLint block for

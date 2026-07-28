@@ -293,8 +293,69 @@ them as decoration: a record without them simply renders no badges. `version`
 is absent on the original pre-1.10 runewords, which is why only 74 of 99 carry
 it — not a data gap.
 
-`item-types.ts` maps each of the 19 base categories to a wiki URL, so item
-types can link out for free.
+`item-types.ts` maps 20 base categories to a wiki URL, so item types can link
+out for free — except for the four that have no URL at all: `Grimoire`,
+`Melee Weapons`, `Missile Weapons` and `Weapons`.
 
 **Socket count is not stored** — it equals `runes.length`. Compute it; do not
 add a second field that can drift.
+
+---
+
+## Generating the dataset
+
+`vendor/` is never imported by application code. `src/data/*.json` is generated
+from it by a committed script:
+
+```bash
+pnpm data:build      # node scripts/generate-dataset.ts
+```
+
+The generator reads the four vendor files as **text**, transpiles each in memory
+with `typescript`'s `transpileModule` and evaluates it — the files annotate with
+types they never declare and `runes.ts` holds an `export const enum`, so neither
+a static import nor Node's type stripping can read them, and importing them
+would pull `vendor/` into `pnpm typecheck`.
+
+It validates the vendor shape before transforming and its own output afterwards,
+then formats through Prettier's API with this repository's config, so
+`pnpm data:build` leaves a tree `format:check` already accepts.
+`scripts/generate-dataset.test.ts` proves the committed JSON still equals what
+the generator produces, so a hand-edit to the JSON fails the suite.
+
+**After a vendor refresh, run `pnpm data:build` and then the full gate.** The
+vendor-side schema is strict about the eight keys it knows, so a renamed or
+retyped upstream field fails naming that field rather than emitting records full
+of `undefined`.
+
+### Confirmed field mapping
+
+| Vendor           | Ours                  | Note                                          |
+| ---------------- | --------------------- | --------------------------------------------- |
+| `title`          | `name`                | unique; the canonical identifier              |
+| `runes`          | `runes`               | order significant, repeats preserved          |
+| `level`          | `requiredLevel`       | 13–69                                         |
+| `ttypes`         | `itemTypes`           | each resolves to `item-types.json`            |
+| `tinfos`         | `itemTypeRestriction` | parentheses stripped: `Assassin`, not `(…)`   |
+| `version`        | `patch`               | omitted on the 25 pre-1.10 runewords          |
+| `ladder`         | `ladderOnly`          | normalised to a boolean on all 99, 9 set      |
+| `note`           | `note`                | omitted unless present; only `Mosaic` has one |
+| _(descriptions)_ | `properties`          | merged in, one entry per line, 4 to 26        |
+| `tier: 1\|2\|3`  | `tier`                | `common` / `semirare` / `rare`                |
+| _(none)_         | —                     | socket count stays derived                    |
+
+Verified against the generated output: 99 runewords with distinct names, 343
+rune slots, socket counts 2 to 6, 33 runes in 11/11/11 tier bands from `El` to
+`Zod`, 20 item categories all of which are referenced, 15 restrictions, patches
+`1.10`/`1.11`/`2.4`/`2.6`/`3.0` on 74 records.
+
+## Open question inherited by the slot filter
+
+`Grimoire` is one of the four categories with **no wiki URL**, and it appears on
+`Ancient's Pledge` alongside `Shields`. Which of the four filter slots — helm,
+weapon, shield, body armour — it belongs to is not resolvable from the data, and
+the missing URL removes the obvious way to check.
+
+The dataset carries categories verbatim and classifies nothing, so this blocks
+nothing at the data layer. The change that introduces the slot filter has to
+settle it against the game rather than rediscover the question.

@@ -16,7 +16,23 @@ export default tseslint.config(
     ],
     languageOptions: {
       ecmaVersion: 2023,
+    },
+  },
+  // Globals are split out of the shared block because flat config *merges*
+  // `languageOptions.globals` across every matching entry. A `scripts` block
+  // alone would therefore add Node globals on top of the browser ones rather
+  // than replacing them, and `document` would stay defined in a build script.
+  {
+    files: ["**/*.{ts,tsx}"],
+    ignores: ["scripts/**"],
+    languageOptions: {
       globals: globals.browser,
+    },
+  },
+  {
+    files: ["scripts/**/*.ts"],
+    languageOptions: {
+      globals: globals.node,
     },
   },
 );

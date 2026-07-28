@@ -151,11 +151,17 @@ bases they still need.
 - Scope: the runewords tracked by the D2R Chronicle log. The reference site
   lists **99** on patch 3.1.1 — note this contradicts the "~89" figure found
   in secondary sources, which is why a second source is required.
-- A runeword record needs: name, ordered rune sequence, socket count, allowed
-  base categories with restrictions, required level, granted properties,
-  patch of introduction, ladder-only flag
+- **Shipped.** The dataset now lives in `src/data/`, generated from
+  `vendor/runewizard/` by `pnpm data:build` and validated with `zod` when it
+  loads. See [`docs/DATA-SOURCES.md`](docs/DATA-SOURCES.md) for the field
+  mapping. What follows is the requirement it was built against, kept for the
+  record.
+- A runeword record needs: name, ordered rune sequence, allowed base categories
+  with restrictions, required level, granted properties, patch of introduction,
+  ladder-only flag. Socket count is **not** a field — it equals `runes.length`
+  and is derived at each use site.
 - Rune order matters and must be preserved
-- 33 runes total, in the canonical order listed in `docs/runewords-raw.md`
+- 33 runes total, in the canonical in-game order
 - Rune icons: the reference packs all 33 into a single 440×120 sprite at
   40×40 each, offsets driven by a CSS variable. Worth copying as a technique.
   Licensing of both that repository and the underlying Blizzard artwork needs

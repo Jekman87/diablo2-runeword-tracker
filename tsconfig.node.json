@@ -20,5 +20,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts"]
+  // `scripts` so the generator is type-checked, and `src/data/schema.ts`
+  // because the generator validates its output against the very schema the
+  // application loads with. A project must list every file it compiles, and
+  // that one file is deliberately shared rather than duplicated.
+  "include": ["vite.config.ts", "scripts", "src/data/schema.ts"]
 }

@@ -1,0 +1,25 @@
+[
+  { "name": "Axes", "url": "https://diablo2.diablowiki.net/Axes" },
+  { "name": "Body Armors", "url": "https://diablo2.diablowiki.net/Body_Armor" },
+  { "name": "Claws", "url": "https://diablo2.diablowiki.net/Assassin_Items" },
+  { "name": "Clubs", "url": "https://diablo2.diablowiki.net/Clubs" },
+  { "name": "Daggers", "url": "https://diablo2.diablowiki.net/Daggers" },
+  { "name": "Grimoire" },
+  { "name": "Hammers", "url": "https://diablo2.diablowiki.net/Hammers" },
+  { "name": "Helms", "url": "https://diablo2.diablowiki.net/Helms" },
+  { "name": "Maces", "url": "https://diablo2.diablowiki.net/Maces" },
+  { "name": "Melee Weapons" },
+  { "name": "Missile Weapons" },
+  {
+    "name": "Paladin Shields",
+    "url": "https://diablo2.diablowiki.net/Paladin_Items"
+  },
+  { "name": "Polearms", "url": "https://diablo2.diablowiki.net/Polearms" },
+  { "name": "Scepters", "url": "https://diablo2.diablowiki.net/Scepters" },
+  { "name": "Shields", "url": "https://diablo2.diablowiki.net/Shields" },
+  { "name": "Spears", "url": "https://diablo2.diablowiki.net/Spears" },
+  { "name": "Staves", "url": "https://diablo2.diablowiki.net/Staves" },
+  { "name": "Swords", "url": "https://diablo2.diablowiki.net/Swords" },
+  { "name": "Wands", "url": "https://diablo2.diablowiki.net/Wands" },
+  { "name": "Weapons" }
+]

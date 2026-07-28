@@ -45,6 +45,7 @@ domain root redirects there.
 | `pnpm format:check` | Prettier, verifying only — the CI-shaped variant    |
 | `pnpm test`         | Vitest once                                         |
 | `pnpm test:watch`   | Vitest in watch mode                                |
+| `pnpm data:build`   | Regenerate `src/data/*.json` from `vendor/`         |
 
 A `pre-commit` hook runs ESLint autofix and Prettier over staged files. Type
 checking and tests are not in the hook — run them yourself, or let CI do it.
@@ -80,7 +81,9 @@ Runeword data, the rune sprite and the visual language are derived from
 [**Runewizard**](https://fabd.github.io/diablo2-runewizard/) by Fabrice Denis
 ([fabd/diablo2-runewizard](https://github.com/fabd/diablo2-runewizard)), used
 under the MIT licence. The vendored files and the original licence text live in
-[`vendor/runewizard/`](vendor/runewizard/).
+[`vendor/runewizard/`](vendor/runewizard/), and the dataset under `src/data/` is
+generated from them — see [`NOTICE`](NOTICE) for the full attribution and
+[`docs/DATA-SOURCES.md`](docs/DATA-SOURCES.md) for the field mapping.
 
 Diablo II and all related artwork are the property of Blizzard Entertainment.
 This is an unofficial fan project, not affiliated with or endorsed by Blizzard.
