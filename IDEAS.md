@@ -64,6 +64,29 @@ site still deployable.
 | 6   | `crafted-tracking`    | next   |
 | 7   | `search-sort-filter`  |        |
 | 8   | `remaining-panels`    |        |
+| 9   | `property-groups`     |        |
+| 10  | `site-header`         |        |
+
+Changes 9 and 10 were missing from the original breakdown. Both were found by
+`runeword-table` rather than planned, which is the sequence working as intended —
+a change that renders the data is the first thing able to notice the data is
+wrong, and a change that refuses to invent a feature is the thing that reveals
+nobody owns it.
+
+- **`property-groups`** — fixes the six `#### …` lines. Three runewords grant
+  different properties per base type, and the vendored source expresses that with
+  Markdown sub-headings the generator carried through verbatim. Model it as one
+  uniform shape for all 99 records — a list of property groups, each with an
+  optional `itemTypes` label — rather than an optional extra field, so the detail
+  view has a single code path. **Gotcha:** the heading reads `#### Body Armor`
+  singular while `itemTypes` holds `Body Armors` plural, so matching group labels
+  to item types by string equality fails on `Fortitude`.
+  Not urgent: nothing reads `properties` except the detail view, and the
+  Chronicle counts a runeword once regardless of the base it went into, so no
+  progress logic depends on this.
+- **`site-header`** — items 1 and 2 of the Phase 1 layout: the patch line, and
+  the Help, Feedback and Update Notes links. Feedback points at the repository's
+  GitHub Discussions, which has to be enabled in the repository settings first.
 
 - **`d2-theme`** — Tailwind colour tokens (black ground, dark red table band,
   tan rune text, green property text), the Bellefair display font, the custom
