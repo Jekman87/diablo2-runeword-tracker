@@ -1,5 +1,9 @@
 # Diablo II Runeword Tracker
 
+[![CI](https://github.com/Jekman87/diablo2-runeword-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/Jekman87/diablo2-runeword-tracker/actions/workflows/ci.yml)
+
+**Live: <https://jekman87.github.io/diablo2-runeword-tracker/>**
+
 Track which Diablo II: Resurrected runewords you have already crafted, and see
 which runes and socketed bases you still need to finish the runeword section of
 the in-game Chronicle log.
@@ -19,8 +23,14 @@ Prerequisites: **Node.js 20.19+** and **pnpm 10+** (`corepack enable pnpm`).
 
 ```bash
 pnpm install   # also registers the pre-commit hook
-pnpm dev       # http://localhost:5173
+pnpm dev       # http://localhost:5173/diablo2-runeword-tracker/
 ```
+
+The sub-path in that URL is not a bug. The site is deployed as a GitHub Pages
+project page, so Vite's `base` is set to `/diablo2-runeword-tracker/` as a
+committed constant — which means `pnpm dev` and `pnpm preview` both serve under
+the sub-path and reproduce production asset resolution exactly. Opening the
+domain root redirects there.
 
 ### Scripts
 
@@ -39,10 +49,24 @@ pnpm dev       # http://localhost:5173
 A `pre-commit` hook runs ESLint autofix and Prettier over staged files. Type
 checking and tests are not in the hook — run them yourself, or let CI do it.
 
+### CI and deployment
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the full gate —
+`typecheck`, `lint`, `format:check`, `test`, `build`, each as its own step — on
+every push to `main` and every pull request targeting `main`. It also asserts
+that the asset references in the built `dist/index.html` carry the
+`/diablo2-runeword-tracker/` prefix, because a wrong `base` passes every local
+check and only breaks once deployed.
+
+A push to `main` that clears the gate deploys to GitHub Pages. Pull requests run
+the gate and deploy nothing. Node comes from [`.nvmrc`](.nvmrc) and pnpm from
+`packageManager` in `package.json`, so CI and a developer machine cannot drift.
+
 ## Stack
 
 React 19, TypeScript, Vite, Tailwind CSS v4. No backend: runeword data ships as
-a static file and progress is kept in `localStorage`. Deployed to GitHub Pages.
+a static file and progress is kept in `localStorage`. Deployed to
+[GitHub Pages](https://jekman87.github.io/diablo2-runeword-tracker/).
 
 ## Scope
 

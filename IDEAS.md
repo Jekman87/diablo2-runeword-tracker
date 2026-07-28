@@ -23,7 +23,9 @@ bases they still need.
 - Repository and project name: **`diablo2-runeword-tracker`**
 - React + TypeScript, Vite, Tailwind CSS, ESLint, Prettier
 - Progress and view settings stored in `localStorage`
-- Deployed to GitHub Pages under the personal account `Jekman87`
+- Deployed to GitHub Pages under the personal account `Jekman87` — live at
+  <https://jekman87.github.io/diablo2-runeword-tracker/>, published by GitHub
+  Actions on every push to `main` that clears the quality gate
 - Phase 1 ships English only; Russian in Phase 2
 - Visual style reads as Diablo II: black background, dark red table header,
   tan small-caps rune text, green property text, serif display font, custom

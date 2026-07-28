@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Least privilege by default; the deploy job widens this for itself.
+permissions:
+  contents: read
+  pages: read
+
+jobs:
+  build:
+    name: Quality gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # pnpm must be installed before setup-node, or `cache: pnpm` cannot
+      # resolve the store directory and fails with "Unable to locate
+      # executable file: pnpm". No `version` input: it reads the
+      # `packageManager` field from package.json.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Five separate steps so a red run names the check that failed.
+      - name: Type-check
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Test
+        run: pnpm test
+
+      - uses: actions/configure-pages@v6
+
+      - name: Build
+        run: pnpm build
+
+      # A wrong `base` passes every local check and only breaks once
+      # deployed, so assert it here rather than trusting it.
+      - name: Assert asset references carry the base path
+        env:
+          BASE_PATH: /diablo2-runeword-tracker/
+        run: |
+          refs=$(grep -oE '(src|href)="[^"]+"' dist/index.html | sed -E 's/^(src|href)="//; s/"$//')
+          if [ -z "$refs" ]; then
+            echo "::error file=dist/index.html::no script or stylesheet references found"
+            exit 1
+          fi
+          status=0
+          while IFS= read -r ref; do
+            case "$ref" in
+              http://* | https://* | //* | data:* | \#*)
+                echo "skip  $ref (external)"
+                ;;
+              "$BASE_PATH"*)
+                echo "ok    $ref"
+                ;;
+              *)
+                echo "::error file=dist/index.html::asset reference '$ref' is not prefixed with '$BASE_PATH' — Vite's base is wrong for this deployment"
+                status=1
+                ;;
+            esac
+          done <<< "$refs"
+          exit $status
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    # Pages rejects overlapping deployments, and cancelling a half-finished
+    # one is how a deployment gets stuck. Queue instead.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
