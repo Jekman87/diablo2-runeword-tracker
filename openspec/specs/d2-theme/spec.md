@@ -20,7 +20,9 @@ family a runeword's name is drawn from, the granted-property line and the
 emphasised values within it, the patch and ladder badges, and the crafted-state
 accent. They SHALL further cover the surfaces the runeword table introduces: the
 separation between table rows and the row's hover state, and the detail view's
-panel and the dimmed backdrop behind it.
+panel and the dimmed backdrop behind it. They SHALL further cover the surfaces
+crafted tracking introduces: the tint of a crafted row, the unfilled track of the
+progress indicator, and the panel of the transient undo notice.
 
 A token SHALL be declared when a component exists that renders the surface it
 names, and SHALL NOT be declared speculatively for a surface no decision has been
@@ -62,10 +64,18 @@ SHALL be taken from the use site rather than from the name.
   its backdrop are inspected
 - **THEN** each takes its colour from a named token rather than a literal value
 
+#### Scenario: Crafted tracking's own surfaces are tokens
+
+- **WHEN** the crafted row's tint, the progress indicator's track and the undo
+  notice's panel are inspected
+- **THEN** each takes its colour from a named token rather than a literal value
+- **AND** the indicator's filled portion reuses the crafted-state accent already
+  declared, rather than adding a second token for the same role
+
 #### Scenario: A surface with no component still has no token
 
 - **WHEN** the token set is read for surfaces no component renders yet, such as
-  the undo toast or the collapsible panels
+  the collapsible remaining-runes and remaining-bases panels
 - **THEN** no token exists for them, because the change that builds each one adds
   its own
 

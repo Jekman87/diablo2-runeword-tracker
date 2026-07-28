@@ -1,6 +1,6 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
-### Requirement: Columns
+### Requirement: Dataset columns
 
 Each row SHALL carry the runeword's name, its ordered rune sequence, its allowed
 base item categories and its required character level. The rune sequence SHALL
@@ -48,3 +48,19 @@ the rest of the row rather than being an ornament attached to the name.
   header
 - **AND** what that column contains and how it behaves is `crafted-tracking`'s
   requirement, not this capability's
+
+## REMOVED Requirements
+
+### Requirement: Columns
+
+**Reason**: Replaced by `Dataset columns`. The original ended "No column SHALL
+present crafted state, which is not part of this capability" and carried the
+scenario `No crafted-state column exists`. This change adds that column, so both
+are now false — and a `MODIFIED` block may not drop a scenario, which is exactly
+what retiring that one requires. Renaming makes the replacement explicit rather
+than hiding a deletion inside an edit.
+
+**Migration**: The four read-only columns and their three scenarios carry over
+into `Dataset columns` unchanged. What the crafted column contains and how it
+behaves is not restated here — those are `crafted-tracking`'s requirements, and
+this capability now only requires that the column exists and is a real column.

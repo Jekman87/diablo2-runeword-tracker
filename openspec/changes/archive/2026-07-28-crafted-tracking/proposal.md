@@ -94,10 +94,13 @@ Explicitly **not** in this change:
 
 - `runeword-table`: the requirement _Columns_ currently ends "No column SHALL
   present crafted state, which is not part of this capability", and carries the
-  scenario _No crafted-state column exists_. This change adds that column. The
+  scenario _No crafted-state column exists_. This change adds that column, so the
   requirement has to hand the column's content and behaviour to
   `crafted-tracking` rather than forbid it, while keeping the four read-only
-  columns it does own intact.
+  columns it does own intact. It is retired and replaced by _Dataset columns_
+  rather than edited in place: a `MODIFIED` block may not drop a scenario, and
+  dropping that scenario is the substance of the change, so a rename is what
+  makes the replacement visible instead of burying a deletion in an edit.
 - `d2-theme`: the requirement _Named colour tokens_ bounds the token set to
   surfaces a component actually renders, and its scenario _A surface with no
   component still has no token_ names the undo toast as one that does not exist

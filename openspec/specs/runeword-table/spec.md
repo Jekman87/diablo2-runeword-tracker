@@ -36,13 +36,20 @@ assistive technology can navigate it by row and column.
 - **THEN** it is present without scrolling to a fetch, expanding a control or
   paging, because the list is complete and finite
 
-### Requirement: Columns
+### Requirement: Dataset columns
 
 Each row SHALL carry the runeword's name, its ordered rune sequence, its allowed
 base item categories and its required character level. The rune sequence SHALL
 render one icon per socketed rune in dataset order, including repeats, so that the
-recipe can be read off the row. No column SHALL present crafted state, which is
-not part of this capability.
+recipe can be read off the row. These four are the columns this capability owns and
+they SHALL remain read-only presentations of the dataset: none SHALL become a
+control, and none SHALL vary with the player's progress.
+
+The row SHALL further carry a crafted-state column, whose content, control and
+behaviour are defined by `crafted-tracking` and not here. This capability requires
+only that the column exists ahead of the four above and is a column proper, with a
+column header of its own, so that crafted state is sortable on the same terms as
+the rest of the row rather than being an ornament attached to the name.
 
 #### Scenario: A row carries all four values
 
@@ -63,11 +70,20 @@ not part of this capability.
 - **THEN** it carries that rune's canonical name as its accessible label, so the
   sequence is readable when the sprite is not
 
-#### Scenario: No crafted-state column exists
+#### Scenario: The four dataset columns stay read-only
+
+- **WHEN** the name, runes, item categories and required level columns are
+  inspected
+- **THEN** none presents a control that changes data, and none renders differently
+  according to whether the runeword is crafted
+
+#### Scenario: Crafted state is a column, defined elsewhere
 
 - **WHEN** the table's columns are inspected
-- **THEN** none presents or toggles crafted state, because tracking progress is a
-  separate capability and this presentation is read-only
+- **THEN** crafted state occupies its own leading column with its own column
+  header
+- **AND** what that column contains and how it behaves is `crafted-tracking`'s
+  requirement, not this capability's
 
 ### Requirement: Default row order
 

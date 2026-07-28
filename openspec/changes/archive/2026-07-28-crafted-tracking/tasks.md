@@ -180,13 +180,14 @@
 
 ## 9. Acceptance
 
-> **9.6 to 9.9 are open.** They are browser checks — a real pointer, a real
-> keyboard, real devtools — and the session that implemented this change had no
-> browser to run them in. What each one asserts is covered at the unit level
+> **9.6 to 9.9 were run by hand, by the project owner.** They are browser
+> checks — a real pointer, a real keyboard, real devtools — and the session that
+> implemented the change had no browser to run them in, so they were left open
+> at commit time and completed afterwards. Each is also covered at the unit level
 > (`storage.test.ts` for all three corrupt-storage cases, `App.test.tsx` for
 > loading from storage, restoring focus after an undo and the name button not
-> toggling, `CraftedToggle.test.tsx` for Space and Enter), so what is actually
-> outstanding is the visual and end-to-end pass, not the logic.
+> toggling, `CraftedToggle.test.tsx` for Space and Enter); what the manual pass
+> added was the visual and end-to-end confirmation those cannot give.
 
 - [x] 9.1 Add no dependency. `zod` already validates external data, `clsx` composes
       the row variant, and `<progress>` and `localStorage` are platform. A state
@@ -201,18 +202,18 @@
 - [x] 9.5 Run the full local gate — `pnpm typecheck`, `pnpm lint`,
       `pnpm format:check`, `pnpm test`, `pnpm build` — and confirm all five exit
       zero
-- [ ] 9.6 **Look at it.** `pnpm dev`, then: toggle by clicking a row and by
+- [x] 9.6 **Look at it.** `pnpm dev`, then: toggle by clicking a row and by
       clicking the socket, check the tint and the accent border, watch the bar move,
       let the notice time out, undo one, reload and confirm the marks are still
       there
-- [ ] 9.7 Check the keyboard path with no pointer: Tab to a socket, Space to
+- [x] 9.7 Check the keyboard path with no pointer: Tab to a socket, Space to
       toggle, Space again to revert, Tab to a name and Space to open the dialog and
       confirm it did not also toggle
-- [ ] 9.8 Check the three storage failures by hand in devtools: delete the key, set
+- [x] 9.8 Check the three storage failures by hand in devtools: delete the key, set
       it to `not json`, set it to `{"a":1}`. The page must load and work in all
       three, and the unparseable value must still be there after a load with no
       toggle
-- [ ] 9.9 Set the key to `["Enigma","Nonexistent Runeword"]` and confirm `Enigma`
+- [x] 9.9 Set the key to `["Enigma","Nonexistent Runeword"]` and confirm `Enigma`
       is marked, progress reads `1 of 99`, and toggling something else writes
       `Nonexistent Runeword` back out
 - [x] 9.10 Run `openspec validate --changes crafted-tracking --strict`
