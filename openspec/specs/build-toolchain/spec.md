@@ -126,18 +126,42 @@ time, build time and test time.
 ### Requirement: Vendored reference data is excluded from the build
 
 The `vendor/` directory is a read-only third-party snapshot. It SHALL be
-excluded from TypeScript compilation, from linting and from formatting, and
-SHALL NOT be reachable from the application bundle.
+excluded from TypeScript compilation, from linting and from formatting, and no
+module under `src/` SHALL import from it. Data **derived** from that snapshot MAY
+ship in the bundle, provided it has been transformed into the project's own
+schema and committed under `src/` — that derivation is the project's purpose, and
+what this requirement protects is the snapshot's read-only status and its absence
+from the type-checked, linted and bundled module graph, not the data itself.
+Build-time tooling outside `src/` MAY read the snapshot's files, as text rather
+than as modules, so that reading it cannot pull it into compilation.
 
 #### Scenario: Vendored TypeScript is not compiled
 
 - **WHEN** `pnpm typecheck` runs
 - **THEN** no diagnostic references a file under `vendor/`
 
-#### Scenario: Vendored files are not bundled
+#### Scenario: Vendored files are not linted or reformatted
+
+- **WHEN** `pnpm lint` and `pnpm format` run
+- **THEN** no problem is reported against a file under `vendor/`
+- **AND** no file under `vendor/` is modified
+
+#### Scenario: Application code does not import the snapshot
+
+- **WHEN** the imports of every module under `src/` are inspected
+- **THEN** none resolves into `vendor/`
+
+#### Scenario: The snapshot itself is not bundled
 
 - **WHEN** `pnpm build` completes
-- **THEN** no content originating from `vendor/` appears in `dist/`
+- **THEN** no file under `vendor/` has been included as a module in `dist/`
+
+#### Scenario: Derived data may be bundled
+
+- **WHEN** data derived from the snapshot has been transformed into the project's
+  own schema and committed under `src/`
+- **THEN** importing it from application code is permitted
+- **AND** it appears in `dist/` like any other application asset
 
 ### Requirement: Declared utility dependencies are usable
 
