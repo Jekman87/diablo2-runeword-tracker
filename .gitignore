@@ -40,6 +40,9 @@ coverage/
 # personal notes and machine-specific setup — not part of the project
 local/
 
+# Claude Code local permissions — per-machine, not shared
+.claude/settings.local.json
+
 # credentials — belt and braces, these must never be committed
 *.pem
 *.key
