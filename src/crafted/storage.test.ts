@@ -1,0 +1,161 @@
+import {
+  CRAFTED_STORAGE_KEY,
+  loadCrafted,
+  saveCrafted,
+} from "@/crafted/storage";
+
+// No component is rendered anywhere in this file, which is the point of the
+// module being plain functions: the failure modes that matter here — corrupt
+// JSON, the wrong shape, a name the dataset lost, a store that throws — are
+// awkward to provoke through a rendered table and trivial to provoke directly.
+
+const KNOWN = new Set(["Enigma", "Spirit", "Infinity"]);
+
+beforeEach(() => {
+  window.localStorage.clear();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
+describe("loading and saving", () => {
+  it("round-trips a set of marks", () => {
+    saveCrafted({ crafted: new Set(["Enigma", "Spirit"]), unknown: [] });
+
+    expect([...loadCrafted(KNOWN).crafted]).toEqual(["Enigma", "Spirit"]);
+  });
+
+  it("stores canonical names rather than positions", () => {
+    saveCrafted({ crafted: new Set(["Enigma"]), unknown: [] });
+
+    expect(stored()).toBe('["Enigma"]');
+  });
+
+  it("reads nothing as no progress", () => {
+    expect(loadCrafted(KNOWN)).toEqual({ crafted: new Set(), unknown: [] });
+  });
+
+  it("uses a key that is namespaced to the project and carries a version", () => {
+    // The origin is shared with every other GitHub Pages project under the
+    // account, so a bare `crafted` would collide; the version segment is what
+    // lets a v2 write elsewhere instead of destroying this one in place.
+    expect(CRAFTED_STORAGE_KEY).toContain("diablo2-runeword-tracker");
+    expect(CRAFTED_STORAGE_KEY).toMatch(/:v\d+$/);
+  });
+
+  it("writes the same bytes whatever order the marks were made in", () => {
+    saveCrafted({ crafted: new Set(["Spirit", "Enigma"]), unknown: [] });
+    const first = stored();
+
+    window.localStorage.clear();
+    saveCrafted({ crafted: new Set(["Enigma", "Spirit"]), unknown: [] });
+
+    expect(stored()).toBe(first);
+  });
+});
+
+describe("data it should not trust", () => {
+  it("survives a value that is not JSON", () => {
+    plant("not json");
+
+    expect(loadCrafted(KNOWN).crafted.size).toBe(0);
+  });
+
+  it("survives valid JSON of the wrong shape", () => {
+    for (const value of ['{"a":1}', "[1,2,3]", "null", '"Enigma"', "[[]]"]) {
+      plant(value);
+
+      expect(loadCrafted(KNOWN).crafted.size).toBe(0);
+    }
+  });
+
+  it("marks a duplicated name once", () => {
+    plant('["Enigma","Enigma","Enigma"]');
+
+    expect([...loadCrafted(KNOWN).crafted]).toEqual(["Enigma"]);
+  });
+
+  it("never reports more progress than the dataset has runewords", () => {
+    plant(JSON.stringify(["Enigma", "Spirit", "Infinity", "Ondal's Wisdom"]));
+
+    expect(loadCrafted(KNOWN).crafted.size).toBeLessThanOrEqual(KNOWN.size);
+  });
+});
+
+describe("a name the dataset does not know", () => {
+  it("is kept out of the crafted set", () => {
+    plant('["Enigma","Ondal\'s Wisdom"]');
+
+    const { crafted, unknown } = loadCrafted(KNOWN);
+
+    expect([...crafted]).toEqual(["Enigma"]);
+    expect(unknown).toEqual(["Ondal's Wisdom"]);
+  });
+
+  it("is written back out on the next save", () => {
+    plant('["Ondal\'s Wisdom"]');
+
+    const loaded = loadCrafted(KNOWN);
+    saveCrafted({ crafted: new Set(["Enigma"]), unknown: loaded.unknown });
+
+    expect(JSON.parse(stored() ?? "[]")).toEqual(["Enigma", "Ondal's Wisdom"]);
+  });
+
+  it("recovers its mark once the dataset has the name again", () => {
+    plant('["Ondal\'s Wisdom"]');
+
+    const restored = new Set([...KNOWN, "Ondal's Wisdom"]);
+
+    expect(loadCrafted(restored).crafted.has("Ondal's Wisdom")).toBe(true);
+    expect(loadCrafted(restored).unknown).toEqual([]);
+  });
+});
+
+describe("a store that will not cooperate", () => {
+  it("loads as empty when reading throws", () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new DOMException("denied", "SecurityError");
+    });
+
+    expect(() => loadCrafted(KNOWN)).not.toThrow();
+    expect(loadCrafted(KNOWN).crafted.size).toBe(0);
+  });
+
+  it("does not throw when writing throws", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("quota", "QuotaExceededError");
+    });
+
+    expect(() =>
+      saveCrafted({ crafted: new Set(["Enigma"]), unknown: [] }),
+    ).not.toThrow();
+  });
+});
+
+describe("reading never writes", () => {
+  it("leaves an unparseable value in place", () => {
+    plant("not json");
+
+    loadCrafted(KNOWN);
+
+    // Still there to be inspected or repaired by hand. This is what the
+    // save-on-toggle rule buys: an effect that saved on mount would have
+    // replaced it with `[]` before the player did anything at all.
+    expect(stored()).toBe("not json");
+  });
+
+  it("leaves an absent key absent", () => {
+    loadCrafted(KNOWN);
+
+    expect(stored()).toBeNull();
+  });
+});
+
+function plant(value: string) {
+  window.localStorage.setItem(CRAFTED_STORAGE_KEY, value);
+}
+
+function stored() {
+  return window.localStorage.getItem(CRAFTED_STORAGE_KEY);
+}

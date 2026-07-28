@@ -91,6 +91,23 @@
   --color-panel: #200000;
   --color-backdrop: rgb(0 0 0 / 0.75);
 
+  /* Crafted tracking's own surfaces: the tint a marked row takes, the unfilled
+     groove of the progress bar, and the undo notice's panel.
+
+     No new hue again. The tint is `--color-crafted` at low alpha, so a marked
+     row reads as the accent rather than as a fourth green; the groove is the
+     muted family the row hairline already comes from; the notice is the blood
+     family's dark end, as the detail panel is.
+
+     There is deliberately no token for the bar's *filled* portion. That is
+     `--color-crafted` above, declared by `d2-theme` for exactly this role and
+     without a use site until now — a second token for the same role is the
+     drift the palette rule exists to prevent. And still nothing for the
+     collapsible panels: `remaining-panels` adds its own. */
+  --color-crafted-row: rgb(68 170 68 / 0.12);
+  --color-progress-track: #24221c;
+  --color-toast: #200000;
+
   /* Text and decoration */
   --color-accent: #bd8547;
   --color-danger: #ae2a1a;
@@ -170,4 +187,35 @@
 @utility gold-divider {
   height: 16px;
   background: url("./assets/images/hr-gold.gif") repeat-x 0 100%;
+}
+
+/* The progress bar's skin. A native `<progress>` carries its role, its value
+   and its maximum without any of it restated in ARIA, which is worth three
+   engine-prefixed rules — the same trade `runeword-table` made in choosing
+   `<dialog>` over a hand-rolled overlay.
+
+   `appearance: none` is the price of admission: without it neither engine lets
+   the inner parts be styled at all. The groove is declared twice, on the
+   element and on the WebKit pseudo-element, because Firefox paints the element
+   itself and WebKit paints the bar inside it. An engine that honours none of
+   the three still renders a working native bar in its own colours, which is the
+   failure mode this shape has and a `div` with four `aria-*` attributes does
+   not. */
+@utility crafted-progress {
+  appearance: none;
+  height: 0.75rem;
+  border: 1px solid var(--color-row-line);
+  background-color: var(--color-progress-track);
+
+  &::-webkit-progress-bar {
+    background-color: var(--color-progress-track);
+  }
+
+  &::-webkit-progress-value {
+    background-color: var(--color-crafted);
+  }
+
+  &::-moz-progress-bar {
+    background-color: var(--color-crafted);
+  }
 }

@@ -16,10 +16,18 @@ import { en } from "@/i18n/en";
 // have no layout in jsdom and are checked in a browser instead — asserting them
 // here would be asserting the stand-in.
 
+/**
+ * The table with nothing crafted. Crafted state is `App`'s and reaches the
+ * table as a prop; none of the detail view's behaviour depends on it.
+ */
+function renderTable() {
+  return render(<RunewordTable crafted={new Set()} onToggle={vi.fn()} />);
+}
+
 describe("opening the detail view", () => {
   it("opens on the name and shows the full record", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     await user.click(screen.getByRole("button", { name: "Mosaic" }));
 
@@ -35,7 +43,7 @@ describe("opening the detail view", () => {
 
   it("names the dialog after the runeword", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     await user.click(screen.getByRole("button", { name: "Enigma" }));
 
@@ -44,7 +52,7 @@ describe("opening the detail view", () => {
 
   it("opens from the keyboard, because the name is a button", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     screen.getByRole("button", { name: "Steel" }).focus();
     await user.keyboard(" ");
@@ -55,7 +63,7 @@ describe("opening the detail view", () => {
 
   it("derives the socket count from the rune sequence", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     await user.click(screen.getByRole("button", { name: "Infinity" }));
 
@@ -74,7 +82,7 @@ describe("opening the detail view", () => {
 
   it("shows every property line, in the dataset's order", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     await user.click(screen.getByRole("button", { name: "Fortitude" }));
 
@@ -91,7 +99,7 @@ describe("opening the detail view", () => {
 
   it("restates patch, ladder status and the note in full words", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     await user.click(screen.getByRole("button", { name: "Mosaic" }));
 
@@ -110,7 +118,7 @@ describe("opening the detail view", () => {
 
   it("states no availability for a runeword carrying none", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     await user.click(screen.getByRole("button", { name: "Steel" }));
 
@@ -123,7 +131,7 @@ describe("opening the detail view", () => {
 
 describe("one dialog for the whole table", () => {
   it("holds one dialog element and no detail content while closed", () => {
-    const { container } = render(<RunewordTable />);
+    const { container } = renderTable();
 
     expect(container.querySelectorAll("dialog")).toHaveLength(1);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
@@ -135,7 +143,7 @@ describe("one dialog for the whole table", () => {
 
   it("replaces the first runeword when a second name is activated", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     await user.click(screen.getByRole("button", { name: "Enigma" }));
     expect(screen.getByRole("heading", { name: "Enigma" })).toBeVisible();
@@ -156,7 +164,7 @@ describe("one dialog for the whole table", () => {
 describe("dismissal and focus", () => {
   it("closes on Escape", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     await user.click(screen.getByRole("button", { name: "Enigma" }));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
@@ -168,7 +176,7 @@ describe("dismissal and focus", () => {
 
   it("closes on the close button", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     await user.click(screen.getByRole("button", { name: "Enigma" }));
     await user.click(screen.getByRole("button", { name: en.detail.close }));
@@ -178,7 +186,7 @@ describe("dismissal and focus", () => {
 
   it("returns focus to the name that opened it", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     const name = screen.getByRole("button", { name: "Enigma" });
 
@@ -192,7 +200,7 @@ describe("dismissal and focus", () => {
 
   it("returns focus after closing by button too", async () => {
     const user = userEvent.setup();
-    render(<RunewordTable />);
+    renderTable();
 
     const name = screen.getByRole("button", { name: "Ice" });
 

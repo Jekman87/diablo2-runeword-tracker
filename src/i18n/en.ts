@@ -22,6 +22,7 @@ export const en = {
     // a heading above one.
     caption:
       "Every runeword, with the runes it takes, the bases it can be socketed into and the character level it requires",
+    columnCrafted: "Crafted",
     columnName: "Runeword",
     columnRunes: "Runes",
     columnItemTypes: "Base Items",
@@ -42,6 +43,30 @@ export const en = {
     ladderMeaning: "Ladder only",
     noteMarker: "Note!",
     patchMeaning: (patch: string) => `Introduced in patch ${patch}`,
+  },
+
+  crafted: {
+    // Both directions, and both name the runeword. The control is a socket with
+    // no text of its own, so its accessible name is the only thing that says
+    // which row it belongs to — and a screen reader can reach it out of the
+    // context of that row. The name comes in as a parameter for the same reason
+    // `patchMeaning` takes one: it is a dataset identifier, and only the
+    // sentence around it is copy.
+    mark: (name: string) => `Mark ${name} as crafted`,
+    unmark: (name: string) => `Mark ${name} as not crafted`,
+  },
+
+  progress: {
+    label: "Runeword progress",
+    // Also the bar's `aria-valuetext`, so it is announced as "3 of 99 crafted"
+    // rather than as the percentage a bare `<progress>` reports.
+    count: (crafted: number, total: number) => `${crafted} of ${total} crafted`,
+  },
+
+  undo: {
+    marked: (name: string) => `Marked ${name} as crafted`,
+    unmarked: (name: string) => `Unmarked ${name}`,
+    action: "Undo",
   },
 
   detail: {

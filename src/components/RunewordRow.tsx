@@ -1,6 +1,9 @@
+import { useRef } from "react";
+
 import clsx from "clsx";
 
 import { AvailabilityBadges } from "@/components/AvailabilityBadges";
+import { CraftedToggle } from "@/components/CraftedToggle";
 import { RuneIcon } from "@/components/RuneIcon";
 import type { Runeword } from "@/data";
 import { useStrings } from "@/i18n";
@@ -8,26 +11,72 @@ import { itemTypesLabel } from "@/runewords/format";
 
 export interface RunewordRowProps {
   runeword: Runeword;
+  crafted: boolean;
   /** Opens the detail view. The table owns the one dialog every row shares. */
   onSelect: (runeword: Runeword) => void;
+  /**
+   * Marks or unmarks the runeword. The control is handed over so that an undo
+   * taken later can return focus to it.
+   */
+  onToggle: (name: string, control: HTMLElement | null) => void;
 }
 
 /**
- * One runeword's row: its name, its runes, the bases it can be socketed into
- * and the level it requires. Read-only — crafted state is `crafted-tracking`'s
- * column, not this one's.
+ * One runeword's row: whether it is crafted, its name, its runes, the bases it
+ * can be socketed into and the level it requires.
  *
  * The name is a real `<button>` inside the cell rather than a click handler on
  * the cell, which is what makes it focusable and operable by Space and Enter.
- * It is also the seam `crafted-tracking` inherits: when the whole row becomes a
- * toggle, the name has to stay a nested control whose activation does not also
- * toggle the row.
+ * It is also the seam this change inherited: the row-level handler below must
+ * not fire for a click that landed on the name, or opening the detail view
+ * would silently mark the runeword crafted.
+ *
+ * The row is a pointer target and **not** a second keyboard stop — no
+ * `role="button"`, no `tabindex`. Ninety-nine focusable rows would double every
+ * tab stop on the page and cost the table the row and column semantics it is
+ * built on. The keyboard path is the socket, which is already in the tab order
+ * and is already the right control.
  */
-export function RunewordRow({ runeword, onSelect }: RunewordRowProps) {
+export function RunewordRow({
+  runeword,
+  crafted,
+  onSelect,
+  onToggle,
+}: RunewordRowProps) {
   const strings = useStrings();
+  const control = useRef<HTMLButtonElement>(null);
+
+  // Both paths hand over the same node, so a row click and a press on the
+  // socket record the same place for focus to come back to.
+  const toggle = () => onToggle(runeword.name, control.current);
 
   return (
-    <tr className="border-t border-row-line hover:bg-row-hover">
+    <tr
+      onClick={(event) => {
+        if (!handledElsewhere(event)) toggle();
+      }}
+      className={clsx(
+        "border-t border-l-4 border-t-row-line",
+        crafted
+          ? // No hover change on a crafted row: the tint is already a
+            // background, and swapping it out under the pointer would read as
+            // the state flickering. The pointer cursor, the accent border and
+            // the filled socket are the affordance.
+            "border-l-crafted bg-crafted-row"
+          : // Transparent rather than absent, so the row does not shift
+            // sideways by four pixels the moment it is marked.
+            "border-l-transparent hover:bg-row-hover",
+      )}
+    >
+      <td className="p-2 align-top">
+        <CraftedToggle
+          ref={control}
+          name={runeword.name}
+          crafted={crafted}
+          onToggle={toggle}
+        />
+      </td>
+
       <td className="p-2 align-top">
         <span className="flex flex-wrap items-center gap-1">
           <button
@@ -98,3 +147,26 @@ function RuneSequence({ runeword, className }: RuneSequenceProps) {
     </span>
   );
 }
+
+/**
+ * Whether this click was already somebody else's, and so is not a toggle.
+ *
+ * Two exclusions, and the first is the one that matters. Without it, clicking a
+ * runeword's name would open the detail view **and** mark it crafted — the
+ * collision `runeword-table` recorded when it made the name a button. It is
+ * written as a selector matched with `closest()` rather than as a comparison
+ * against the two controls that exist today, so a control added inside a row
+ * later is excluded without this function being revisited.
+ *
+ * The second: a drag that ends inside the row has selected text, and finishing
+ * a selection is not a request to mark anything.
+ */
+function handledElsewhere(event: React.MouseEvent<HTMLTableRowElement>) {
+  if (event.target instanceof Element && event.target.closest(INTERACTIVE)) {
+    return true;
+  }
+
+  return window.getSelection()?.isCollapsed === false;
+}
+
+const INTERACTIVE = "button, a, input, select, textarea, [role='button']";

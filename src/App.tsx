@@ -1,19 +1,30 @@
+import { CraftedProgress } from "@/components/CraftedProgress";
 import { RunewordTable } from "@/components/RunewordTable";
+import { UndoToast } from "@/components/UndoToast";
+import { useCraftedRunewords } from "@/crafted/useCraftedRunewords";
 import { useStrings } from "@/i18n";
 
-// The page: a title, the divider, and the table of all 99 runewords.
+// The page: a title, the divider, overall progress, the table of all 99
+// runewords, and the undo notice.
 //
-// The 33-rune grid that stood here was `d2-theme`'s acceptance surface, and the
-// table replaces it comprehensively — 343 rune icons in real rows is a stricter
-// check on the sprite than eleven columns of it ever was.
+// Crafted state is owned here rather than in the table, because the progress
+// bar and the notice are the table's siblings and read the same value. That is
+// two levels of prop drilling for one `Set`, which is not a context and is
+// certainly not a store library.
 //
-// No header. `IDEAS.md` puts a patch line and Help, Feedback and Update Notes
-// links in the Phase 1 layout, but no change in its list builds them, and
-// inventing a header inside the table change is how a change stops being one
-// feature. The gap is recorded in `IDEAS.md` for the next proposal to find.
+// The progress bar sits directly under the divider. `IDEAS.md` puts it third in
+// the Phase 1 layout, below a patch line and the Help, Feedback and Update
+// Notes links — and no change in its list builds those. `site-header` slots
+// them in above this without moving it.
+//
+// Still no header. Inventing one inside the tracking change is how a change
+// stops being one feature; the gap is recorded in `IDEAS.md` for the proposal
+// that picks it up.
 
 export function App() {
   const strings = useStrings();
+  const { crafted, pendingUndo, toggle, undo, dismissUndo } =
+    useCraftedRunewords();
 
   return (
     <main className="mx-auto grid min-h-dvh max-w-4xl content-start gap-6 p-6">
@@ -23,7 +34,11 @@ export function App() {
 
       <div className="gold-divider" />
 
-      <RunewordTable />
+      <CraftedProgress crafted={crafted.size} />
+
+      <RunewordTable crafted={crafted} onToggle={toggle} />
+
+      <UndoToast pending={pendingUndo} onUndo={undo} onDismiss={dismissUndo} />
     </main>
   );
 }

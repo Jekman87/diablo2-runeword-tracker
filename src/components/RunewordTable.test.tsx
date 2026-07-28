@@ -1,4 +1,5 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { RunewordTable } from "@/components/RunewordTable";
 import { runewords } from "@/data";
@@ -6,9 +7,26 @@ import { en } from "@/i18n/en";
 import { itemTypesLabel } from "@/runewords/format";
 import { orderedRunewords } from "@/runewords/order";
 
+/**
+ * The table with nothing crafted and a toggle that goes nowhere.
+ *
+ * Crafted state is `App`'s, so the table takes it as a prop. Most of what is
+ * asserted below is presentation that does not depend on it; the tests that do
+ * pass their own set.
+ */
+function renderTable(
+  crafted: ReadonlySet<string> = new Set(),
+  onToggle = vi.fn(),
+) {
+  return {
+    onToggle,
+    ...render(<RunewordTable crafted={crafted} onToggle={onToggle} />),
+  };
+}
+
 describe("the table's structure", () => {
   it("exposes a table with 99 rows beneath its header row", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     const rows = screen.getAllByRole("row");
 
@@ -18,11 +36,12 @@ describe("the table's structure", () => {
   });
 
   it("associates every column header with its column", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     const headers = screen.getAllByRole("columnheader");
 
     expect(headers.map((header) => header.textContent)).toEqual([
+      en.table.columnCrafted,
       en.table.columnName,
       en.table.columnRunes,
       en.table.columnItemTypes,
@@ -32,31 +51,49 @@ describe("the table's structure", () => {
   });
 
   it("describes itself with a caption", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     expect(screen.getByText(en.table.caption).tagName).toBe("CAPTION");
   });
 
   it("renders every runeword exactly once", () => {
-    render(<RunewordTable />);
+    renderTable();
 
-    const names = runewords.map((runeword) => runeword.name);
-    const duplicated = names.filter(
-      (name) => screen.getAllByRole("button", { name }).length !== 1,
+    // Compared as sorted lists rather than by querying each of the 99 names in
+    // turn. Every row now holds a socket as well as a name, so a name-filtered
+    // role query computes an accessible name for ~198 buttons — ninety-nine of
+    // those is slow enough to time the test out.
+    expect([...renderedNames()].sort()).toEqual(
+      runewords.map((runeword) => runeword.name).sort(),
     );
-
-    expect(duplicated).toEqual([]);
   });
 
-  it("has no column for crafted state", () => {
-    render(<RunewordTable />);
+  it("leads with a crafted-state column of its own", () => {
+    renderTable();
 
-    expect(screen.getAllByRole("columnheader")).toHaveLength(4);
-    expect(screen.queryAllByRole("checkbox")).toEqual([]);
+    expect(screen.getAllByRole("columnheader")).toHaveLength(5);
+    expect(screen.getAllByRole("columnheader")[0]).toHaveTextContent(
+      en.table.columnCrafted,
+    );
+  });
+
+  it("keeps the four dataset columns free of controls", () => {
+    renderTable();
+
+    const row = rowFor("Leaf");
+    const [, ...dataCells] = [...row.querySelectorAll("td")];
+
+    // The name button opens the detail view and changes no data; nothing else
+    // in the four columns is interactive at all.
+    expect(
+      dataCells.flatMap((cell) => [
+        ...cell.querySelectorAll("input, select, textarea, [aria-pressed]"),
+      ]),
+    ).toEqual([]);
   });
 
   it("presents the last row of the order without paging to it", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     const last = orderedRunewords[orderedRunewords.length - 1];
 
@@ -66,7 +103,7 @@ describe("the table's structure", () => {
 
 describe("the order rows appear in", () => {
   it("reads down the table in required-level order", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     expect(renderedNames()).toEqual(
       orderedRunewords.map((runeword) => runeword.name),
@@ -74,7 +111,7 @@ describe("the order rows appear in", () => {
   });
 
   it("does not present the dataset's storage order", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     expect(renderedNames()).not.toEqual(
       runewords.map((runeword) => runeword.name),
@@ -82,11 +119,11 @@ describe("the order rows appear in", () => {
   });
 
   it("renders the same sequence on a second render", () => {
-    const first = render(<RunewordTable />);
+    const first = renderTable();
     const before = renderedNames();
     first.unmount();
 
-    render(<RunewordTable />);
+    renderTable();
 
     expect(renderedNames()).toEqual(before);
   });
@@ -94,7 +131,7 @@ describe("the order rows appear in", () => {
 
 describe("what a row carries", () => {
   it("carries the four values", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     const row = rowFor("Leaf");
 
@@ -107,7 +144,7 @@ describe("what a row carries", () => {
   });
 
   it("keeps rune order and repeats — `Infinity` is Ber Mal Ber Ist", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     // Twice over, because the runes are rendered for both breakpoints. Reading
     // one cell rather than the row is what isolates a single sequence.
@@ -120,7 +157,7 @@ describe("what a row carries", () => {
   });
 
   it("labels every rune icon with its own name", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     const rows = rowsByName();
     const wrong = orderedRunewords.filter((runeword) => {
@@ -133,7 +170,7 @@ describe("what a row carries", () => {
   });
 
   it("lists multiple categories and puts a restriction in parentheses", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     const rows = rowsByName();
     const wrong = orderedRunewords.filter(
@@ -147,7 +184,7 @@ describe("what a row carries", () => {
   });
 
   it("renders no parentheses at all where there is no restriction", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     const rows = rowsByName();
     const unrestricted = orderedRunewords.filter(
@@ -166,7 +203,7 @@ describe("what a row carries", () => {
   });
 
   it("leaves the dataset's restriction bare after rendering", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     const leaf = runewords.find((runeword) => runeword.name === "Leaf");
 
@@ -174,7 +211,7 @@ describe("what a row carries", () => {
   });
 
   it("does not link a category to a reference URL", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     expect(screen.queryAllByRole("link")).toEqual([]);
   });
@@ -182,7 +219,7 @@ describe("what a row carries", () => {
 
 describe("availability across the table", () => {
   it("marks exactly the 9 ladder-only rows", () => {
-    const { container } = render(<RunewordTable />);
+    const { container } = renderTable();
 
     expect(
       container.querySelectorAll(
@@ -192,7 +229,7 @@ describe("availability across the table", () => {
   });
 
   it("shows all three markers on `Mosaic`", () => {
-    render(<RunewordTable />);
+    renderTable();
 
     const row = within(rowFor("Mosaic"));
 
@@ -206,12 +243,110 @@ describe("availability across the table", () => {
   });
 });
 
+describe("marking a runeword crafted", () => {
+  it("gives every row a socket", () => {
+    renderTable();
+
+    expect(screen.getAllByRole("button", { pressed: false })).toHaveLength(99);
+  });
+
+  it("shows the socket pressed for a runeword in the crafted set", () => {
+    renderTable(new Set(["Leaf"]));
+
+    expect(socketIn(rowFor("Leaf"))).toHaveAttribute("aria-pressed", "true");
+    expect(socketIn(rowFor("Steel"))).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("toggles when the socket is clicked, exactly once", async () => {
+    const { onToggle } = renderTable();
+
+    await userEvent.click(socketIn(rowFor("Leaf")));
+
+    // Once, not twice. The row's own handler sees the click too and has to
+    // recognise that a control already dealt with it.
+    expect(onToggle).toHaveBeenCalledTimes(1);
+    expect(onToggle.mock.calls[0][0]).toBe("Leaf");
+  });
+
+  it("toggles when the row itself is clicked", async () => {
+    const { onToggle } = renderTable();
+
+    await userEvent.click(within(rowFor("Leaf")).getByText("19"));
+
+    expect(onToggle).toHaveBeenCalledTimes(1);
+    expect(onToggle.mock.calls[0][0]).toBe("Leaf");
+  });
+
+  it("does not toggle when the name is clicked", async () => {
+    const { onToggle } = renderTable();
+
+    await userEvent.click(nameButtonIn(rowFor("Leaf")));
+
+    // The detail view opened and nothing was marked. This is the collision
+    // `runeword-table` recorded when it made the name a button.
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(onToggle).not.toHaveBeenCalled();
+  });
+
+  it("hands over the socket so an undo can restore focus to it", async () => {
+    const { onToggle } = renderTable();
+    const row = rowFor("Leaf");
+
+    await userEvent.click(within(row).getByText("19"));
+
+    // The row was clicked, not the socket, and the socket is still what comes
+    // back — both paths record the same place for focus to return to.
+    expect(onToggle.mock.calls[0][1]).toBe(socketIn(row));
+  });
+
+  it("does not toggle when the click ends a text selection", () => {
+    const { onToggle } = renderTable();
+    const cell = within(rowFor("Leaf")).getByText("Staves (Not Orbs/Wands)");
+
+    // `removeAllRanges` first: `addRange` is specified to do nothing when the
+    // selection already holds one, and an earlier `userEvent.click` in this
+    // file leaves a collapsed range behind that would silently swallow this.
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(cell);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+
+    // `fireEvent` rather than `userEvent` deliberately. A drag-to-select ends
+    // with `click` dispatched while the selection is still standing, which is
+    // exactly this; `userEvent.click` models a *plain* click and collapses the
+    // selection first, so it can never reach the branch under test.
+    fireEvent.click(cell);
+
+    // Dragging across a row to copy it is not a request to mark anything.
+    expect(onToggle).not.toHaveBeenCalled();
+
+    selection?.removeAllRanges();
+  });
+
+  it("puts no row in the tab order", () => {
+    renderTable();
+
+    expect(
+      screen.getAllByRole("row").filter((row) => row.hasAttribute("tabindex")),
+    ).toEqual([]);
+    expect(screen.queryAllByRole("button", { name: /^$/ })).toEqual([]);
+  });
+
+  it("keeps the rows as rows rather than as buttons", () => {
+    renderTable(new Set(["Leaf"]));
+
+    expect(screen.getAllByRole("row")).toHaveLength(100);
+    expect(rowFor("Leaf").getAttribute("role")).toBeNull();
+  });
+});
+
 /** The rendered rows' names, in the order they appear. */
 function renderedNames() {
   return screen
     .getAllByRole("row")
     .slice(1)
-    .map((row) => within(row).getAllByRole("button")[0].textContent);
+    .map((row) => nameButtonIn(row).textContent);
 }
 
 function rowFor(name: string) {
@@ -220,6 +355,22 @@ function rowFor(name: string) {
   if (!row) throw new Error(`No row for ${name}`);
 
   return row;
+}
+
+/**
+ * The button that opens the detail view, which is the second in the row — the
+ * crafted socket is now the first, and it draws no text of its own.
+ */
+function nameButtonIn(row: HTMLElement) {
+  return within(row).getAllByRole("button")[1];
+}
+
+function socketIn(row: Element) {
+  const socket = row.querySelector("[aria-pressed]");
+
+  if (!(socket instanceof HTMLElement)) throw new Error("No socket in the row");
+
+  return socket;
 }
 
 /**
@@ -234,7 +385,7 @@ function rowsByName() {
       .getAllByRole("row")
       .slice(1)
       .map((row): [string | null, HTMLElement] => [
-        within(row).getAllByRole("button")[0].textContent,
+        nameButtonIn(row).textContent,
         row,
       ]),
   );

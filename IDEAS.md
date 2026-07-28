@@ -61,8 +61,8 @@ site still deployable.
 | 3   | `runeword-dataset`    | done   |
 | 4   | `d2-theme`            | done   |
 | 5   | `runeword-table`      | done   |
-| 6   | `crafted-tracking`    | next   |
-| 7   | `search-sort-filter`  |        |
+| 6   | `crafted-tracking`    | done   |
+| 7   | `search-sort-filter`  | next   |
 | 8   | `remaining-panels`    |        |
 | 9   | `property-groups`     |        |
 | 10  | `site-header`         |        |
@@ -144,6 +144,34 @@ nobody owns it.
 
 - **`crafted-tracking`** — the socket toggle, `localStorage` persistence, the
   progress bar out of 99, the undo toast.
+
+  Landed with four things worth carrying forward. **Every read and write of
+  stored progress goes through `src/crafted/storage.ts`**, which is the only
+  module that names the key — `csv-import-export` must write through it rather
+  than reach for the key itself, or the format has two definitions. The key is
+  namespaced and versioned (`diablo2-runeword-tracker:crafted:v1`) because
+  GitHub Pages serves every project under the account from **one origin with one
+  `localStorage`**, so a bare key would collide with a sibling project.
+
+  **A stored name the dataset does not know is kept, not dropped.** It is
+  excluded from the crafted set and from the count, and written back out on
+  every save, so a runeword renamed between patches does not silently lose the
+  player their mark. Those preserved names are invisible in the interface and
+  have no way to be cleared from the page — which makes them exactly what
+  `csv-import-export`'s unmatched-name report is for, since that change already
+  owes the player a way to see them.
+
+  **Progress is written from the toggle and never from an effect.** An effect
+  fires on mount, so a value that failed to parse would be overwritten with an
+  empty set before the player did anything. As it stands, corrupt storage is
+  still there to be repaired by hand.
+
+  **Two tabs do not observe each other.** No `storage` event listener is
+  installed, deliberately: `localStorage` is same-tab only, so the same tracker
+  open twice will have the last write win. It is about five lines to fix and no
+  requirement asks for it. Recorded so the omission reads as a decision rather
+  than an oversight.
+
 - **`search-sort-filter`** — search over name and item type, header-click
   sorting, the slot filter, view settings persisted. Needs the item-type to
   slot mapping, which `runeword-dataset` deliberately left out.

@@ -6,11 +6,17 @@ import type { Runeword } from "@/data";
 import { useStrings } from "@/i18n";
 import { orderedRunewords } from "@/runewords/order";
 
+export interface RunewordTableProps {
+  /** The marked runewords, by canonical name. */
+  crafted: ReadonlySet<string>;
+  onToggle: (name: string, control: HTMLElement | null) => void;
+}
+
 /**
  * All 99 runewords, in required-level order with the name breaking a tie.
  *
  * A real `<table>` rather than a grid of `<div>`s with ARIA roles. Ninety-nine
- * rows of four columns is tabular data, and this is where the semantics pay:
+ * rows of five columns is tabular data, and this is where the semantics pay:
  * row-and-column navigation, header association, and `<th scope="col">`
  * elements that `search-sort-filter` can turn into sort controls without
  * inventing `aria-sort` on something that is not a column header.
@@ -20,8 +26,13 @@ import { orderedRunewords } from "@/runewords/order";
  *
  * No sticky header either. It earns its keep once the header row is
  * interactive, so it belongs to the change that makes it interactive.
+ *
+ * The crafted set arrives as a prop and is not read from a hook here. It is
+ * owned by `App`, because the progress bar and the undo notice are this table's
+ * siblings and need the same value — two levels of prop drilling for one piece
+ * of state, which is not a context and is certainly not a store library.
  */
-export function RunewordTable() {
+export function RunewordTable({ crafted, onToggle }: RunewordTableProps) {
   const strings = useStrings();
   const [selected, setSelected] = useState<Runeword | null>(null);
 
@@ -32,6 +43,13 @@ export function RunewordTable() {
 
         <thead className="bg-blood text-gold-light">
           <tr>
+            {/* A column proper, with a header of its own, rather than a control
+                floated into the name cell. `IDEAS.md` settles that crafted
+                state is sortable, and `search-sort-filter` needs somewhere to
+                hang `aria-sort` that is really a column header. */}
+            <th scope="col" className="p-2 font-normal">
+              {strings.table.columnCrafted}
+            </th>
             <th scope="col" className="p-2 font-normal">
               {strings.table.columnName}
             </th>
@@ -53,7 +71,9 @@ export function RunewordTable() {
             <RunewordRow
               key={runeword.name}
               runeword={runeword}
+              crafted={crafted.has(runeword.name)}
               onSelect={setSelected}
+              onToggle={onToggle}
             />
           ))}
         </tbody>
