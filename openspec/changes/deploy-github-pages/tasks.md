@@ -54,27 +54,47 @@
 
 ## 5. First deployment
 
-- [ ] 5.1 Commit and push to `main`, then watch the first run end to end. The
-      `github-pages` environment is created during the first deploy job
-- [ ] 5.2 Confirm the gate job reports all five checks plus the base-path
-      assertion as passing
-- [ ] 5.3 Load `https://jekman87.github.io/diablo2-runeword-tracker/` and
-      confirm the shell renders with styles applied and no console errors
-- [ ] 5.4 Check the network panel: the hashed JS and CSS must return HTTP 200
-      from under the sub-path, not 404 from the domain root
-- [ ] 5.5 Confirm via the Pages API or the repository UI that the deployment is
-      recorded against the pushed commit
-- [ ] 5.6 Confirm no build output was committed to any branch — `dist/` stays
-      ignored and no `gh-pages` branch exists
+- [x] 5.1 Commit and push to `main`, then watch the first run end to end. The
+      `github-pages` environment is created during the first deploy job —
+      commit `ef9e238`, run `30348051090`, both jobs green
+- [x] 5.2 Confirm the gate job reports all five checks plus the base-path
+      assertion as passing — seven distinct green steps, and the assertion
+      logged `ok` for both the JS and the CSS reference
+- [x] 5.3 Load `https://jekman87.github.io/diablo2-runeword-tracker/` and
+      confirm the shell renders with styles applied and no console errors —
+      served HTTP 200 with the heading string present in the deployed bundle
+      and every utility class `App.tsx` uses present in the deployed CSS. The
+      console-error half needs a real browser and is left to a manual look;
+      no browser tooling is installed and this change adds no dependencies
+- [x] 5.4 Check the network panel: the hashed JS and CSS must return HTTP 200
+      from under the sub-path, not 404 from the domain root — both 200 under
+      the sub-path with correct content types; the same asset path at the
+      domain root returns 404, confirming the prefix is what makes it resolve
+- [x] 5.5 Confirm via the Pages API or the repository UI that the deployment is
+      recorded against the pushed commit — deployment `5637604787`,
+      environment `github-pages`, sha `ef9e238`
+- [x] 5.6 Confirm no build output was committed to any branch — `dist/` stays
+      ignored and no `gh-pages` branch exists — no tracked files under
+      `dist/` (ignored by `.gitignore:6`) and `main` is the only branch
 
 ## 6. Negative verification
 
-- [ ] 6.1 Verify a failing gate blocks deployment: push a commit with a
+- [x] 6.1 Verify a failing gate blocks deployment: push a commit with a
       deliberate lint error on a scratch branch, confirm the gate fails and no
-      deployment runs, then remove the branch
-- [ ] 6.2 Confirm the previously published site is still served unchanged after
-      that failed run
-- [ ] 6.3 Verify a pull request runs the gate and does not deploy
+      deployment runs, then remove the branch — **a bare branch push triggers
+      nothing**, since the workflow listens only on pushes to `main` and pull
+      requests targeting it, so the branch was raised as PR #2 to make the gate
+      run. Type-check passed and **Lint** failed by name
+      (`@typescript-eslint/no-explicit-any`), the four later steps never ran,
+      and the deploy job was skipped. PR closed, branch deleted
+- [x] 6.2 Confirm the previously published site is still served unchanged after
+      that failed run — still HTTP 200 serving the same hashed assets, and the
+      `github-pages` environment still holds exactly one deployment (`ef9e238`)
+- [x] 6.3 Verify a pull request runs the gate and does not deploy — run
+      `30348463690` fired on `event: pull_request` and its deploy job was
+      skipped. Note the deploy job is skipped for two independent reasons on a
+      red PR (`needs: build` failed _and_ the `if:` guard excludes
+      `pull_request`); the guard alone is what excludes a green PR
 
 ## 7. Documentation
 
