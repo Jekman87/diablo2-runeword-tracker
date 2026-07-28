@@ -1,0 +1,5 @@
+# pnpm blocks dependency build scripts by default. simple-git-hooks registers
+# the pre-commit hook from its postinstall, so it has to be approved here —
+# without this the hook is silently never installed.
+onlyBuiltDependencies:
+  - simple-git-hooks

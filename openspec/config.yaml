@@ -10,7 +10,7 @@ context: |
   item, so the tracker mirrors that list.
 
   Tech stack:
-    - React 18 + Vite (TypeScript)
+    - React 19 + Vite (TypeScript)
     - No backend, no database. Runeword data ships as a static JSON file.
     - Progress is persisted in browser localStorage.
     - Deployed as a static site (GitHub Pages / Netlify).
@@ -29,7 +29,7 @@ context: |
       allowed base item types, required character level, granted bonuses,
       and the patch/game mode in which it is available.
     - Rune order matters. "Ith Ral Ort Tal" is not interchangeable.
-    - Scope: all runewords tracked by the D2R Chronicle log (~89).
+    - Scope: all runewords tracked by the D2R Chronicle log (99).
 
   Conventions:
     - Conventional commits, one line: type(scope): subject

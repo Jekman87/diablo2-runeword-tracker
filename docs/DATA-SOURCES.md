@@ -22,14 +22,14 @@ to be there knowingly.
 
 Source: <https://github.com/fabd/diablo2-runewizard>, branch `main`.
 
-| File | Size | What it holds |
-| --- | --- | --- |
-| `src/data/runewords.ts` | 14.0 KB | name, runes, level, item types, restrictions |
-| `src/data/runewords-descriptions.ts` | 31.4 KB | the granted properties for all 99 runewords |
-| `src/data/item-types.ts` | 1.2 KB | base item categories |
-| `src/data/runes.ts` | 1.1 KB | the 33 runes and their tier |
-| `src/assets/images/runes-sprite.png` | 98.4 KB | all 33 rune icons in one sprite |
-| `src/assets/css/runes.css` | 2.6 KB | sprite offset rules |
+| File                                 | Size    | What it holds                                |
+| ------------------------------------ | ------- | -------------------------------------------- |
+| `src/data/runewords.ts`              | 14.0 KB | name, runes, level, item types, restrictions |
+| `src/data/runewords-descriptions.ts` | 31.4 KB | the granted properties for all 99 runewords  |
+| `src/data/item-types.ts`             | 1.2 KB  | base item categories                         |
+| `src/data/runes.ts`                  | 1.1 KB  | the 33 runes and their tier                  |
+| `src/assets/images/runes-sprite.png` | 98.4 KB | all 33 rune icons in one sprite              |
+| `src/assets/css/runes.css`           | 2.6 KB  | sprite offset rules                          |
 
 Also worth reading rather than copying, for interaction ideas:
 `src/components/RunewordsTable.vue`, `src/components/RunewordPopup.vue`,
@@ -120,7 +120,7 @@ VPN, proxy, or antivirus with TLS inspection. `curl` failed because it could
 not reach the revocation list for that substituted certificate. `git` failed
 because its bundled OpenSSL CA list does not contain the interceptor's root,
 while Chrome works fine because Chrome trusts the Windows certificate store,
-where the corporate root *is* installed.
+where the corporate root _is_ installed.
 
 This will not stay confined to `git clone`. `npm install` will fail the same
 way with `UNABLE_TO_GET_ISSUER_CERT_LOCALLY`, and so will every other tool
@@ -147,7 +147,7 @@ git config --global http.schannelCheckRevoke false
 ```
 
 **3. For npm and Node**, export the corporate root certificate from
-*certmgr.msc → Trusted Root Certification Authorities* as Base-64 `.cer`, then:
+_certmgr.msc → Trusted Root Certification Authorities_ as Base-64 `.cer`, then:
 
 ```bash
 npm config set cafile "C:/certs/corporate-root.pem"
@@ -232,27 +232,27 @@ on ladder still counts. The tracker therefore mirrors all 99.
 
 **Ladder-only runewords: 9 of 99.** From the reference badges:
 
-| Runeword | Patch |
-| --- | --- |
-| Bulwark, Cure, Ground, Hearth, Temper | 2.6 |
-| Mosaic | 2.6 |
-| Metamorphosis | 2.6 |
-| Mania, Hysteria | 3.0 |
+| Runeword                              | Patch |
+| ------------------------------------- | ----- |
+| Bulwark, Cure, Ground, Hearth, Temper | 2.6   |
+| Mosaic                                | 2.6   |
+| Metamorphosis                         | 2.6   |
+| Mania, Hysteria                       | 3.0   |
 
 **Availability is season-dependent and must live in data.** The reference
 renders three separate badges per row, each with a tooltip:
 
-| Badge | Tooltip | Class |
-| --- | --- | --- |
-| `L` | `Ladder Only` | `rw-Md-ladder` |
-| `2.6` | `Patch version` | `rw-Table-tdTitlePatch patch-2-6` |
-| `Note!` | free-form caveat | `rw-Md-note` |
+| Badge   | Tooltip          | Class                             |
+| ------- | ---------------- | --------------------------------- |
+| `L`     | `Ladder Only`    | `rw-Md-ladder`                    |
+| `2.6`   | `Patch version`  | `rw-Table-tdTitlePatch patch-2-6` |
+| `Note!` | free-form caveat | `rw-Md-note`                      |
 
 Mosaic carries all three, and its note reads:
 
 > Disabled in Season 13! Can be crafted offline non-ladder.
 
-So a runeword flagged ladder-only is currently impossible to craft *on*
+So a runeword flagged ladder-only is currently impossible to craft _on_
 ladder and possible only outside it. Availability flips between seasons, which
 means any availability rule expressed as code will be wrong within a season or
 two. Model it as `ladderOnly`, `patch` and a free-text `note`, and edit the
@@ -266,12 +266,12 @@ derived from ladder status would be built on shifting ground.
 All seven files match the sizes reported by the GitHub API byte for byte, and
 the contents cross-check against what the live site renders:
 
-| Check | Result |
-| --- | --- |
-| Entries in `runewords.ts` | 99 |
-| Entries in `runewords-descriptions.ts` | 99 — matches |
-| `ladder:` occurrences | 9 — matches the nine badges seen in the UI |
-| `note:` occurrences | 1 — Mosaic, as expected |
+| Check                                  | Result                                     |
+| -------------------------------------- | ------------------------------------------ |
+| Entries in `runewords.ts`              | 99                                         |
+| Entries in `runewords-descriptions.ts` | 99 — matches                               |
+| `ladder:` occurrences                  | 9 — matches the nine badges seen in the UI |
+| `note:` occurrences                    | 1 — Mosaic, as expected                    |
 
 ### Confirmed record schema
 

@@ -1,0 +1,65 @@
+{
+  "name": "diablo2-runeword-tracker",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "pnpm@10.20.0",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --build --force",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepare": "simple-git-hooks",
+    "build": "pnpm typecheck && vite build",
+    "preview": "vite preview"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwind-merge": "^3.6.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "eslint": "^10.8.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.8.0",
+    "jsdom": "^30.0.0",
+    "lint-staged": "^17.2.0",
+    "prettier": "^3.9.6",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "simple-git-hooks": "^2.13.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.65.0",
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
+  }
+}

@@ -64,13 +64,13 @@ install `tailwindcss` + `@tailwindcss/vite`, add the plugin, put
 `@import "tailwindcss";` at the top of `src/index.css`. No `tailwind.config.js`,
 no `postcss.config.js`, no `content` globs to keep in sync.
 
-*Alternative considered:* Tailwind v3 with the classic PostCSS setup, which
+_Alternative considered:_ Tailwind v3 with the classic PostCSS setup, which
 has more Stack Overflow answers behind it. Rejected — starting a greenfield
 project on the previous major buys nothing and costs a migration later. The
 theme change that follows will define colours with `@theme` in CSS, which is
 also where a Diablo II palette reads better than in a JS config object.
 
-*Consequence for Prettier:* `prettier-plugin-tailwindcss` locates the theme
+_Consequence for Prettier:_ `prettier-plugin-tailwindcss` locates the theme
 through the `tailwindStylesheet` option under v4, replacing v3's
 `tailwindConfig`. Set it to `./src/index.css`. Left unset, the plugin still
 sorts, but it cannot see custom theme values and will misorder any class built
@@ -84,7 +84,7 @@ verified 99 runewords, and there is no reason to start a new project on
 React 18. Since `config.yaml` is injected as context into every future
 proposal, a stale number there propagates. Fix it in this change.
 
-*Alternative considered:* pin React 18 to match the config. Rejected — that is
+_Alternative considered:_ pin React 18 to match the config. Rejected — that is
 letting a typo in a context file make a technical decision.
 
 ### Two TypeScript configs, and `vendor/` excluded from both
@@ -103,7 +103,7 @@ Three tools, three separate ignore mechanisms, one rule: **`vendor/` is
 invisible to tooling.** A task in `tasks.md` verifies this by running all
 three, rather than trusting it.
 
-*Alternative considered:* move `vendor/` outside the project root. Rejected —
+_Alternative considered:_ move `vendor/` outside the project root. Rejected —
 `docs/DATA-SOURCES.md` argues for keeping provenance visible in the repo, and
 that decision is settled.
 
@@ -120,7 +120,7 @@ This also feeds `@trivago/prettier-plugin-sort-imports`: the import order is
 `importOrder: ["^react$", "<THIRD_PARTY_MODULES>", "^@/(.*)$", "^[./]"]` with
 `importOrderSeparation` on.
 
-*Known sharp edge:* `@trivago/prettier-plugin-sort-imports` needs
+_Known sharp edge:_ `@trivago/prettier-plugin-sort-imports` needs
 `importOrderParserPlugins: ["typescript", "jsx"]` to parse `.tsx`, and it must
 be listed **before** `prettier-plugin-tailwindcss` in `plugins` —
 the Tailwind plugin documents that it has to load last.

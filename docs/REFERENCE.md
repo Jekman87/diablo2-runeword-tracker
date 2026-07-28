@@ -85,18 +85,18 @@ over the reference, not a copy.
 
 ## Assets and styling
 
-| Thing | Detail |
-| --- | --- |
-| Rune icons | One CSS sprite, `runes-sprite-DKLwYvyC.png`, 440×120 px |
-| Sprite layout | 40×40 per rune, 11 columns × 3 rows = 33 runes |
-| Sprite usage | `.rw-RuneImg{opacity:.75}` + `.rune-El{background-position:0 0}`, offsets driven by a `--rune-w` CSS variable |
-| Font | **Bellefair** (Google Fonts) for the serif display text |
-| Background | Pure black `rgb(0,0,0)` |
-| Table header | Dark red band |
-| Rune text | Tan / orange small-caps |
-| Properties text | Green, matching the in-game magic property colour |
-| Custom cursor | Yes — the stylesheet contains a `cursor: url(…)` rule |
-| Only two `<img>` on the page | the logo and the ornamental divider; everything else is CSS |
+| Thing                        | Detail                                                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Rune icons                   | One CSS sprite, `runes-sprite-DKLwYvyC.png`, 440×120 px                                                       |
+| Sprite layout                | 40×40 per rune, 11 columns × 3 rows = 33 runes                                                                |
+| Sprite usage                 | `.rw-RuneImg{opacity:.75}` + `.rune-El{background-position:0 0}`, offsets driven by a `--rune-w` CSS variable |
+| Font                         | **Bellefair** (Google Fonts) for the serif display text                                                       |
+| Background                   | Pure black `rgb(0,0,0)`                                                                                       |
+| Table header                 | Dark red band                                                                                                 |
+| Rune text                    | Tan / orange small-caps                                                                                       |
+| Properties text              | Green, matching the in-game magic property colour                                                             |
+| Custom cursor                | Yes — the stylesheet contains a `cursor: url(…)` rule                                                         |
+| Only two `<img>` on the page | the logo and the ornamental divider; everything else is CSS                                                   |
 
 The sprite approach is worth copying: 33 runes as one 12 KB PNG beats 33
 requests, and the CSS-variable offset trick keeps the rule list trivial.
@@ -105,12 +105,12 @@ requests, and the CSS-variable offset trick keeps the rule list trivial.
 
 ## Header links, and what they imply for our GitHub setup
 
-| Link | Target |
-| --- | --- |
-| `Update Notes` | Blizzard patch notes article on news.blizzard.com |
-| `Help` | in-page dropdown, `href="#"` |
-| `Feedback` | **`github.com/fabd/diablo2-runewizard/discussions`** |
-| footer | author's other site, and a link back to the repo |
+| Link           | Target                                               |
+| -------------- | ---------------------------------------------------- |
+| `Update Notes` | Blizzard patch notes article on news.blizzard.com    |
+| `Help`         | in-page dropdown, `href="#"`                         |
+| `Feedback`     | **`github.com/fabd/diablo2-runewizard/discussions`** |
+| footer         | author's other site, and a link back to the repo     |
 
 So the feedback channel is GitHub Discussions, which has to be enabled in the
 repository settings — it is off by default.

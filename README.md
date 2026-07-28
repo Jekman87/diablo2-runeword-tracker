@@ -4,18 +4,45 @@ Track which Diablo II: Resurrected runewords you have already crafted, and see
 which runes and socketed bases you still need to finish the runeword section of
 the in-game Chronicle log.
 
-**Status: pre-alpha.** Nothing is built yet — this repository currently holds
-the specifications, research and vendored source data.
+**Status: pre-alpha.** The toolchain is scaffolded and the app shell runs; no
+runeword features are implemented yet.
 
 - [`IDEAS.md`](IDEAS.md) — backlog and phase plan
 - [`docs/REFERENCE.md`](docs/REFERENCE.md) — analysis of the reference site
 - [`docs/DATA-SOURCES.md`](docs/DATA-SOURCES.md) — data provenance and schema
+- [`docs/CODE_RULES.md`](docs/CODE_RULES.md) — code conventions and what enforces them
 - [`openspec/`](openspec/) — specifications, managed with [OpenSpec](https://github.com/Fission-AI/OpenSpec)
 
-## Planned stack
+## Getting started
 
-React, TypeScript, Vite, Tailwind CSS. No backend: runeword data ships as a
-static file and progress is kept in `localStorage`. Deployed to GitHub Pages.
+Prerequisites: **Node.js 20.19+** and **pnpm 10+** (`corepack enable pnpm`).
+
+```bash
+pnpm install   # also registers the pre-commit hook
+pnpm dev       # http://localhost:5173
+```
+
+### Scripts
+
+| Script              | What it does                                        |
+| ------------------- | --------------------------------------------------- |
+| `pnpm dev`          | Vite dev server with hot module replacement         |
+| `pnpm build`        | Type-check, then build a static bundle into `dist/` |
+| `pnpm preview`      | Serve the built bundle locally                      |
+| `pnpm typecheck`    | `tsc --build` across the app and Node configs       |
+| `pnpm lint`         | ESLint over the project                             |
+| `pnpm format`       | Prettier, writing changes                           |
+| `pnpm format:check` | Prettier, verifying only — the CI-shaped variant    |
+| `pnpm test`         | Vitest once                                         |
+| `pnpm test:watch`   | Vitest in watch mode                                |
+
+A `pre-commit` hook runs ESLint autofix and Prettier over staged files. Type
+checking and tests are not in the hook — run them yourself, or let CI do it.
+
+## Stack
+
+React 19, TypeScript, Vite, Tailwind CSS v4. No backend: runeword data ships as
+a static file and progress is kept in `localStorage`. Deployed to GitHub Pages.
 
 ## Scope
 

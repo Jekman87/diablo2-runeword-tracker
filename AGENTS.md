@@ -8,6 +8,9 @@
   from and its confirmed schema.
 - [`docs/REFERENCE.md`](docs/REFERENCE.md) — analysis of the reference site,
   including the visual details we are deliberately reusing.
+- [`docs/CODE_RULES.md`](docs/CODE_RULES.md) — the code conventions in full,
+  and which of them the toolchain enforces. The Code section below is the
+  summary; that document is the detail.
 
 ## Specifications
 
@@ -38,6 +41,9 @@ whole phase.
 - Validate the dataset with `zod` rather than trusting its shape.
 
 ## Code
+
+Summarised here; [`docs/CODE_RULES.md`](docs/CODE_RULES.md) has the full set
+and names the tool that enforces each one.
 
 - React function components, TypeScript, no class components.
 - Tailwind for styling. Compose conditional classes with `clsx` and

@@ -88,7 +88,7 @@ bases they still need.
 - Every rune still needed, with a count and its sprite icon
 - Counts are small enough to show in full. Across all 99 runewords the
   totals run from `Shael ×20` down to `Zod ×3`, 343 rune slots in total.
-  Note that the *high* runes have the *lowest* counts, so nothing here is
+  Note that the _high_ runes have the _lowest_ counts, so nothing here is
   demotivating.
 - The source data carries a rune `tier` field (common / semirare / rare,
   eleven each). Grouping the panel by tier turns a flat list of 33 into three
@@ -98,7 +98,7 @@ bases they still need.
 
 - Collapsible, near the top, collapsed by default
 - The bases still needed, with required socket count
-- Data caveat: a runeword specifies a base *category* plus a socket count,
+- Data caveat: a runeword specifies a base _category_ plus a socket count,
   never a specific item. "3 axes with 4 sockets" is really "3 four-socket
   melee weapons". Group by (category, sockets).
 - Placement and grouping still to be designed
@@ -189,11 +189,11 @@ a badge with a tooltip and nothing else — no filter reads them, no counter
 subtracts them, no logic branches on them. They are optional, and a row with
 none of them set simply shows no badges.
 
-| Field | Meaning |
-| --- | --- |
-| `ladderOnly` | craftable on ladder only — 9 runewords |
-| `patch` | version that introduced it, e.g. `2.6`, `3.0` |
-| `note` | free-form caveat, for season-specific exceptions |
+| Field        | Meaning                                          |
+| ------------ | ------------------------------------------------ |
+| `ladderOnly` | craftable on ladder only — 9 runewords           |
+| `patch`      | version that introduced it, e.g. `2.6`, `3.0`    |
+| `note`       | free-form caveat, for season-specific exceptions |
 
 The nine ladder-only ones: Bulwark, Cure, Ground, Hearth, Temper, Mosaic,
 Metamorphosis, Mania, Hysteria.
@@ -201,8 +201,8 @@ Metamorphosis, Mania, Hysteria.
 ### Why `note` has to be a data field and not hardcoded logic
 
 **Mosaic** is the case that proves it. The reference marks it ladder-only,
-patch 2.6, and then adds a note: *disabled in Season 13, can be crafted
-offline non-ladder*. So a runeword that is nominally ladder-only is currently
+patch 2.6, and then adds a note: _disabled in Season 13, can be crafted
+offline non-ladder_. So a runeword that is nominally ladder-only is currently
 impossible to craft on ladder, and possible only outside it.
 
 Availability flips between seasons, so it is information for the player to

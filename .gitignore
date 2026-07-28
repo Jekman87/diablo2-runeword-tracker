@@ -33,6 +33,8 @@ coverage/
 .vitest/
 .eslintcache
 *.tsbuildinfo
+.vite/
+vite.config.ts.timestamp-*
 
 # OpenSpec leftovers
 .openspec-test-*
