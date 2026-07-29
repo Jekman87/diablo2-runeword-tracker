@@ -17,21 +17,33 @@ literal colour value. Token names SHALL describe the role a colour plays rather
 than the colour itself, and SHALL cover the surfaces the backlog has already
 settled: the page ground, body text, the table header band, the gold display
 family a runeword's name is drawn from, the granted-property line and the
-emphasised values within it, the patch and ladder badges, and the crafted-state
-accent. They SHALL further cover the surfaces the runeword table introduces: the
-separation between table rows and the row's hover state, and the detail view's
-panel and the dimmed backdrop behind it. They SHALL further cover the surfaces
-crafted tracking introduces: the tint of a crafted row, the unfilled track of the
-progress indicator, and the panel of the transient undo notice.
+emphasised values within it, the ladder badge, and the crafted-state accent. They
+SHALL further cover the surfaces the runeword table introduces: the separation
+between table rows and the row's hover state, and the detail view's panel. They
+SHALL further cover the surfaces crafted tracking introduces: the tint of a
+crafted row, the unfilled track of the progress indicator, and the panel of the
+transient undo notice.
+
+Where one badge is coloured by the value it carries, the palette SHALL declare one
+token per distinct colour that value can take, so that the mapping lives in the
+palette and the component holds none of it. Values the project has decided are one
+era MAY share one token; a token SHALL NOT be declared for a value the project has
+chosen no colour for.
 
 A token SHALL be declared when a component exists that renders the surface it
 names, and SHALL NOT be declared speculatively for a surface no decision has been
-made about. A change that renders a new surface SHALL add its token here rather
-than write a colour into the component, which is what makes the palette a single
-source rather than a starting point.
+made about. A token whose last use site is removed SHALL be removed with it, for
+the same reason. A change that renders a new surface SHALL add its token here
+rather than write a colour into the component, which is what makes the palette a
+single source rather than a starting point.
+
+Two roles MAY hold the same colour value where they are genuinely different roles;
+one token SHALL NOT be made to serve two unrelated roles on the grounds that the
+value matches, because the name would then describe neither.
 
 Where a borrowed token's own name misdescribes what it is applied to, the role
-SHALL be taken from the use site rather than from the name.
+SHALL be taken from the use site rather than from the name. A borrowed name that
+misdescribes its own subject SHALL NOT be copied.
 
 #### Scenario: Tokens are available as utilities
 
@@ -60,8 +72,8 @@ SHALL be taken from the use site rather than from the name.
 
 #### Scenario: The table's own surfaces are tokens
 
-- **WHEN** the row separation, the row hover state, the detail view's panel and
-  its backdrop are inspected
+- **WHEN** the row separation, the row hover state and the detail view's panel are
+  inspected
 - **THEN** each takes its colour from a named token rather than a literal value
 
 #### Scenario: Crafted tracking's own surfaces are tokens
@@ -78,6 +90,40 @@ SHALL be taken from the use site rather than from the name.
   the collapsible remaining-runes and remaining-bases panels
 - **THEN** no token exists for them, because the change that builds each one adds
   its own
+
+#### Scenario: A patch badge has one token per era
+
+- **WHEN** the tokens backing the patch badge are read
+- **THEN** there is one for each distinct colour a patch badge can take, and none
+  for a patch value with no colour decided
+
+#### Scenario: One era, one token
+
+- **WHEN** the tokens for `1.10` and `1.11` are compared
+- **THEN** they are one token, because the project treats those two patches as a
+  single era rather than two
+
+#### Scenario: The note badge stops borrowing the danger colour
+
+- **WHEN** the note badge's background is inspected
+- **THEN** it takes a token of its own rather than the token named for danger,
+  because "the note badge" and "danger" are different roles even when their values
+  are close
+
+#### Scenario: A token with no remaining use site is removed
+
+- **WHEN** a surface stops being rendered, as the detail view's dimmed backdrop
+  does when the view stops being a modal dialog
+- **THEN** its token is removed from the palette, because a token nothing renders
+  is the same defect as a surface with no token
+
+#### Scenario: Two roles may share a value without sharing a token
+
+- **WHEN** the item-type restriction's colour and the detail view's note colour are
+  compared
+- **THEN** they may hold the same value under two names, because one is the colour
+  of a restriction and the other is the colour of a note, and a single token would
+  describe neither
 
 ### Requirement: Self-hosted display font
 
