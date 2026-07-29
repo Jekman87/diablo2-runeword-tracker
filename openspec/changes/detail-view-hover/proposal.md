@@ -32,11 +32,15 @@ feature; each is the table failing to do what it was supposed to already.
 - **Hover does not become the only trigger.** Touch devices have no hover at all,
   so click stays; the keyboard path stays exactly as `runeword-table` verified it:
   Space opens, Escape closes, focus returns to the name.
-- **Focus containment becomes conditional on how the panel opened.** Trapped when
-  opened deliberately — by click or by keyboard focus — and not trapped when
-  opened by hover. A trap that engaged on hover would seize the keyboard as the
-  pointer swept down 99 rows, which is not what the existing requirement was
-  protecting.
+- **Focus containment becomes conditional on how the panel opened**, across three
+  cases and not two. Trapped when the name is **activated** — clicked, tapped or
+  pressed. Not trapped, and focus not moved at all, when the panel was opened by
+  **hover** or by **keyboard focus reaching** the name. A trap that engaged on
+  hover would seize the keyboard as the pointer swept down 99 rows, and a trap that
+  engaged on focus is worse: focus reaching a name is what opens that name's panel,
+  so the trap closes on the first row and rows 2 to 99 become unreachable by
+  keyboard. Neither is what the existing requirement was protecting. Found by
+  using it rather than by reading it — see `design.md`.
 - Replace the native `<dialog>` with a floating panel. This gives up
   `showModal()`'s free focus trap, Escape and focus restoration;
   `FloatingFocusManager` and `useDismiss` supply all three, and a modal dialog was
@@ -188,6 +192,12 @@ already claims.
   text below WCAG AA, by explicit decision. If the badges later need to be
   readable rather than faithful, the fix is a foreground per token and nothing
   else changes.
+- **Bundle, measured rather than estimated.** The 10–15 kB gzipped guessed above
+  was wrong by about a factor of two: `@floating-ui/react` costs **+28.3 kB
+  gzipped**, taking the bundle from 90.04 kB to 118.37 kB. Recorded here because
+  the estimate is what the dependency was argued on, and the argument still holds —
+  `flip`, `shift` and `safePolygon` were all three verified working — but the price
+  was higher than stated.
 - **Recorded for Phase 2, not solved here**: the restriction strings are dataset
   content in English — `(Assassin)`, `(Barbarian)`, `(Not Orbs/Wands)` — so
   `russian-locale` has to source their Russian equivalents from the game client

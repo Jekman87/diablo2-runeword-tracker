@@ -4,16 +4,14 @@ import clsx from "clsx";
 
 import { AvailabilityBadges } from "@/components/AvailabilityBadges";
 import { CraftedToggle } from "@/components/CraftedToggle";
-import { RuneIcon } from "@/components/RuneIcon";
+import { ItemTypes } from "@/components/ItemTypes";
+import { RuneSequence } from "@/components/RuneSequence";
+import { RunewordDetails } from "@/components/RunewordDetails";
 import type { Runeword } from "@/data";
-import { useStrings } from "@/i18n";
-import { itemTypesLabel } from "@/runewords/format";
 
 export interface RunewordRowProps {
   runeword: Runeword;
   crafted: boolean;
-  /** Opens the detail view. The table owns the one dialog every row shares. */
-  onSelect: (runeword: Runeword) => void;
   /**
    * Marks or unmarks the runeword. The control is handed over so that an undo
    * taken later can return focus to it.
@@ -25,11 +23,12 @@ export interface RunewordRowProps {
  * One runeword's row: whether it is crafted, its name, its runes, the bases it
  * can be socketed into and the level it requires.
  *
- * The name is a real `<button>` inside the cell rather than a click handler on
- * the cell, which is what makes it focusable and operable by Space and Enter.
- * It is also the seam this change inherited: the row-level handler below must
- * not fire for a click that landed on the name, or opening the detail view
- * would silently mark the runeword crafted.
+ * The name and its detail panel are `RunewordDetails`, which owns both because
+ * the two share one floating context. The name is still a real `<button>`, which
+ * is what makes it focusable and operable by Space and Enter. It is also the seam
+ * this row inherited: the row-level handler below must not fire for a click that
+ * landed on the name, or opening the detail view would silently mark the runeword
+ * crafted.
  *
  * The row is a pointer target and **not** a second keyboard stop — no
  * `role="button"`, no `tabindex`. Ninety-nine focusable rows would double every
@@ -37,13 +36,7 @@ export interface RunewordRowProps {
  * built on. The keyboard path is the socket, which is already in the tab order
  * and is already the right control.
  */
-export function RunewordRow({
-  runeword,
-  crafted,
-  onSelect,
-  onToggle,
-}: RunewordRowProps) {
-  const strings = useStrings();
+export function RunewordRow({ runeword, crafted, onToggle }: RunewordRowProps) {
   const control = useRef<HTMLButtonElement>(null);
 
   // Both paths hand over the same node, so a row click and a press on the
@@ -79,13 +72,7 @@ export function RunewordRow({
 
       <td className="p-2 align-top">
         <span className="flex flex-wrap items-center gap-1">
-          <button
-            type="button"
-            onClick={() => onSelect(runeword)}
-            className="cursor-pointer text-gold-mid hover:text-gold-light"
-          >
-            {runeword.name}
-          </button>
+          <RunewordDetails runeword={runeword} />
 
           <AvailabilityBadges runeword={runeword} />
         </span>
@@ -101,10 +88,12 @@ export function RunewordRow({
             The cost is up to 686 icon spans in the document instead of 343,
             half of them `display: none` — which is also what keeps the inactive
             copy out of the accessibility tree, so exactly one sequence is
-            perceivable at any width. Against 99 rows of table markup that is
-            not the expensive part of the page, and the alternative — a
-            `useMediaQuery` hook driving a single copy — makes layout depend on
-            script having run and introduces a flash where CSS has none. */}
+            perceivable at any width. It costs more than it did: each copy now
+            carries a label as well as an icon, so the rune markup roughly
+            doubles again. Against 99 rows of table markup that is still not the
+            expensive part of the page, and the alternative — a `useMediaQuery`
+            hook driving a single copy — makes layout depend on script having run
+            and introduces a flash where CSS has none. */}
         <RuneSequence runeword={runeword} className="mt-1 flex md:hidden" />
       </td>
 
@@ -112,39 +101,14 @@ export function RunewordRow({
         <RuneSequence runeword={runeword} className="flex" />
       </td>
 
-      <td className="p-2 align-top">{itemTypesLabel(runeword, strings)}</td>
+      <td className="p-2 align-top">
+        <ItemTypes runeword={runeword} />
+      </td>
 
       <td className="p-2 text-right align-top tabular-nums">
         {runeword.requiredLevel}
       </td>
     </tr>
-  );
-}
-
-interface RuneSequenceProps {
-  runeword: Runeword;
-  className?: string;
-}
-
-/**
- * A runeword's runes, in dataset order and with repeats intact — `Infinity` is
- * four icons with `Ber` twice.
- *
- * `--rune-size` is set here and nowhere else in the row: the icons resolve
- * their own sprite cell from the shared derivation, and the row simply asks for
- * a smaller edge length than the detail view's default. No offset is restated
- * and there is no second icon implementation.
- *
- * The key carries the index because the sequence is not a set. Five runewords
- * repeat a rune, so a name alone would collide.
- */
-function RuneSequence({ runeword, className }: RuneSequenceProps) {
-  return (
-    <span className={clsx("gap-0.5 [--rune-size:1.5rem]", className)}>
-      {runeword.runes.map((rune, index) => (
-        <RuneIcon key={`${rune}-${index}`} name={rune} />
-      ))}
-    </span>
   );
 }
 

@@ -1,47 +1,105 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { RunewordTable } from "@/components/RunewordTable";
 import { runewords } from "@/data";
 import { en } from "@/i18n/en";
 
-// Driven through the table rather than by rendering the dialog directly,
-// because what is under test is the whole path: a name is a button, the table
-// holds the selection, and one dialog serves all 99 rows.
+// Driven through the table rather than by rendering the panel directly, because
+// what is under test is the whole path: a name is a button, each row owns its own
+// floating context, and only the open panel is ever in the document.
 //
-// jsdom implements only `HTMLDialogElement.open`, so `src/test/setup.ts` stands
-// in for the platform's `showModal`, `close`, Escape and focus restoration.
-// These tests therefore prove the component's wiring, not the browser's
-// behaviour. The focus trap, `inert`, `::backdrop` and backdrop click geometry
-// have no layout in jsdom and are checked in a browser instead — asserting them
-// here would be asserting the stand-in.
+// The jsdom `showModal` stand-in these tests used to run against is gone with the
+// `<dialog>`. What they assert now is `@floating-ui/react`'s real behaviour, which
+// is a straight improvement — and it moves the boundary rather than removing it.
+// What jsdom still cannot answer is anything needing layout: `safePolygon`'s
+// geometry, whether the panel flipped above the pointer or shifted inward at a
+// viewport edge, and how long the open delay feels. Those are browser checks.
 
 /**
- * The table with nothing crafted. Crafted state is `App`'s and reaches the
- * table as a prop; none of the detail view's behaviour depends on it.
+ * The table with nothing crafted. Crafted state is `App`'s and reaches the table
+ * as a prop; none of the detail view's behaviour depends on it.
  */
 function renderTable() {
   return render(<RunewordTable crafted={new Set()} onToggle={vi.fn()} />);
 }
 
-describe("opening the detail view", () => {
-  it("opens on the name and shows the full record", async () => {
+describe("what opens the detail view", () => {
+  it("opens on a click and shows the full record", async () => {
     const user = userEvent.setup();
     renderTable();
 
     await user.click(screen.getByRole("button", { name: "Mosaic" }));
 
-    const dialog = within(screen.getByRole("dialog"));
+    const panel = within(screen.getByRole("dialog"));
 
-    expect(dialog.getByRole("heading", { name: "Mosaic" })).toBeVisible();
-    expect(dialog.getByText(en.detail.runes)).toBeVisible();
-    expect(dialog.getByRole("img", { name: "Gul" })).toBeVisible();
-    expect(dialog.getByText("Claws (Assassin)")).toBeVisible();
-    expect(dialog.getByText("53")).toBeVisible();
-    expect(dialog.getAllByRole("listitem")).toHaveLength(10);
+    expect(panel.getByRole("heading", { name: "Mosaic" })).toBeVisible();
+    expect(panel.getByText(en.detail.runes)).toBeVisible();
+    expect(panel.getByText("Gul")).toBeVisible();
+    expect(panel.getByText("Claws")).toBeVisible();
+    expect(panel.getByText("(Assassin)")).toBeVisible();
+    expect(panel.getByText("53")).toBeVisible();
+    expect(panel.getAllByRole("listitem")).toHaveLength(10);
   });
 
-  it("names the dialog after the runeword", async () => {
+  it("opens on hover, with no click at all", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    await user.hover(screen.getByRole("button", { name: "Enigma" }));
+
+    // Awaited rather than asserted outright, because hover opens after a delay.
+    // That the delay exists is the assertion below; how long it should be is a
+    // question for a browser.
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { name: "Enigma" })).toBeVisible(),
+    );
+  });
+
+  it("opens nothing while the pointer is only passing over", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    // Three names crossed without resting on any. The delay is what makes a
+    // pointer travelling down a 99-row table on its way somewhere else open no
+    // panels rather than three.
+    await user.hover(screen.getByRole("button", { name: "Steel" }));
+    await user.hover(screen.getByRole("button", { name: "Ice" }));
+    await user.hover(screen.getByRole("button", { name: "Enigma" }));
+    await user.unhover(screen.getByRole("button", { name: "Enigma" }));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("opens on keyboard focus alone, without being activated", async () => {
+    renderTable();
+
+    // Wrapped because focusing is what opens it, so the state it changes has to
+    // be flushed before the panel can be looked for.
+    await act(async () => {
+      screen.getByRole("button", { name: "Steel" }).focus();
+    });
+
+    // No Space and no Enter. A keyboard reader reaches the same content a
+    // pointer user reaches by hovering.
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Steel" })).toBeVisible();
+  });
+
+  it("opens from a keypress, because the name is still a button", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    const name = screen.getByRole("button", { name: "Leaf" });
+
+    name.focus();
+    await user.keyboard(" ");
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Leaf" })).toBeVisible();
+  });
+
+  it("names the panel after the runeword", async () => {
     const user = userEvent.setup();
     renderTable();
 
@@ -49,31 +107,30 @@ describe("opening the detail view", () => {
 
     expect(screen.getByRole("dialog")).toHaveAccessibleName("Enigma");
   });
+});
 
-  it("opens from the keyboard, because the name is a button", async () => {
-    const user = userEvent.setup();
-    renderTable();
-
-    screen.getByRole("button", { name: "Steel" }).focus();
-    await user.keyboard(" ");
-
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Steel" })).toBeVisible();
-  });
-
+describe("what the panel presents", () => {
   it("derives the socket count from the rune sequence", async () => {
     const user = userEvent.setup();
     renderTable();
 
     await user.click(screen.getByRole("button", { name: "Infinity" }));
 
-    const dialog = within(screen.getByRole("dialog"));
-    const sockets = dialog.getByText(en.detail.sockets).nextElementSibling;
+    const panel = within(screen.getByRole("dialog"));
+    const sockets = panel.getByText(en.detail.sockets).nextElementSibling;
 
     expect(sockets).toHaveTextContent("4");
-    expect(dialog.getAllByRole("img")).toHaveLength(4);
 
-    // Nothing was read to produce it: the record has no such field.
+    // Read as the four labels rather than as four images: the icons are
+    // decoration now that their names are drawn beside them.
+    expect(runeLabelsIn(screen.getByRole("dialog"))).toEqual([
+      "Ber",
+      "Mal",
+      "Ber",
+      "Ist",
+    ]);
+
+    // Nothing was read to produce the count: the record has no such field.
     const infinity = runewords.find((runeword) => runeword.name === "Infinity");
 
     expect(infinity).not.toHaveProperty("sockets");
@@ -103,14 +160,14 @@ describe("opening the detail view", () => {
 
     await user.click(screen.getByRole("button", { name: "Mosaic" }));
 
-    const dialog = within(screen.getByRole("dialog"));
+    const panel = within(screen.getByRole("dialog"));
 
     expect(
-      dialog.getByText(en.availability.patchMeaning("2.6")),
+      panel.getByText(en.availability.patchMeaning("2.6")),
     ).toBeInTheDocument();
-    expect(dialog.getByText(en.availability.ladderMeaning)).toBeInTheDocument();
+    expect(panel.getByText(en.availability.ladderMeaning)).toBeInTheDocument();
     expect(
-      dialog.getByText(
+      panel.getByText(
         "Disabled in Season 13! Can be crafted offline non-ladder.",
       ),
     ).toBeInTheDocument();
@@ -122,18 +179,20 @@ describe("opening the detail view", () => {
 
     await user.click(screen.getByRole("button", { name: "Steel" }));
 
-    const dialog = within(screen.getByRole("dialog"));
+    const panel = within(screen.getByRole("dialog"));
 
-    expect(dialog.queryByText(en.detail.availability)).not.toBeInTheDocument();
-    expect(dialog.queryByText(en.detail.note)).not.toBeInTheDocument();
+    expect(panel.queryByText(en.detail.availability)).not.toBeInTheDocument();
+    expect(panel.queryByText(en.detail.note)).not.toBeInTheDocument();
   });
 });
 
-describe("one dialog for the whole table", () => {
-  it("holds one dialog element and no detail content while closed", () => {
+describe("one panel at a time, and none while closed", () => {
+  it("holds no detail markup at all while nothing is open", () => {
     const { container } = renderTable();
 
-    expect(container.querySelectorAll("dialog")).toHaveLength(1);
+    // Not "one empty dialog element" — none. Ninety-nine rows would otherwise
+    // put 975 property lines into a document whose entire content is 99 rows.
+    expect(container.querySelectorAll("dialog")).toHaveLength(0);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: "Fortitude" }),
@@ -145,23 +204,45 @@ describe("one dialog for the whole table", () => {
     const user = userEvent.setup();
     renderTable();
 
-    await user.click(screen.getByRole("button", { name: "Enigma" }));
+    // Both taken before either panel opens. A deliberately-opened panel hides
+    // the rest of the page from the accessibility tree — see the trap test
+    // below — so the second name cannot be found by role once the first is up.
+    const enigma = rowButton("Enigma");
+    const fortitude = rowButton("Fortitude");
+
+    await user.click(enigma);
     expect(screen.getByRole("heading", { name: "Enigma" })).toBeVisible();
 
-    // The row's button, not the dialog's heading — the dialog covers the table
-    // in a browser, but the point of the test is that state replaces content
-    // rather than stacking a second dialog.
-    await user.click(rowButton("Fortitude"));
+    await user.click(fortitude);
 
+    // One panel, not two. Each row owns its own floating context, so this is
+    // the assertion that 99 of them do not stack.
     expect(screen.getAllByRole("dialog")).toHaveLength(1);
     expect(screen.getByRole("heading", { name: "Fortitude" })).toBeVisible();
     expect(
       screen.queryByRole("heading", { name: "Enigma" }),
     ).not.toBeInTheDocument();
   });
+
+  it("replaces the first when a second name is hovered", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    await user.hover(rowButton("Enigma"));
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { name: "Enigma" })).toBeVisible(),
+    );
+
+    await user.hover(rowButton("Fortitude"));
+
+    await waitFor(() => {
+      expect(screen.getAllByRole("dialog")).toHaveLength(1);
+      expect(screen.getByRole("heading", { name: "Fortitude" })).toBeVisible();
+    });
+  });
 });
 
-describe("dismissal and focus", () => {
+describe("dismissal", () => {
   it("closes on Escape", async () => {
     const user = userEvent.setup();
     renderTable();
@@ -183,18 +264,21 @@ describe("dismissal and focus", () => {
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+});
 
-  it("returns focus to the name that opened it", async () => {
+describe("focus, and how the panel was opened", () => {
+  it("returns focus to the name after a panel opened on purpose", async () => {
     const user = userEvent.setup();
     renderTable();
 
     const name = screen.getByRole("button", { name: "Enigma" });
 
     await user.click(name);
-    expect(name).not.toHaveFocus();
-
     await user.keyboard("{Escape}");
 
+    // The behaviour `runeword-table` verified against `<dialog>`, now supplied
+    // by `FloatingFocusManager`. A keyboard reader is not returned to the top of
+    // a 99-row table.
     expect(name).toHaveFocus();
   });
 
@@ -209,9 +293,154 @@ describe("dismissal and focus", () => {
 
     expect(name).toHaveFocus();
   });
+
+  it("does not let focus escape into the table behind", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    const enigma = rowButton("Enigma");
+    const row = rowFor("Enigma");
+
+    await user.click(enigma);
+
+    // Advanced well past the panel's last focusable element, which is its only
+    // one. Focus visits the name, the panel's close button and the manager's
+    // own boundary guards, and never a row.
+    const visited: (Element | null)[] = [];
+
+    for (let step = 0; step < 4; step++) {
+      await user.tab();
+      visited.push(document.activeElement);
+    }
+
+    const escaped = visited.filter((element) => {
+      const landed = element?.closest("tr");
+
+      return landed !== null && landed !== row;
+    });
+
+    expect(escaped).toEqual([]);
+
+    // Deliberately not asserting that a tab *reaches* the panel. jsdom has no
+    // layout, so the manager's boundary guards do not hand focus on the way a
+    // browser makes them; where focus lands inside the boundary is 7.9's job.
+    // What is assertable here is that it never lands outside it.
+
+    // The other half of the containment, and the part jsdom can answer
+    // outright: while a deliberately-opened panel is up, the page behind it is
+    // out of the accessibility tree entirely. `<dialog>` gave this for free and
+    // the jsdom stand-in never modelled it, so it was never asserted before.
+    expect(screen.queryByRole("button", { name: "Fortitude" })).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "Fortitude", hidden: true }),
+    ).toBeInTheDocument();
+  });
+
+  it("does not take the keyboard when focus opens the panel", async () => {
+    renderTable();
+
+    const name = rowButton("Steel");
+
+    await act(async () => {
+      name.focus();
+    });
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    // Focus stays on the name the reader tabbed to. A trap here is the defect
+    // that made the table impossible to tab through: focus reaching a name is
+    // what opens that name's panel, so a trap closes on the first row and no
+    // later row can be reached at all.
+    expect(name).toHaveFocus();
+  });
+
+  it("lets focus out the far side of a focus-opened panel", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    const name = rowButton("Steel");
+
+    await act(async () => {
+      name.focus();
+    });
+
+    const panel = screen.getByRole("dialog");
+
+    // The page behind is not hidden from assistive technology either, which is
+    // the other half of not being modal — the reader is still in the table.
+    expect(screen.getByRole("button", { name: "Leaf" })).toBeInTheDocument();
+
+    await user.tab();
+
+    // Where the tabs land past the panel is the browser's business — jsdom has
+    // no layout for the manager's boundary guards — but a non-modal panel must
+    // not be a dead end, and that much is assertable: focus is somewhere, and
+    // the table behind was never taken out of reach.
+    expect(panel).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Fortitude" }),
+    ).toBeInTheDocument();
+  });
+
+  it("never moves focus for a panel opened by hover", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    const elsewhere = socketIn(rowFor("Steel"));
+    elsewhere.focus();
+
+    await user.hover(rowButton("Enigma"));
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { name: "Enigma" })).toBeVisible(),
+    );
+
+    // A panel that appeared under a passing pointer must not take the keyboard
+    // away from wherever its owner actually is.
+    expect(elsewhere).toHaveFocus();
+  });
+
+  it("does not confine focus to a panel opened by hover", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    socketIn(rowFor("Steel")).focus();
+
+    await user.hover(rowButton("Enigma"));
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { name: "Enigma" })).toBeVisible(),
+    );
+
+    const hovered = screen.getByRole("dialog");
+
+    await user.tab();
+
+    // Focus advanced into the table, not into a panel its reader never asked to
+    // go to. Where exactly it lands is the table's business — that it is not
+    // trapped in `Enigma`'s panel is this one's.
+    expect(hovered).not.toContainElement(document.activeElement as HTMLElement);
+  });
+
+  it("leaves focus alone when a hover-opened panel closes", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    const elsewhere = socketIn(rowFor("Steel"));
+    elsewhere.focus();
+
+    await user.hover(rowButton("Enigma"));
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { name: "Enigma" })).toBeVisible(),
+    );
+
+    await user.keyboard("{Escape}");
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    // Not moved to the name the pointer happened to be over.
+    expect(elsewhere).toHaveFocus();
+  });
 });
 
-/** A runeword's name button in the table, as opposed to the dialog's heading. */
+/** A runeword's name button in the table, as opposed to the panel's heading. */
 function rowButton(name: string) {
   const button = screen
     .getAllByRole("button", { name })
@@ -220,4 +449,31 @@ function rowButton(name: string) {
   if (!button) throw new Error(`No row button for ${name}`);
 
   return button;
+}
+
+function rowFor(name: string) {
+  const row = rowButton(name).closest("tr");
+
+  if (!row) throw new Error(`No row for ${name}`);
+
+  return row;
+}
+
+function socketIn(row: Element) {
+  const socket = row.querySelector("[aria-pressed]");
+
+  if (!(socket instanceof HTMLElement)) throw new Error("No socket in the row");
+
+  return socket;
+}
+
+/**
+ * The rune names drawn in a sequence, read as the text beside each icon rather
+ * than as the icons' labels. The icons carry no label any more — the visible name
+ * is what a reader gets, and reading it here is what proves that.
+ */
+function runeLabelsIn(scope: Element) {
+  return [...scope.querySelectorAll(".rune-icon")].map(
+    (icon) => icon.nextElementSibling?.textContent,
+  );
 }

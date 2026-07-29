@@ -1,3 +1,4 @@
+import { computePosition, offset } from "@floating-ui/react";
 import { cva } from "class-variance-authority";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -45,5 +46,29 @@ describe("runtime utility dependencies", () => {
     );
 
     expect(() => runeword.parse({ name: "Broken", runes: [] })).toThrow();
+  });
+
+  it("@floating-ui/react positions a floating element against a reference", async () => {
+    const floating = document.body.appendChild(document.createElement("div"));
+
+    // A virtual reference with a rect stated outright, because jsdom performs
+    // no layout and a real element would measure 0×0 in every direction. The
+    // positioning arithmetic is what is under test here, and it is the same
+    // arithmetic either way: `bottom-start` puts the panel at the reference's
+    // left edge and its bottom edge, and `offset` moves it down by the gap.
+    const reference = {
+      getBoundingClientRect: () => new DOMRect(0, 100, 80, 20),
+    };
+
+    const { x, y, placement } = await computePosition(reference, floating, {
+      placement: "bottom-start",
+      middleware: [offset(8)],
+    });
+
+    expect(placement).toBe("bottom-start");
+    expect(x).toBe(0);
+    expect(y).toBe(128);
+
+    floating.remove();
   });
 });

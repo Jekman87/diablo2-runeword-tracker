@@ -118,8 +118,16 @@ or `expect`.
 
 Keep the list minimal; prefer plain React over adding a library unless a spec
 calls for one. The runtime dependencies are `react`, `react-dom`, `clsx`,
-`tailwind-merge`, `class-variance-authority` and `zod` — adding to that set is
-a decision a change proposal should justify.
+`tailwind-merge`, `class-variance-authority`, `zod` and `@floating-ui/react` —
+adding to that set is a decision a change proposal should justify.
+
+`@floating-ui/react` is the one added against that rule rather than with it, and
+what justified it is worth keeping: the detail view opens on hover, so it has to
+flip above the pointer near the bottom of a long table, shift inward at the
+viewport edges, stay positioned as the page scrolls, and hold itself open while
+the pointer travels the gap toward it. That last one — `safePolygon` — is the
+part hand-rolled positioning gets wrong, and it gets it wrong at the bottom of
+the page where review is least likely to look.
 
 ## Data
 

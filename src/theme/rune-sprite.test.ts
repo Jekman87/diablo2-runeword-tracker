@@ -94,3 +94,56 @@ describe("runeCell", () => {
     },
   );
 });
+
+// The sprite is 440×120 — eleven columns and three rows of a 40px cell — so 40px
+// is the size at which the artwork is drawn pixel for pixel, and the size above
+// which it is upscaled and softened. Both use sites draw at it, which means both
+// ask for nothing and take the one default the theme declares.
+//
+// Checked by reading the source rather than a rendered element, on purpose. jsdom
+// evaluates no `calc()` and applies no stylesheet, so a computed width here would
+// come back empty whatever any use site had asked for. What *can* be checked is
+// that no use site asks at all — which is the whole of the requirement, since the
+// theme's single declared default is the native size.
+//
+// Read through the bundler's own `?raw` imports rather than `node:fs`: the app's
+// `types` list deliberately admits no Node globals, nothing under `src/` may reach
+// for the filesystem, and a test is not a reason to widen that. The trade is that
+// `src/index.css` cannot be read this way — Vite's stylesheet pipeline intercepts
+// `?raw` and hands back nothing — so the theme's own internal consistency is not
+// asserted here. It is one file a reader can see whole, and the two integers its
+// geometry is built from are `SPRITE_COLUMNS` and `SPRITE_ROWS` above.
+
+describe("the native cell as a ceiling", () => {
+  it("has no use site set a rune size at all, let alone a larger one", () => {
+    const setters = Object.entries(SOURCES)
+      .filter(([path]) => !path.includes(".test."))
+      .filter(([, source]) => code(source).includes("--rune-size"))
+      .map(([path]) => path);
+
+    // Not "none above 40px" but "none at all". The sprite is 440×120, so 40px is
+    // both where the artwork is drawn pixel for pixel and the ceiling above which
+    // it is upscaled — which makes the theme's default the right answer for every
+    // use site, and a use site that restated it a second opinion about how big a
+    // rune is.
+    expect(setters).toEqual([]);
+  });
+});
+
+/** Every TypeScript module under `src/`, as text, keyed by its path. */
+const SOURCES: Record<string, string> = import.meta.glob("/src/**/*.{ts,tsx}", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+
+/**
+ * A module's code with its comments stripped.
+ *
+ * Load-bearing rather than tidy: the comments explaining why the size lives in
+ * one place name `--rune-size` several times, and counting those would make the
+ * prose fail the test the prose is describing.
+ */
+function code(source: string) {
+  return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+}

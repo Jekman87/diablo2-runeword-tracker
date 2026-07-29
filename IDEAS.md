@@ -62,10 +62,16 @@ site still deployable.
 | 4   | `d2-theme`            | done   |
 | 5   | `runeword-table`      | done   |
 | 6   | `crafted-tracking`    | done   |
+| 6a  | `detail-view-hover`   | done   |
 | 7   | `search-sort-filter`  | next   |
 | 8   | `remaining-panels`    |        |
 | 9   | `property-groups`     |        |
 | 10  | `site-header`         |        |
+
+`detail-view-hover` is numbered `6a` because it is not a step in the sequence:
+it corrects four defects in what `runeword-table` shipped, found by comparing the
+deployed page against the reference. Kept in the table so the order changes
+actually landed in is readable.
 
 Changes 9 and 10 were missing from the original breakdown. Both were found by
 `runeword-table` rather than planned, which is the sequence working as intended —
@@ -172,9 +178,93 @@ nobody owns it.
   requirement asks for it. Recorded so the omission reads as a decision rather
   than an oversight.
 
+- **`detail-view-hover`** — not a feature. Four defects in what `runeword-table`
+  shipped, all found by comparing the deployed page against the reference after
+  the change was archived: the detail view opened on click where the reference
+  opens on hover, every patch badge rendered the same brown, the rune column was
+  a row of unlabelled 24px sprites, and a base category and its restriction read
+  as one grey run of text.
+
+  **It reversed `runeword-table`'s "add no dependency" decision, deliberately.**
+  `@floating-ui/react` is the first runtime dependency added since the dataset.
+  The old decision was correct for what it was deciding about — a click-opened
+  modal `<dialog>` needs no positioning at all — and it stopped being correct the
+  moment the panel opened on hover: a panel of up to 26 property lines has to flip
+  above the pointer for rows near the bottom of a 7400px table, shift inward at
+  the viewport edges, stay positioned as the page scrolls, and hold itself open
+  while the pointer crosses the gap toward it. That last one, `safePolygon`, is
+  the part hand-rolled code gets wrong, and it gets it wrong at the bottom of the
+  page where review is least likely to look. Recorded here so the next change
+  reads it as a decision that was revisited rather than one that was forgotten.
+
+  **A focus trap on a panel that opens on focus is a dead end, and only using it
+  shows that.** The change was designed to split focus containment two ways —
+  trapped when opened deliberately, loose when opened by hover — with keyboard focus
+  counted as deliberate. That is unusable: focus reaching a name is what opens that
+  name's panel, so the trap closes over the keyboard on row 1 and no later row can
+  be tabbed to. It shipped as three cases instead. **Activation** — click, tap or
+  keypress — traps focus and gives it back. **Focus reaching the name** does not
+  trap and moves nothing, so Tab flows name → panel → next row. **Hover** installs
+  no focus management at all. Worth remembering as a shape rather than as a bug: any
+  future control that reveals something on focus has the same trap available to it
+  and the same reason not to take it.
+
+  **Item-type restrictions are dataset content in English.** `(Assassin)`,
+  `(Barbarian)`, `(Not Orbs/Wands)` — fifteen of the 99 carry one, and they are
+  the **second dataset field after runeword names** that `russian-locale` has to
+  source from the game client rather than translate. Only the parentheses are
+  copy. Giving the restriction its own colour and its own line makes it visibly
+  its own field, which is exactly what makes the omission easy to miss until late.
+
+  **The reference's badge contrast was adopted knowingly, and it fails AA.** Black
+  on the classic brown scores 2.01:1 and black on the `3.0` purple 3.67:1, against
+  4.5:1 for WCAG 2.1 AA normal text. The gold-on-brown it replaced scored 4.88:1
+  and passed, so the most common badge in the dataset — 46 of the 74 that carry
+  one — is now less legible than it was. Fidelity to the reference was the
+  decision, taken with the numbers in hand. Nothing about the badge's _meaning_
+  depends on it: every badge carries its full text as its accessible name and the
+  detail view restates all three fields in full words. If it is ever revisited,
+  the fix is one foreground per token and nothing else changes —
+  `--color-patch-label` is where it would land. `Note!` went the other way and is
+  the one badge the change made more legible, from 4.44:1 to 10.3:1.
+
+  **`--color-accent` is poorly named by the theme's own rule** and was left alone
+  on purpose. It holds `#BD8547`, the same value as the new
+  `--color-item-restriction`, for an unrelated role — it is the detail view's note
+  text and nothing else, so `--color-note-text` is what it should be called. Two
+  roles sharing a value is fine and is why they do not share a token; the name is
+  the defect, and renaming it was not this change's business. Reported, not fixed.
+
+  **The table scrolls sideways below about 542px, and always did.** Measured
+  against the previous build: at a 390px viewport it overflowed by 74px before this
+  change and overflows by 152px after, because below `md` the runes collapse into
+  the name cell and that cell goes from 170px to 276px. So this change makes an
+  existing defect worse rather than introducing one, and no requirement in it
+  covers the table's narrow-width layout — which is why it is here and not fixed
+  there. Rows below `md` are also taller than the design's figures, which only
+  cover the wide layout: 103px against 69px, and 10197px of `tbody` against 7103px.
+  Whoever picks this up should decide whether the phone layout wants a smaller rune
+  size, a horizontally scrolling table by intent, or fewer columns — it is a layout
+  decision, not a bug with one obvious fix.
+
+  **Four tokens are declared with nothing rendering them**, and this change did
+  not orphan them: `--color-blood-dark`, `--color-blood-light`,
+  `--color-muted-dark` and `--color-link` were all declared ahead of any surface.
+  `d2-theme` forbids both halves of that — no token without a use site, and none
+  declared speculatively — so this is one defect seen from two directions. The
+  three tokens _this_ change orphaned were removed with their use sites
+  (`--color-backdrop` with the dialog's dim, `--color-title` and `--color-danger`
+  with the note badge's old colours). The remaining four are left for the changes
+  that will plausibly want them: `site-header` for the link colour,
+  `remaining-panels` for the rest. Whoever gets there first should either render
+  them or delete them.
+
 - **`search-sort-filter`** — search over name and item type, header-click
   sorting, the slot filter, view settings persisted. Needs the item-type to
-  slot mapping, which `runeword-dataset` deliberately left out.
+  slot mapping, which `runeword-dataset` deliberately left out. **Now carries
+  more weight than it did:** labelled 40px rune icons take the table from roughly
+  4060px of rows to 7430px, and the filters are what make a page that long
+  navigable.
 - **`remaining-panels`** — the two collapsible blocks. Pure aggregation logic,
   unit tested.
 
@@ -203,10 +293,22 @@ Phases 2 to 4 become their own changes later: `russian-locale`,
 - Every column header sortable; default sort by required level
 - Crafted state is its own column so it can be sorted on
 - Item types display as category plus restriction, e.g.
-  `Staves (Not Orbs/Wands)`, `Body Armors (Barbarian)`
-- Badges next to the name: patch of introduction, ladder-only marker
-- Clicking the name opens a popover with the granted properties in green
-- Runes column collapses on mobile and moves inline under the name
+  `Staves (Not Orbs/Wands)`, `Body Armors (Barbarian)`. **Shipped as two lines**
+  by `detail-view-hover`: the restriction sits beneath its categories in a warmer
+  tan, because an exclusion that changes which item to go looking for should not
+  read as more of the category list.
+- Badges next to the name: patch of introduction, ladder-only marker.
+  **The patch badge is colour-coded by era**, so which patch introduced a runeword
+  is readable without reading the number — four colours for the dataset's five
+  patch values, `1.10` and `1.11` sharing one as a single classic era.
+- Clicking the name opens a popover with the granted properties in green.
+  **Hovering it does too**, as the reference does, and so does keyboard focus —
+  three triggers on one panel, because a touch device has no hover and a keyboard
+  has neither hover nor tap.
+- Runes column collapses on mobile and moves inline under the name.
+  **Each rune is drawn at the sprite's native 40px with its name beneath it**;
+  unlabelled sprites told a reader who does not know the runes by silhouette
+  nothing, and the column is the recipe.
 
 ### Marking a runeword as crafted
 
@@ -257,6 +359,11 @@ Phases 2 to 4 become their own changes later: `russian-locale`,
 - Runeword names, rune names and item properties must match the official
   Russian game client exactly. Taken from official sources, never
   machine-translated.
+- **Item-type restrictions too.** `(Assassin)`, `(Barbarian)`,
+  `(Not Orbs/Wands)` — fifteen of the 99 carry one, and the words inside the
+  brackets are dataset content in English, not copy. They are the second dataset
+  field after runeword names that has to be sourced from the game client rather
+  than translated. Only the parentheses live in the strings layer.
 - English names remain the canonical identifiers in the data layer
 
 ---

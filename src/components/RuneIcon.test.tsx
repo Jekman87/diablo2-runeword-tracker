@@ -45,6 +45,24 @@ describe("RuneIcon", () => {
     );
   });
 
+  it("renders as decoration where the name is already drawn beside it", () => {
+    const { container } = render(<RuneIcon name="Ber" decorative />);
+    const icon = container.firstElementChild;
+
+    // No role and no label, rather than a role with an empty one. The visible
+    // text carries the name; announcing it here too would say every rune twice.
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    expect(icon).toHaveAttribute("aria-hidden", "true");
+    expect(icon).not.toHaveAttribute("aria-label");
+    expect(icon).not.toHaveAttribute("role");
+
+    // Still the same icon: decoration changes what is announced, not what is
+    // drawn.
+    expect(icon).toHaveClass("rune-icon");
+    expect(icon?.getAttribute("style")).toContain("--rune-col: 7");
+    expect(icon?.getAttribute("style")).toContain("--rune-row: 2");
+  });
+
   it("surfaces an unknown rune name instead of rendering a wrong rune", () => {
     expect(() => render(<RuneIcon name="Nope" />)).toThrow(
       /unknown rune name/i,

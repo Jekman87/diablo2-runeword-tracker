@@ -68,20 +68,48 @@ is real per-render work the single `<dialog>` did not have. It is bounded and
 measurable, and it is called out in the tasks as something to measure rather than
 assume.
 
-**The trap is conditional.** `FloatingFocusManager` wraps the panel with
-`modal={true}` when it was opened by click or by keyboard focus, and
-`modal={false}` when it was opened by hover. This is the one place where the
-existing requirement had to be interpreted rather than preserved literally: it says
-"while it is open, keyboard focus SHALL remain within it", written when the only
-way to open the panel was to activate a button on purpose. Applied to a hover-opened
-panel it would seize the keyboard as the pointer swept the table, which is not a
-behaviour anybody asked for and is not what the requirement was protecting. So the
-rule becomes: a panel you opened on purpose traps focus; a panel that appeared
-under your pointer does not.
+**The trap is conditional, and on three cases rather than two.** This is the one
+place where the existing requirement had to be interpreted rather than preserved
+literally. It says "while it is open, keyboard focus SHALL remain within it",
+written when the only way to open the panel was to activate a button on purpose.
+Applied to a hover-opened panel it would seize the keyboard as the pointer swept
+the table, which is not what the requirement was protecting.
+
+The first draft of this decision split that two ways — deliberate or not — and put
+keyboard focus on the deliberate side beside a click. **Using it in a browser
+showed that to be wrong, and wrong in a way that made the page unusable.** Focus
+reaching a name is what opens that name's panel, so a trap closes over the keyboard
+on the very first row: Tab reaches row 1's name, the panel opens, focus is pulled
+onto its close button, and every subsequent Tab cycles there. Escape hands focus
+back to the name and the next Tab walks straight back in. Rows 2 to 99 cannot be
+reached at all. The design's own argument against trapping on hover — that a
+passing pointer must not seize the keyboard — applies verbatim to focus sweeping
+99 rows, and the first draft simply did not notice it.
+
+So there are three cases, and `FloatingFocusManager` gets different props for each:
+
+| Opened by                   | Focus manager                 | Behaviour                                     |
+| --------------------------- | ----------------------------- | --------------------------------------------- |
+| Activated — click, tap, key | `modal`, `initialFocus: 0`    | Focus enters, is contained, and is given back |
+| Focus reaching the name     | non-modal, `initialFocus: -1` | Focus is not moved; Tab flows in, then onward |
+| Hover                       | `disabled`                    | No focus management at all                    |
+
+`disabled` rather than `modal={false}` for hover because a non-modal manager still
+moves focus into the panel on open, which is the one thing a hover-opened panel
+must never do. And `initialFocus: -1` on the focused case for the same reason: the
+panel appears beside the name the reader is already on, and pulling focus off it is
+what the dead end above was made of.
+
+The non-modal case is what makes a keyboard reader's path through the table read
+sensibly: socket, name — panel opens — into the panel, out the far side to the next
+row's socket, and the panel closes behind them. Measured in Chromium, all 99 rows
+are reachable, and a clicked panel still contains focus and still returns it.
 
 Which trigger fired is tracked in state alongside the open flag, because
 `onOpenChange` reports the event that caused the change and that is the only moment
-the distinction is available.
+the distinction is available. Activating a panel that hover or focus already opened
+promotes it to the activated case, which is right: the reader has now asked to be
+there.
 
 ### `useDismiss` and `FloatingFocusManager` replace what `<dialog>` gave for free
 

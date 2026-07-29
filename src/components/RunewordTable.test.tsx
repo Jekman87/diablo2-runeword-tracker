@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 import { RunewordTable } from "@/components/RunewordTable";
 import { runewords } from "@/data";
 import { en } from "@/i18n/en";
-import { itemTypesLabel } from "@/runewords/format";
 import { orderedRunewords } from "@/runewords/order";
 
 /**
@@ -136,10 +135,10 @@ describe("what a row carries", () => {
     const row = rowFor("Leaf");
 
     expect(within(row).getByRole("button", { name: "Leaf" })).toBeVisible();
-    expect(within(row).getAllByRole("img", { name: "Tir" })).not.toHaveLength(
-      0,
-    );
-    expect(within(row).getByText("Staves (Not Orbs/Wands)")).toBeVisible();
+    // Twice over: the runes are rendered for both sides of the breakpoint.
+    expect(within(row).getAllByText("Tir")).not.toHaveLength(0);
+    expect(within(row).getByText("Staves")).toBeVisible();
+    expect(within(row).getByText("(Not Orbs/Wands)")).toBeVisible();
     expect(within(row).getByText("19")).toBeVisible();
   });
 
@@ -156,7 +155,7 @@ describe("what a row carries", () => {
     ]);
   });
 
-  it("labels every rune icon with its own name", () => {
+  it("draws every rune's name beside its icon", () => {
     renderTable();
 
     const rows = rowsByName();
@@ -169,21 +168,61 @@ describe("what a row carries", () => {
     expect(wrong).toEqual([]);
   });
 
-  it("lists multiple categories and puts a restriction in parentheses", () => {
+  it("does not announce a rune's icon separately from its name", () => {
+    renderTable();
+
+    // The icons carry no accessible name of their own now. Left labelled, a
+    // screen reader would announce 686 names for a table of 343 runes.
+    //
+    // Every icon, not every image in the row: the availability badges are still
+    // images with names, and rightly so — a badge draws a marker rather than a
+    // word, so its meaning has nowhere else to live.
+    const icons = [...rowFor("Infinity").querySelectorAll(".rune-icon")];
+
+    expect(icons).toHaveLength(8);
+    expect(icons.every((icon) => icon.hasAttribute("aria-hidden"))).toBe(true);
+    expect(icons.filter((icon) => icon.hasAttribute("aria-label"))).toEqual([]);
+    expect(icons.filter((icon) => icon.getAttribute("role") === "img")).toEqual(
+      [],
+    );
+  });
+
+  it("lists multiple categories and sets a restriction apart from them", () => {
     renderTable();
 
     const rows = rowsByName();
-    const wrong = orderedRunewords.filter(
-      (runeword) =>
-        within(rows(runeword.name)).queryByText(
-          itemTypesLabel(runeword, en),
-        ) === null,
-    );
+    const wrong = orderedRunewords.filter((runeword) => {
+      const row = within(rows(runeword.name));
+      const categories = runeword.itemTypes.join(en.itemTypes.separator);
+
+      if (row.queryByText(categories) === null) return true;
+
+      return (
+        runeword.itemTypeRestriction !== undefined &&
+        row.queryByText(
+          en.itemTypes.restriction(runeword.itemTypeRestriction),
+        ) === null
+      );
+    });
 
     expect(wrong).toEqual([]);
   });
 
-  it("renders no parentheses at all where there is no restriction", () => {
+  it("puts the restriction on its own line, in its own colour", () => {
+    renderTable();
+
+    const row = within(rowFor("Leaf"));
+    const categories = row.getByText("Staves");
+    const restriction = row.getByText("(Not Orbs/Wands)");
+
+    // Two elements, not one run of text — which is the whole reason
+    // `itemTypesLabel` had to stop being a function returning `string`.
+    expect(categories).not.toContainElement(restriction);
+    expect(restriction).toHaveClass("text-item-restriction");
+    expect(categories).toHaveClass("text-muted");
+  });
+
+  it("renders no parentheses and no extra line where there is no restriction", () => {
     renderTable();
 
     const rows = rowsByName();
@@ -193,11 +232,13 @@ describe("what a row carries", () => {
 
     expect(unrestricted).toHaveLength(84);
 
-    const bracketed = unrestricted.filter((runeword) =>
-      within(rows(runeword.name))
+    const bracketed = unrestricted.filter((runeword) => {
+      const cell = within(rows(runeword.name))
         .getByText(runeword.itemTypes.join(en.itemTypes.separator))
-        .textContent?.includes("("),
-    );
+        .closest("td");
+
+      return cell?.textContent?.includes("(");
+    });
 
     expect(bracketed).toEqual([]);
   });
@@ -301,7 +342,7 @@ describe("marking a runeword crafted", () => {
 
   it("does not toggle when the click ends a text selection", () => {
     const { onToggle } = renderTable();
-    const cell = within(rowFor("Leaf")).getByText("Staves (Not Orbs/Wands)");
+    const cell = within(rowFor("Leaf")).getByText("Staves");
 
     // `removeAllRanges` first: `addRange` is specified to do nothing when the
     // selection already holds one, and an earlier `userEvent.click` in this
@@ -403,12 +444,16 @@ function rowsByName() {
  * The rune names of each cell in a row that renders a sequence — two of them,
  * one per breakpoint. jsdom applies no media queries, so both are present here;
  * which one a reader perceives is a browser check.
+ *
+ * Read as the text drawn beside each icon rather than as the icon's label. The
+ * icons are decoration now, and reading the visible name is what proves the
+ * sequence is legible to somebody who does not know the runes by silhouette.
  */
 function runeSequencesIn(row: Element) {
   return [...row.querySelectorAll("td")]
     .map((cell) =>
-      [...cell.querySelectorAll(".rune-icon")].map((icon) =>
-        icon.getAttribute("aria-label"),
+      [...cell.querySelectorAll(".rune-icon")].map(
+        (icon) => icon.nextElementSibling?.textContent,
       ),
     )
     .filter((sequence) => sequence.length > 0);

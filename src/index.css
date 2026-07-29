@@ -49,11 +49,16 @@
   /* The gold display family — headings, rune labels, ornament. A runeword's
      own name is drawn from here, not from the greens below: the reference
      renders it `gold-mid` in its popover title and `muted` in the table cell,
-     going `gold-light` on hover. */
+     going `gold-light` on hover.
+
+     `--color-title` was a fourth here, `#D5D2D0`, and its only use site was the
+     note badge's text. That badge takes the reference's white now, so the token
+     went the way `--color-backdrop` did: nothing renders it, and a token nothing
+     renders is the same defect as a surface with no token. The change that wants
+     a near-white title adds it back and names the surface. */
   --color-gold: #8a8062;
   --color-gold-mid: #a79663;
   --color-gold-light: #bab197;
-  --color-title: #d5d2d0;
 
   /* The two greens the game distinguishes, both inside a granted-property
      line: the line itself, and the numbers within it picked out brighter.
@@ -68,28 +73,60 @@
   --color-property: #48ac3f;
   --color-property-value: #5cbd4b;
 
-  /* Badges: the ladder marker's band and its label, and the patch tag */
+  /* Badges: the ladder marker's band and its label, the note marker's band and
+     its label, and one band per era of patch.
+
+     Four patch tokens for the dataset's five patch values. `1.10` and `1.11`
+     share one because the project treats them as a single classic era, which is
+     why that one is named for the era and the other three are named for the
+     patch they carry: a token covering two values cannot be named after either,
+     and a token covering one has no truer name than that one. The mixture is the
+     honest reading of what each token is for, not an inconsistency.
+
+     No token for a sixth patch. A value nobody has picked a colour for renders
+     with no colour class at all — visibly plain — rather than borrowing one of
+     these, and `src/runewords/patch-colour.ts` is where that fallback lives.
+
+     Each band carries its own foreground rather than reaching for the page
+     ground or the title colour, on the `--color-ladder` / `--color-ladder-label`
+     pattern already here. That is also the whole mitigation if the contrast
+     decision below is ever revisited: black on `--color-patch-classic` scores
+     2.01:1 and on `--color-patch-3-0` 3.67:1, both under WCAG AA, adopted from
+     the reference knowingly — and the fix is one of these foregrounds per band
+     and nothing else. */
   --color-ladder: #501008;
   --color-ladder-label: #a19999;
-  --color-patch: #513b2c;
+  --color-note: #7a1f1f;
+  --color-note-label: #fff;
+  --color-patch-label: #000;
+  --color-patch-classic: #513b2c;
+  --color-patch-2-4: #b87333;
+  --color-patch-2-6: #588425;
+  --color-patch-3-0: #7b3fe4;
 
   /* Crafted state — the row accent `IDEAS.md` calls for */
   --color-crafted: #44aa44;
 
   /* The runeword table's own surfaces: the hairline between rows, the row's
-     hover state, and the detail panel with the dim behind it. No new hue — the
-     two row states are steps of the muted family and the panel is the blood
-     family's dark end, so the table reads as part of the same palette rather
-     than as four decisions taken separately.
+     hover state, and the detail panel. No new hue — the two row states are
+     steps of the muted family and the panel is the blood family's dark end, so
+     the table reads as part of the same palette rather than as three decisions
+     taken separately.
 
      Rows are separated rather than striped: alternating backgrounds on pure
      black either disappear or turn muddy, and the reference does not stripe.
      The hover sits below the line so a hovered row lifts off the ground
-     without swallowing its own separator. */
+     without swallowing its own separator.
+
+     There was a fourth here — `--color-backdrop`, the dim behind the detail
+     view while it was a modal `<dialog>`. The view opens on hover now and has no
+     business interrupting the page, so the backdrop is gone and the token went
+     with it: a token nothing renders is the same defect as a surface with no
+     token, and leaving it declared would invite the next change to dim
+     something just because the colour was already named. */
   --color-row-line: #24221c;
   --color-row-hover: #191712;
   --color-panel: #200000;
-  --color-backdrop: rgb(0 0 0 / 0.75);
 
   /* Crafted tracking's own surfaces: the tint a marked row takes, the unfilled
      groove of the progress bar, and the undo notice's panel.
@@ -108,9 +145,45 @@
   --color-progress-track: #24221c;
   --color-toast: #200000;
 
-  /* Text and decoration */
+  /* The exclusion an item-type line carries — `(Not Orbs/Wands)`, `(Assassin)`.
+
+     Its own token, not `--color-accent`, which holds this very value. "Accent"
+     names no role and is already spoken for as the detail view's note colour, so
+     one token serving both would describe neither. Two roles sharing a hex is
+     fine; one name covering two unrelated roles is the drift the naming rule is
+     for. The categories the restriction qualifies take `--color-muted` below,
+     which is already exactly the colour the reference gives them and already
+     states its role — that is the case where sharing is right.
+
+     Not named after the reference's own `rw-ItemTypes-class`: the field holds
+     `(Not Orbs/Wands)` as readily as `(Assassin)`, so "class" describes half of
+     what it carries. */
+  --color-item-restriction: #bd8547;
+
+  /* Text and decoration.
+
+     `--color-danger` was here at `#AE2A1A`, and the note badge's background was
+     its only use site. The reference uses a different red for that badge, so it
+     took `--color-note` above and this had nothing left rendering it. Removed for
+     the same reason as `--color-backdrop` and `--color-title`; the change that
+     introduces a surface meaning "danger" declares it then, and names it for
+     whatever that surface turns out to be.
+
+     `--color-accent` stays, and its name is poor by this file's own rule — it
+     states a hue's job in the abstract rather than a role. It is the detail
+     view's note colour and nothing else, so `--color-note-text` is what it
+     should be called. Renaming it is not this change's business; it is reported
+     in `IDEAS.md` instead. It holds the same value as
+     `--color-item-restriction` above, which is fine: two roles may share a
+     value, and that is exactly why they do not share a token.
+
+     `--color-muted-dark` and `--color-link` have no use site either, and unlike
+     the three above this change did not orphan them — they arrived declared for
+     surfaces nothing renders yet, as `--color-blood-dark` and
+     `--color-blood-light` did. That is the same defect from the other direction
+     and it is recorded in `IDEAS.md` rather than fixed here, because the changes
+     that will want them are `site-header` and `remaining-panels`. */
   --color-accent: #bd8547;
-  --color-danger: #ae2a1a;
   --color-muted: #74706c;
   --color-muted-dark: #24221c;
   --color-link: #39a9f7;

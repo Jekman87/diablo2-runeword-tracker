@@ -84,11 +84,31 @@ and SHALL return focus to the name that opened it when it closes, so that a
 keyboard reader is not returned to the top of a 99-row table.
 
 Whether keyboard focus is contained within the view SHALL depend on how the view
-was opened. A view opened deliberately — by click, by tap, or by keyboard focus
-reaching the name — SHALL contain focus, so that a reader who went to it is not
-dropped back into the table behind it. A view opened by hover SHALL NOT contain
-focus and SHALL NOT move it, because a panel that appears under a passing pointer
-must not take the keyboard away from wherever its owner actually is.
+was opened, and the three ways of opening it are three cases rather than two.
+
+A view opened by **activating** the name — a click, a tap, or a keypress — SHALL
+contain focus, so that a reader who went to it on purpose is not dropped back into
+the table behind it.
+
+A view opened by **keyboard focus reaching** the name SHALL NOT contain focus and
+SHALL NOT move it. Advancing focus from the name SHALL enter the view, and
+advancing past the view's last focusable element SHALL continue into the table at
+the row after the one that opened it. Containing focus here would make the table
+impossible to read by keyboard: focus reaching a name opens that name's view, so a
+trap would close over the keyboard on the first row and no later row could ever be
+reached.
+
+A view opened by **hover** SHALL NOT contain focus and SHALL NOT move it, because
+a panel that appears under a passing pointer must not take the keyboard away from
+wherever its owner actually is.
+
+#### Scenario: A view reached by keyboard does not trap the reader in it
+
+- **WHEN** focus reaches a runeword's name by keyboard, opening its view, and
+  focus is then advanced twice
+- **THEN** the first advance enters the view and the second leaves it for the next
+  row, so every row of the table remains reachable
+- **AND** focus was never moved into the view by the act of opening it
 
 #### Scenario: Escape closes the detail view
 
@@ -97,13 +117,15 @@ must not take the keyboard away from wherever its owner actually is.
 
 #### Scenario: Focus returns to the invoking name
 
-- **WHEN** the detail view is closed by any means
-- **THEN** focus is on the runeword name that opened it
+- **WHEN** a detail view that had taken focus is closed by any means
+- **THEN** focus is on the runeword name that opened it, rather than at the top of
+  a 99-row table
+- **AND** a view that never took focus leaves it wherever it already was
 
 #### Scenario: Focus does not escape into the table behind
 
-- **WHEN** the detail view was opened deliberately and focus is advanced past its
-  last focusable element
+- **WHEN** the detail view was opened by activating the name and focus is advanced
+  past its last focusable element
 - **THEN** focus stays within the detail view rather than landing on a row behind
   it
 

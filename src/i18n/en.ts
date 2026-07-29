@@ -31,8 +31,14 @@ export const en = {
 
   itemTypes: {
     separator: ", ",
-    withRestriction: (categories: string, restriction: string) =>
-      `${categories} (${restriction})`,
+    // The restriction's brackets alone, not a sentence joining it to the
+    // categories. It renders on its own line and in its own colour now, so the
+    // two halves are two elements and there is nothing left for a function
+    // taking both of them to build.
+    //
+    // The words inside are dataset content — `Not Orbs/Wands`, `Assassin` — and
+    // stay out of this file. Only the punctuation around them is copy.
+    restriction: (restriction: string) => `(${restriction})`,
   },
 
   availability: {
