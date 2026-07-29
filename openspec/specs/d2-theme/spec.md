@@ -25,7 +25,8 @@ crafted row, the unfilled track of the progress indicator, and the panel of the
 transient undo notice. They SHALL further cover the surfaces the browsing controls
 introduce: the search field, the resting and selected states of a filter control,
 the indicator marking the sorted column, and the message shown when nothing
-matches.
+matches. They SHALL further cover the surface the remaining panels introduce: the
+band of each panel's collapse control.
 
 Where one badge is coloured by the value it carries, the palette SHALL declare one
 token per distinct colour that value can take, so that the mapping lives in the
@@ -98,20 +99,31 @@ misdescribes its own subject SHALL NOT be copied.
 - **AND** no token was declared for them, because the muted-dark and light-blood
   tokens already held exactly those roles with no use site
 
+#### Scenario: The remaining panels' band is a token already declared
+
+- **WHEN** the collapse control's band on the remaining-runes and remaining-bases
+  panels is inspected
+- **THEN** it takes its colour from the dark blood token rather than a literal
+  value or a new declaration, because that token already held exactly this role
+  with no use site
+- **AND** the panels' bodies render on the page ground rather than borrowing the
+  detail view's panel token, because those are different roles even where a value
+  might suit both
+
 #### Scenario: A surface with no component still has no token
 
 - **WHEN** the token set is read for surfaces no component renders yet, such as
-  the collapsible remaining-runes and remaining-bases panels
-- **THEN** no token exists for them, because the change that builds each one adds
-  its own
+  the site header's patch line and links
+- **THEN** no token exists for them beyond what is already declared, because the
+  change that builds each one adds its own
 
 #### Scenario: A token declared ahead of its use site is worked off, not explained
 
 - **WHEN** the tokens declared with nothing rendering them are counted
-- **THEN** two remain — the dark blood band and the link colour — rather than the
-  four this requirement was previously failing on
-- **AND** each of the two is owed to a named change, so the count falls as those
-  changes land
+- **THEN** one remains — the link colour — rather than the two before the
+  remaining panels rendered the dark blood band
+- **AND** that one is owed to `site-header`, so the count falls to zero when it
+  lands
 
 #### Scenario: A patch badge has one token per era
 
