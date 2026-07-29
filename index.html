@@ -15,6 +15,32 @@
          image here. A `public/` file would be served unhashed from the domain
          root and 404 on the deployed site. -->
     <link rel="icon" type="image/png" href="./src/assets/images/jah-rune.png" />
+
+    <!-- The display face, fetched as early as the document itself.
+
+         Without this the browser cannot know the font exists until it has
+         downloaded and parsed the stylesheet, which is one round trip too late:
+         the heading paints in the fallback serif and then re-lays-out when
+         Bellefair arrives, and Cambria and Bellefair are different enough widths
+         that the title visibly jumps. Preloading starts the 16.5 kB request in
+         parallel with the CSS instead, and `font-display: optional` in
+         `src/index.css` is the other half — see the note there for why the two are
+         one decision.
+
+         `crossorigin` is not optional even though the file is same-origin: font
+         requests are made in CORS mode, and a preload without it is a second,
+         unused download rather than a warm cache entry.
+
+         Referenced from `src/` for the same reason as the icon above, so Vite
+         fingerprints it and it resolves to the one hashed file the stylesheet
+         also points at. -->
+    <link
+      rel="preload"
+      href="./src/assets/fonts/bellefair-latin-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
   </head>
   <body>
     <div id="root"></div>

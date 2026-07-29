@@ -35,7 +35,7 @@ export function CraftedProgress({ crafted }: CraftedProgressProps) {
   const count = strings.progress.count(crafted, total);
 
   return (
-    <div className="grid gap-1">
+    <div className="progress-band grid gap-1">
       <progress
         className="crafted-progress w-full"
         value={crafted}

@@ -63,8 +63,8 @@ site still deployable.
 | 5   | `runeword-table`      | done   |
 | 6   | `crafted-tracking`    | done   |
 | 6a  | `detail-view-hover`   | done   |
-| 7   | `search-sort-filter`  | next   |
-| 8   | `remaining-panels`    |        |
+| 7   | `search-sort-filter`  | done   |
+| 8   | `remaining-panels`    | next   |
 | 9   | `property-groups`     |        |
 | 10  | `site-header`         |        |
 
@@ -287,13 +287,308 @@ nobody owns it.
   them or delete them.
 
 - **`search-sort-filter`** — search over name and item type, header-click
-  sorting, the slot filter, view settings persisted. Needs the item-type to
-  slot mapping, which `runeword-dataset` deliberately left out. **Now carries
-  more weight than it did:** labelled 40px rune icons take the table from roughly
+  sorting, the slot filter, view settings persisted. Needed the item-type to
+  slot mapping, which `runeword-dataset` deliberately left out. **Carried more
+  weight than it looked:** labelled 40px rune icons take the table from roughly
   4060px of rows to 7430px, and the filters are what make a page that long
   navigable.
+
+  Landed with seven things worth carrying forward.
+
+  **Two of the four orphaned tokens are worked off; two remain.**
+  `--color-muted-dark` now draws the search field and a filter chip at rest, and
+  `--color-blood-light` the selected chip and the sorted column's band. That
+  leaves `--color-blood-dark` and `--color-link`, owed to `remaining-panels` and
+  `site-header`. Whichever gets there first should render its token or delete it —
+  the count has to keep falling.
+
+  **The sorted column is marked by its band, not by a tinted arrow, and the
+  reason is a contrast measurement.** The design said to draw the direction
+  indicator "from the light-blood token", which read most naturally as tinting the
+  glyph. `#802000` text on the `#400000` header band scores **1.74:1** — a glyph
+  nobody can see. So the token renders the surface it is genuinely right for (the
+  sorted `<th>`'s background, a visible step between two adjacent blood shades)
+  and the arrow stays in the band's own `--color-gold-light`, which is 4.6:1 on
+  it. The direction is carried three times over regardless: `aria-sort`, the
+  button's accessible name in words, and the arrow. Worth remembering as a shape:
+  a token named for a role can be right about the role and wrong about which
+  property renders it.
+
+  **The arrow costs about 21px of the table's narrow-viewport overflow, and the
+  control bar costs nothing.** Measured at a 390px viewport: the bar needs 90px at
+  min-content, never scrolls internally, and wraps below `md` — it is only ever as
+  wide as the grid track the table already stretched. The document's overflow went
+  from 198px to 620−390 = 230px, and all of that is the arrow's reserved space in the
+  five headers.
+
+  It was worse before it was fixed. Drawn only on the sorted column, the arrow made
+  that column 12px wider than the other four — and since Required Level is
+  `whitespace-nowrap` by an earlier decision and is the default sorted column, its
+  header sets its own column's width, so **sorting by it resized the column and
+  shifted every row beside it**. The space is reserved in all five headers now and
+  nothing moves; the price is that the reservation is permanent rather than paid only
+  while sorted. Verified in Chromium: the five header widths are byte-identical under
+  the default sort, sorted by name, and sorted by level.
+
+  Whoever picks up the phone layout should know the reserved arrows are in the
+  measurement, and that reclaiming them means hiding the indicator below `md` rather
+  than making it conditional again.
+
+  **The sticky bands and the detail panel are one stacking decision, and it lives
+  in `src/index.css`.** The progress band is `z-index: 2`, the header band
+  `z-index: 1`, the portalled panel `z-10`.
+  Verified in Chromium the only way it can be — open a panel on a row just below
+  the band, scroll until the two overlap, and read `elementFromPoint` at the
+  overlap: the panel is what is painted. The two numbers are eight apart on
+  purpose, and changing either without reading the other is how that defect comes
+  back at one specific scroll offset.
+
+  **The row memoisation survived the rows becoming a derived array**, which was
+  the risk the change was most likely to fail on. Measured in Chromium after:
+  20–35ms from click to painted panel and **no long tasks at all**, against 37–50ms
+  and long tasks to 127ms unmemoised. What holds it up is that the `runeword`
+  objects inside the derived array are the dataset's own and their identities never
+  change, so the memo's comparison passes whether the array is fresh or not — plus
+  one `useMemo` in `App` and five `useCallback` setters, without which every
+  keystroke in the search field would rebuild 99 rows.
+
+  **`useCraftedRunewords`' `toggle` is still a fresh closure per render**, and
+  this change deliberately did not touch it. It means typing in the search field
+  re-renders every presented row, since `App` re-renders and hands the rows a new
+  callback. Harmless today — the presented set is changing anyway on those renders
+  — but it is the one prop standing between the table and a fully stable set, and
+  it is about three lines to fix if a later change needs it.
+
+  **A rune name can still match a runeword, and that is the name column
+  working.** Rune search is dropped, but ten of the 33 rune names occur _inside_
+  other text — `El` within `Delirium`, `Mal` within `Malice` — so those queries
+  match as substrings of a visible name. The twenty-three that occur nowhere are
+  what the test suite uses to prove no rune is a search term.
+
+  **The ASCII matcher is `russian-locale`'s problem now.** Search is
+  `toLowerCase()` and `includes()`, with no normalisation and no collator, because
+  every name, category and restriction in the dataset is ASCII and
+  `src/index.css`'s font subset already depends on that. Sorting is code-point
+  order for the same reason. `russian-locale` is the change that introduces
+  non-ASCII display text, so it owns the collation question — and it inherits it
+  in two places, not one.
+
+  **Two questions were left open on purpose.** Whether the slot filter wants a
+  count per option — `Shield (10)` — which is cheap to derive but is four more
+  numbers on a bar that already carries one, and which interacts with whether
+  those numbers respect the other filters; `remaining-panels` is about to render
+  per-slot aggregates and may answer it better. And whether the crafted filter's
+  "remaining" should become the default once anything is crafted, which is what a
+  returning player wants and is also a control changing itself — the persisted
+  setting is the honest version of the same idea.
+
+  **Sorting by crafted state is the first control that can move a row out from
+  under the pointer.** Toggling a row while sorted by that column relocates it
+  immediately, which is a misclick generator. The undo notice is the existing
+  answer and this change added no re-sort animation; `row-animations` in Phase 4 is
+  where that gets looked at, and it is the first thing on this page that needs it.
+
+  **The search field's clear button is restyled, and the first attempt to leave it
+  native was wrong.** Chromium draws that glyph in its own blue and gives it the
+  document cursor, which made it the one thing on the page whose colour came from no
+  token and which did not admit that it could be pressed — the palette rule and the
+  pointer rule this project keeps everywhere else. "The platform draws it" turned
+  out not to be a reason to break either. The replacement is a **mask rather than a
+  background image**, and that is the whole trick: an inline SVG carrying its own
+  `fill` would be a literal colour inside a URL, invisible to the token rule and
+  unreachable by a hover state, where a mask holds only geometry and takes its
+  colour from `background-color`. So the glyph is `--color-muted` at rest and
+  `--color-gold-light` under the pointer, the same pair the crafted socket and the
+  runeword's own name already move between. Any future control that has to restyle a
+  platform-drawn glyph has the same shape available.
+
+  **Everything square gained a 2px radius**, which was a request rather than a
+  requirement and is recorded because it now applies to four surfaces and the next
+  one should match: the search field, the filter chips, the progress bar and the
+  table's header band. Two pixels — `--radius-xs` — because Diablo II's own
+  interface is angular and anything larger stops reading as the game. Two details
+  are worth knowing. The progress bar needs the radius on the groove **and** on both
+  engines' fill pseudo-elements, or a square fill shows the corner it was meant to
+  soften, at 0% and 100% where the bar spends its first and last day. And the header
+  band's two outer `<th>` cells carry matching corners, because the sorted column's
+  lighter background would otherwise paint a square corner over the rounded one —
+  visible only when Crafted or Required Level is the sorted column. `border-radius`
+  does apply to a `table-header-group` box in Chromium; that was checked rather than
+  assumed. The detail panel and the undo notice are still square, deliberately left
+  for whoever decides whether the radius is a system or four use sites.
+
+  **The Tailwind source-scan defect is not fixed, and this change met all three of
+  its faces.** `detail-view-hover` scoped the scan to `src/` and thought that was
+  the end of it. It was not — comments in TypeScript are prose too, and the scanner
+  cannot tell them from markup. Caught by diffing the generated class list against
+  the previous build, which is now the only way to see it:
+
+  - **A word in a doc comment.** The four-letter word for what focus draws around a
+    control appeared in one sentence in `RunewordControls.tsx` and cost 1.65 kB —
+    the utility plus its `@property` block. It came back twice while being fixed:
+    once from the comment explaining not to write it, and again from writing it with
+    a leading dot. Two component comments are now worded around the scanner, and
+    both say so.
+  - **A parameter name.** `filter` is a Tailwind utility and the natural name for
+    a parameter holding one, so `(filter: CraftedFilter)` in three signatures
+    generated `.filter` and nine custom properties, 643 B. No amount of scoping
+    reaches an identifier, and renaming it would be the scanner dictating the code.
+    Blocked by name instead: `@source not inline("filter")`.
+  - **Test files.** The densest prose in the project, rendering no markup that
+    ships. Excluded with `@source not`, which removed thirteen classes nothing
+    rendered — `.invisible`, `.text-lg`, `.mr-1`, `.text-red-500` and the numeric
+    fragments a `@floating-ui` assertion generated. That is a defect the baseline
+    was already carrying.
+
+  Net: the stylesheet went from 14.17 kB to 14.67 kB for a whole feature's worth of
+  new utilities, all eighteen of which a component actually renders. **The
+  generalisable part is the method, not the three fixes:** a class list diffed
+  between builds is the only thing that shows this, `pnpm build` alone does not, and
+  the next change should expect to find its own.
+
 - **`remaining-panels`** — the two collapsible blocks. Pure aggregation logic,
   unit tested.
+
+- **`chronicle-styling`** — not a feature, and not yet a proposal. A pass over the
+  interface against a screenshot of the **in-game Chronicle window itself**, which
+  is the screen this whole project is a tracker for and which nobody had compared
+  the page against until now. `docs/REFERENCE.md` analyses the _reference site_;
+  this is the game. Landed so far, directly on `main` rather than through a change,
+  which is worth admitting rather than tidying away:
+
+  **The crafted accent is the Chronicle's gold, not green.** `--color-crafted` went
+  from `#44aa44` to `#a79663` — the value `--color-gold-mid` already holds, kept as
+  its own token because "the gold display family" and "crafted state" are different
+  roles that happen to share a hex, which is the case `d2-theme`'s naming rule
+  explicitly permits. The Chronicle's own progress bar fills pale gold and there is
+  no saturated green anywhere on that screen; the green pip was the one element on
+  our page that looked like it came from a different application. This reverses a
+  line in the Phase 1 layout above.
+
+  **The control is a square box with a check mark, not a filled socket.** Same
+  reason, and it reverses the same section. `crafted-tracking`'s requirement was
+  worded around a socket rendering filled or hollow, and has been reworded: what it
+  guarantees is that **a mark is present or absent**, so colour is never the only
+  difference between the two states — not which mark it is. The check is an inline
+  SVG stroked in `currentColor` with the token on the button, so no colour value
+  lands in the component.
+
+  **Progress states a percentage as well as the counts, and it sticks.**
+  `37% (37 of 99)`: the percentage is the form the Chronicle uses, the counts stay
+  because the goal is a number of runewords and a percentage alone cannot be checked
+  against a list of 99. The rounding lives in the copy layer, where formatting
+  belongs. And the band is `position: sticky` at the top of the viewport above the
+  table's own band — the question the page exists to answer, scrolled 7 000px above
+  the rows being read, is an answer nobody can see. Both requirements are now in
+  `crafted-tracking`.
+
+  **Three stacked sticky things now share one number.** The progress band is
+  `z-index: 2` at `top: 0`, the table header `z-index: 1` at
+  `top: var(--progress-band-height)`, the detail panel `z-10`. That variable exists
+  because nothing in CSS can ask an element how tall its sibling ended up: if the
+  band grew and the header's `top` did not, a strip of runeword row would show
+  between them, and only while scrolling. Also worth knowing that **sticky works on
+  a grid item here** — usually it does not, since a grid item's containing block is
+  its one-row grid area — checked in Chromium rather than reasoned about.
+
+  **The title stopped jumping on reload, and the cause was `font-display: swap`.**
+  Swap paints the heading in the fallback serif and then re-lays it out when
+  Bellefair arrives, and Cambria and Bellefair are different enough widths that the
+  shift is obvious on a page whose first element is a large heading. Two changes, and
+  they are one decision: `font-display: optional`, which gives the font a short
+  window and then commits for the whole page load so the text is laid out once; and a
+  `<link rel="preload">` in `index.html`, so the 16.5 kB request starts with the
+  document instead of after the stylesheet is parsed. Measured in Chromium against
+  the built site on a cold profile: **CLS 0, Bellefair loaded, one font request** —
+  the `crossorigin` attribute is what keeps it one rather than two, because font
+  requests are made in CORS mode and a preload without it is an unused download.
+  `block` was the alternative and is worse: it hides the heading instead of moving
+  it. Vite rewrites the preload's `href` to the same hashed file the stylesheet
+  points at, so nothing is duplicated. No spec pinned `swap`, so nothing there
+  changed.
+
+  **The slot filter took the game's vocabulary, and its split.** Five slots instead
+  of four: `shield` became **offhand**, and `weapon` split into **melee** and
+  **missile**. Both are the player's own words and the second is a distinction they
+  plan around — a bow runeword and a sword runeword are not alternatives to each
+  other. `Helm` and `Body Armour` stayed as we wrote them: the Chronicle says
+  `Helmet` and `Body Armor`, and the second is one letter from the dataset's own
+  `Body Armors`, which is the confusion the British spelling avoids.
+
+  Three consequences worth carrying forward.
+
+  **A category can now belong to two slots, which changed the mapping's shape.**
+  `Weapons` means _any_ weapon, so it maps to melee **and** missile; collapsing it to
+  either would hide nine runewords from a filter they belong in. `slotOf` returning
+  one slot became `slotsOfCategory` returning a list, and `runeword-browsing`'s
+  "exactly one of the four" became "one or more". Every other category still maps to
+  exactly one, so the change is a shape rather than a free-for-all.
+
+  **The multi-slot count went from five runewords to thirteen, and `Fortitude` now
+  spans three.** Per-slot totals are 14 helm, 49 melee, 19 missile, 10 offhand, 22
+  body armour — 114 memberships across 99 runewords. That excess is the point of the
+  filter rather than double counting, and nothing about it reaches the progress
+  denominator. The eight new spanners were always craftable in either kind of weapon;
+  one `weapon` slot simply had no way to say so.
+
+  **A stored `slotFilter` of `shield` or `weapon` no longer validates, and that is
+  handled.** `view-persistence` already requires the whole record to be rejected on
+  an unrecognised choice, so those sessions open with the defaults and the next change
+  of a control overwrites them. The key stays at `v1`: the _shape_ did not change,
+  only the enum members, and bumping it would have thrown away the player's sort
+  setting for nothing.
+
+  **The crafted header starts descending, alone among the five.** One press shows
+  what you have made, because that is what a player pressing it is asking; what is
+  left is the same header pressed twice. The arithmetic underneath did not move —
+  ascending still puts the un-crafted first — so this is only which direction one
+  press lands on, and it lives in `firstDirectionFor` beside the comparators.
+
+  **A column header is the whole cell now, not the words in it.** The padding moved
+  from the `<th>` to the `<button>`, which fills it. Still a real button, which is
+  what keeps it in the tab order and operable by Space and Enter — the two halves used
+  to pull against each other, because a handler on the cell would have given the hit
+  target and cost the keyboard. One knock-on: a full-width flex control does not
+  honour its parent's `text-align`, so the right-aligned Required Level column needed
+  an `align` prop rather than a class on the cell.
+
+  **The columns are declared from `md` up, and three separate things were making the
+  page move.** Auto layout sizes a column by the widest thing in it, so the columns
+  were a function of whichever rows the filters happened to leave. Measured at 1280px
+  going from all 99 rows to the empty state: `[101,227,334,276,164]` became
+  `[183,227,163,235,296]` — the crafted column nearly doubled, because its 99
+  checkboxes stopped being there to size it. Fixed by `table-fixed` plus five declared
+  percentages on the header cells, verified sub-pixel identical across 99 rows, a
+  22-row filter and the empty state at 768, 1152 and 1280.
+
+  Two smaller causes were hiding behind that one, and both are the kind that only
+  show on a transition:
+
+  - **The scrollbar.** Filter down far enough and the page stops scrolling, the
+    viewport gains the scrollbar's width, and `mx-auto` re-centres every element
+    including the heading. `scrollbar-gutter: stable` on `html` reserves the space
+    always. A no-op where the platform draws overlay scrollbars, which is also why it
+    could not be reproduced in headless Chromium and had to be reasoned about.
+  - **The empty state's row had no borders.** A data row carries `border-l-4` for the
+    crafted accent; the message row did not, which made the collapsed table 2px
+    narrower on that edge and moved every column. It carries the same borders,
+    transparent, now.
+
+  **Fixed widths stop at `md`, deliberately.** Below it the runes collapse into the
+  name cell, and at 390px percentages clipped the `Crafted` heading by 37px and spilled
+  name cells over their neighbours — six 40px icons do not fit in about 124px. Auto
+  layout there keeps doing what it always did: the table gets as wide as it needs and
+  the page scrolls sideways. That is the pre-existing defect nobody owns, and buying
+  stability at a width where nothing was complaining by making the layout worse is the
+  wrong trade. The phone layout gets fixed by deciding what to do about the icon size,
+  not by five percentages.
+
+  **Still on the table from that screenshot, and not done:** the window uses
+  **letter-spaced small caps** for every label, lays its filters out as a **vertical
+  list with diamond bullets** rather than chips, centres the **percentage over the
+  bar** instead of beneath it, and draws its panels in **charcoal with bevelled gold
+  frames** rather than on pure black. None of those is obviously right for a web page
+  that has to work at 390px, which is why they are a list here rather than a commit.
 
 Phases 2 to 4 become their own changes later: `russian-locale`,
 `csv-import-export`, `row-animations`.
@@ -317,7 +612,15 @@ Phases 2 to 4 become their own changes later: `russian-locale`,
 
 - One row per runeword, 99 on the current patch
 - Columns: crafted state, name, runes, item types, required level
-- Every column header sortable; default sort by required level
+- Every column header sortable; default sort by required level.
+  **Shipped** by `search-sort-filter`: five keys, two directions and no third
+  state, with the header row sticky so a sort control is reachable from the row
+  being read. Every ordering falls back to level-then-name, because four of the
+  five keys cannot separate the dataset on their own — 45 runewords share three
+  sockets — and reversing a direction reverses the key only, leaving that tiebreak
+  ascending, so a descending presentation is not the ascending one read backwards.
+  The runes column sorts on **socket count**, not the rune sequence as text, which
+  would order `Ber Mal Ber Ist` before `El El El`.
 - Crafted state is its own column so it can be sorted on
 - Item types display as category plus restriction, e.g.
   `Staves (Not Orbs/Wands)`, `Body Armors (Barbarian)`. **Shipped as two lines**
@@ -339,10 +642,12 @@ Phases 2 to 4 become their own changes later: `russian-locale`,
 
 ### Marking a runeword as crafted
 
-- Control in the first column, styled as an empty vs filled socket
+- Control in the first column. **Shipped as a square box with a check mark, not
+  the empty-vs-filled socket this line first called for** — see the note below.
 - Whole row clickable for a larger hit target, but the control stays a real
   button so Tab and Space work
-- A crafted row gets a green tint and a left accent border
+- A crafted row gets a tint and a left accent border. **The tint is the
+  Chronicle's gold, not the green this line first called for** — same note.
 - Toggling updates the progress bar and both remaining panels immediately
 - Undo affordance for misclicks — short-lived toast with an undo action
 
@@ -351,6 +656,22 @@ Phases 2 to 4 become their own changes later: `russian-locale`,
 - Crafted / remaining / all
 - **By slot: helm, weapon, shield, body armour.** This is the only category
   filter. Everything finer grained is handled by search instead.
+
+**Shipped** by `search-sort-filter`, as two radio groups rather than toggle
+buttons — radio semantics say "one of these" without a sentence explaining it and
+arrow-key movement comes free. Both are single-select: a runeword belongs to
+several slots at once (`Fortitude` is a weapon and a body armour, and appears
+under both), so a union of two produces a presented set that is hard to predict
+from the controls.
+
+The 20 base item categories map onto the four slots in `src/runewords/slots.ts`,
+in application code rather than in the dataset — a slot is our grouping of the
+vendored categories, and a generator emitting a field with no source is the defect
+its own rules exist to prevent. The mapping's totality is a test over the dataset,
+not a comment, because a category new to us would otherwise make its runewords
+vanish from every slot at once and silently. `Grimoire → shield` is the one call
+worth remembering: it occurs on seven runewords and beside `Shields` on all of
+them. Per-slot totals are 14 helm, 58 weapon, 10 shield, 22 body armour.
 
 ### Remaining runes block
 
@@ -377,6 +698,20 @@ Phases 2 to 4 become their own changes later: `russian-locale`,
 
 - Crafted runewords in `localStorage`
 - Filter and sort settings in `localStorage`
+
+**Two keys, two modules, two opposite recovery rules**, which is why
+`view-persistence` is its own capability rather than half of
+`progress-persistence`. Progress is the player's work: a value that failed to parse
+is left untouched so it can be repaired by hand, and a name the dataset does not
+know is carried forward. A sort direction is not the player's work — a corrupt view
+setting is discarded, the defaults are used, and the next change of a control
+overwrites it. One module serving both would have a write path that has to know
+which half of its payload may be thrown away.
+
+**The search query is deliberately not persisted**, and the stored record has no
+field for it rather than an empty one. A page reloading into `zeal` showing one row
+reads as a broken dataset, not as a preference — where a filter's own control shows
+what it is doing, which is the honest form of the same idea.
 
 ---
 
