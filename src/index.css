@@ -91,9 +91,11 @@
    Scope: the surfaces `IDEAS.md` has already settled — the ground, body text,
    the table band, the runeword name, property text, the gold family, the two
    badges and the crafted accent — plus the four the runeword table introduces
-   and the three crafted tracking does. Nothing is added for the collapsible
-   panels: the change that builds each one adds its own token, which is the rule
-   that keeps this a single source rather than a starting point.
+   and the three crafted tracking does. Nothing was added for the collapsible
+   panels: their summary band is `--color-blood-dark`, declared here ahead of
+   any surface and rendered once `remaining-panels` built one — a token already
+   holding the needed role is used rather than declared twice, which is the
+   rule that keeps this a single source rather than a starting point.
 
    Nothing was added for the browsing controls either, and that is the same rule
    read the other way: the search field, the filter chips, the sorted column's
@@ -104,7 +106,11 @@
   --color-ground: #000;
   --color-body: #aca798;
 
-  /* The table band and its darker companion */
+  /* The blood family: the table's header band, the remaining panels' summary
+     band one step darker — related to the header, subordinate to it — and the
+     light end the selected chip and the sorted column take. The panels' bodies
+     deliberately have no token: they render on the page ground, and borrowing
+     `--color-panel` below would put one name on two unrelated roles. */
   --color-blood: #400000;
   --color-blood-dark: #200000;
   --color-blood-light: #802000;
@@ -213,8 +219,8 @@
      There is deliberately no token for the bar's *filled* portion. That is
      `--color-crafted` above, declared by `d2-theme` for exactly this role and
      without a use site until now — a second token for the same role is the
-     drift the palette rule exists to prevent. And still nothing for the
-     collapsible panels: `remaining-panels` adds its own. */
+     drift the palette rule exists to prevent. The remaining panels went the
+     same way, rendering `--color-blood-dark` above rather than adding one. */
   --color-crafted-row: rgb(167 150 99 / 0.12);
   --color-progress-track: #24221c;
   --color-toast: #200000;
@@ -259,8 +265,9 @@
      sorted column's band. Rendering a declared token is the fix that rule asks
      for; declaring a sixth family beside it would have been the defect.
 
-     `--color-blood-dark` and `--color-link` are still owed a use site, for
-     `remaining-panels` and `site-header`. Two, down from four. */
+     `--color-link` is still owed a use site, for `site-header`. One, down
+     from four: `remaining-panels` rendered `--color-blood-dark` as the
+     summary band of both its panels, exactly the surface it was held for. */
   --color-accent: #bd8547;
   --color-muted: #74706c;
   --color-muted-dark: #24221c;
