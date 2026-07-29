@@ -370,6 +370,76 @@ describe("the view an earlier session left behind", () => {
   });
 });
 
+describe("the remaining panels", () => {
+  it("mounts both between progress and the controls, each closed", () => {
+    render(<App />);
+
+    const runesPanel = panelFor(en.remaining.runesTitle);
+    const basesPanel = panelFor(en.remaining.basesTitle);
+
+    expect(runesPanel.open).toBe(false);
+    expect(basesPanel.open).toBe(false);
+
+    // Document order: progress, then the panels, then the search field.
+    const progress = screen.getByRole("progressbar");
+    const search = screen.getByRole("searchbox");
+
+    expect(follows(runesPanel, progress)).toBe(true);
+    expect(follows(basesPanel, runesPanel)).toBe(true);
+    expect(follows(search, basesPanel)).toBe(true);
+  });
+
+  it("updates both panels from one toggle, with no reload anywhere", async () => {
+    render(<App />);
+
+    await userEvent.click(summaryFor(en.remaining.runesTitle));
+    await userEvent.click(summaryFor(en.remaining.basesTitle));
+
+    // Steel is Tir El in a two-socket sword, axe or mace — and the only
+    // two-socket sword there is, so its group must leave entirely.
+    expect(runeCountFor("El")).toBe(en.remaining.runeCount(9));
+    expect(runeCountFor("Tir")).toBe(en.remaining.runeCount(14));
+    expect(baseRowFor("Swords", 2)).not.toBeNull();
+
+    await userEvent.click(socketFor("Steel"));
+
+    expect(runeCountFor("El")).toBe(en.remaining.runeCount(8));
+    expect(runeCountFor("Tir")).toBe(en.remaining.runeCount(13));
+    expect(baseRowFor("Swords", 2)).toBeNull();
+  });
+
+  it("restores both panels when the undo is taken", async () => {
+    render(<App />);
+
+    await userEvent.click(summaryFor(en.remaining.runesTitle));
+    await userEvent.click(summaryFor(en.remaining.basesTitle));
+    await userEvent.click(socketFor("Steel"));
+    await userEvent.click(screen.getByRole("button", { name: en.undo.action }));
+
+    expect(runeCountFor("El")).toBe(en.remaining.runeCount(9));
+    expect(runeCountFor("Tir")).toBe(en.remaining.runeCount(14));
+    expect(baseRowFor("Swords", 2)).not.toBeNull();
+  });
+
+  it("reads the same crafted set the progress indicator does", async () => {
+    window.localStorage.setItem(CRAFTED_STORAGE_KEY, '["Steel","Leaf"]');
+
+    render(<App />);
+
+    await userEvent.click(summaryFor(en.remaining.runesTitle));
+
+    // Steel and Leaf each spend one Tir; only Steel spends an El. Two crafted
+    // in the bar, and the counts move with the same two — one set, three
+    // readers.
+    expect(screen.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuetext",
+      en.progress.count(2, 99),
+    );
+    expect(runeCountFor("El")).toBe(en.remaining.runeCount(8));
+    expect(runeCountFor("Tir")).toBe(en.remaining.runeCount(12));
+  });
+});
+
 /** The runeword rows, without the header row or an empty-state row. */
 function runewordRows() {
   return screen
@@ -399,6 +469,55 @@ function headerButtonFor(label: string) {
   if (!header) throw new Error(`No column headed ${label}`);
 
   return within(header).getByRole("button");
+}
+
+/** The remaining panel titled `title`. */
+function panelFor(title: string): HTMLDetailsElement {
+  const panel = screen.getByText(title).closest("details");
+
+  if (!panel) throw new Error(`No panel titled ${title}`);
+
+  return panel;
+}
+
+/** The disclosure control of the panel titled `title`. */
+function summaryFor(title: string): HTMLElement {
+  const summary = screen.getByText(title).closest("summary");
+
+  if (!summary) throw new Error(`No summary titled ${title}`);
+
+  return summary;
+}
+
+/** The count beside one rune's name in the remaining-runes panel. */
+function runeCountFor(name: string) {
+  const entry = within(panelFor(en.remaining.runesTitle))
+    .getByText(name)
+    .closest("li");
+
+  if (!entry) throw new Error(`No entry for ${name}`);
+
+  return entry.lastChild?.textContent;
+}
+
+/** The `(category, sockets)` row of the remaining-bases panel, or null. */
+function baseRowFor(category: string, sockets: number) {
+  return (
+    within(panelFor(en.remaining.basesTitle))
+      .getAllByRole("listitem")
+      .find(
+        (row) =>
+          row.firstChild?.textContent === category &&
+          within(row).queryByText(en.remaining.baseSockets(sockets)) !== null,
+      ) ?? null
+  );
+}
+
+/** Whether `later` comes after `earlier` in document order. */
+function follows(later: Node, earlier: Node) {
+  return Boolean(
+    earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING,
+  );
 }
 
 /** The crafted socket in the row whose name button reads `name`. */
