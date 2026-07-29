@@ -38,7 +38,14 @@ counted, not assumed.
 **Non-Goals:**
 
 - Changing what the detail view contains. Same record, same order, same derived
-  socket count.
+  socket count — with one subtraction: **the close button goes.** It was
+  `<dialog>`'s, not the view's. `showModal()` needed a first focusable element and
+  focused it, so the panel had to offer one; a panel that appears when the pointer
+  rests on a name is left rather than closed, and Escape, an outside press and
+  moving the pointer away are the three ways to leave it. Nothing is lost by it:
+  the panel holds no other control, so there is no keyboard reach to give up, and
+  what tells assistive technology the panel exists is `aria-expanded` and
+  `aria-controls` on the name.
 - Making the badges legible. The reference's contrast is adopted as-is, by
   decision, with the numbers recorded below.
 - Renaming `--color-accent`, whose name is poor by the theme's own rule. Reported,
@@ -80,7 +87,7 @@ keyboard focus on the deliberate side beside a click. **Using it in a browser
 showed that to be wrong, and wrong in a way that made the page unusable.** Focus
 reaching a name is what opens that name's panel, so a trap closes over the keyboard
 on the very first row: Tab reaches row 1's name, the panel opens, focus is pulled
-onto its close button, and every subsequent Tab cycles there. Escape hands focus
+onto the panel, and every subsequent Tab cycles there. Escape hands focus
 back to the name and the next Tab walks straight back in. Rows 2 to 99 cannot be
 reached at all. The design's own argument against trapping on hover — that a
 passing pointer must not seize the keyboard — applies verbatim to focus sweeping

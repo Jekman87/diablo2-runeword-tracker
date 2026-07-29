@@ -88,9 +88,10 @@ feature; each is the table failing to do what it was supposed to already.
 ### The item-type restriction is set apart from its categories
 
 - The restriction moves to **its own line beneath the categories**, in a warmer
-  tan, at `0.9em` against the categories' 13px — the reference's own values. The
-  categories themselves take the muted grey the reference gives them, replacing
-  the inherited body colour they render in today.
+  tan, at `0.9em` against the categories' size — the reference's own ratio, on
+  **14px rather than its 13px**, because 13px left the column the hardest thing on
+  the page to read. The categories themselves take the muted grey the reference
+  gives them, replacing the inherited body colour they render in today.
 - **Add one token, named for the role.** The reference's class is
   `rw-ItemTypes-class`, which is a misnomer — the field covers class restrictions
   like `(Assassin)` and item exclusions like `(Not Orbs/Wands)` alike — so the
@@ -111,7 +112,11 @@ Explicitly **not** in this change:
 
 - **Sorting, filtering and searching.** Still `search-sort-filter`.
 - **Changing what the detail view contains.** Same record, same property lines,
-  same derived socket count; only how it opens and what element it is.
+  same derived socket count; only how it opens and what element it is. **One
+  subtraction:** the close button goes with the `<dialog>` that needed it. A panel
+  you open by resting a pointer on a name is left, not closed — Escape, a press
+  outside, or moving the pointer away — and a button asking to be pressed
+  advertises a ceremony the panel does not have.
 - **A tooltip library for the badges.** Their `title` attributes stay as they are.
 - **Enlarging the detail view's rune icons.** 40px is the sprite's native cell and
   rendering above it upscales and softens the artwork.

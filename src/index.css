@@ -1,4 +1,20 @@
-@import "tailwindcss";
+/* Scanned sources, stated rather than left to the default.
+
+   Tailwind v4 scans the whole project root, which makes the stylesheet a
+   function of every file in the repository instead of the application. That is
+   not theoretical: writing the words "focus ring" in a sentence in
+   `openspec/changes/.../tasks.md` generated `.ring` and its `@property` block,
+   and put 1.5 kB into the built CSS for a word in a document. Prose about the
+   interface is full of words that look like utilities — ring, grid, table,
+   block, hidden — so the default guarantees a stylesheet that grows as the
+   documentation does, silently, with nothing rendering any of it.
+
+   `source(none)` turns automatic detection off and the `@source` below is the
+   whole of it: the components and modules that actually render. Paths are
+   relative to this file, so `./` is `src/`. `index.html` carries no classes, and
+   a change that puts one there adds it here. */
+@import "tailwindcss" source(none);
+@source "./**/*.{ts,tsx}";
 
 /* The display face, self-hosted. The reference pulls Bellefair from
    fonts.googleapis.com; we do not, so the deployed page makes no third-party

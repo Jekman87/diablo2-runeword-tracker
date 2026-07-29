@@ -255,14 +255,32 @@ describe("dismissal", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("closes on the close button", async () => {
+  it("closes on a press outside it", async () => {
     const user = userEvent.setup();
     renderTable();
 
     await user.click(screen.getByRole("button", { name: "Enigma" }));
-    await user.click(screen.getByRole("button", { name: en.detail.close }));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    // The dismissal that replaced the close button, and the one a touch reader
+    // uses: press anywhere that is not the panel.
+    await user.click(document.body);
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("offers no close button, because a popup is left rather than closed", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    await user.click(screen.getByRole("button", { name: "Enigma" }));
+
+    // The panel holds no control at all. The button it used to hold was
+    // `<dialog>`'s — `showModal()` needed something to focus — and a panel that
+    // opens when the pointer rests on a name has no such ceremony.
+    expect(within(screen.getByRole("dialog")).queryAllByRole("button")).toEqual(
+      [],
+    );
   });
 });
 
@@ -282,16 +300,22 @@ describe("focus, and how the panel was opened", () => {
     expect(name).toHaveFocus();
   });
 
-  it("returns focus after closing by button too", async () => {
+  it("does not yank focus back when a press outside closed it", async () => {
     const user = userEvent.setup();
     renderTable();
 
     const name = screen.getByRole("button", { name: "Ice" });
 
     await user.click(name);
-    await user.click(screen.getByRole("button", { name: en.detail.close }));
+    await user.click(document.body);
 
-    expect(name).toHaveFocus();
+    // Deliberately *not* returned to the name. Focus restoration exists so a
+    // keyboard reader who pressed Escape is not dropped at the top of a 99-row
+    // table; a reader who pressed somewhere else has said where they want to be,
+    // and pulling them back to the name they left would be the rudeness the
+    // feature is meant to prevent.
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(name).not.toHaveFocus();
   });
 
   it("does not let focus escape into the table behind", async () => {

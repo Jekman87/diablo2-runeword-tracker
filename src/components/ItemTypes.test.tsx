@@ -53,12 +53,12 @@ describe("ItemTypes", () => {
   it("sizes the restriction against the categories, not against the cell", () => {
     const { container } = render(<ItemTypes runeword={named("Leaf")} />);
 
-    // The 13px is on the wrapper so the restriction's `0.9em` resolves against
+    // The size is on the wrapper so the restriction's `0.9em` resolves against
     // it. Left to inherit the cell's 16px it comes out at 14.4px — larger than
     // the category it qualifies, which is not what the reference means by it.
-    expect(container.firstElementChild).toHaveClass("text-[13px]");
+    expect(container.firstElementChild).toHaveClass("text-[14px]");
     expect(screen.getByText("(Not Orbs/Wands)")).toHaveClass("text-[0.9em]");
-    expect(screen.getByText("Staves")).not.toHaveClass("text-[13px]");
+    expect(screen.getByText("Staves")).not.toHaveClass("text-[14px]");
   });
 
   it("covers the whole dataset the same way", () => {

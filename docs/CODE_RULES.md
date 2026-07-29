@@ -77,6 +77,13 @@ everything at once. The pre-commit hook runs a staged-files subset of it.
 - Tailwind CSS v4, configured in `src/index.css` via `@import "tailwindcss"`.
   There is no `tailwind.config.js` and there should not be one — theme values
   go in CSS with `@theme`.
+- **The source scan is scoped to `src/`**, with `source(none)` and one `@source`.
+  Left on its default v4 scans the whole repository, which makes the stylesheet a
+  function of every Markdown file in it: the words "focus ring" in a change
+  document generated `.ring` and 1.5 kB of CSS nothing rendered. A class that ever
+  needs to live outside `src/` must be added to that `@source` list, or it will
+  silently not be generated — which is the same failure mode as building a class
+  name at runtime, and is why both are called out here.
 - Compose conditional classes with `clsx`; resolve conflicting utilities with
   `tailwind-merge`. Use `class-variance-authority` for component variants
   rather than hand-rolled conditional strings.

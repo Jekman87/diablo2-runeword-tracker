@@ -117,10 +117,17 @@ wherever its owner actually is.
 
 #### Scenario: Focus returns to the invoking name
 
-- **WHEN** a detail view that had taken focus is closed by any means
+- **WHEN** a detail view that had taken focus is dismissed by keyboard
 - **THEN** focus is on the runeword name that opened it, rather than at the top of
   a 99-row table
 - **AND** a view that never took focus leaves it wherever it already was
+
+#### Scenario: A reader who pressed elsewhere is left where they pressed
+
+- **WHEN** a detail view is dismissed by a press outside it that puts focus
+  somewhere else
+- **THEN** focus stays where the press put it rather than being returned to the
+  name, because the reader has already said where they want to be
 
 #### Scenario: Focus does not escape into the table behind
 

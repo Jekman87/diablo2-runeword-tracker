@@ -197,6 +197,19 @@ nobody owns it.
   page where review is least likely to look. Recorded here so the next change
   reads it as a decision that was revisited rather than one that was forgotten.
 
+  **Tailwind's source scan is now scoped to `src/`, and the reason is worth
+  keeping.** v4 scans the whole project root by default, so the stylesheet was a
+  function of every file in the repository rather than of the application. That is
+  not theoretical: writing the words "focus ring" in a sentence in a change's
+  `tasks.md` generated `.ring` and its `@property` block and put 1.5 kB of unused
+  CSS into the build. Prose about an interface is full of words that look like
+  utilities — ring, grid, table, block, hidden, transition — so the default
+  guarantees a stylesheet that grows quietly as the documentation does. Scoped with
+  `@import "tailwindcss" source(none)` and one `@source`, which removed eighteen
+  such rules and took the built CSS from 17.20 kB to 14.14 kB. If a class ever
+  needs to live outside `src/` — in `index.html`, say — it has to be added to that
+  `@source` list, and that is the trade.
+
   **A focus trap on a panel that opens on focus is a dead end, and only using it
   shows that.** The change was designed to split focus containment two ways —
   trapped when opened deliberately, loose when opened by hover — with keyboard focus

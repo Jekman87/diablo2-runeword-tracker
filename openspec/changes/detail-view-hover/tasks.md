@@ -123,6 +123,18 @@
       that must not regress
 - [x] 3.9 Convert `RunewordDialog.tsx` into the panel's body — same record, same
       order, same derived socket count. Nothing about its **content** changes
+      — **one thing did, and the project owner is right that it should have.** The
+      close button went. It was `<dialog>`'s rather than the view's: `showModal()`
+      needed a first focusable element and focused it, which is what the old comment
+      beside it said outright. A panel that appears when a pointer rests on a name
+      is left, not closed — Escape, a press outside, or moving the pointer away.
+      Nothing was lost: the panel holds no other control, so no keyboard reach went
+      with it, and `aria-expanded` / `aria-controls` on the name is what announces
+      the panel either way. Verified after removing it — a clicked panel focuses the
+      panel itself and still contains focus, Escape still returns focus to the name,
+      Tab still walks the whole table, and the focus ring appears only for keyboard
+      because `:focus-visible` already draws that line. `strings.detail.close` went
+      too: copy nothing renders is the same defect as a token nothing renders
 - [x] 3.10 Drop the `<dialog>`, `showModal()` and the backdrop. A hover panel has
       no business dimming the page
 - [x] 3.11 Remove the jsdom `showModal` shim from `src/test/setup.ts`. It existed
@@ -199,8 +211,16 @@
       exclusion rendering _larger_ than the category it qualifies, which is not
       what the reference means. The 13px moved onto a wrapper so the `em` nests
       inside it, as the reference's own nesting does, and the restriction now
-      measures **11.7px** against 13px. Verified in Chromium: categories 13px
+      measures 11.7px against 13px. Verified in Chromium: categories 13px
       `rgb(116 112 108)`, restriction 11.7px `rgb(189 133 71)`
+      — **then the size itself was overruled: 14px, not the reference's 13px.**
+      Looked at on the deployed layout, 13px made the base-items column the hardest
+      thing on the page to read, and the project owner asked for it a step larger.
+      The **ratio** is what was worth copying from the reference and it is
+      untouched, so the restriction follows to 12.6px and the two still read as a
+      heading and its footnote. Measured after the change: categories **14px**,
+      restriction **12.6px**, row height unchanged at 75px — the rune sequence sets
+      the row, not this column. The colours are still the reference's exactly
 - [x] 5.4 Replace `strings.itemTypes.withRestriction(categories, restriction)`
       with an entry that brackets the restriction alone. The two halves are two
       elements now, so a function joining them into one string no longer fits
@@ -239,6 +259,22 @@
 - [x] 7.2 Confirm no class name anywhere is assembled from a data value. Grep the
       built stylesheet for each of the four patch utilities and confirm all four
       survived the build
+      — all four present, resolving through their tokens, and the whole production
+      build read in a browser rather than only the dev server: every badge colour,
+      both item-type sizes, the 40px icon, the 75px row and the `md` collapse are
+      correct from the built CSS
+      — **and the same build-time scan turned out to work in the other direction
+      too.** Tailwind v4 scans the entire project root, so the words "focus ring"
+      in a sentence in _this file_ generated `.ring` and its `@property` block and
+      put 1.5 kB into the stylesheet. Prose about an interface is full of words
+      that look like utilities — ring, grid, table, block, hidden, transition — so
+      the default makes the stylesheet grow with the documentation, silently, with
+      nothing rendering any of it. Scoped to `source(none)` plus
+      `@source "./**/*.{ts,tsx}"`, which dropped **eighteen** such rules and took
+      the CSS from 17.20 kB to **14.14 kB** (4.58 → 4.11 kB gzipped) — smaller than
+      before this change started, despite six new tokens. Every utility the
+      application actually uses was checked present afterwards, responsive and
+      arbitrary-value ones included
 - [x] 7.3 Confirm nothing under `src/` displays a literal string to the reader, and
       that the strings layer still holds no dataset value — rune names and
       restriction text both stayed out of it

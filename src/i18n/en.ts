@@ -83,6 +83,10 @@ export const en = {
     availability: "Availability",
     note: "Note",
     properties: "Granted Properties",
-    close: "Close",
+    // No `close`. The panel had a close button while it was a modal `<dialog>`,
+    // which needed a focusable element to put focus on; a panel that opens when
+    // the pointer rests on a name is left rather than closed. Copy with nothing
+    // rendering it is the same defect as a colour token with no use site, so it
+    // went out with the button.
   },
 };

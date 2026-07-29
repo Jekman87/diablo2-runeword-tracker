@@ -177,26 +177,7 @@ export function RunewordDetails({ runeword }: RunewordDetailsProps) {
               aria-labelledby={titleId}
               className={PANEL}
             >
-              <RunewordDialog
-                runeword={runeword}
-                titleId={titleId}
-                // Closed through the floating context rather than by setting
-                // the flag directly, and the reason matters. `useFocus` reopens
-                // on any focus the name receives, and closing hands focus
-                // straight back to it — so a close that does not announce
-                // itself is undone by its own focus restoration, and the panel
-                // a keyboard reader just dismissed reappears.
-                //
-                // Two reasons in the library's set suppress that, and both name
-                // a deliberate dismissal. A close button is the third of those
-                // and has no name of its own, so it borrows the one whose
-                // meaning it shares: the reader asked for this to go away, and
-                // giving them their place in the table back must not bring it
-                // straight back with them.
-                onClose={() =>
-                  context.onOpenChange(false, undefined, "escape-key")
-                }
-              />
+              <RunewordDialog runeword={runeword} titleId={titleId} />
             </div>
           </FloatingFocusManager>
         </FloatingPortal>

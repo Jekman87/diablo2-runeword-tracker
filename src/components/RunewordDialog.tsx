@@ -9,7 +9,6 @@ export interface RunewordDialogProps {
   runeword: Runeword;
   /** The heading's id, so the panel around this can be named by it. */
   titleId: string;
-  onClose: () => void;
 }
 
 /**
@@ -34,34 +33,25 @@ export interface RunewordDialogProps {
  * element had to stay mounted for the platform to close it; nothing stays mounted
  * now.
  */
-export function RunewordDialog({
-  runeword,
-  titleId,
-  onClose,
-}: RunewordDialogProps) {
+export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
   const strings = useStrings();
 
   return (
     <div className="grid gap-3">
-      {/* The close control sits at the top, beside the name, rather than after
-          the property list. That is not only convention: it is the first
-          focusable element in the panel, so it is where a deliberately-opened
-          panel puts focus — and a button below 26 property lines would have the
-          browser scroll the panel to its bottom on open, landing the reader past
-          the name they just clicked. */}
-      <div className="flex items-baseline justify-between gap-4">
-        <h2 id={titleId} className="text-2xl text-gold-mid">
-          {runeword.name}
-        </h2>
+      {/* No close control. There was one, and it was `<dialog>`'s: `showModal()`
+          needed a first focusable element and that is what it focused, so the
+          panel had to offer one. A panel that opens when the pointer rests on a
+          name is not a thing you close, it is a thing you leave — move the pointer
+          away, press Escape, or press anywhere else, and it is gone. A button
+          asking to be pressed advertises a ceremony the panel does not have.
 
-        <button
-          type="button"
-          onClick={onClose}
-          className="cursor-pointer border border-row-line px-3 py-1 text-gold-mid hover:text-gold-light"
-        >
-          {strings.detail.close}
-        </button>
-      </div>
+          It cost nothing to remove, either: the panel holds no other control, so
+          losing it loses no keyboard reach. What tells a screen reader the panel
+          is there is `aria-expanded` and `aria-controls` on the name, which
+          `useRole` puts there and which never depended on this. */}
+      <h2 id={titleId} className="text-2xl text-gold-mid">
+        {runeword.name}
+      </h2>
 
       {/* Label in one column, value in the next. A `dl` stacks by default,
           which turns eight short facts into sixteen lines and pushes the

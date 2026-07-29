@@ -36,14 +36,19 @@ export function ItemTypes({ runeword }: ItemTypesProps) {
   const strings = useStrings();
 
   return (
-    /* The 13px sits on the wrapper rather than on the categories, which is what
+    /* The size sits on the wrapper rather than on the categories, which is what
        makes the restriction's `0.9em` mean what the reference means by it.
        Against the cell's inherited 16px that `em` resolves to 14.4px and the
        exclusion renders *larger* than the category it qualifies — measured in a
-       browser, which is the only place it shows. Nested, it resolves to 11.7px
-       and the two read as a heading and its footnote, which is the relationship
-       the reference's own nesting expresses. */
-    <span className="block text-[13px]">
+       browser, which is the only place it shows. Nested, it comes out below the
+       categories and the two read as a heading and its footnote, which is the
+       relationship the reference's own nesting expresses.
+
+       14px rather than the reference's 13px: at 13px the column was the hardest
+       thing on the page to read, and one step is enough to fix that without the
+       base items competing with the runeword's own name. The ratio is the
+       reference's and does the work — the restriction follows to 12.6px. */
+    <span className="block text-[14px]">
       <span className="block text-muted">
         {runeword.itemTypes.join(strings.itemTypes.separator)}
       </span>
