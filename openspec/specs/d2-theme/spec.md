@@ -22,7 +22,10 @@ SHALL further cover the surfaces the runeword table introduces: the separation
 between table rows and the row's hover state, and the detail view's panel. They
 SHALL further cover the surfaces crafted tracking introduces: the tint of a
 crafted row, the unfilled track of the progress indicator, and the panel of the
-transient undo notice.
+transient undo notice. They SHALL further cover the surfaces the browsing controls
+introduce: the search field, the resting and selected states of a filter control,
+the indicator marking the sorted column, and the message shown when nothing
+matches.
 
 Where one badge is coloured by the value it carries, the palette SHALL declare one
 token per distinct colour that value can take, so that the mapping lives in the
@@ -35,7 +38,10 @@ names, and SHALL NOT be declared speculatively for a surface no decision has bee
 made about. A token whose last use site is removed SHALL be removed with it, for
 the same reason. A change that renders a new surface SHALL add its token here
 rather than write a colour into the component, which is what makes the palette a
-single source rather than a starting point.
+single source rather than a starting point. Where a token is already declared
+whose role is the one a new surface needs, the change rendering that surface SHALL
+use it rather than declare a second token for the same role — which is also how a
+token declared ahead of any use site is worked off rather than explained again.
 
 Two roles MAY hold the same colour value where they are genuinely different roles;
 one token SHALL NOT be made to serve two unrelated roles on the grounds that the
@@ -84,12 +90,28 @@ misdescribes its own subject SHALL NOT be copied.
 - **AND** the indicator's filled portion reuses the crafted-state accent already
   declared, rather than adding a second token for the same role
 
+#### Scenario: The browsing controls' surfaces are tokens already declared
+
+- **WHEN** the search field, the filter controls, the sorted column's indicator and
+  the empty-result message are inspected
+- **THEN** each takes its colour from a named token rather than a literal value
+- **AND** no token was declared for them, because the muted-dark and light-blood
+  tokens already held exactly those roles with no use site
+
 #### Scenario: A surface with no component still has no token
 
 - **WHEN** the token set is read for surfaces no component renders yet, such as
   the collapsible remaining-runes and remaining-bases panels
 - **THEN** no token exists for them, because the change that builds each one adds
   its own
+
+#### Scenario: A token declared ahead of its use site is worked off, not explained
+
+- **WHEN** the tokens declared with nothing rendering them are counted
+- **THEN** two remain — the dark blood band and the link colour — rather than the
+  four this requirement was previously failing on
+- **AND** each of the two is owed to a named change, so the count falls as those
+  changes land
 
 #### Scenario: A patch badge has one token per era
 

@@ -124,9 +124,15 @@ twice. A pointer gesture that ends a text selection SHALL NOT toggle the row.
 
 A crafted runeword's row SHALL be visually distinguished from an uncrafted one,
 and that distinction SHALL NOT rest on colour alone. The control's pressed state,
-its accessible name and the filled rather than empty rendering of its socket SHALL
+its accessible name and a mark it draws when set and does not draw when unset SHALL
 each carry the same fact, so that the state is readable by a player who cannot
 distinguish the colours and by one who cannot see the row.
+
+The requirement is that a mark is present or absent, not which mark it is. This was
+first written around a socket rendering filled or hollow and the control is a square
+box drawing a check mark instead, because the in-game Chronicle this page tracks
+draws neither a socket nor a saturated green; what the shape must go on carrying is
+that colour is never the only difference between the two states.
 
 #### Scenario: The row is visually marked
 
@@ -136,8 +142,8 @@ distinguish the colours and by one who cannot see the row.
 #### Scenario: The state survives the loss of colour
 
 - **WHEN** a crafted and an uncrafted row are compared with colour disregarded
-- **THEN** the two are still distinguishable, because the socket renders filled
-  rather than empty
+- **THEN** the two are still distinguishable, because the set control draws a mark
+  the unset control does not draw
 
 #### Scenario: The state is exposed to assistive technology
 
@@ -149,16 +155,40 @@ distinguish the colours and by one who cannot see the row.
 
 The interface SHALL present overall progress as the number of crafted runewords
 against the total number in the dataset, both as a progress indicator carrying a
-value and a maximum and as a count stated in text. The maximum SHALL be the size of
+value and a maximum and as text. The maximum SHALL be the size of
 the dataset itself and SHALL NOT be derived from how many rows are rendered,
 visible, filtered or available, because the Chronicle goal is every runeword and a
 denominator that moves would misreport completion.
+
+The text SHALL state the proportion completed as a percentage and SHALL also state
+both counts. The percentage is the form the in-game Chronicle uses and is what
+answers "how far am I"; the counts stay because the goal is a number of runewords
+rather than a proportion, and a percentage alone cannot be checked against a list of 99. Neither SHALL replace the other.
+
+Progress SHALL remain visible while the table is being read, rather than scrolling
+out of the viewport above it, because it is the question the page exists to answer
+and the table is thousands of pixels tall. Where it remains visible over the rows
+passing beneath it, it SHALL conceal them rather than overlap them, and a runeword's
+detail view SHALL render above it.
 
 #### Scenario: Progress reports the crafted count
 
 - **WHEN** three runewords are marked crafted
 - **THEN** the indicator's value is 3 and its maximum is 99
-- **AND** the count is also stated in text beside it
+- **AND** the text beside it states both the percentage and the two counts
+
+#### Scenario: Progress stays in view
+
+- **WHEN** the page is scrolled to a row far down the table
+- **THEN** the progress indicator and its text are still on screen
+- **AND** the rows passing beneath them are concealed rather than showing through
+
+#### Scenario: A detail view is not covered by progress
+
+- **WHEN** the detail view of a row near the top of the viewport is open and the
+  page is scrolled
+- **THEN** the detail view renders above the progress indicator rather than beneath
+  it
 
 #### Scenario: The denominator is the dataset, not the view
 
@@ -175,7 +205,8 @@ denominator that moves would misreport completion.
 #### Scenario: Nothing crafted reports zero rather than nothing
 
 - **WHEN** no runeword is marked crafted
-- **THEN** the indicator is present and reports 0 of 99, rather than being absent
+- **THEN** the indicator is present and reports 0% and 0 of 99, rather than being
+  absent
 
 #### Scenario: The indicator exposes a progress role
 
