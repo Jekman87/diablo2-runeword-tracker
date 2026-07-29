@@ -152,6 +152,22 @@
       jsdom has no layout for the focus manager's boundary guards
 - [x] 3.15 Test that hovering a second name replaces the first panel rather than
       showing both
+      — **the task as written only covers the case that happened to work, and the
+      project owner found the one that did not.** Hover-then-hover passed on an
+      accident: `safePolygon` gives up when the pointer leaves, so the first panel
+      closed itself. Press-then-press passed on another: `useDismiss` sees the
+      press land outside. Neither covers a panel **pinned by a click** and then a
+      hover elsewhere — no press to dismiss it, and nothing for `safePolygon` to
+      reason about — and two panels overlapped on screen. Ninety-nine independent
+      open flags cannot express "one at a time", so the flag moved to the table.
+      Three follow-ons, all measured: the rows are memoised, because otherwise
+      every open re-rendered all 99 (37–50ms to paint and long tasks to 127ms in
+      Chromium, against 14–35ms and none after); a replaced panel's returning focus
+      is declined rather than treated as a request to reopen, which it was, so the
+      panel just replaced won; and that arbitration lives on the table because a
+      flag passed to the row lands one commit too late. Tests now cover the pinned
+      case and every ordering of the three triggers, and all six orderings were
+      checked in a browser
 - [x] 3.16 Leave `safePolygon` geometry and the open delay to the browser checks.
       jsdom has no layout, so asserting them here would assert nothing
 
@@ -362,3 +378,15 @@
       reverse. Exactly one sequence is perceivable at either width, labels included
 - [x] 7.14 Run `openspec validate --changes detail-view-hover --strict`
 - [x] 7.15 Commit as `fix(table): open details on hover, colour badges, label runes`
+      — plus follow-up commits for what looking at the deployed page turned up
+      afterwards: the close button, the base-items size, the panel overlap, and two
+      things outside this change's own scope that it was cheapest to fix in place —
+      the Tailwind source scan (see 7.2) and the header of the required-level column,
+      which wrapped `Required Level` onto two lines and now carries
+      `whitespace-nowrap` so the text sets the column's width. A width would have
+      been measured against English and wrapped again in Russian
+      — **one figure moved the wrong way and is worth stating.** The narrow-viewport
+      overflow recorded in 7.8 grew again, from +152px to +198px at 390px, because
+      the required-level column is now as wide as its header needs. Same
+      pre-existing defect, same place in `IDEAS.md`, and still not this change's to
+      fix — but it is bigger than when it was written down

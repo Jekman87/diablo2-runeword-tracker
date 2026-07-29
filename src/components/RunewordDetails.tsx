@@ -23,6 +23,19 @@ import type { Runeword } from "@/data";
 
 export interface RunewordDetailsProps {
   runeword: Runeword;
+  /** Whether this row's panel is the open one. Owned by the table. */
+  open: boolean;
+  /**
+   * Asks the table to open this runeword's panel or to close whatever is open.
+   * Takes the name because one value serves all 99 rows, which is what makes
+   * opening one panel close the others, and the reason because the table has to
+   * tell a reader arriving from a closing panel's focus handing itself back.
+   */
+  onOpenChange: (
+    name: string,
+    open: boolean,
+    reason: OpenChangeReason | undefined,
+  ) => void;
 }
 
 /**
@@ -36,6 +49,17 @@ export interface RunewordDetailsProps {
  * by a virtual reference with hover tracked by hand across 99 names, is precisely
  * the interaction logic `@floating-ui/react` was added to avoid, and it would
  * have to reimplement `safePolygon` on top.
+ *
+ * **Which panel is open is the table's, though, and has to be.** "Only one at a
+ * time" is a statement about the whole set, and 99 independent open flags cannot
+ * make it true — each one only knows about itself. Left that way it very nearly
+ * worked by accident: hovering a second name closed the first because
+ * `safePolygon` gave up when the pointer left, and pressing a second name closed
+ * the first because `useDismiss` saw the press land outside. What neither covers
+ * is a panel pinned open by a click and then a *hover* somewhere else: no press,
+ * and `safePolygon` has nothing to say about a panel the pointer already left. Two
+ * panels overlapped. So the open flag is one value at table level, and opening any
+ * panel closes whatever else was open by construction rather than by luck.
  *
  * The cost of that is real and worth naming: 99 rows each running `useFloating`
  * and five interaction hooks is per-render work the single shared `<dialog>` did
@@ -56,9 +80,12 @@ export interface RunewordDetailsProps {
  * opened on purpose traps focus and gives it back; a panel that appeared under
  * your pointer never touches it.
  */
-export function RunewordDetails({ runeword }: RunewordDetailsProps) {
+export function RunewordDetails({
+  runeword,
+  open,
+  onOpenChange,
+}: RunewordDetailsProps) {
   const titleId = useId();
-  const [open, setOpen] = useState(false);
 
   // Which kind of trigger opened it, tracked beside the open flag because
   // `onOpenChange` reports the causing event and that is the only moment the
@@ -77,7 +104,7 @@ export function RunewordDetails({ runeword }: RunewordDetailsProps) {
   } = useFloating({
     open,
     onOpenChange(nextOpen, _event, reason) {
-      setOpen(nextOpen);
+      onOpenChange(runeword.name, nextOpen, reason);
 
       // Activating a panel the pointer or the keyboard already opened promotes
       // it, which is right: the reader has now asked to be there.
@@ -117,6 +144,11 @@ export function RunewordDetails({ runeword }: RunewordDetailsProps) {
       // path, where it is a deliberate act.
       mouseOnly: true,
     }),
+    // Left on unconditionally. `useFocus` cannot tell a reader tabbing to this
+    // name from a replaced panel handing focus back to it on the way out, and
+    // that second case would reopen the panel the reader just replaced. Telling
+    // the two apart needs to happen where both requests are visible in order,
+    // which is the table — see `farewellFrom` there.
     useFocus(context),
     useClick(context),
     useDismiss(context),

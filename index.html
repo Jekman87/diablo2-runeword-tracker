@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Diablo II Runeword Tracker</title>
+
+    <!-- The Jah rune, cropped from the shared sprite at its native 40×40 cell
+         rather than redrawn or scaled up. Same rule the icons in the table
+         follow: the artwork is 40px and does not survive being enlarged, so the
+         browser downscales it to whatever the tab wants instead.
+
+         Referenced from `src/` rather than dropped in `public/` so Vite
+         fingerprints it and prefixes the GitHub Pages sub-path, like every other
+         image here. A `public/` file would be served unhashed from the domain
+         root and 404 on the deployed site. -->
+    <link rel="icon" type="image/png" href="./src/assets/images/jah-rune.png" />
   </head>
   <body>
     <div id="root"></div>

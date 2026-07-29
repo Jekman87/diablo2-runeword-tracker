@@ -210,6 +210,19 @@ nobody owns it.
   needs to live outside `src/` — in `index.html`, say — it has to be added to that
   `@source` list, and that is the trade.
 
+  **"Only one panel open" is a property of the set, not of a panel.** Per-row
+  floating contexts are right — `useHover` binds to one reference element — but
+  per-row _open flags_ were not: each knows only about itself, so a panel pinned by
+  a click sat under a second opened by hover. It looked correct until then only
+  because `safePolygon` and `useDismiss` happened to cover the other orderings.
+  The flag is one value on the table now, which forced two more things worth
+  remembering: the rows have to be memoised or every open re-renders all 99 (long
+  tasks to 127ms in Chromium, none after), and the focus a replaced panel hands
+  back on its way out must be declined rather than treated as a request to reopen —
+  arbitrated on the table, because React unmounts the panel before it updates the
+  row's props, so anything passed down arrives a commit too late. Any future
+  one-of-many control on this page inherits all three.
+
   **A focus trap on a panel that opens on focus is a dead end, and only using it
   shows that.** The change was designed to split focus containment two ways —
   trapped when opened deliberately, loose when opened by hover — with keyboard focus
@@ -250,8 +263,9 @@ nobody owns it.
 
   **The table scrolls sideways below about 542px, and always did.** Measured
   against the previous build: at a 390px viewport it overflowed by 74px before this
-  change and overflows by 152px after, because below `md` the runes collapse into
-  the name cell and that cell goes from 170px to 276px. So this change makes an
+  change and by 198px after — 152px of that from the runes collapsing into the name
+  cell below `md`, which takes that cell from 170px to 276px, and the rest from the
+  required-level column now being wide enough to keep its header on one line. So this change makes an
   existing defect worse rather than introducing one, and no requirement in it
   covers the table's narrow-width layout — which is why it is here and not fixed
   there. Rows below `md` are also taller than the design's figures, which only

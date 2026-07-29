@@ -224,6 +224,55 @@ describe("one panel at a time, and none while closed", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("replaces a click-pinned panel when a second name is hovered", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    const enigma = rowButton("Enigma");
+    const fortitude = rowButton("Fortitude");
+
+    // Pinned by a click, which is the whole point: a clicked panel stays put
+    // when the pointer wanders, so nothing about hover or `useDismiss` closes
+    // it. Two panels overlapped until the open flag became one value.
+    await user.click(enigma);
+    expect(screen.getByRole("heading", { name: "Enigma" })).toBeVisible();
+
+    await user.hover(fortitude);
+
+    await waitFor(() => {
+      expect(screen.getAllByRole("dialog")).toHaveLength(1);
+      expect(screen.getByRole("heading", { name: "Fortitude" })).toBeVisible();
+    });
+    expect(
+      screen.queryByRole("heading", { name: "Enigma" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("never holds two panels, whatever order the triggers come in", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    const names = ["Enigma", "Fortitude", "Ice"].map(rowButton);
+
+    // Click, hover, focus, click again — every pairing of the three triggers
+    // across three different rows, asserting the count after each.
+    for (const [step, name] of [
+      ["click", names[0]],
+      ["hover", names[1]],
+      ["focus", names[2]],
+      ["click", names[1]],
+      ["hover", names[0]],
+    ] as const) {
+      if (step === "click") await user.click(name);
+      if (step === "hover") await user.hover(name);
+      if (step === "focus") await act(async () => name.focus());
+
+      await waitFor(() =>
+        expect(screen.queryAllByRole("dialog").length).toBeLessThanOrEqual(1),
+      );
+    }
+  });
+
   it("replaces the first when a second name is hovered", async () => {
     const user = userEvent.setup();
     renderTable();

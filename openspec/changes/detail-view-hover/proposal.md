@@ -181,6 +181,13 @@ already claims.
 - **Bundle**: the first runtime dependency added since the dataset. Expect
   something in the region of 10–15 kB gzipped on top of the current 90 kB —
   to be measured, not assumed, and reported in the tasks.
+- **Risk worth naming — one panel at a time is not free.** Per-row floating
+  contexts cannot enforce it: a panel pinned by a click and a hover elsewhere left
+  two on screen at once. Which panel is open therefore lives on the table, the rows
+  are memoised so that does not re-render all 99 on every open, and the table
+  declines the focus a replaced panel hands back on its way out — otherwise the
+  panel just replaced reopens and wins. All three were found by using it and are
+  recorded in `design.md`.
 - **Risk worth naming — 99 floating instances.** `useHover` binds to one reference
   element by design, so each row owns its floating context rather than the table
   sharing one. Only the open panel is ever in the document, so the "no per-row

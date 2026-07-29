@@ -141,6 +141,22 @@ wherever its owner actually is.
 - **WHEN** a detail view is open and another runeword's name is activated
 - **THEN** the view presents the newly activated runeword and not both
 
+#### Scenario: One view is open at most, whichever triggers opened them
+
+- **WHEN** a view opened by any of the three triggers is followed by any of the
+  three triggers on a different runeword's name — including a view deliberately
+  pinned open and then a pointer merely resting elsewhere
+- **THEN** exactly one view is open, and it is the one most recently asked for
+- **AND** no two views are ever on screen together, whatever order the triggers
+  come in
+
+#### Scenario: A replaced view's focus is not a request to reopen it
+
+- **WHEN** a view that had taken focus is replaced by another, and closing it
+  returns focus to the name that opened it
+- **THEN** that returning focus does not reopen it, so the view the reader asked
+  for is the one that stays
+
 #### Scenario: A hover-opened view does not take the keyboard
 
 - **WHEN** a detail view opens because the pointer came to rest on a name

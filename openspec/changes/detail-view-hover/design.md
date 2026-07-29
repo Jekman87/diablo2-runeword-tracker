@@ -68,6 +68,38 @@ The alternative — one instance at table level driven by a virtual reference, w
 hover tracked by hand across 99 buttons — is the hand-rolled interaction logic the
 dependency exists to avoid, and it would have to reimplement `safePolygon` on top.
 
+**But which panel is open is the table's, and it took a bug to see why.** The
+first cut gave each row its own open flag, and "only one panel at a time" then
+rested on two accidents: hovering a second name closed the first because
+`safePolygon` gave up when the pointer left, and pressing a second name closed the
+first because `useDismiss` saw the press land outside. Neither covers a panel
+pinned open by a click and then a _hover_ somewhere else — no press, and nothing
+for `safePolygon` to reason about — so two panels overlapped. Ninety-nine
+independent flags cannot express "one at a time" because each one only knows about
+itself, so the flag is one value at table level and the overlap is gone by
+construction rather than by luck.
+
+Three consequences, each of which had to be measured rather than assumed:
+
+- **The rows are memoised.** With the flag on the table, every open re-renders it
+  — and without `memo`, all 99 rows with it. In Chromium that was 37–50ms from
+  click to painted panel and long tasks up to 127ms, for a change affecting two
+  rows. Memoised it is 14–35ms with no long tasks at all. This is why the row and
+  the panel take a `boolean` rather than the open runeword's name: the name differs
+  for all 99 and would defeat the comparison.
+- **The replaced panel's returning focus is not a request to reopen.** Closing a
+  panel that held focus hands it back to the name that opened it, and `useFocus`
+  cannot tell that from a reader tabbing in — so the replaced panel reopened
+  immediately and won. Pin a name with Space, hover another, and the pinned one
+  stayed.
+- **That has to be arbitrated on the table, not in the row.** A flag passed down
+  arrives one commit too late: React unmounts the panel _before_ it updates the
+  sibling name button's props, so the focus event is delivered under the old props.
+  This was built the other way first and the timeline showed the reopen landing
+  between the two requests. The table sees both requests in order, in one tick, and
+  declines the second — a focus-reason open from the row whose panel it has just
+  replaced.
+
 Only the open panel is ever rendered (`{isOpen && …}`), so the guarantee that the
 document holds no per-row detail markup survives unchanged. What does not survive
 is the cost profile: 99 rows each running `useFloating` plus four interaction hooks
