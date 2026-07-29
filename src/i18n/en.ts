@@ -155,6 +155,42 @@ export const en = {
     action: "Undo",
   },
 
+  // The two remaining panels: their titles, the tier bands' labels, the row
+  // formats and one completion message each.
+  //
+  // The tier labels are our copy where the slot names were: the dataset's
+  // `common` / `semirare` / `rare` are identifiers, and a Russian locale
+  // translates the words below without touching them. Rune names and base
+  // categories stay out, as everywhere.
+  //
+  // Formatting lives here, as the progress percentage already does. The base
+  // row's count deliberately says what it counts — runewords the base would
+  // serve — because a runeword allowing three categories is counted under all
+  // three, so the counts do not sum to the uncrafted total and a bare number
+  // would invite adding them up.
+  remaining: {
+    runesTitle: "Remaining Runes",
+    basesTitle: "Remaining Bases",
+
+    tier: {
+      common: "Common",
+      semirare: "Semi-rare",
+      rare: "Rare",
+    },
+
+    runeCount: (count: number) => `×${count}`,
+    baseSockets: (sockets: number) =>
+      `${sockets} ${sockets === 1 ? "socket" : "sockets"}`,
+    baseCount: (count: number) =>
+      count === 1 ? "serves 1 runeword" : `serves ${count} runewords`,
+
+    // Present rather than an absent panel, for the reason progress shows
+    // `0 of 99`: a block that vanished reads as a defect, one with an answer
+    // reads as done.
+    runesDone: "No runes needed — every runeword is crafted",
+    basesDone: "No bases needed — every runeword is crafted",
+  },
+
   detail: {
     runes: "Runes",
     sockets: "Sockets",

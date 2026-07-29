@@ -64,8 +64,8 @@ site still deployable.
 | 6   | `crafted-tracking`    | done   |
 | 6a  | `detail-view-hover`   | done   |
 | 7   | `search-sort-filter`  | done   |
-| 8   | `remaining-panels`    | next   |
-| 9   | `property-groups`     |        |
+| 8   | `remaining-panels`    | done   |
+| 9   | `property-groups`     | next   |
 | 10  | `site-header`         |        |
 
 `detail-view-hover` is numbered `6a` because it is not a step in the sequence:
@@ -449,6 +449,44 @@ nobody owns it.
 - **`remaining-panels`** — the two collapsible blocks. Pure aggregation logic,
   unit tested.
 
+  Landed as two native `<details>` panels between the progress band and the
+  controls, in normal flow rather than a third sticky layer — reference
+  material closed by default has no claim on permanent viewport height. The
+  aggregation is two pure functions in `src/remaining/` taking the crafted set
+  as a parameter, tested against the dataset's own anchors: 343 rune slots,
+  `Shael ×20` and `Zod ×3`; 144 category memberships in 55 (category, sockets)
+  groups. Four things are worth carrying forward.
+
+  **The bases block's "placement and grouping still to be designed" note is
+  discharged.** Grouped by (category, sockets) as the caveat below settled, and
+  presented as a flat list in dataset category order with sockets ascending —
+  per-category sub-headings inside a panel inside a page were judged more
+  structure than the content earns, and regrouping later is presentation-only.
+  A multi-category runeword counts under every alternative, on the slot
+  filter's precedent, so the counts deliberately do not sum to the uncrafted
+  total — which is why the row's copy names what its count is: `serves N
+runewords`, never a bare number.
+
+  **The declared-ahead-of-use token count fell to one.** `--color-blood-dark`
+  now renders as the summary band of both panels, one step below the table
+  header's band, exactly the surface it was held for. `--color-link` remains,
+  owed to `site-header`, and the count has to reach zero there.
+
+  **The slot-filter count question stays open, and these panels did not answer
+  it.** `search-sort-filter` guessed they might; they aggregate by base
+  category, not by slot, so `Shield (10)` remains its own decision for whoever
+  wants it.
+
+  **The class-list diff came back clean** — fifteen new utilities, every one
+  rendered by a new component, no prose leakage — the first change since the
+  method was established to add none, which does not retire the method. The
+  panels were also checked in Firefox, not just Chromium: the native disclosure
+  marker is fully replaced, the band and glyph render from tokens, Tab reaches
+  the summary and Enter and Space toggle it. One thing learned there: Tailwind
+  v4's `rotate-90` writes the CSS `rotate` property, not `transform`, so a
+  check that reads `getComputedStyle(...).transform` sees `none` and reports a
+  false failure.
+
 - **`chronicle-styling`** — not a feature, and not yet a proposal. A pass over the
   interface against a screenshot of the **in-game Chronicle window itself**, which
   is the screen this whole project is a tracker for and which nobody had compared
@@ -685,6 +723,10 @@ them. Per-slot totals are 14 helm, 58 weapon, 10 shield, 22 body armour.
   eleven each). Grouping the panel by tier turns a flat list of 33 into three
   meaningful bands — worth doing.
 
+**Shipped** by `remaining-panels` with the tier bands, each band disappearing
+as its runes are satisfied, and a completion message — not an absent panel —
+when nothing is left.
+
 ### Remaining bases block
 
 - Collapsible, near the top, collapsed by default
@@ -692,7 +734,12 @@ them. Per-slot totals are 14 helm, 58 weapon, 10 shield, 22 body armour.
 - Data caveat: a runeword specifies a base _category_ plus a socket count,
   never a specific item. "3 axes with 4 sockets" is really "3 four-socket
   melee weapons". Group by (category, sockets).
-- Placement and grouping still to be designed
+- ~~Placement and grouping still to be designed~~ **Shipped** by
+  `remaining-panels`: placed with the runes block between the progress band
+  and the browsing controls, and grouped as a flat (category, sockets) list in
+  dataset category order with sockets ascending — sub-headings inside a closed
+  panel were judged more structure than the content earns, and regrouping
+  later touches presentation only.
 
 ### Persistence
 
