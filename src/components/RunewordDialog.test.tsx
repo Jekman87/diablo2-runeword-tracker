@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { RunewordTable } from "@/components/RunewordTable";
 import { runewords } from "@/data";
 import { en } from "@/i18n/en";
+import { orderedRunewords } from "@/runewords/order";
 
 // Driven through the table rather than by rendering the panel directly, because
 // what is under test is the whole path: a name is a button, each row owns its own
@@ -17,11 +18,23 @@ import { en } from "@/i18n/en";
 // viewport edge, and how long the open delay feels. Those are browser checks.
 
 /**
- * The table with nothing crafted. Crafted state is `App`'s and reaches the table
- * as a prop; none of the detail view's behaviour depends on it.
+ * The table with nothing crafted, presenting every runeword in the default order.
+ *
+ * Crafted state and the rows are both `App`'s and reach the table as props; none
+ * of the detail view's behaviour depends on either, which is why the sort here is
+ * simply the default rather than something these tests vary.
  */
 function renderTable() {
-  return render(<RunewordTable crafted={new Set()} onToggle={vi.fn()} />);
+  return render(
+    <RunewordTable
+      runewords={orderedRunewords}
+      crafted={new Set()}
+      sortKey="requiredLevel"
+      sortDirection="ascending"
+      onSort={vi.fn()}
+      onToggle={vi.fn()}
+    />,
+  );
 }
 
 describe("what opens the detail view", () => {

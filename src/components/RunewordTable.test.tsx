@@ -1,25 +1,40 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { RunewordTable } from "@/components/RunewordTable";
+import {
+  RunewordTable,
+  type RunewordTableProps,
+} from "@/components/RunewordTable";
 import { runewords } from "@/data";
 import { en } from "@/i18n/en";
 import { orderedRunewords } from "@/runewords/order";
 
 /**
- * The table with nothing crafted and a toggle that goes nowhere.
+ * The table presenting every runeword in the default order, with nothing crafted
+ * and handlers that go nowhere.
  *
- * Crafted state is `App`'s, so the table takes it as a prop. Most of what is
- * asserted below is presentation that does not depend on it; the tests that do
- * pass their own set.
+ * Both the rows and the crafted set are `App`'s, so the table takes them as props.
+ * Most of what is asserted below is presentation that depends on neither; the
+ * tests that do pass their own.
  */
-function renderTable(
-  crafted: ReadonlySet<string> = new Set(),
-  onToggle = vi.fn(),
-) {
+function renderTable(overrides: Partial<RunewordTableProps> = {}) {
+  const onSort = vi.fn();
+  const onToggle = vi.fn();
+
   return {
+    onSort,
     onToggle,
-    ...render(<RunewordTable crafted={crafted} onToggle={onToggle} />),
+    ...render(
+      <RunewordTable
+        runewords={orderedRunewords}
+        crafted={new Set()}
+        sortKey="requiredLevel"
+        sortDirection="ascending"
+        onSort={onSort}
+        onToggle={onToggle}
+        {...overrides}
+      />,
+    ),
   };
 }
 
@@ -39,14 +54,18 @@ describe("the table's structure", () => {
 
     const headers = screen.getAllByRole("columnheader");
 
-    expect(headers.map((header) => header.textContent)).toEqual([
+    // The heading text, not the whole cell: the sorted column also draws a
+    // direction arrow, which is decoration and is `aria-hidden`.
+    expect(headers.map(headingOf)).toEqual([
       en.table.columnCrafted,
       en.table.columnName,
       en.table.columnRunes,
       en.table.columnItemTypes,
       en.table.columnRequiredLevel,
     ]);
-    expect(headers.every((header) => header.getAttribute("scope") === "col"));
+    expect(
+      headers.every((header) => header.getAttribute("scope") === "col"),
+    ).toBe(true);
   });
 
   it("describes itself with a caption", () => {
@@ -125,6 +144,231 @@ describe("the order rows appear in", () => {
     renderTable();
 
     expect(renderedNames()).toEqual(before);
+  });
+
+  it("renders whatever rows it is given, in the order it is given them", () => {
+    // The table decides neither. `App` derives the array; a row withheld by a
+    // filter never reaches here at all.
+    const three = [named("Zephyr"), named("Leaf"), named("Enigma")];
+
+    renderTable({ runewords: three });
+
+    expect(renderedNames()).toEqual(["Zephyr", "Leaf", "Enigma"]);
+    expect(screen.getAllByRole("row")).toHaveLength(4);
+  });
+});
+
+describe("sorting from the header row", () => {
+  it("asks for a sort by the column that was activated", async () => {
+    const { onSort } = renderTable();
+
+    for (const [label, key] of [
+      [en.table.columnCrafted, "crafted"],
+      [en.table.columnName, "name"],
+      [en.table.columnRunes, "runes"],
+      [en.table.columnItemTypes, "itemTypes"],
+    ] as const) {
+      await userEvent.click(headerButtonFor(label));
+
+      expect(onSort).toHaveBeenLastCalledWith(key);
+    }
+
+    expect(onSort).toHaveBeenCalledTimes(4);
+  });
+
+  it("asks for the sorted column again rather than a third state", async () => {
+    // The flip lives in the settings, not here — three presses are three requests
+    // for the same key, and there is no "unsorted" for the table to ask for.
+    const { onSort } = renderTable({ sortKey: "name" });
+    const header = headerButtonFor(en.table.columnName);
+
+    await userEvent.click(header);
+    await userEvent.click(header);
+    await userEvent.click(header);
+
+    expect(onSort.mock.calls).toEqual([["name"], ["name"], ["name"]]);
+  });
+
+  it("marks exactly one column as sorted", () => {
+    renderTable({ sortKey: "name", sortDirection: "ascending" });
+
+    const sorted = screen
+      .getAllByRole("columnheader")
+      .filter((header) => header.hasAttribute("aria-sort"));
+
+    expect(sorted).toHaveLength(1);
+    expect(headingOf(sorted[0])).toBe(en.table.columnName);
+    expect(sorted[0]).toHaveAttribute("aria-sort", "ascending");
+  });
+
+  it("leaves `aria-sort` absent rather than `none` on the other four", () => {
+    renderTable({ sortKey: "name" });
+
+    // Absent, so assistive technology reports one sorted column instead of five
+    // columns with opinions.
+    expect(
+      screen
+        .getAllByRole("columnheader")
+        .map((header) => header.getAttribute("aria-sort")),
+    ).toEqual([null, "ascending", null, null, null]);
+  });
+
+  it("reports the direction in words as well as in the arrow", () => {
+    renderTable({ sortKey: "runes", sortDirection: "descending" });
+
+    expect(
+      screen.getByRole("button", {
+        name: en.sort.descending(en.table.columnRunes),
+      }),
+    ).toBeInTheDocument();
+    // An unsorted column says what activating it will do, and nothing about a
+    // direction it is not in.
+    expect(
+      screen.getByRole("button", { name: en.sort.by(en.table.columnName) }),
+    ).toBeInTheDocument();
+  });
+
+  it("draws the arrow on the sorted column only, in space every column reserves", () => {
+    renderTable({ sortKey: "name", sortDirection: "descending" });
+
+    const slots = screen
+      .getAllByRole("columnheader")
+      .flatMap((header) => [
+        ...header.querySelectorAll("[aria-hidden='true']"),
+      ]);
+    const drawn = slots.filter((slot) => slot.textContent?.trim() !== "");
+
+    // All five reserve the space; exactly one fills it. Reserved on all of them
+    // because an arrow appearing only on the sorted column made that column wider
+    // than the rest and shifted the rows beside it on every press.
+    expect(slots).toHaveLength(5);
+    expect(drawn).toHaveLength(1);
+    expect(headingOf(drawn[0].closest("th") as HTMLElement)).toBe(
+      en.table.columnName,
+    );
+  });
+
+  it("makes the whole cell the control, and the control a real button", async () => {
+    const { onSort } = renderTable();
+    const header = screen.getAllByRole("columnheader")[1];
+    const control = within(header).getByRole("button");
+
+    await userEvent.click(control);
+
+    // Both halves matter and they used to pull against each other. The control has
+    // to be a real `<button>` — that is what puts it in the tab order and makes
+    // Space and Enter work — and it has to cover the cell, or a press two pixels to
+    // the right of the word does nothing. It covers it by filling it rather than by
+    // the cell growing a handler.
+    expect(onSort).toHaveBeenCalledWith("name");
+    expect(control.tagName).toBe("BUTTON");
+    expect(header).toHaveClass("p-0");
+    expect(control).toHaveClass("w-full");
+    expect(header).not.toHaveAttribute("onclick");
+  });
+
+  it("is operable by keyboard", async () => {
+    const { onSort } = renderTable();
+
+    headerButtonFor(en.table.columnName).focus();
+    await userEvent.keyboard("{Enter}");
+    await userEvent.keyboard(" ");
+
+    expect(onSort.mock.calls).toEqual([["name"], ["name"]]);
+  });
+
+  it("declares its column widths rather than letting the rows decide", () => {
+    const { container } = renderTable();
+
+    // Auto layout sizes a column by the widest thing in it, so the columns were a
+    // function of whichever rows a filter left behind. From `md` up the widths come
+    // from the header row and the body is ignored; below it the runes collapse into
+    // the name cell and no percentage survives six 40px icons, so that width keeps
+    // the layout it always had.
+    expect(container.querySelector("table")).toHaveClass(
+      "table-auto",
+      "md:table-fixed",
+    );
+    expect(
+      screen
+        .getAllByRole("columnheader")
+        .map((header) =>
+          [...header.classList].find((name) => name.startsWith("md:w-[")),
+        ),
+    ).toEqual([
+      "md:w-[9%]",
+      "md:w-[20%]",
+      "md:w-[29%]",
+      "md:w-[24%]",
+      "md:w-[18%]",
+    ]);
+  });
+
+  it("holds the header band at the top of the viewport", () => {
+    const { container } = renderTable();
+
+    // A sort control 7 000px above the row being read is not a control. jsdom
+    // applies no layout, so what is asserted is the utility rather than the
+    // position — the stacking against the detail panel is a browser check.
+    expect(container.querySelector("thead")).toHaveClass("table-header-band");
+  });
+});
+
+describe("when nothing matches", () => {
+  it("explains itself inside the table", () => {
+    renderTable({ runewords: [] });
+
+    const message = screen.getByText(en.controls.empty);
+
+    expect(message).toBeVisible();
+    // Within the table rather than beside it, so a reader navigating by row
+    // arrives at the explanation instead of at nothing.
+    expect(message.closest("table")).toBe(screen.getByRole("table"));
+    expect(message.closest("tbody")).not.toBeNull();
+  });
+
+  it("keeps the column headers and the table itself", () => {
+    renderTable({ runewords: [] });
+
+    expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(screen.getAllByRole("columnheader")).toHaveLength(5);
+    expect(screen.getByText(en.table.caption).tagName).toBe("CAPTION");
+  });
+
+  it("spans the full width as one cell, and renders no row", () => {
+    renderTable({ runewords: [] });
+
+    const cells = screen.getAllByRole("cell");
+
+    expect(cells).toHaveLength(1);
+    expect(cells[0]).toHaveAttribute("colspan", "5");
+    // The header row and the message row, and no runeword row between them.
+    expect(screen.getAllByRole("row")).toHaveLength(2);
+  });
+
+  it("still offers the sort controls", async () => {
+    const { onSort } = renderTable({ runewords: [] });
+
+    await userEvent.click(headerButtonFor(en.table.columnName));
+
+    expect(onSort).toHaveBeenCalledWith("name");
+  });
+
+  it("carries a data row's own borders, so the columns do not shift", () => {
+    const withRows = renderTable();
+    const dataRow = screen.getAllByRole("row")[1];
+    const borders = ["border-t", "border-l-4", "border-t-row-line"] as const;
+
+    expect(dataRow).toHaveClass(...borders);
+    withRows.unmount();
+
+    renderTable({ runewords: [] });
+    const messageRow = screen.getAllByRole("row")[1];
+
+    // A row without the crafted accent's 4px border made the collapsed table 2px
+    // narrower on that edge, and every column moved sideways the moment a filter
+    // emptied the table. Measured sub-pixel in Chromium before and after.
+    expect(messageRow).toHaveClass(...borders, "border-l-transparent");
   });
 });
 
@@ -292,7 +536,7 @@ describe("marking a runeword crafted", () => {
   });
 
   it("shows the socket pressed for a runeword in the crafted set", () => {
-    renderTable(new Set(["Leaf"]));
+    renderTable({ crafted: new Set(["Leaf"]) });
 
     expect(socketIn(rowFor("Leaf"))).toHaveAttribute("aria-pressed", "true");
     expect(socketIn(rowFor("Steel"))).toHaveAttribute("aria-pressed", "false");
@@ -375,12 +619,41 @@ describe("marking a runeword crafted", () => {
   });
 
   it("keeps the rows as rows rather than as buttons", () => {
-    renderTable(new Set(["Leaf"]));
+    renderTable({ crafted: new Set(["Leaf"]) });
 
     expect(screen.getAllByRole("row")).toHaveLength(100);
     expect(rowFor("Leaf").getAttribute("role")).toBeNull();
   });
 });
+
+/** The sort control heading a column, found by that column's own copy. */
+function headerButtonFor(label: string) {
+  const header = screen
+    .getAllByRole("columnheader")
+    .find((candidate) => headingOf(candidate) === label);
+
+  if (!header) throw new Error(`No column headed ${label}`);
+
+  return within(header).getByRole("button");
+}
+
+function named(name: string) {
+  const found = runewords.find((runeword) => runeword.name === name);
+
+  if (!found) throw new Error(`No runeword named ${name}`);
+
+  return found;
+}
+
+/**
+ * A column header's heading, without the direction arrow the sorted one draws.
+ *
+ * Read from the button rather than from the cell, because the arrow is a sibling
+ * of the label inside it.
+ */
+function headingOf(header: HTMLElement) {
+  return within(header).getByRole("button").firstChild?.textContent;
+}
 
 /** The rendered rows' names, in the order they appear. */
 function renderedNames() {

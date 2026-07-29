@@ -78,8 +78,25 @@ Level 13 Cloak of Shadows (9 Charges)
 ## Search
 
 Placeholder: `Runeword name or item type`. So it matches **name and item
-type**, not runes. Our plan to also match rune names is a genuine improvement
-over the reference, not a copy.
+type**, not runes.
+
+**Rune search was dropped**, and the line that used to sit here calling it "our
+plan" and "a genuine improvement over the reference" outlived the decision.
+`IDEAS.md` settles it the other way: on the reference the rune relationship is
+expressed by highlighting driven by the rune inventory, and this project tracks no
+inventory, so a rune query has nothing to be relative to. `search-sort-filter`
+shipped without it.
+
+Two differences from the reference are real, though, and both are deliberate:
+
+- **The restriction is searchable as well as the name and the categories.**
+  Fifteen runewords carry one and it renders on its own line in the item-types
+  cell, so `assassin` finds `Chaos`, `Pattern`, `Mosaic` and `Treachery` through a
+  word that is visibly in the column being searched. Excluding it would make a
+  rendered word unsearchable.
+- **The field has a real label rather than a placeholder standing in for one.** A
+  placeholder disappears the moment anything is typed, which is when a reader most
+  needs to know what the field matches.
 
 ---
 

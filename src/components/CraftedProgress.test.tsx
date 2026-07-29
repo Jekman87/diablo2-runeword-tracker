@@ -28,6 +28,36 @@ describe("the progress indicator", () => {
     expect(screen.getByText(en.progress.count(3, 99))).toBeVisible();
   });
 
+  it("states the percentage and both counts, and neither replaces the other", () => {
+    render(<CraftedProgress crafted={22} />);
+
+    // The percentage is the form the in-game Chronicle uses; the counts stay
+    // because the goal is a number of runewords and 22% cannot be checked against
+    // a list of 99.
+    const text = screen.getByText(en.progress.count(22, 99));
+
+    expect(text).toHaveTextContent("22%");
+    expect(text).toHaveTextContent("22 of 99");
+  });
+
+  it("rounds the percentage rather than showing a decimal", () => {
+    // Ninety-nine runewords put every step about one percent apart, so a decimal
+    // place would change on every toggle and say nothing.
+    expect(en.progress.count(1, 99)).toContain("1%");
+    expect(en.progress.count(50, 99)).toContain("51%");
+    expect(en.progress.count(99, 99)).toContain("100%");
+    expect(en.progress.count(0, 99)).toContain("0%");
+  });
+
+  it("stays visible while the table is read", () => {
+    const { container } = render(<CraftedProgress crafted={3} />);
+
+    // jsdom performs no layout, so what is asserted is the utility rather than the
+    // position — that it is pinned above the table's own band, and that the detail
+    // panel still paints above both, is a browser check.
+    expect(container.firstElementChild).toHaveClass("progress-band");
+  });
+
   it("announces the count rather than a percentage", () => {
     render(<CraftedProgress crafted={3} />);
 

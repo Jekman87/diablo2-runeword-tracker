@@ -12,9 +12,34 @@
    `source(none)` turns automatic detection off and the `@source` below is the
    whole of it: the components and modules that actually render. Paths are
    relative to this file, so `./` is `src/`. `index.html` carries no classes, and
-   a change that puts one there adds it here. */
+   a change that puts one there adds it here.
+
+   **Test files are excluded, and that is the same defect one scope further in.**
+   Scoping the scan to `src/` fixed prose in Markdown; it left prose in TypeScript
+   comments being read for class names, and a test file is the densest prose in the
+   project. A test also renders no markup that ships: the classes it names are
+   string assertions about what a component already applies, and the two or three
+   it passes as props (`text-sm`, `mr-1`) exist to check that `tailwind-merge`
+   resolves them. So nothing here is owed a rule, and excluding tests took thirteen
+   of them out — `.invisible`, `.text-lg`, `.mr-1` and the numeric fragments a
+   `@floating-ui` assertion generated.
+
+   Comments in the components themselves cannot be moved anywhere, and one of them
+   is worth knowing about: writing the four-letter word for what focus draws around
+   a chip put `.ring` and its `@property` block back, 1.65 kB. `search-sort-filter`
+   caught it in the built stylesheet and worded that comment around it. */
 @import "tailwindcss" source(none);
 @source "./**/*.{ts,tsx}";
+@source not "./**/*.test.{ts,tsx}";
+
+/* And one candidate blocked by name, because no amount of scoping reaches it.
+   `filter` is a Tailwind utility *and* the natural name for a parameter holding
+   one — `(filter: CraftedFilter)` in three signatures — so the scanner reads an
+   identifier this project cannot rename to anything better and emits `.filter`
+   with nine `@property` declarations behind it, 643 B that nothing renders.
+   Blocking it states the fact directly: `filter` is not a class here, and a
+   component that ever wants a CSS filter declares its own utility. */
+@source not inline("filter");
 
 /* The display face, self-hosted. The reference pulls Bellefair from
    fonts.googleapis.com; we do not, so the deployed page makes no third-party
@@ -28,7 +53,24 @@
   font-family: "Bellefair";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  /* `optional`, not `swap`, and the two behave completely differently on the one
+     thing that shows: `swap` paints the heading in the fallback and then re-lays it
+     out when Bellefair lands, which is the title jumping on every uncached reload.
+     `optional` gives the font a short window to arrive and then commits for the
+     whole page load — so the text is laid out once, whichever face wins.
+
+     The cost of `optional` is that a genuinely slow first visit renders in the
+     fallback and does not swap until the next navigation. Two things make that
+     nearly theoretical here: the file is 16.5 kB from the same origin and is
+     preloaded from `index.html`, so its request starts with the document rather
+     than after the stylesheet is parsed; and the page is client-rendered, so
+     several hundred kB of JavaScript has to parse before an `<h1>` exists at all.
+     The font is almost always already there by the time there is anything to
+     paint. Measured in Chromium on a cold profile: Bellefair, no shift.
+
+     `block` was the other candidate and is worse — it hides the heading instead of
+     moving it, and invisible text is a worse failure than a fallback serif. */
+  font-display: optional;
   src: url("./assets/fonts/bellefair-latin-400.woff2") format("woff2");
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
@@ -48,10 +90,15 @@
 
    Scope: the surfaces `IDEAS.md` has already settled — the ground, body text,
    the table band, the runeword name, property text, the gold family, the two
-   badges and the crafted accent — plus the four the runeword table introduces.
-   Nothing is added for the toast or the collapsible panels: the change that
-   builds each one adds its own token, which is the rule that keeps this a
-   single source rather than a starting point. */
+   badges and the crafted accent — plus the four the runeword table introduces
+   and the three crafted tracking does. Nothing is added for the collapsible
+   panels: the change that builds each one adds its own token, which is the rule
+   that keeps this a single source rather than a starting point.
+
+   Nothing was added for the browsing controls either, and that is the same rule
+   read the other way: the search field, the filter chips, the sorted column's
+   band and the empty-result message all take tokens that were already declared
+   with nothing rendering them. See the note beside `--color-accent` below. */
 @theme {
   /* Page */
   --color-ground: #000;
@@ -120,8 +167,19 @@
   --color-patch-2-6: #588425;
   --color-patch-3-0: #7b3fe4;
 
-  /* Crafted state — the row accent `IDEAS.md` calls for */
-  --color-crafted: #44aa44;
+  /* Crafted state — the row accent, the check mark and the progress fill.
+     `IDEAS.md` first called for a green here and this is the Chronicle's gold
+     instead, taken from the in-game window the page is a tracker for: its progress
+     bar fills pale gold, and a saturated green belonged to no part of that screen.
+
+     The same value as `--color-gold-mid` above, and deliberately its own token
+     rather than a second use of that one. "The gold display family" and "crafted
+     state" are different roles that happen to share a hex, which is exactly the case
+     this file's naming rule says may share a value without sharing a name — a
+     component reading `bg-crafted` states what it means, one reading `bg-gold-mid`
+     states a coincidence of hue. It also means the crafted accent can move without
+     dragging every heading with it. */
+  --color-crafted: #a79663;
 
   /* The runeword table's own surfaces: the hairline between rows, the row's
      hover state, and the detail panel. No new hue — the two row states are
@@ -148,7 +206,7 @@
      groove of the progress bar, and the undo notice's panel.
 
      No new hue again. The tint is `--color-crafted` at low alpha, so a marked
-     row reads as the accent rather than as a fourth green; the groove is the
+     row reads as the accent itself rather than as a colour of its own; the groove is the
      muted family the row hairline already comes from; the notice is the blood
      family's dark end, as the detail panel is.
 
@@ -157,7 +215,7 @@
      without a use site until now — a second token for the same role is the
      drift the palette rule exists to prevent. And still nothing for the
      collapsible panels: `remaining-panels` adds its own. */
-  --color-crafted-row: rgb(68 170 68 / 0.12);
+  --color-crafted-row: rgb(167 150 99 / 0.12);
   --color-progress-track: #24221c;
   --color-toast: #200000;
 
@@ -193,12 +251,16 @@
      `--color-item-restriction` above, which is fine: two roles may share a
      value, and that is exactly why they do not share a token.
 
-     `--color-muted-dark` and `--color-link` have no use site either, and unlike
-     the three above this change did not orphan them — they arrived declared for
-     surfaces nothing renders yet, as `--color-blood-dark` and
-     `--color-blood-light` did. That is the same defect from the other direction
-     and it is recorded in `IDEAS.md` rather than fixed here, because the changes
-     that will want them are `site-header` and `remaining-panels`. */
+     `--color-muted-dark` now has one, and so does `--color-blood-light` above.
+     Both arrived declared for surfaces nothing rendered — the defect
+     `d2-theme` forbids from the other direction — and the browsing controls are
+     the surfaces they were exactly right for: the muted dark is the search field
+     and a filter chip at rest, the light blood is the selected chip and the
+     sorted column's band. Rendering a declared token is the fix that rule asks
+     for; declaring a sixth family beside it would have been the defect.
+
+     `--color-blood-dark` and `--color-link` are still owed a use site, for
+     `remaining-panels` and `site-header`. Two, down from four. */
   --color-accent: #bd8547;
   --color-muted: #74706c;
   --color-muted-dark: #24221c;
@@ -214,6 +276,20 @@
 }
 
 @layer base {
+  /* The scrollbar's space is reserved whether or not there is a scrollbar.
+
+     Without this the page shifts sideways the moment the table stops being tall
+     enough to scroll — filter down to nothing and the scrollbar goes away, the
+     viewport grows by its width, and `mx-auto` re-centres every element on the page
+     including the heading. It is the classic version of this defect and it only
+     shows on the transition, which is where nobody is looking.
+
+     An overlay scrollbar has no width, so this is a no-op on the platforms that use
+     one; it costs those nothing and fixes the platforms that do not. */
+  html {
+    scrollbar-gutter: stable;
+  }
+
   body {
     background-color: var(--color-ground);
     color: var(--color-body);
@@ -278,6 +354,139 @@
   background: url("./assets/images/hr-gold.gif") repeat-x 0 100%;
 }
 
+/* Two bands stick to the top of the viewport, one under the other, and this is the
+   one number they share: how tall the upper one is, and therefore where the lower
+   one has to start.
+
+   Written once because the two are otherwise coupled by coincidence. Nothing in CSS
+   can ask an element how tall its sibling ended up, so if the progress band grew and
+   the header's `top` did not, a strip of runeword row would show between them — and
+   it would show only while scrolling, which is where nobody looks.
+
+   0.5rem of padding above and below a 0.75rem bar and one line of text measures
+   3.5rem. Checked at 390px and with the count at its longest, where the line still
+   does not wrap; a locale that wraps it is a locale that has to raise this number. */
+:root {
+  --progress-band-height: 3.5rem;
+}
+
+/* Overall progress, held at the top of the viewport.
+
+   Sticky because "how many have I made" is the question the page exists to answer,
+   and the answer scrolled 7 000px above the rows being read is an answer nobody can
+   see. It carries the count text with it, not just the bar: a bar with no numbers
+   beside it does not say 37.
+
+   Two things this needs that the header band does not. It needs its **own opaque
+   background** — the header's `bg-blood` already conceals the rows travelling under
+   it, whereas this block is transparent and would let them read straight through
+   the text. And it needs **padding**, because stuck at `top: 0` its text would
+   otherwise sit flush against the edge of the viewport.
+
+   Sticky on a grid item, which is worth knowing because it is usually the thing
+   that does not work: a grid item's containing block is its grid area, and an area
+   one row tall leaves sticky nowhere to travel. Checked in Chromium rather than
+   reasoned about — it sticks. If it ever stops, the fix is a wrapper around this and
+   the table, not a taller grid area. */
+@utility progress-band {
+  position: sticky;
+  top: 0;
+  /* Above the header band, which is above the rows. See the note there. */
+  z-index: 2;
+  height: var(--progress-band-height);
+  padding-block: 0.5rem;
+  background-color: var(--color-ground);
+}
+
+/* The table's header band, held directly beneath the progress band.
+
+   This is the half `runeword-table` deferred: it declined a sticky header on the
+   grounds that the row was inert, and a sort control 7 000px above the row being
+   read is not a control. The band is already opaque — `bg-blood` is on the
+   `<thead>` — so nothing here has to make it conceal the rows passing beneath it.
+
+   **The `z-index` is the whole reason this is a utility and not two Tailwind
+   classes.** A detail panel is `position: fixed` at `z-10`, portalled to the end
+   of the document, and it must paint *above* this band: open the panel on a row
+   near the top of the viewport, scroll, and a header with the higher value slides
+   over it — a defect that exists at exactly one scroll offset, which is where
+   review does not look. So the band sits at 1: above the rows, below the progress
+   band at 2, and eight levels below the panel. Changing any of the three without
+   reading the other two is how that comes back.
+
+   Stated as one declaration rather than as `sticky top-14 z-1` at the use site, so
+   the value and the reason for it cannot drift apart. */
+@utility table-header-band {
+  position: sticky;
+  top: var(--progress-band-height);
+  z-index: 1;
+
+  /* The band's own top corners, the same 2px as the field and the chips.
+     Declared here rather than as `rounded-t-xs` at the use site because the
+     background is on this element, and the two outer `<th>` cells have to match it
+     when they take the sorted column's lighter band — a square light corner over a
+     rounded dark one is worse than no radius at all. `SortableHeader` carries that
+     half; this is the half that owns the colour. */
+  border-start-start-radius: var(--radius-xs);
+  border-start-end-radius: var(--radius-xs);
+}
+
+/* The search field.
+
+   `appearance: none` is the whole of it, and it is not cosmetic: WebKit draws
+   `<input type="search">` as a platform search box and ignores the background it
+   is given, so without this the one field on a black page renders white. The
+   colours stay at the use site as theme utilities — `bg-muted-dark` on the field,
+   which is one of the two tokens declared ahead of any surface and now has one.
+
+   **The engine's own clear button is restyled rather than left native**, which
+   this change first decided against and then reversed on looking at it. Chromium
+   draws that glyph in its own blue — the one thing on the page whose colour came
+   from no token — and gives it the document cursor, so it neither read as part of
+   the field nor admitted that it could be pressed. Both halves of that are the
+   palette rule and the pointer rule this project already keeps everywhere else,
+   and "the platform draws it" is not a reason to break them.
+
+   The replacement is a **mask, not a background image**, and that is the point of
+   the shape: an inline SVG with its own `stroke` or `fill` would be a literal
+   colour inside a URL, invisible to the token rule and unreachable by a hover
+   state. A mask carries only the geometry and takes its colour from
+   `background-color`, so the glyph is `--color-muted` at rest and
+   `--color-gold-light` under the pointer — the same pair the crafted socket and
+   the runeword's own name already move between.
+
+   The SVG names no colour at all: two polygons with no `fill` attribute default
+   to black, which for an alpha mask means opaque, which is all a mask needs.
+
+   Written unprefixed, and the URL held in a custom property. Lightning CSS adds the
+   `-webkit-` prefixes from the browser targets in `vite.config.ts`, and behind a
+   variable it repeats `-webkit-mask-image` three times — it cannot see whether the
+   value is one image or a list, so it emits every fallback it might need. Three
+   short variable references still beat two copies of a 300-byte data URI, which is
+   what writing the URL inline produced. Prefixing by hand on top of either is the
+   one combination that is worse than both. */
+@utility search-field {
+  appearance: none;
+
+  &::-webkit-search-cancel-button {
+    --clear-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpolygon points='3.07,1.93 10.07,8.93 8.93,10.07 1.93,3.07'/%3E%3Cpolygon points='8.93,1.93 10.07,3.07 3.07,10.07 1.93,8.93'/%3E%3C/svg%3E");
+
+    appearance: none;
+    width: 0.75rem;
+    height: 0.75rem;
+    cursor: pointer;
+    background-color: var(--color-muted);
+    mask-image: var(--clear-glyph);
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+  }
+
+  &::-webkit-search-cancel-button:hover {
+    background-color: var(--color-gold-light);
+  }
+}
+
 /* The progress bar's skin. A native `<progress>` carries its role, its value
    and its maximum without any of it restated in ARIA, which is worth three
    engine-prefixed rules — the same trade `runeword-table` made in choosing
@@ -296,15 +505,24 @@
   border: 1px solid var(--color-row-line);
   background-color: var(--color-progress-track);
 
+  /* The same 2px the field and the filter chips take. Declared on the groove and
+     on both engines' fill pseudo-elements, because a rounded groove with a square
+     fill inside it shows the corner it was supposed to soften — visible at 0% and
+     100%, which is exactly where a progress bar spends its first and last day. */
+  border-radius: var(--radius-xs);
+
   &::-webkit-progress-bar {
     background-color: var(--color-progress-track);
+    border-radius: var(--radius-xs);
   }
 
   &::-webkit-progress-value {
     background-color: var(--color-crafted);
+    border-radius: var(--radius-xs);
   }
 
   &::-moz-progress-bar {
     background-color: var(--color-crafted);
+    border-radius: var(--radius-xs);
   }
 }
