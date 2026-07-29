@@ -1,17 +1,22 @@
 import { useMemo } from "react";
 
 import { CraftedProgress } from "@/components/CraftedProgress";
+import { RemainingBases } from "@/components/RemainingBases";
+import { RemainingPanel } from "@/components/RemainingPanel";
+import { RemainingRunes } from "@/components/RemainingRunes";
 import { RunewordControls } from "@/components/RunewordControls";
 import { RunewordTable } from "@/components/RunewordTable";
 import { UndoToast } from "@/components/UndoToast";
 import { useCraftedRunewords } from "@/crafted/useCraftedRunewords";
-import { runewords } from "@/data";
+import { itemTypes, runes, runewords } from "@/data";
 import { useStrings } from "@/i18n";
+import { remainingBases } from "@/remaining/bases";
+import { remainingRunes } from "@/remaining/runes";
 import { useViewSettings } from "@/view/useViewSettings";
 import { visibleRunewords } from "@/view/visible";
 
-// The page: a title, the divider, overall progress, the browsing controls, the
-// table, and the undo notice.
+// The page: a title, the divider, overall progress, the two remaining panels,
+// the browsing controls, the table, and the undo notice.
 //
 // Crafted state is owned here rather than in the table, because the progress
 // bar and the notice are the table's siblings and read the same value. That is
@@ -65,6 +70,21 @@ export function App() {
     [settings, query, crafted],
   );
 
+  // The two shopping-list aggregates, keyed on the crafted set alone — the
+  // search, the filters and the sort answer "what am I looking at" and these
+  // answer "what does the whole Chronicle still cost", so typing in the search
+  // field re-derives neither. A toggle, including an undo, re-derives both
+  // immediately; each is one linear scan over 99 records.
+  const stillNeededRunes = useMemo(
+    () => remainingRunes(runewords, runes, crafted),
+    [crafted],
+  );
+
+  const stillNeededBases = useMemo(
+    () => remainingBases(runewords, itemTypes, crafted),
+    [crafted],
+  );
+
   return (
     /* Wider than the 4xl it started at, so the search field and both filter
        groups sit on one line at desktop width — six slot options do not fit in
@@ -82,6 +102,19 @@ export function App() {
           `crafted-tracking` specifically so that a filter could not move it, and
           this is the change it was defending against. */}
       <CraftedProgress crafted={crafted.size} />
+
+      {/* The shopping list, between progress and the controls — item 4 of the
+          Phase 1 layout. In normal flow, deliberately: the two sticky bands
+          above are the page's constant answers, and reference material closed
+          by default has no claim on permanent viewport height, so these scroll
+          away and take no part in `--progress-band-height`. */}
+      <RemainingPanel title={strings.remaining.runesTitle}>
+        <RemainingRunes runes={stillNeededRunes} />
+      </RemainingPanel>
+
+      <RemainingPanel title={strings.remaining.basesTitle}>
+        <RemainingBases bases={stillNeededBases} />
+      </RemainingPanel>
 
       <RunewordControls
         query={query}
