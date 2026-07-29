@@ -325,4 +325,4 @@
       name cell shows its sequence and the runes column shows none; at 900px the
       reverse. Exactly one sequence is perceivable at either width, labels included
 - [x] 7.14 Run `openspec validate --changes detail-view-hover --strict`
-- [ ] 7.15 Commit as `fix(table): open details on hover, colour badges, label runes`
+- [x] 7.15 Commit as `fix(table): open details on hover, colour badges, label runes`
