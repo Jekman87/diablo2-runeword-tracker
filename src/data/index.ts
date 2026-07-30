@@ -37,6 +37,15 @@ export const runewordsByName: ReadonlyMap<string, Runeword> = new Map(
   runewords.map((runeword) => [runeword.name, runeword]),
 );
 
+// Just the names, as a set, for the two places that ask "is this a runeword the
+// dataset has" about a string that came from outside it — a stored progress list
+// and an imported file. Both go through `splitStoredNames`, which takes the
+// known names as a parameter so that `src/crafted/storage.ts` need not import
+// the dataset; this is the argument they both pass.
+export const runewordNames: ReadonlySet<string> = new Set(
+  runewordsByName.keys(),
+);
+
 export const runesByName: ReadonlyMap<string, Rune> = new Map(
   runes.map((rune) => [rune.name, rune]),
 );

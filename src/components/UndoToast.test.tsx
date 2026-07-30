@@ -97,7 +97,13 @@ describe("dismissal", () => {
 
     expect(onDismiss).not.toHaveBeenCalled();
 
-    act(() => void vi.advanceTimersByTime(6000));
+    // Pinned either side of five seconds, so the interval is asserted rather
+    // than merely outlasted — a generous `advanceTimersByTime` would keep
+    // passing whatever the number became.
+    act(() => void vi.advanceTimersByTime(4999));
+    expect(onDismiss).not.toHaveBeenCalled();
+
+    act(() => void vi.advanceTimersByTime(1));
 
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
@@ -125,7 +131,7 @@ describe("dismissal", () => {
     expect(onDismiss).not.toHaveBeenCalled();
 
     act(() => undoButton().blur());
-    act(() => void vi.advanceTimersByTime(6000));
+    act(() => void vi.advanceTimersByTime(5000));
 
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });

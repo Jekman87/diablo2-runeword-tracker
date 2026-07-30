@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { type ReactNode, useId } from "react";
 
 import { cva } from "class-variance-authority";
 
@@ -14,6 +14,21 @@ export interface RunewordControlsProps {
   visibleCount: number;
   /** Whether anything is hiding rows, which is when the reset is offered. */
   narrowed: boolean;
+  /**
+   * The export and import controls, rendered at the far end of the row that
+   * states the result count.
+   *
+   * **A slot rather than `onExport` and `onImport` props**, because this
+   * component owns no state and renders the view settings — and progress is not
+   * one. Taking those two callbacks would drag a file input, a parsed file and a
+   * confirmation dialog into the component about search and filters, and would
+   * make the thing that decides *where* the controls sit also the thing that
+   * knows what they do. `App` builds them, for the same reason it builds the
+   * undo notice: it is where the crafted set lives.
+   *
+   * Optional, so every existing test that renders this bar still renders.
+   */
+  transfer?: ReactNode;
   onQueryChange: (query: string) => void;
   onCraftedFilterChange: (filter: CraftedFilter) => void;
   onSlotFilterChange: (filter: SlotFilter) => void;
@@ -48,6 +63,7 @@ export function RunewordControls({
   slotFilter,
   visibleCount,
   narrowed,
+  transfer,
   onQueryChange,
   onCraftedFilterChange,
   onSlotFilterChange,
@@ -122,6 +138,19 @@ export function RunewordControls({
             {strings.controls.reset}
           </button>
         ) : null}
+
+        {/* Pushed to the far end of the count's row rather than squeezed in
+            beside the filters. The first row is already a search field and nine
+            chips across two fieldsets, and at 1152px there is no honest room for
+            two more buttons on it — the pair would wrap and read as a bar of its
+            own without being one.
+
+            `ml-auto` rather than `justify-between` on the row: the reset appears
+            and disappears with the narrowing, so the row's content count
+            changes, and space-between would move the buttons whenever it did.
+            This pins them to the end regardless. When the row is too narrow to
+            hold both ends, the margin collapses and they wrap under the count. */}
+        <div className="ml-auto flex flex-wrap gap-1">{transfer}</div>
       </div>
     </div>
   );

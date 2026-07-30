@@ -143,13 +143,19 @@ export function SiteHeader() {
           </div>
         </div>
 
-        {/* The panel, a row of the header's own grid so it opens across the width
-            under both controls. In flow rather than the reference's overlay
-            dropdown: an overlay needs a positioned ancestor, a `z-index` argued
-            against the two sticky bands and the detail view's panel, and an
-            outside-press dismissal — all so that opening help does not move a page
-            the reader has just asked to have explained. Pushing the divider down
-            is the conduct the remaining panels already have.
+        {/* The panel opens **below the divider**, not above it. The divider is
+            the header's own bottom edge — the line that says the title, the patch
+            and the controls end here — and a block of prose wedged in above it
+            pushes that edge down and reads as part of the title block. Beneath
+            it, the help is what it is: an explanation of the page, opened over
+            the top of the page.
+
+            Still in flow rather than the reference's overlay dropdown: an
+            overlay needs a positioned ancestor, a `z-index` argued against the
+            two sticky bands and the detail view's panel, and an outside-press
+            dismissal — all so that opening help does not move a page the reader
+            has just asked to have explained. Pushing what follows down is the
+            conduct the remaining panels already have.
 
             Hidden by the `hidden` **attribute**, with the `display` class applied
             only while open. Both halves are needed and the pairing is the point: a
@@ -166,22 +172,30 @@ export function SiteHeader() {
             rather than for a role. The measure is capped because 1104px of prose is
             not a paragraph, and the block keeps the page's left rule under
             right-aligned controls: text is read from the left however it opened. */}
-        <div
-          id={helpId}
-          hidden={!helpOpen}
-          className={clsx("max-w-3xl gap-2", helpOpen && "grid")}
-        >
-          <p>{strings.header.helpIntro}</p>
-
-          <ul className="grid list-disc gap-2 ps-5">
-            {strings.header.helpPoints.map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </ul>
-        </div>
       </div>
 
       <div className="gold-divider" />
+
+      {/* A row of the `<header>`'s own grid rather than of the block above it,
+          which is all the move amounted to: the measure, the gutter and the
+          centring are the header's and did not have to be restated. The header's
+          `gap-6` puts the same space between the divider and this as it puts
+          above the divider, and `<main>`'s own top padding closes the bottom —
+          so an open panel needs no padding of its own and a closed one still
+          takes no room at all. */}
+      <div
+        id={helpId}
+        hidden={!helpOpen}
+        className={clsx("max-w-3xl gap-2", helpOpen && "grid")}
+      >
+        <p>{strings.header.helpIntro}</p>
+
+        <ul className="grid list-disc gap-2 ps-5">
+          {strings.header.helpPoints.map((point) => (
+            <li key={point}>{point}</li>
+          ))}
+        </ul>
+      </div>
     </header>
   );
 }

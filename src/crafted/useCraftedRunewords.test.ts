@@ -176,3 +176,93 @@ describe("names the dataset does not know", () => {
     ).toContain("Ondal's Wisdom");
   });
 });
+
+describe("replacing progress with an imported file", () => {
+  it("makes the imported value the whole of the crafted set", () => {
+    const { result } = renderHook(() => useCraftedRunewords());
+
+    act(() => result.current.toggle("Enigma", null));
+    act(() => result.current.toggle("Spirit", null));
+
+    act(() =>
+      result.current.replace({ crafted: new Set(["Grief"]), unknown: [] }),
+    );
+
+    // Replacement, not a merge: the two marks made before it are gone even
+    // though the imported value said nothing about them.
+    expect([...result.current.crafted]).toEqual(["Grief"]);
+  });
+
+  it("writes the replacement to storage", () => {
+    const { result } = renderHook(() => useCraftedRunewords());
+
+    act(() =>
+      result.current.replace({
+        crafted: new Set(["Grief", "Enigma"]),
+        unknown: [],
+      }),
+    );
+
+    expect(
+      JSON.parse(window.localStorage.getItem(CRAFTED_STORAGE_KEY) ?? "[]"),
+    ).toEqual(["Enigma", "Grief"]);
+  });
+
+  it("clears progress when the imported file listed nothing", () => {
+    const { result } = renderHook(() => useCraftedRunewords());
+
+    act(() => result.current.toggle("Enigma", null));
+    act(() => result.current.replace({ crafted: new Set(), unknown: [] }));
+
+    expect(result.current.crafted.size).toBe(0);
+    expect(window.localStorage.getItem(CRAFTED_STORAGE_KEY)).toBe("[]");
+  });
+
+  it("drops the unknown names it replaced and keeps the ones it brought", () => {
+    window.localStorage.setItem(CRAFTED_STORAGE_KEY, '["Ondal\'s Wisdom"]');
+
+    const { result } = renderHook(() => useCraftedRunewords());
+
+    act(() =>
+      result.current.replace({
+        crafted: new Set(["Enigma"]),
+        unknown: ["Plague"],
+      }),
+    );
+
+    // The one case where a preserved unknown name is allowed to go — and the
+    // only way one ever can, since nothing in the interface renders it.
+    expect(
+      JSON.parse(window.localStorage.getItem(CRAFTED_STORAGE_KEY) ?? "[]"),
+    ).toEqual(["Enigma", "Plague"]);
+  });
+
+  it("leaves no undo behind", () => {
+    const { result } = renderHook(() => useCraftedRunewords());
+
+    act(() => result.current.toggle("Enigma", null));
+    expect(result.current.pendingUndo).not.toBeNull();
+
+    act(() =>
+      result.current.replace({ crafted: new Set(["Grief"]), unknown: [] }),
+    );
+
+    // A notice offering to reverse a toggle against a set that no longer exists
+    // is worse than no notice.
+    expect(result.current.pendingUndo).toBeNull();
+  });
+
+  it("still replaces in memory when storage is unusable", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("quota", "QuotaExceededError");
+    });
+
+    const { result } = renderHook(() => useCraftedRunewords());
+
+    act(() =>
+      result.current.replace({ crafted: new Set(["Grief"]), unknown: [] }),
+    );
+
+    expect(result.current.crafted.has("Grief")).toBe(true);
+  });
+});
