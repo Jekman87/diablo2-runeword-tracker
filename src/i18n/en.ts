@@ -17,6 +17,59 @@ export const en = {
     title: "Diablo II Runeword Tracker",
   },
 
+  // The site header: the sentence under the title, the two links, and the whole
+  // of the help disclosure's prose.
+  //
+  // `patchLink` and `patchNotesName` take the patch number as a parameter for the
+  // reason `patchMeaning` and `mark` do: `3.1.1` is the same string in every
+  // locale, so it is a value this layer receives and only the words around it are
+  // copy. The value itself lives in `src/header/site.ts`, beside the patch-notes
+  // URL it has to move with. No URL appears here at all — a link's destination is
+  // not copy.
+  //
+  // **The two `…Name` entries are accessible names, not visible labels.** Both
+  // links leave the site in a new tab, and a link that does that without saying so
+  // is one whose behaviour a screen-reader user meets only after it has happened.
+  // Each name is written out whole here rather than stitched together in the
+  // component from a label and a shared suffix, because the comma joining the two
+  // halves is punctuation, and punctuation around a value is this layer's business.
+  // Each contains its own visible label, so the two never disagree about what the
+  // control is called.
+  header: {
+    // Says which list the page is showing rather than which game the reference is
+    // for: the header's own job is to state what the 99 rows below it reflect. It
+    // ends where the link begins, so the words and the pressable patch are two
+    // strings rather than one sentence with a hole in it.
+    patchLine: "Runeword list as of",
+    patchLink: (patch: string) => `patch ${patch}`,
+    patchNotesName: (patch: string) =>
+      `Update notes for patch ${patch}, opens in a new tab`,
+
+    feedback: "Feedback",
+    feedbackName: "Feedback, opens in a new tab",
+
+    // The disclosure that replaced a link to the repository. Everything a reader
+    // needs in order to use the page is in these seven strings, in the order the
+    // page presents the features: what the list is, how a runeword is marked,
+    // what the two sticky answers above the table mean, how the table is
+    // narrowed, what the two panels add up, where a runeword's properties are,
+    // and where the progress is kept.
+    //
+    // Prose, not a manual. A tracker whose whole interface is one screen does not
+    // need sections, and a reader who opened a disclosure labelled Help wants the
+    // answer in the first sentence.
+    help: "Help",
+    helpIntro:
+      "Every runeword in the game, with the runes it takes and the base items it can go into. The patch above says which version of the list this is.",
+    helpPoints: [
+      "Tick the box in the Crafted column to record a runeword you have made. The bar at the top of the page counts what you have made out of all 99, and a notice offers an undo if you tick the wrong one.",
+      "The search field matches a runeword's name, its base items and any class or item restriction. The two groups of buttons beside it narrow the list by crafted state and by equipment slot, and every column heading sorts the table.",
+      "Remaining Runes and Remaining Bases add up everything the runewords you have not made yet still need — the shopping list for the rest of them, not for the whole game.",
+      "Rest the pointer on a runeword's name to see the properties it grants, its runes in order, the sockets it needs and the level it requires.",
+      "Your progress is kept in this browser and nowhere else. Nothing is uploaded, nothing is shared between devices, and clearing this site's data clears it.",
+    ],
+  },
+
   table: {
     // Visually hidden, so it is the whole description of the table rather than
     // a heading above one.
@@ -169,8 +222,14 @@ export const en = {
   // three, so the counts do not sum to the uncrafted total and a bare number
   // would invite adding them up.
   remaining: {
-    runesTitle: "Remaining Runes",
-    basesTitle: "Remaining Bases",
+    // One panel holds both lists, so the title names both and each section takes
+    // the short word. "Remaining Runes" as a heading inside a panel called
+    // "Remaining Runes and Bases" would say "remaining" twice in two lines: the
+    // band has already told the reader what they are looking at, and the section
+    // only has to say which half this is.
+    title: "Remaining Runes and Bases",
+    runesSection: "Runes",
+    basesSection: "Bases",
 
     tier: {
       common: "Common",

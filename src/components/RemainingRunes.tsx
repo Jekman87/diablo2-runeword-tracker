@@ -53,7 +53,10 @@ export function RemainingRunes({ runes }: RemainingRunesProps) {
 
         return (
           <section key={tier}>
-            <h3 className="mb-2 text-lg">{strings.remaining.tier[tier]}</h3>
+            {/* `h4`, because the band sits under the runes section's own `h3`
+                inside the panel's `h2`. The size is a separate decision from the
+                level and stays where it was. */}
+            <h4 className="mb-2 text-lg">{strings.remaining.tier[tier]}</h4>
 
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
               {band.map((rune) => (

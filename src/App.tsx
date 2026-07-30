@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 
 import { CraftedProgress } from "@/components/CraftedProgress";
-import { RemainingBases } from "@/components/RemainingBases";
+import { RemainingNeeds } from "@/components/RemainingNeeds";
 import { RemainingPanel } from "@/components/RemainingPanel";
-import { RemainingRunes } from "@/components/RemainingRunes";
 import { RunewordControls } from "@/components/RunewordControls";
 import { RunewordTable } from "@/components/RunewordTable";
+import { SiteHeader } from "@/components/SiteHeader";
 import { UndoToast } from "@/components/UndoToast";
 import { useCraftedRunewords } from "@/crafted/useCraftedRunewords";
 import { itemTypes, runes, runewords } from "@/data";
@@ -15,8 +15,8 @@ import { remainingRunes } from "@/remaining/runes";
 import { useViewSettings } from "@/view/useViewSettings";
 import { visibleRunewords } from "@/view/visible";
 
-// The page: a title, the divider, overall progress, the two remaining panels,
-// the browsing controls, the table, and the undo notice.
+// The page: the site header, overall progress, the remaining-needs panel, the
+// browsing controls, the table, and the undo notice.
 //
 // Crafted state is owned here rather than in the table, because the progress
 // bar and the notice are the table's siblings and read the same value. That is
@@ -29,13 +29,17 @@ import { visibleRunewords } from "@/view/visible";
 //
 // The progress bar sits directly under the divider, and the controls between it
 // and the table — which is where `IDEAS.md` puts search and filters in the Phase
-// 1 layout, below a patch line and the Help, Feedback and Update Notes links
-// that no change in its list builds. `site-header` slots those in above this
-// without moving anything.
+// 1 layout. Items 1 and 2 of that layout, the patch line and the three links,
+// are the header above, and slotting them in moved nothing below the divider.
 //
-// Still no header. Inventing one inside a browsing change is how a change stops
-// being one feature; the gap is recorded in `IDEAS.md` for the proposal that
-// picks it up.
+// **The header is a sibling of `<main>`, not a grid item inside it**, because a
+// `<header>` inside `main` exposes no `banner` landmark at all. The `<h1>` and
+// the divider went with it, so this grid now starts at the progress band. The
+// cost is that the centring constraint appears on two elements; a wrapper `<div>`
+// carrying the grid around both would fix that by demoting the page's two
+// landmarks to children of a presentational box, and would re-parent the sticky
+// band while doing it. Two class lists that must agree is the smaller risk — the
+// comment in `SiteHeader` names this one, and this one names it.
 
 export function App() {
   const strings = useStrings();
@@ -86,58 +90,64 @@ export function App() {
   );
 
   return (
-    /* Wider than the 4xl it started at, so the search field and both filter
-       groups sit on one line at desktop width — six slot options do not fit in
-       896px beside a search field, and a control bar that wraps at every width
-       reads as three separate bars. */
-    <main className="mx-auto grid min-h-dvh max-w-6xl content-start gap-6 p-6">
-      <h1 className="text-3xl font-normal tracking-wide">
-        {strings.app.title}
-      </h1>
+    <>
+      <SiteHeader />
 
-      <div className="gold-divider" />
+      {/* Wider than the 4xl it started at, so the search field and both filter
+          groups sit on one line at desktop width — six slot options do not fit in
+          896px beside a search field, and a control bar that wraps at every width
+          reads as three separate bars.
 
-      {/* Nothing about the visible count reaches this. Its maximum is the
-          dataset's length, read there rather than passed in — written that way by
-          `crafted-tracking` specifically so that a filter could not move it, and
-          this is the change it was defending against. */}
-      <CraftedProgress crafted={crafted.size} />
+          The width and gutter classes are repeated on the `<header>` above and
+          have to stay in step. */}
+      <main className="mx-auto grid min-h-dvh max-w-6xl content-start gap-6 p-6">
+        {/* Nothing about the visible count reaches this. Its maximum is the
+            dataset's length, read there rather than passed in — written that way
+            by `crafted-tracking` specifically so that a filter could not move it,
+            and this is the change it was defending against. */}
+        <CraftedProgress crafted={crafted.size} />
 
-      {/* The shopping list, between progress and the controls — item 4 of the
-          Phase 1 layout. In normal flow, deliberately: the two sticky bands
-          above are the page's constant answers, and reference material closed
-          by default has no claim on permanent viewport height, so these scroll
-          away and take no part in `--progress-band-height`. */}
-      <RemainingPanel title={strings.remaining.runesTitle}>
-        <RemainingRunes runes={stillNeededRunes} />
-      </RemainingPanel>
+        {/* The shopping list, between progress and the controls — item 4 of the
+            Phase 1 layout. In normal flow, deliberately: the two sticky bands
+            above are the page's constant answers, and reference material closed
+            by default has no claim on permanent viewport height, so this scrolls
+            away and takes no part in `--progress-band-height`.
 
-      <RemainingPanel title={strings.remaining.basesTitle}>
-        <RemainingBases bases={stillNeededBases} />
-      </RemainingPanel>
+            **One panel, where this was two.** Two identical bands spent 160px
+            above the table to say two titles; the runes and the bases are two
+            sections of one panel now, side by side from `md`. Both aggregates
+            still live here, beside the crafted set they are memoised on. */}
+        <RemainingPanel title={strings.remaining.title}>
+          <RemainingNeeds runes={stillNeededRunes} bases={stillNeededBases} />
+        </RemainingPanel>
 
-      <RunewordControls
-        query={query}
-        craftedFilter={settings.craftedFilter}
-        slotFilter={settings.slotFilter}
-        visibleCount={visible.length}
-        narrowed={narrowed}
-        onQueryChange={setQuery}
-        onCraftedFilterChange={setCraftedFilter}
-        onSlotFilterChange={setSlotFilter}
-        onReset={reset}
-      />
+        <RunewordControls
+          query={query}
+          craftedFilter={settings.craftedFilter}
+          slotFilter={settings.slotFilter}
+          visibleCount={visible.length}
+          narrowed={narrowed}
+          onQueryChange={setQuery}
+          onCraftedFilterChange={setCraftedFilter}
+          onSlotFilterChange={setSlotFilter}
+          onReset={reset}
+        />
 
-      <RunewordTable
-        runewords={visible}
-        crafted={crafted}
-        sortKey={settings.sortKey}
-        sortDirection={settings.sortDirection}
-        onSort={sortBy}
-        onToggle={toggle}
-      />
+        <RunewordTable
+          runewords={visible}
+          crafted={crafted}
+          sortKey={settings.sortKey}
+          sortDirection={settings.sortDirection}
+          onSort={sortBy}
+          onToggle={toggle}
+        />
 
-      <UndoToast pending={pendingUndo} onUndo={undo} onDismiss={dismissUndo} />
-    </main>
+        <UndoToast
+          pending={pendingUndo}
+          onUndo={undo}
+          onDismiss={dismissUndo}
+        />
+      </main>
+    </>
   );
 }
