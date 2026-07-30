@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 import type { PendingUndo } from "@/crafted/useCraftedRunewords";
-import { useStrings } from "@/i18n";
+import { useLocale, useStrings } from "@/i18n";
+import { displayRunewordName } from "@/runewords/display";
 
 export interface UndoToastProps {
   /** The last toggle, or `null` when there is nothing to take back. */
@@ -29,6 +30,7 @@ export interface UndoToastProps {
  */
 export function UndoToast({ pending, onUndo, onDismiss }: UndoToastProps) {
   const strings = useStrings();
+  const locale = useLocale();
   const [holdsFocus, setHoldsFocus] = useState(false);
 
   useEffect(() => {
@@ -55,9 +57,15 @@ export function UndoToast({ pending, onUndo, onDismiss }: UndoToastProps) {
           className="fixed bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-4 border border-row-line bg-toast px-4 py-2 text-body"
         >
           <span>
+            {/* The projected label inside the sentence: `pending.name` is the
+                canonical identifier the undo acts on, and naming an English
+                runeword inside a Russian sentence would be the one place the
+                locale did not reach. */}
             {pending.marked
-              ? strings.undo.marked(pending.name)
-              : strings.undo.unmarked(pending.name)}
+              ? strings.undo.marked(displayRunewordName(pending.name, locale))
+              : strings.undo.unmarked(
+                  displayRunewordName(pending.name, locale),
+                )}
           </span>
 
           <button

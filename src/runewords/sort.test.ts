@@ -1,4 +1,6 @@
 import { type Runeword, runewords } from "@/data";
+import type { Locale } from "@/i18n";
+import { displayRuneword } from "@/runewords/display";
 import { byRequiredLevel, orderedRunewords } from "@/runewords/order";
 import {
   type SortDirection,
@@ -196,13 +198,72 @@ describe("determinism", () => {
 
     for (const key of sortKeys) {
       for (const direction of sortDirections) {
-        const comparator = comparatorFor(key, direction, NOTHING_CRAFTED);
+        const comparator = comparatorFor(key, direction, NOTHING_CRAFTED, "en");
 
         expect([...shuffled].sort(comparator).map(nameOf)).toEqual(
           sorted(key, direction),
         );
       }
     }
+  });
+});
+
+describe("collation follows the locale", () => {
+  it("orders Russian names by Russian collation, not by code point", () => {
+    const names = sortedRunewords("name", "ascending", NOTHING_CRAFTED, "ru")
+      .map((runeword) => displayRuneword(runeword, "ru").name)
+      .filter((name) => name.startsWith("Л") || name.startsWith("М"));
+
+    // `Лёд` (Ice) is the case that proves it. Code-point order puts `ё`
+    // (U+0451) past every other lowercase Cyrillic letter, so `Лёд` would land
+    // after `Львиное сердце` and `Мудрость` alike; Russian collation treats it
+    // as `е` and sorts `Лёд` first among the Л names. Asserted as relative
+    // orderings rather than against a snapshot of collator output.
+    expect(names).toContain("Лёд");
+    expect(names.indexOf("Лёд")).toBeLessThan(names.indexOf("Лист"));
+    expect([...names].sort().indexOf("Лёд")).toBeGreaterThan(
+      [...names].sort().indexOf("Лист"),
+    );
+    expect(names).toEqual([...names].sort(new Intl.Collator("ru").compare));
+  });
+
+  it("puts ё between е and ж, where code point order would not", () => {
+    const words = ["ёлка", "ежевика", "жаба"];
+
+    expect([...words].sort(new Intl.Collator("ru").compare)).toEqual([
+      "ежевика",
+      "ёлка",
+      "жаба",
+    ]);
+    // The comparison this replaced, for contrast: `ё` last rather than second.
+    expect([...words].sort()).toEqual(["ежевика", "жаба", "ёлка"]);
+  });
+
+  it("orders the base-items column by the projected category", () => {
+    const first = sortedRunewords(
+      "itemTypes",
+      "ascending",
+      NOTHING_CRAFTED,
+      "ru",
+    ).map((runeword) => displayRuneword(runeword, "ru").itemTypes[0]);
+
+    expect(first).toEqual([...first].sort(new Intl.Collator("ru").compare));
+  });
+
+  it("keeps English projections on code-point order", () => {
+    const names = sorted("name", "ascending");
+
+    expect(names).toEqual([...names].sort());
+  });
+
+  it("breaks a tie by canonical name in both locales, so the tiebreak does not move", () => {
+    // Rows sharing a socket count and a required level are separated by the
+    // canonical name, which is locale-independent by design. Their relative
+    // order therefore has to survive the switch.
+    const en = sorted("runes", "ascending");
+    const ru = sorted("runes", "ascending", NOTHING_CRAFTED, "ru");
+
+    expect(ru).toEqual(en);
   });
 });
 
@@ -217,7 +278,7 @@ describe("what no comparator may read", () => {
 
     for (const key of sortKeys) {
       for (const direction of sortDirections) {
-        const comparator = comparatorFor(key, direction, NOTHING_CRAFTED);
+        const comparator = comparatorFor(key, direction, NOTHING_CRAFTED, "en");
 
         expect(blind.sort(comparator).map(nameOf)).toEqual(
           sorted(key, direction),
@@ -244,16 +305,18 @@ function sorted(
   key: SortKey,
   direction: SortDirection,
   crafted: ReadonlySet<string> = NOTHING_CRAFTED,
+  locale: Locale = "en",
 ) {
-  return sortedRunewords(key, direction, crafted).map(nameOf);
+  return sortedRunewords(key, direction, crafted, locale).map(nameOf);
 }
 
 function sortedRunewords(
   key: SortKey,
   direction: SortDirection,
   crafted: ReadonlySet<string> = NOTHING_CRAFTED,
+  locale: Locale = "en",
 ) {
-  return [...runewords].sort(comparatorFor(key, direction, crafted));
+  return [...runewords].sort(comparatorFor(key, direction, crafted, locale));
 }
 
 function nameOf(runeword: Runeword) {

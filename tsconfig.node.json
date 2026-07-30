@@ -24,5 +24,9 @@
   // because the generator validates its output against the very schema the
   // application loads with. A project must list every file it compiles, and
   // that one file is deliberately shared rather than duplicated.
-  "include": ["vite.config.ts", "scripts", "src/data/schema.ts"]
+  //
+  // `data/ru` belongs to this project rather than the app's: the authored
+  // translations are the generator's input, read at build time and never
+  // imported by anything the browser loads.
+  "include": ["vite.config.ts", "scripts", "src/data/schema.ts", "data/ru"]
 }

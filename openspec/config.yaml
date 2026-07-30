@@ -22,7 +22,15 @@ context: |
       through an i18n layer; no hardcoded display text in components.
     - Runeword names and rune names are kept in their original English form
       as canonical identifiers, with Russian labels as additional
-      translations.
+      translations shipped in the dataset (authored under data/ru/) and
+      rendered through the dataset's locale projection, not the strings layer.
+    - Russian game vocabulary comes from the game's official Russian
+      localisation: noob-club.ru transcribes the client's runeword and rune
+      text in full, and a reader with the client open settles anything the
+      transcription leaves doubtful. Community sites (diablo2-resurrected.ru,
+      duskworld.ru, landofgames.ru) are cross-checks for what neither covers.
+      Every entry notes where its wording was verified; disagreements and the
+      choice made are recorded. No machine translation.
 
   Domain notes:
     - A runeword is defined by: name, ordered rune sequence, socket count,

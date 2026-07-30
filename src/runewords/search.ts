@@ -1,12 +1,19 @@
 import type { Runeword } from "@/data";
+import type { Locale } from "@/i18n";
+import { displayRuneword } from "@/runewords/display";
 
 /**
- * Whether a runeword matches a search query.
+ * Whether a runeword matches a search query, in the language it is displayed in.
  *
  * Case-insensitive substring over three fields — the name, every base item
- * category, and the item-type restriction. Those are exactly the three pieces of
- * text the row renders in the columns a reader is searching, which is the whole
- * rule: a player types what they can see.
+ * category, and the item-type restriction — **as the active locale projects
+ * them**. Those are exactly the three pieces of text the row renders in the
+ * columns a reader is searching, which is the whole rule: a player types what
+ * they can see. Reading the projection rather than the record is what keeps that
+ * true in both languages by construction: under Russian a Cyrillic fragment
+ * matches the Russian labels, and a translated record's English name is not
+ * matched, because it is not on screen. A record showing its English fallback
+ * matches its English text, for the same reason.
  *
  * Substring rather than prefix, so `Body Armors` is findable by typing `armor`.
  * A trimmed empty query matches everything, so an emptied field narrows nothing.
@@ -30,31 +37,47 @@ import type { Runeword } from "@/data";
  * decoration by requirement, so typing `2.6` finds nothing on account of the
  * patch that introduced a runeword.
  *
- * `toLowerCase()` and `includes()`, with no normalisation and no collator. The
- * dataset is ASCII throughout every name, category and restriction — the font
- * subset in `src/index.css` already depends on that — so case folding is the
- * whole of it. **The Russian locale settled the collation question this
- * docblock used to defer: dataset text stays ASCII.** Non-ASCII text lives in
- * the display-copy layer, which matching never reads, so a Cyrillic query
- * correctly matches nothing — nothing Cyrillic renders in the searched
- * columns, and the (translated) search hint says what the field matches. The
- * question re-opens only with a dataset-localisation change that would put
- * Russian labels into these fields, and belongs to that change.
+ * **The collation question the docblock used to defer is answered here, and the
+ * answer is that matching needs no collator.** Substring search compares code
+ * units, and `toLowerCase()` folds Cyrillic case correctly — `ЩИТЫ` and `щиты`
+ * fold to the same string — so nothing about Russian text needs
+ * `Intl.Collator`. Ordering is the part that does, and that is `sort.ts`'s.
+ *
+ * One normalisation is added, and it is a deliberate inexactness: `ё` folds to
+ * `е` on both sides. Russian typists routinely write `е` for `ё`, and an
+ * exact-match miss on that distinction reads as a bug rather than as precision.
+ * It is scoped to matching — the displayed text keeps its own spelling.
  */
-export function matchesQuery(runeword: Runeword, query: string): boolean {
-  const needle = query.trim().toLowerCase();
+export function matchesQuery(
+  runeword: Runeword,
+  query: string,
+  locale: Locale,
+): boolean {
+  const needle = fold(query.trim());
 
   if (needle === "") return true;
 
-  if (runeword.name.toLowerCase().includes(needle)) return true;
+  const projected = displayRuneword(runeword, locale);
 
-  if (
-    runeword.itemTypes.some((category) =>
-      category.toLowerCase().includes(needle),
-    )
-  ) {
+  if (fold(projected.name).includes(needle)) return true;
+
+  if (projected.itemTypes.some((category) => fold(category).includes(needle))) {
     return true;
   }
 
-  return runeword.itemTypeRestriction?.toLowerCase().includes(needle) ?? false;
+  return projected.itemTypeRestriction === undefined
+    ? false
+    : fold(projected.itemTypeRestriction).includes(needle);
+}
+
+/**
+ * The form both sides of a comparison are reduced to: case-folded, with `ё`
+ * treated as `е`.
+ *
+ * Applied to the query and the haystack alike, which is the only way the
+ * interchange can be symmetric — a query written `ё` has to find text written
+ * `е` as readily as the reverse.
+ */
+function fold(text: string): string {
+  return text.toLowerCase().replaceAll("ё", "е");
 }

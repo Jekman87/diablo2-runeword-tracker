@@ -1,5 +1,6 @@
-import { useStrings } from "@/i18n";
+import { useLocale, useStrings } from "@/i18n";
 import type { RemainingBase } from "@/remaining/bases";
+import { displayItemType } from "@/runewords/display";
 
 export interface RemainingBasesProps {
   /** The aggregation's result, already in category-then-sockets order. */
@@ -22,11 +23,15 @@ export interface RemainingBasesProps {
  * player can farm toward, so the counts do not sum to the uncrafted total
  * and must not read as though they should.
  *
- * Category names are dataset identifiers and bypass the strings layer; the
- * socket and count sentences are copy and come through it.
+ * Category names are dataset text and come from the locale projection rather
+ * than the strings layer — read through `displayItemType` because the panel
+ * aggregates across records and has no record to project; the socket and count
+ * sentences are copy and come through the layer. The row key stays the
+ * canonical category name.
  */
 export function RemainingBases({ bases }: RemainingBasesProps) {
   const strings = useStrings();
+  const locale = useLocale();
 
   if (bases.length === 0) {
     return <p>{strings.remaining.basesDone}</p>;
@@ -41,7 +46,9 @@ export function RemainingBases({ bases }: RemainingBasesProps) {
           key={`${base.category} ${base.sockets}`}
           className="flex flex-wrap items-baseline gap-x-3"
         >
-          <span className="text-gold-mid">{base.category}</span>
+          <span className="text-gold-mid">
+            {displayItemType(base.category, locale)}
+          </span>
           <span>{strings.remaining.baseSockets(base.sockets)}</span>
           <span className="text-muted">
             {strings.remaining.baseCount(base.count)}

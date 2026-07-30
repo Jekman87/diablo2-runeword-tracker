@@ -25,6 +25,37 @@ everything at once. The pre-commit hook runs a staged-files subset of it.
   those values is copy, which is why the item-type separator and its parentheses
   are in `en.ts` and the categories are not.
 
+  Dataset text is localised, and not here. Russian labels for names, categories,
+  property lines, restrictions and notes are authored under `data/ru/`, merged
+  into the generated JSON by `scripts/generate-dataset.ts`, and rendered through
+  `src/runewords/display.ts` — the one projection that rendering, search and sort
+  all read, so what is matched and ordered is what is shown. A component
+  presenting dataset text calls `useLocale()` and projects; it never looks a
+  runeword up in the strings layer.
+
+  Russian game vocabulary — in the strings layer and in `data/ru/` alike — is the
+  game's own official Russian localisation, in two forms. noob-club.ru
+  transcribes the client's runeword and rune text in full (forum topics 70236,
+  70237, 73463); where that transcription is doubtful, a reader with the game
+  open settles it, and the client wins. Community sites
+  (diablo2-resurrected.ru, duskworld.ru, landofgames.ru) are cross-checks for
+  what neither covers — chiefly the Reign of the Warlock records, which the
+  transcription predates. Every entry carries a note of where its wording was
+  verified, and where sources disagree the note records the disagreement and the
+  choice made. Machine translation is forbidden.
+
+  A term the client genuinely does not have is project copy and says so rather
+  than claiming a source: the off-hand and missile-weapon slot names are ours,
+  because the slots are this project's grouping and the game has no collective
+  word for either.
+
+  **One language on screen outranks quoting the game.** The client leaves the
+  character-level variable in Latin in its per-level formulas (`+(2*clvl)`); the
+  Russian dataset text writes `+2*ур` instead, because a single Latin token on an
+  otherwise Russian page is the failure the locale exists to prevent. That is the
+  only such departure, and it is documented at the point it is made rather than
+  passed off as the game's wording.
+
   A hook rather than an import so that Phase 2's language switch is a change to
   one file. `Strings` is derived from the English record, so a locale missing a
   key fails `pnpm typecheck` and names it.

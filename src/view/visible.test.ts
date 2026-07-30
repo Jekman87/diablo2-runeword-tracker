@@ -1,4 +1,5 @@
 import { runewords } from "@/data";
+import type { Locale } from "@/i18n";
 import { orderedRunewords } from "@/runewords/order";
 import { DEFAULT_VIEW_SETTINGS, type ViewSettings } from "@/view/types";
 import { visibleRunewords } from "@/view/visible";
@@ -118,7 +119,7 @@ describe("the three as a conjunction", () => {
       sortDirection: "descending",
     };
 
-    const first = visibleRunewords(runewords, reached, "ar", crafted);
+    const first = visibleRunewords(runewords, reached, "ar", crafted, "en");
     const second = visibleRunewords(
       runewords,
       {
@@ -129,6 +130,7 @@ describe("the three as a conjunction", () => {
       },
       "ar",
       crafted,
+      "en",
     );
 
     expect(first.map((r) => r.name)).toEqual(second.map((r) => r.name));
@@ -185,6 +187,7 @@ describe("what the filters may not influence", () => {
       DEFAULT_VIEW_SETTINGS,
       "",
       NOTHING_CRAFTED,
+      "en",
     );
 
     expect(result).not.toBe(runewords);
@@ -202,16 +205,77 @@ describe("what the filters may not influence", () => {
   });
 });
 
+describe("what the locale may not influence", () => {
+  // Search and sort read the language; the other two filters read identifiers.
+  // These are the cases that pin the second half of that split, because it is
+  // the half a reader would never notice breaking until their progress moved.
+
+  it("presents the same rows for a slot in either locale", () => {
+    // The slot mapping keys on canonical category names, so the set a slot
+    // narrows to is a fact about the dataset rather than about the language.
+    for (const slotFilter of [
+      "helm",
+      "melee",
+      "offhand",
+      "bodyArmour",
+    ] as const) {
+      const en = visible({ slotFilter });
+      const ru = visible({ slotFilter }, "", NOTHING_CRAFTED, "ru");
+
+      expect([...ru].sort()).toEqual([...en].sort());
+    }
+  });
+
+  it("narrows by crafted state on canonical names under the Russian locale", () => {
+    // The stored name is English; the row is presented in Russian. The filter
+    // has to keep reading the identifier, or a Russian session would show every
+    // runeword as uncrafted.
+    const crafted = new Set(["Enigma", "Fortitude"]);
+
+    expect(
+      visible({ craftedFilter: "crafted" }, "", crafted, "ru").sort(),
+    ).toEqual(["Enigma", "Fortitude"]);
+  });
+
+  it("returns records carrying their canonical names, whatever the locale", () => {
+    // What a caller gets back is the dataset's own records. Progress, the undo
+    // notice and the open-panel flag all key on `name`, so the projection must
+    // never replace it.
+    const rows = visibleRunewords(
+      runewords,
+      DEFAULT_VIEW_SETTINGS,
+      "",
+      NOTHING_CRAFTED,
+      "ru",
+    );
+
+    expect(rows).toHaveLength(99);
+    expect(rows.map((runeword) => runeword.name)).toContain("Ancient's Pledge");
+  });
+
+  it("presents the same 99 rows in either locale, ordered differently", () => {
+    const en = visible({ sortKey: "name" });
+    const ru = visible({ sortKey: "name" }, "", NOTHING_CRAFTED, "ru");
+
+    // The same set — localisation narrows nothing — in a different order,
+    // because each locale sorts the text it presents.
+    expect([...ru].sort()).toEqual([...en].sort());
+    expect(ru).not.toEqual(en);
+  });
+});
+
 /** The names presented for a partial set of settings, in the presented order. */
 function visible(
   settings: Partial<ViewSettings> = {},
   query = "",
   crafted: ReadonlySet<string> = NOTHING_CRAFTED,
+  locale: Locale = "en",
 ) {
   return visibleRunewords(
     runewords,
     { ...DEFAULT_VIEW_SETTINGS, ...settings },
     query,
     crafted,
+    locale,
   ).map((runeword) => runeword.name);
 }

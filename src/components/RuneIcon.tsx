@@ -1,9 +1,14 @@
 import clsx from "clsx";
 
+import { useLocale } from "@/i18n";
+import { displayRune } from "@/runewords/display";
 import { runeCell } from "@/theme/rune-sprite";
 
 export interface RuneIconProps {
-  /** A rune's canonical English name — `El` through `Zod`. */
+  /**
+   * A rune's canonical English name — `El` through `Zod`. Stays canonical: it
+   * is the sprite key, and the accessible label is projected from it.
+   */
   name: string;
   className?: string;
   /**
@@ -22,17 +27,22 @@ export interface RuneIconProps {
  * caller resize the icon by setting that one variable, with no offset restated
  * here.
  *
- * The name is a canonical identifier rather than display copy, so it is safe to
- * use as the accessible label without going through the i18n layer.
+ * **The sprite key and the accessible label part company here, and the split is
+ * the point.** `runeCell` keys on the canonical name, because the sprite's grid
+ * is indexed by the canonical rune order and a label can never be allowed to
+ * move a sprite. The accessible label is the *projected* name — a label read
+ * aloud is presentation, and a Russian page announcing `Ber` where it draws
+ * `Бер` would be the one place the locale did not reach. Neither goes through
+ * the strings layer: both come from the dataset.
  *
  * Labelled by default and decorative on request. The label was right while the
  * icon was the only thing carrying the rune's identity; a use site that renders
  * the name as text beside it would have a screen reader announce every rune
  * twice — 686 announcements for a table of 343 runes — so those pass
- * `decorative` and let the visible text do the work. Either way the name comes
- * from the dataset and never through the strings layer.
+ * `decorative` and let the visible text do the work.
  */
 export function RuneIcon({ name, className, decorative }: RuneIconProps) {
+  const locale = useLocale();
   const { col, row } = runeCell(name);
 
   return (
@@ -42,7 +52,7 @@ export function RuneIcon({ name, className, decorative }: RuneIconProps) {
       // carries no `role` at all instead of a role with an empty label.
       {...(decorative
         ? { "aria-hidden": true }
-        : { role: "img", "aria-label": name })}
+        : { role: "img", "aria-label": displayRune(name, locale) })}
       style={{ "--rune-col": col, "--rune-row": row } as React.CSSProperties}
     />
   );
