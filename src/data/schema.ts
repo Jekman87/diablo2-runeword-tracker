@@ -5,6 +5,30 @@ import { z } from "zod";
 // the compiler cannot disagree about what a record is.
 
 /**
+ * A runeword's Russian labels, shipped beside the canonical record.
+ *
+ * `propertyGroups` mirrors the English structure — the same number of groups,
+ * one Russian line per English line — which the record-level `superRefine`
+ * below enforces, because parity is a relation between the variant and its
+ * record and cannot be stated on the variant alone. Group labels are
+ * deliberately absent: labels are category names, and those localise through
+ * the item-type reference data rather than being restated per record.
+ */
+const runewordRuSchema = z.object({
+  name: z.string().min(1),
+  // Present exactly when the English field is — parity enforced on the record.
+  itemTypeRestriction: z.string().min(1).optional(),
+  note: z.string().min(1).optional(),
+  propertyGroups: z
+    .array(
+      z.object({
+        properties: z.array(z.string().min(1)).min(1),
+      }),
+    )
+    .min(1),
+});
+
+/**
  * One runeword. `name` is the canonical identifier — English, unique across the
  * dataset.
  *
@@ -16,6 +40,13 @@ import { z } from "zod";
  * of testing for a key. `patch`, `note` and `itemTypeRestriction` stay absent
  * when they do not apply — none of them has a meaningful empty value, and
  * inventing `""` would only move the check somewhere else.
+ *
+ * `ru` is the record's Russian variant, complete or absent — never partial, so
+ * a half-translated record cannot exist and the Russian locale's whole-record
+ * fallback is a schema guarantee rather than a rendering convention. Optional
+ * because the dataset must stay loadable while a future vendor refresh's new
+ * runeword awaits translation; the coverage test pins the shipped dataset at
+ * 100% translated regardless.
  */
 export const runewordSchema = z
   .object({
@@ -45,11 +76,58 @@ export const runewordSchema = z
         }),
       )
       .min(1),
+    ru: runewordRuSchema.optional(),
   })
   .superRefine((record, ctx) => {
     // Per-record shape knowledge lives here, so a hand-edit to the committed
     // JSON that breaks it blanks the page pointing at the offending record.
-    const { name, itemTypes, propertyGroups } = record;
+    const { name, itemTypes, propertyGroups, ru } = record;
+
+    // The variant's parity with its record — a relation the variant schema
+    // cannot state alone. Field presence must match field for field, and the
+    // property structure must mirror group for group and line for line,
+    // because rendering pairs each Russian line with the English line's
+    // position and a mismatch would silently shift every line after it.
+    if (ru !== undefined) {
+      for (const field of ["itemTypeRestriction", "note"] as const) {
+        if ((ru[field] === undefined) !== (record[field] === undefined)) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["ru", field],
+            message:
+              `"${name}": the Russian variant must carry ${field} exactly ` +
+              `when the record does — a variant is complete or absent, ` +
+              `never partial.`,
+          });
+        }
+      }
+
+      if (ru.propertyGroups.length !== propertyGroups.length) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["ru", "propertyGroups"],
+          message:
+            `"${name}": the Russian variant carries ` +
+            `${ru.propertyGroups.length} property groups where the record ` +
+            `carries ${propertyGroups.length}.`,
+        });
+      } else {
+        for (const [index, group] of ru.propertyGroups.entries()) {
+          if (
+            group.properties.length !== propertyGroups[index].properties.length
+          ) {
+            ctx.addIssue({
+              code: "custom",
+              path: ["ru", "propertyGroups", index, "properties"],
+              message:
+                `"${name}": Russian property group ${index} carries ` +
+                `${group.properties.length} lines where the English group ` +
+                `carries ${propertyGroups[index].properties.length}.`,
+            });
+          }
+        }
+      }
+    }
 
     if (propertyGroups.length === 1) {
       if (propertyGroups[0].itemTypes !== undefined) {
@@ -119,24 +197,35 @@ export const runewordSchema = z
 
 export type Runeword = z.infer<typeof runewordSchema>;
 
+export type RunewordRu = z.infer<typeof runewordRuSchema>;
+
 /**
  * One rune. Tier is a named value rather than the source's `1 | 2 | 3`, because
  * `tier === "rare"` cannot be misread the way `tier === 3` can. The numeric
  * ordering is not lost: array order carries the canonical rune progression,
  * which is a finer ordering than the three bands anyway.
+ *
+ * `ru` is required, not optional like a runeword's variant: the rune list is
+ * small, closed and fully translated, so an optional field would buy nothing
+ * but a presence check at every use site.
  */
 export const runeSchema = z.object({
   name: z.string().min(1),
   tier: z.enum(["common", "semirare", "rare"]),
+  ru: z.string().min(1),
 });
 
 export type Rune = z.infer<typeof runeSchema>;
 
-/** One base item category a runeword can be socketed into. */
+/**
+ * One base item category a runeword can be socketed into. `ru` is required for
+ * the rune schema's reason: twenty closed, fully translated entries.
+ */
 export const itemTypeSchema = z.object({
   name: z.string().min(1),
   // Four of the twenty categories have no wiki page to link to.
   url: z.url().optional(),
+  ru: z.string().min(1),
 });
 
 export type ItemType = z.infer<typeof itemTypeSchema>;

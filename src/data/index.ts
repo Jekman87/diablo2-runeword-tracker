@@ -29,6 +29,14 @@ export const itemTypes: ItemType[] = itemTypesSchema.parse(itemTypesData);
 // Built once at load rather than scanned per use. The table alone resolves 343
 // rune references.
 
+// Keyed by canonical name, which is the identifier crafted progress, the undo
+// notice and the open-panel flag all carry. It is what lets a component holding
+// only a name — rather than a record — still present that runeword in the
+// active locale.
+export const runewordsByName: ReadonlyMap<string, Runeword> = new Map(
+  runewords.map((runeword) => [runeword.name, runeword]),
+);
+
 export const runesByName: ReadonlyMap<string, Rune> = new Map(
   runes.map((rune) => [rune.name, rune]),
 );

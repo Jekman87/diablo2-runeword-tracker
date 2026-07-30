@@ -1,4 +1,5 @@
 import type { Runeword } from "@/data";
+import type { Locale } from "@/i18n";
 import { matchesQuery } from "@/runewords/search";
 import { slotsOf } from "@/runewords/slots";
 import { comparatorFor } from "@/runewords/sort";
@@ -28,21 +29,31 @@ import type { CraftedFilter, SlotFilter, ViewSettings } from "@/view/types";
  *
  * The query is a parameter beside the settings rather than a member of them,
  * because it is the one control that is not persisted — see `ViewSettings`.
+ *
+ * **The locale reaches search and sort and stops there.** Those two read the
+ * text on screen, so the active language changes their answers. The other two
+ * filters read identifiers — the crafted set is keyed by canonical name and the
+ * slot mapping by canonical category — so they are the same set of rows in
+ * either language, which is the identity-versus-presentation split holding at
+ * the one place all four meet.
  */
 export function visibleRunewords(
   runewords: readonly Runeword[],
   settings: ViewSettings,
   query: string,
   crafted: ReadonlySet<string>,
+  locale: Locale,
 ): Runeword[] {
   return runewords
     .filter(
       (runeword) =>
-        matchesQuery(runeword, query) &&
+        matchesQuery(runeword, query, locale) &&
         matchesCraftedFilter(runeword, settings.craftedFilter, crafted) &&
         matchesSlotFilter(runeword, settings.slotFilter),
     )
-    .sort(comparatorFor(settings.sortKey, settings.sortDirection, crafted));
+    .sort(
+      comparatorFor(settings.sortKey, settings.sortDirection, crafted, locale),
+    );
 }
 
 /**

@@ -2,7 +2,8 @@ import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
 import type { Runeword } from "@/data";
-import { useStrings } from "@/i18n";
+import { useLocale, useStrings } from "@/i18n";
+import { displayRuneword } from "@/runewords/display";
 import { patchColour } from "@/runewords/patch-colour";
 
 export interface AvailabilityBadgesProps {
@@ -32,6 +33,7 @@ export interface AvailabilityBadgesProps {
  */
 export function AvailabilityBadges({ runeword }: AvailabilityBadgesProps) {
   const strings = useStrings();
+  const projected = displayRuneword(runeword, useLocale());
 
   return (
     <>
@@ -56,15 +58,15 @@ export function AvailabilityBadges({ runeword }: AvailabilityBadgesProps) {
         />
       ) : null}
 
-      {runeword.note ? (
+      {projected.note ? (
         <Badge
           kind="note"
           marker={strings.availability.noteMarker}
           // The note itself, not a sentence about there being one. It is
-          // dataset text rather than copy, so it does not go through the
-          // strings layer — the same rule that makes a rune icon's label the
-          // rune's own name.
-          meaning={runeword.note}
+          // dataset text rather than copy, so it comes from the locale
+          // projection rather than the strings layer — the same rule that makes
+          // a rune icon's label the rune's own projected name.
+          meaning={projected.note}
         />
       ) : null}
     </>

@@ -13,6 +13,12 @@
 // 99 records, and the canonical-identifier rule would have nothing left to
 // mean. Punctuation *around* those values is copy, which is why the item-type
 // separator and its parentheses live here and the categories themselves do not.
+//
+// That boundary is what `dataset-localisation` had to respect rather than
+// breach: dataset text is localised too now, but its Russian labels ship inside
+// the generated JSON and render through `src/runewords/display.ts`. So this
+// layer holds exactly what it always held, and there is no locale in which a
+// runeword's name comes from here.
 
 export const en = {
   app: {

@@ -1,6 +1,7 @@
 import { RuneIcon } from "@/components/RuneIcon";
-import { useStrings } from "@/i18n";
+import { useLocale, useStrings } from "@/i18n";
 import type { RemainingRune } from "@/remaining/runes";
+import { displayRune } from "@/runewords/display";
 
 export interface RemainingRunesProps {
   /** The aggregation's result, already in canonical — and so tier — order. */
@@ -23,11 +24,13 @@ const TIERS = ["common", "semirare", "rare"] as const;
  * tier order — the sprite's rows are the tiers — so each band is a filter
  * over a result already in its order.
  *
- * The icon passes `decorative` because the canonical name is text beside it;
+ * The icon passes `decorative` because the rune's label is text beside it;
  * announcing both would say every rune twice, which is the exact case that
- * mode was built for. The name does not pass through the strings layer and
- * the tier labels do, on the identifier-versus-copy rule the slot names
- * settled.
+ * mode was built for. The label comes from the dataset's locale projection —
+ * this panel aggregates across records, so there is no record to project and
+ * `displayRune` is read directly — while the tier labels come from the strings
+ * layer, on the identifier-versus-copy rule the slot names settled. The key
+ * stays the canonical name.
  *
  * A band whose runes are all satisfied disappears with them, and a panel with
  * nothing left says so rather than vanishing — the same reason progress
@@ -39,6 +42,7 @@ const TIERS = ["common", "semirare", "rare"] as const;
  */
 export function RemainingRunes({ runes }: RemainingRunesProps) {
   const strings = useStrings();
+  const locale = useLocale();
 
   if (runes.length === 0) {
     return <p>{strings.remaining.runesDone}</p>;
@@ -62,7 +66,9 @@ export function RemainingRunes({ runes }: RemainingRunesProps) {
               {band.map((rune) => (
                 <li key={rune.name} className="flex items-center gap-1.5">
                   <RuneIcon name={rune.name} decorative />
-                  <span className="text-gold-mid">{rune.name}</span>
+                  <span className="text-gold-mid">
+                    {displayRune(rune.name, locale)}
+                  </span>
                   <span>{strings.remaining.runeCount(rune.count)}</span>
                 </li>
               ))}

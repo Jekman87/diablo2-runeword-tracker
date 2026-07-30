@@ -20,6 +20,8 @@ import {
 
 import { RunewordDialog } from "@/components/RunewordDialog";
 import type { Runeword } from "@/data";
+import { useLocale } from "@/i18n";
+import { displayRuneword } from "@/runewords/display";
 
 export interface RunewordDetailsProps {
   runeword: Runeword;
@@ -86,6 +88,10 @@ export function RunewordDetails({
   onOpenChange,
 }: RunewordDetailsProps) {
   const titleId = useId();
+  // The visible name is projected; every callback below still reports the
+  // canonical `runeword.name`, because the table keys the open panel by it and
+  // the row keys crafted progress by it.
+  const label = displayRuneword(runeword, useLocale()).name;
 
   // Which kind of trigger opened it, tracked beside the open flag because
   // `onOpenChange` reports the causing event and that is the only moment the
@@ -163,7 +169,7 @@ export function RunewordDetails({
         className="cursor-pointer text-gold-mid hover:text-gold-light"
         {...interactions.getReferenceProps()}
       >
-        {runeword.name}
+        {label}
       </button>
 
       {/* Rendered only while open, so 99 rows put no detail markup in the

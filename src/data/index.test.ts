@@ -354,6 +354,80 @@ describe("malformed data", () => {
   });
 });
 
+describe("malformed Russian variants", () => {
+  // A variant is complete or absent — the schema guarantee the Russian
+  // locale's whole-record fallback stands on. Each case breaks one clause of
+  // that completeness and expects the load to fail on it.
+
+  it("throws when a variant omits its name", () => {
+    const record = { ...validRecord(), ru: ruVariantFor(validRecord()) };
+    delete (record.ru as Record<string, unknown>).name;
+
+    expect(() => runewordsSchema.parse([record])).toThrow(/ru/);
+  });
+
+  it("throws naming the record when a variant invents a restriction", () => {
+    // `Ancient's Pledge` carries no English restriction, so a Russian one
+    // breaks parity in the only direction a complete variant could.
+    const ru = { ...ruVariantFor(validRecord()), itemTypeRestriction: "жезлы" };
+    const record = { ...validRecord(), ru };
+
+    expect(() => runewordsSchema.parse([record])).toThrow(
+      /Ancient's Pledge.*itemTypeRestriction exactly when/s,
+    );
+  });
+
+  it("throws naming the record when a variant drops the restriction", () => {
+    const source = structuredClone(runeword("Leaf"));
+    const ru = ruVariantFor(source);
+    delete (ru as Record<string, unknown>).itemTypeRestriction;
+
+    expect(() => runewordsSchema.parse([{ ...source, ru }])).toThrow(
+      /Leaf.*itemTypeRestriction exactly when/s,
+    );
+  });
+
+  it("throws naming the record when a variant drops the note", () => {
+    const source = structuredClone(runeword("Mosaic"));
+    const ru = ruVariantFor(source);
+    delete (ru as Record<string, unknown>).note;
+
+    expect(() => runewordsSchema.parse([{ ...source, ru }])).toThrow(
+      /Mosaic.*note exactly when/s,
+    );
+  });
+
+  it("throws naming the record on a group-count mismatch", () => {
+    const source = varyingRecord();
+    const ru = ruVariantFor(source);
+    ru.propertyGroups = ru.propertyGroups.slice(0, 1);
+
+    expect(() => runewordsSchema.parse([{ ...source, ru }])).toThrow(
+      /Fortitude.*1 property groups where the record carries 2/s,
+    );
+  });
+
+  it("throws naming the record on a line-count mismatch", () => {
+    const source = validRecord();
+    const ru = ruVariantFor(source);
+    ru.propertyGroups[0].properties.push("лишняя строка");
+
+    expect(() => runewordsSchema.parse([{ ...source, ru }])).toThrow(
+      /Ancient's Pledge.*group 0 carries \d+ lines where the English group/s,
+    );
+  });
+
+  it("accepts a record with a complete variant, and one with none", () => {
+    const translated = { ...validRecord(), ru: ruVariantFor(validRecord()) };
+    const untranslated = { ...validRecord() };
+    delete (untranslated as Record<string, unknown>).ru;
+
+    expect(() =>
+      runewordsSchema.parse([translated, untranslated]),
+    ).not.toThrow();
+  });
+});
+
 function runeword(name: string) {
   const found = runewords.find((entry) => entry.name === name);
 
@@ -369,4 +443,23 @@ function validRecord() {
 /** A record with two labelled groups, for the partition-invariant cases. */
 function varyingRecord() {
   return structuredClone(runeword("Fortitude"));
+}
+
+/**
+ * A structurally complete Russian variant built from a record's own English
+ * shape, so each malformed-variant case starts from validity and breaks
+ * exactly one clause. Built rather than cloned from the record's shipped
+ * variant, so the cases do not depend on which record happens to carry what.
+ */
+function ruVariantFor(record: ReturnType<typeof validRecord>) {
+  return {
+    name: `«${record.name}»`,
+    ...(record.itemTypeRestriction !== undefined && {
+      itemTypeRestriction: "ограничение",
+    }),
+    ...(record.note !== undefined && { note: "примечание" }),
+    propertyGroups: record.propertyGroups.map((group) => ({
+      properties: group.properties.map((_, index) => `строка ${index + 1}`),
+    })),
+  };
 }

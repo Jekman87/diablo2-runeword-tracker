@@ -5,18 +5,35 @@ import type { Strings } from "@/i18n";
 //
 // Two kinds of words live here, and they are sourced differently:
 //
-// - **Game-derived terms** — anything the official Russian client of
-//   Diablo II: Resurrected has its own word for — take the client's term, never
-//   a translation of ours. Each carries a source note naming where the term
-//   appears. A term marked `[REVIEW]` could not be verified against the client
-//   and is the maintainer's to confirm before it is trusted.
+// - **Game-derived terms** — anything that names a game concept — come from the
+//   game's own official Russian localisation, in two forms. noob-club.ru
+//   transcribes the client's runeword and rune text in full (topics 70236,
+//   70237 and 73463), and a reader with the game open checked the terms that
+//   transcription left doubtful. The client's answer wins where the two
+//   disagree; diablo2-resurrected.ru, duskworld.ru and landofgames.ru are
+//   cross-checks for what neither covers. Machine translation stays forbidden.
+//   Each term names where it was verified, and where the sources disagree the
+//   note records the disagreement and the choice made. Nothing is flagged
+//   `[REVIEW]` any more: every term that was has been checked, and three of them
+//   turned out to be wrong.
 // - **Project-authored prose** — help text, hints, empty states, accessible
 //   names — is written as natural Russian, not as a word-for-word rendering of
-//   the English record.
+//   the English record. A game concept the client itself does not name is
+//   authored too, and says so: the off-hand and missile-weapon slots are the
+//   two, because this project's slots are its own grouping rather than the
+//   game's, and the client has no collective word for either.
 //
-// Dataset text never appears here, exactly as in `en.ts`: runeword names, rune
-// names, base item categories, property lines, restrictions and notes render
-// in their canonical English form inside the Russian page.
+// **Dataset text still never appears here, and now it is localised elsewhere.**
+// Runeword names, rune names, base item categories, property lines,
+// restrictions and notes are data: their Russian labels ship inside the
+// generated JSON (authored under `data/ru/`, sourced the same way) and render
+// through the dataset's own locale projection in `src/runewords/display.ts`.
+// So neither locale restates the dataset inside this layer, and this layer is
+// not what makes the Russian page speak Russian about the runewords — the
+// projection is. What this record does hold is the punctuation and the
+// sentences *around* dataset text: `itemTypes.restriction` brackets a Russian
+// restriction it never authored, and `crafted.mark` names a runeword the
+// caller has already projected.
 //
 // Russian grammar that English does not need — the three plural forms a count
 // selects — lives inside this record's own value functions, as plain code in
@@ -31,13 +48,16 @@ export const ru: Strings = {
   },
 
   header: {
-    // "Рунное слово" — the official client's term: Blizzard's Russian D2R
-    // patch notes and the in-game tooltips both use «рунное слово», not the
-    // machine-translation «руническое слово».
+    // "Рунное слово" — the official localisation's own term, which its guide
+    // uses throughout («Рунное слово – могущественное свойство, которым можно
+    // наделить любой предмет…»), and never the machine-translation «руническое
+    // слово».
     //
-    // "Патч" rather than the news site's «обновление»: the sentence names a
-    // version number the player looks up, and «патч» is what the audience
-    // calls one. [REVIEW] — the client itself may prefer «обновление».
+    // "Патч" — verified: duskworld.ru writes «обновите игру до последнего
+    // патча» and landofgames.ru «с патчем 2.4», so the audience's own word for
+    // a version is «патч». duskworld.ru also uses «версия» and «обновление» in
+    // its own version column; «патч» is kept because the sentence names a
+    // version number the player looks up rather than a release announcement.
     patchLine: "Список рунных слов по состоянию на",
     patchLink: (patch: string) => `патч ${patch}`,
     patchNotesName: (patch: string) =>
@@ -48,11 +68,11 @@ export const ru: Strings = {
 
     help: "Справка",
     helpIntro:
-      "Все рунные слова игры — с рунами, которые для них нужны, и основами, в которые их можно вставить. Патч выше указывает, какой версии игры соответствует список.",
+      "Все рунные слова игры — с рунами, которые для них нужны, и базами, в которые их можно вставить. Патч выше указывает, какой версии игры соответствует список.",
     helpPoints: [
       "Отметьте ячейку в столбце «Создано», чтобы записать собранное рунное слово. Полоса вверху страницы считает, сколько из всех 99 уже готово, а если отметили не то — уведомление предложит отмену.",
-      "Поле поиска ищет по названию рунного слова, его основам и ограничениям по классу или типу предмета. Две группы кнопок рядом сужают список по готовности и по слоту экипировки, а каждый заголовок столбца сортирует таблицу.",
-      "«Оставшиеся руны и основы» складывают всё, что ещё нужно несобранным рунным словам, — список покупок на оставшиеся, а не на всю игру.",
+      "Поле поиска ищет по названию рунного слова, его базам и ограничениям по классу или типу предмета. Две группы кнопок рядом сужают список по готовности и по слоту экипировки, а каждый заголовок столбца сортирует таблицу.",
+      "«Оставшиеся руны и базы» складывают всё, что ещё нужно несобранным рунным словам, — список покупок на оставшиеся, а не на всю игру.",
       "Наведите указатель на название рунного слова, чтобы увидеть его свойства, руны по порядку, число гнёзд и требуемый уровень.",
       "Прогресс хранится в этом браузере и больше нигде. Ничего не отправляется в сеть, ничего не передаётся между устройствами, а очистка данных сайта стирает и его.",
     ],
@@ -60,45 +80,70 @@ export const ru: Strings = {
 
   table: {
     caption:
-      "Все рунные слова — с рунами, которые для них нужны, основами, в которые их можно вставить, и требуемым уровнем персонажа",
+      "Все рунные слова — с рунами, которые для них нужны, базами, в которые их можно вставить, и требуемым уровнем персонажа",
     // "Создано" is project copy: the game has no word for "I have made this
     // runeword" — its crafting vocabulary («изготовление») names cube recipes,
     // which this is not.
     columnCrafted: "Создано",
     columnName: "Рунное слово",
-    // "Руна" — the client's own word, everywhere runes appear.
+    // "Руна" — the official localisation's word, everywhere runes appear.
     columnRunes: "Руны",
-    // "Основа" is the Russian community's word for a base item (the client has
-    // no term — "base item" is itself community vocabulary in English).
-    // Deliberately not «базовый предмет», which is longer in a column heading
-    // and no more official. [REVIEW]
-    columnItemTypes: "Основы",
-    // "Требуемый уровень" — the client's item tooltips state exactly this line.
+    // **Corrected on review.** This read «Основы», on the belief that it was
+    // the Russian community's word for a base item. No source uses it that way:
+    // diablo2-resurrected.ru heads every recipe's base list «Требуемые
+    // предметные базы» — 104 times, once per entry — and duskworld.ru writes
+    // «базовые предметы». "Base item" is community vocabulary in English too, so
+    // the official localisation has no term to take and this heading is
+    // project copy; it takes the community's own noun phrase.
+    columnItemTypes: "Предметные базы",
+    // "Требуемый уровень" — the official localisation's own line, stated on
+    // every item that has one and on every entry of its runeword guide.
     columnRequiredLevel: "Требуемый уровень",
   },
 
   controls: {
     searchLabel: "Поиск рунных слов",
-    searchHint: "Название, основа или ограничение",
+    searchHint: "Название, база или ограничение",
 
     craftedLegend: "Готовность",
     craftedAll: "Все",
     craftedCrafted: "Созданные",
     craftedRemaining: "Оставшиеся",
 
-    // The slot names. «Шлем» is the client's slot; «ближний бой» and «дальний
-    // бой» are how the client's Chronicle separates melee from missile
-    // weapons; «левая рука» is the offhand slot's Russian name. «Броня» for
-    // the body slot follows the client's armour vocabulary rather than the
-    // English record's British spelling, which has no Russian counterpart to
-    // disambiguate against. [REVIEW] — the Chronicle wordings especially.
+    // The slot names. A slot is this project's own grouping of the dataset's
+    // categories, so these are only partly game terms — and checking them
+    // against the official localisation is what separates the two halves.
+    //
+    // «Шлемы» and «Доспех» are the client's own class names, and they are also
+    // what the base-items column now renders from the dataset, so a chip and
+    // the column beside it say the same word. «Доспех» took two corrections to
+    // arrive at: «Доспехи» from diablo2-resurrected.ru, then «Броня» from the
+    // noob-club transcription's base lists, then the client's own singular.
+    //
+    // «Ближний бой» is the official «Оружие ближнего боя» shortened for a chip
+    // — the chips sit under a legend that already says these are equipment
+    // slots, so the «оружие» is the legend's job.
+    //
+    // **«Дальний бой» is ours**, and the client is why: it has no collective
+    // term for missile weapons, naming bows and crossbows separately. The
+    // dataset's label enumerates them; a chip cannot, both because it would be
+    // too long and because this slot also holds `Weapons`. So it is written as
+    // the symmetric counterpart of «Ближний бой» — a decision, not a source.
+    //
+    // **«Левая рука» is ours too, and that is the finding rather than a gap in
+    // the search.** No source names an off-hand slot — not the client, not the
+    // noob-club transcription, not diablo2-resurrected.ru, duskworld.ru or
+    // landofgames.ru. They all name *bases* (`Щиты`, `Головы некроманта`) and
+    // never slots, because a runeword guide has no reason to. So this is our
+    // own name for a grouping this project invented, written as natural
+    // Russian, and it says so rather than claiming a source it does not have.
     slotLegend: "Слот экипировки",
     slotAll: "Все",
-    slotHelm: "Шлем",
+    slotHelm: "Шлемы",
     slotMelee: "Ближний бой",
     slotMissile: "Дальний бой",
     slotOffhand: "Левая рука",
-    slotBodyArmour: "Броня",
+    slotBodyArmour: "Доспех",
 
     // Unlike the English "Showing 5 of 99", the Russian sentence needs the
     // noun — and with the noun come the three plural forms.
@@ -128,20 +173,32 @@ export const ru: Strings = {
   },
 
   availability: {
-    // The marker stays Latin `L`: it abbreviates the mode's name, and the
-    // Russian client keeps «ладдер» — Blizzard's Russian D2R announcements use
-    // the loanword for ranked seasons. A Cyrillic «Л» would abbreviate a word
-    // the game does not use. [REVIEW]
-    ladderMarker: "L",
-    ladderMeaning: "Только в ладдере",
+    // **Corrected on review: the marker is now Cyrillic «Л».** It was Latin
+    // `L` on the reasoning that a Cyrillic letter would abbreviate a word the
+    // game does not use. Every source contradicts that: the official
+    // localisation's guide speaks of «рейтингового сезона ладдера» and
+    // «ладдерные слова», diablo2-resurrected.ru marks these records «Только для
+    // сезонных (ладдерных) персонажей», and duskworld.ru writes «в рейтинговом
+    // режиме (ладдере)». «Ладдер» is the audience's own loanword, so «Л»
+    // abbreviates a word that is genuinely used — and it stops one Latin letter
+    // sitting in a page that is otherwise entirely Russian.
+    //
+    // The meaning is the item text as diablo2-resurrected.ru transcribes it,
+    // which glosses the loanword with «сезонных» rather than assuming it:
+    // the sources between them use both words, and stating both is what a
+    // tooltip is for.
+    ladderMarker: "Л",
+    ladderMeaning: "Только для сезонных (ладдерных) персонажей",
     noteMarker: "Примечание",
     patchMeaning: (patch: string) => `Добавлено в патче ${patch}`,
   },
 
   crafted: {
-    // The runeword's name stays canonical English inside the Russian sentence,
-    // and «созданное» agrees with «рунное слово» (neuter), which the sentence
-    // names so the agreement has a visible referent.
+    // The name arrives already projected — `CraftedToggle` reads it from the
+    // dataset's locale projection, so a Russian sentence names a runeword in
+    // Russian while storage keeps the canonical English name it toggles by.
+    // «Созданное» agrees with «рунное слово» (neuter), which the sentence names
+    // so the agreement has a visible referent whatever the name inside it is.
     mark: (name: string) => `Отметить рунное слово ${name} как созданное`,
     unmark: (name: string) =>
       `Снять с рунного слова ${name} отметку о создании`,
@@ -161,9 +218,9 @@ export const ru: Strings = {
   },
 
   remaining: {
-    title: "Оставшиеся руны и основы",
+    title: "Оставшиеся руны и базы",
     runesSection: "Руны",
-    basesSection: "Основы",
+    basesSection: "Предметные базы",
 
     // Project copy, as the English labels are: the dataset's tier identifiers
     // are not the game's words, so there is no client term to source.
@@ -174,8 +231,9 @@ export const ru: Strings = {
     },
 
     runeCount: (count: number) => `×${count}`,
-    // "Гнездо" — the client's word for a socket, on items and in Larzuk's
-    // reward alike. Three forms: 1 гнездо, 2 гнезда, 5 гнёзд.
+    // "Гнездо" — the official localisation's word for a socket, on items and
+    // in Larzuk's reward alike, and the word its runeword guide counts recipes
+    // in («{2 гнезда}»). Three forms: 1 гнездо, 2 гнезда, 5 гнёзд.
     baseSockets: (sockets: number) =>
       `${sockets} ${plural(sockets, "гнездо", "гнезда", "гнёзд")}`,
     // Governed by «для», so the noun is genitive and only the one-form differs:
@@ -184,13 +242,13 @@ export const ru: Strings = {
       `подойдёт для ${count} ${plural(count, "рунного слова", "рунных слов", "рунных слов")}`,
 
     runesDone: "Руны не нужны — все рунные слова созданы",
-    basesDone: "Основы не нужны — все рунные слова созданы",
+    basesDone: "Базы не нужны — все рунные слова созданы",
   },
 
   detail: {
     runes: "Руны",
     sockets: "Гнёзда",
-    itemTypes: "Основы",
+    itemTypes: "Предметные базы",
     requiredLevel: "Требуемый уровень",
     availability: "Доступность",
     note: "Примечание",

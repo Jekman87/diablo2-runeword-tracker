@@ -2,6 +2,8 @@ import clsx from "clsx";
 
 import { RuneIcon } from "@/components/RuneIcon";
 import type { Runeword } from "@/data";
+import { useLocale } from "@/i18n";
+import { displayRune } from "@/runewords/display";
 
 export interface RuneSequenceProps {
   runeword: Runeword;
@@ -21,9 +23,11 @@ export interface RuneSequenceProps {
  *
  * **The names are the point.** A row of unlabelled 24px sprites tells a reader
  * who does not already know the runes by silhouette nothing at all, and the
- * recipe is the one thing the column exists to carry. The name is the dataset's
- * canonical identifier and does not pass through the strings layer, which is the
- * same rule that makes a rune icon's label the rune's own name.
+ * recipe is the one thing the column exists to carry. The label is the rune's
+ * projected name — `Бер` under the Russian locale, `Ber` under English — read
+ * from the dataset's own locale projection rather than from the strings layer,
+ * which is the same rule that makes a rune icon's accessible label the rune's
+ * own name. The canonical name stays the sprite key beside it.
  *
  * **No `--rune-size` is set here.** The theme's default is the sprite's native
  * 40×40 cell, which is both what makes the artwork sharp and the ceiling above
@@ -37,6 +41,8 @@ export interface RuneSequenceProps {
  * repeat a rune, so a name alone would collide.
  */
 export function RuneSequence({ runeword, className }: RuneSequenceProps) {
+  const locale = useLocale();
+
   return (
     <span className={clsx("gap-1", className)}>
       {runeword.runes.map((rune, index) => (
@@ -49,7 +55,9 @@ export function RuneSequence({ runeword, className }: RuneSequenceProps) {
           className="grid justify-items-center gap-0.5"
         >
           <RuneIcon name={rune} decorative />
-          <span className="text-xs leading-4 text-gold-mid">{rune}</span>
+          <span className="text-xs leading-4 text-gold-mid">
+            {displayRune(rune, locale)}
+          </span>
         </span>
       ))}
     </span>

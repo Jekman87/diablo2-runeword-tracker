@@ -1,9 +1,14 @@
 import { cva } from "class-variance-authority";
 
-import { useStrings } from "@/i18n";
+import { useLocale, useStrings } from "@/i18n";
+import { displayRunewordName } from "@/runewords/display";
 
 export interface CraftedToggleProps {
-  /** The runeword's canonical name — an identifier, not display copy. */
+  /**
+   * The runeword's canonical name. Still the identifier the row toggles by; the
+   * accessible name below presents its projected label, because a Russian
+   * sentence naming an English runeword is two languages in one string.
+   */
   name: string;
   crafted: boolean;
   onToggle: () => void;
@@ -44,6 +49,7 @@ export function CraftedToggle({
   ref,
 }: CraftedToggleProps) {
   const strings = useStrings();
+  const label = displayRunewordName(name, useLocale());
 
   return (
     <button
@@ -51,7 +57,7 @@ export function CraftedToggle({
       type="button"
       aria-pressed={crafted}
       aria-label={
-        crafted ? strings.crafted.unmark(name) : strings.crafted.mark(name)
+        crafted ? strings.crafted.unmark(label) : strings.crafted.mark(label)
       }
       onClick={onToggle}
       className={box({ crafted })}
