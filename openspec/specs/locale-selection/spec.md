@@ -3,22 +3,24 @@
 ## Purpose
 
 The language-selection contract — that the interface offers exactly two
-languages, English and Russian; that English is the default and the only way
-into Russian is the switch; that an explicitly chosen language persists under
-its own namespaced versioned key, is validated on the way back in, and degrades
-to a session choice when storage is unavailable; and that one module owns the
-preference's read and write.
+languages, English and Russian; that a switch takes effect immediately in
+display copy and dataset text alike, without a reload; that English is the
+default and the only way into Russian is the switch; that an explicitly chosen
+language persists under its own namespaced versioned key, is validated on the
+way back in, and degrades to a session choice when storage is unavailable; and
+that one module owns the preference's read and write.
 
 ## Requirements
 
 ### Requirement: The interface language can be switched between Russian and English
 
 The interface SHALL offer exactly two languages, Russian and English, and
-switching SHALL take effect immediately in every piece of display copy without a
-page reload. Dataset text — runeword names, rune names, base item categories,
-granted properties, restrictions and notes — SHALL remain in its canonical
-English form in both languages, because it is data rather than copy and its
-localisation is a separate dataset change.
+switching SHALL take effect immediately without a page reload — in every piece of
+display copy and in dataset text alike. Dataset text — runeword names, rune
+names, base item categories, granted properties, restrictions and notes — SHALL
+render in the active language, which is what `localised-dataset-text` specifies
+in full; this requirement's part is only that a switch reaches it as immediately
+as it reaches copy.
 
 #### Scenario: Switching to Russian localises the copy
 
@@ -26,16 +28,17 @@ localisation is a separate dataset change.
 - **THEN** every label, heading, control name, message and accessible name that
   is display copy renders in Russian, without a page reload
 
-#### Scenario: Dataset text stays canonical in Russian
+#### Scenario: Switching to Russian localises the dataset text too
 
 - **WHEN** the interface is in Russian
 - **THEN** runeword names, rune names, base item categories, granted properties,
-  restrictions and notes render in their canonical English form
+  restrictions and notes render in Russian, without a page reload
 
 #### Scenario: Switching back restores English
 
 - **WHEN** the player activates the English option from a Russian interface
-- **THEN** every piece of display copy renders in English again
+- **THEN** every piece of display copy and every piece of dataset text renders in
+  English again
 
 ### Requirement: A first visit is English
 
