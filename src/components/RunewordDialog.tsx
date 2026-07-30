@@ -2,7 +2,8 @@ import { ItemTypes } from "@/components/ItemTypes";
 import { PropertyLine } from "@/components/PropertyLine";
 import { RuneSequence } from "@/components/RuneSequence";
 import type { Runeword } from "@/data";
-import { useStrings } from "@/i18n";
+import { useLocale, useStrings } from "@/i18n";
+import { displayItemType, displayRuneword } from "@/runewords/display";
 
 export interface RunewordDialogProps {
   /** The runeword being shown. The panel is only rendered while open. */
@@ -35,6 +36,8 @@ export interface RunewordDialogProps {
  */
 export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
   const strings = useStrings();
+  const locale = useLocale();
+  const projected = displayRuneword(runeword, locale);
 
   return (
     <div className="grid gap-3">
@@ -50,7 +53,7 @@ export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
           is there is `aria-expanded` and `aria-controls` on the name, which
           `useRole` puts there and which never depended on this. */}
       <h2 id={titleId} className="text-2xl text-gold-mid">
-        {runeword.name}
+        {projected.name}
       </h2>
 
       {/* Label in one column, value in the next. A `dl` stacks by default,
@@ -107,10 +110,10 @@ export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
 
         {/* `Mosaic`'s caveat is the single most actionable sentence in the
             dataset, and the reference hides it behind a hover. */}
-        {runeword.note ? (
+        {projected.note ? (
           <>
             <dt className="text-gold">{strings.detail.note}</dt>
-            <dd className="text-accent">{runeword.note}</dd>
+            <dd className="text-accent">{projected.note}</dd>
           </>
         ) : null}
       </dl>
@@ -120,18 +123,30 @@ export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
           renders as a gold heading — the categories it applies to are dataset
           content, the same vocabulary `ItemTypes` renders, not display copy —
           so it cannot read as another green property line. A single unlabelled
-          group renders no heading element at all, not an empty one. */}
+          group renders no heading element at all, not an empty one.
+
+          The heading and the lines come from different halves of the same
+          projection: the label is a category name, which localises through the
+          reference data (`displayItemType`), while the lines are the record's
+          own. That is why a Russian variant stores no group labels — restating
+          them per record would be a second copy of the reference data. */}
       {runeword.propertyGroups.map((group, groupIndex) => (
         <div key={groupIndex} className="grid gap-1">
           {group.itemTypes ? (
-            <h4 className="text-gold">{group.itemTypes.join(", ")}</h4>
+            <h4 className="text-gold">
+              {group.itemTypes
+                .map((category) => displayItemType(category, locale))
+                .join(strings.itemTypes.separator)}
+            </h4>
           ) : null}
           <ul className="grid gap-0.5 text-property">
-            {group.properties.map((line, index) => (
-              <li key={index}>
-                <PropertyLine line={line} />
-              </li>
-            ))}
+            {projected.propertyGroups[groupIndex].properties.map(
+              (line, index) => (
+                <li key={index}>
+                  <PropertyLine line={line} />
+                </li>
+              ),
+            )}
           </ul>
         </div>
       ))}

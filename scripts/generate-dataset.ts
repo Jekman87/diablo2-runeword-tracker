@@ -4,6 +4,9 @@ import { format, resolveConfig } from "prettier";
 import ts from "typescript";
 import { z } from "zod";
 
+import { itemTypeTranslations } from "../data/ru/item-types.ts";
+import { runeTranslations } from "../data/ru/runes.ts";
+import { runewordTranslations } from "../data/ru/runewords.ts";
 import {
   type ItemType,
   type Rune,
@@ -24,6 +27,16 @@ import {
 //
 // `scripts/generate-dataset.test.ts` proves the committed JSON still equals
 // what `buildDataset` produces, so the two cannot silently diverge.
+//
+// Russian labels enter here too, from the authored modules under `data/ru/`.
+// They are the one part of the dataset that cannot be generated — no machine
+// translation, and the official Russian client is not accessible — so they are
+// transcribed by hand and this file is what keeps that safe: each translation
+// is validated, matched to a key the vendored data defines, and merged into
+// the record it belongs to. A key the snapshot does not know fails the build
+// rather than leaving a record quietly untranslated, and the per-entry
+// `source` notes stay behind: they exist for review, and the JSON ships in the
+// bundle.
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "..");
 const VENDOR_DATA_DIR = path.join(REPO_ROOT, "vendor", "runewizard", "data");
@@ -42,21 +55,49 @@ export interface Dataset {
  * The output is parsed against the same schemas the application loads with, so
  * the generator cannot emit data its own consumers would reject.
  */
-export function buildDataset(vendor: VendorData): Dataset {
+export function buildDataset(
+  vendor: VendorData,
+  translations: Translations = REPO_TRANSLATIONS,
+): Dataset {
   assertDescriptionKeysAgree(vendor);
 
-  const runewords = vendor.runewords.map((record) =>
-    buildRuneword(record, vendor.descriptions[record.title] ?? ""),
+  const runeword = validatedTranslations(
+    runewordTranslationsSchema,
+    translations.runewords,
+    vendor.runewords.map((record) => record.title),
+    "runeword",
+  );
+  const rune = validatedTranslations(
+    nameTranslationsSchema,
+    translations.runes,
+    vendor.runes.map((entry) => entry.name),
+    "rune",
+  );
+  const itemType = validatedTranslations(
+    nameTranslationsSchema,
+    translations.itemTypes,
+    Object.keys(vendor.itemTypes),
+    "item category",
   );
 
-  const runes = vendor.runes.map((rune) => ({
-    name: rune.name,
-    tier: RUNE_TIERS[rune.tier],
+  const runewords = vendor.runewords.map((record) =>
+    buildRuneword(
+      record,
+      vendor.descriptions[record.title] ?? "",
+      runeword[record.title],
+    ),
+  );
+
+  const runes = vendor.runes.map((entry) => ({
+    name: entry.name,
+    tier: RUNE_TIERS[entry.tier],
+    ...requiredRu(rune[entry.name], entry.name, "rune"),
   }));
 
   const itemTypes = Object.entries(vendor.itemTypes).map(([name, { url }]) => ({
     name,
     ...(url !== undefined && { url }),
+    ...requiredRu(itemType[name], name, "item category"),
   }));
 
   return {
@@ -98,6 +139,97 @@ export function loadVendorData(dataDir: string = VENDOR_DATA_DIR): VendorData {
       evaluateVendorModule(path.join(dataDir, "item-types.ts")),
     ),
   };
+}
+
+// --- translation shape ------------------------------------------------------
+
+// Validated with the same posture as the vendor snapshot: strict objects, so a
+// field renamed in `data/ru/` fails here rather than being dropped from the
+// output. `source` is required on every entry — the sourcing rule says each
+// translation names where its wording came from, and a required field is how
+// that stays true of entries added later.
+const runewordTranslationSchema = z.strictObject({
+  name: z.string().min(1),
+  itemTypeRestriction: z.string().min(1).optional(),
+  note: z.string().min(1).optional(),
+  propertyGroups: z
+    .array(z.strictObject({ properties: z.array(z.string().min(1)).min(1) }))
+    .min(1),
+  source: z.string().min(1),
+});
+
+const runewordTranslationsSchema = z.record(
+  z.string().min(1),
+  runewordTranslationSchema,
+);
+
+const nameTranslationsSchema = z.record(
+  z.string().min(1),
+  z.strictObject({ ru: z.string().min(1), source: z.string().min(1) }),
+);
+
+export interface Translations {
+  runewords: unknown;
+  runes: unknown;
+  itemTypes: unknown;
+}
+
+/** The repository's own authored translations — the default input. */
+const REPO_TRANSLATIONS: Translations = {
+  runewords: runewordTranslations,
+  runes: runeTranslations,
+  itemTypes: itemTypeTranslations,
+};
+
+/**
+ * Validates a translation record and asserts every key names something the
+ * vendored data defines.
+ *
+ * The unknown-key check is the half that cannot be a schema: zod can say a
+ * value is a string, but only the snapshot knows whether `"Ancients Pledge"` is
+ * a runeword. Without it a mistyped key would validate perfectly and leave the
+ * record it meant to translate rendering in English — a silent hole in a
+ * dataset the coverage test says is complete.
+ */
+function validatedTranslations<T>(
+  schema: z.ZodType<Record<string, T>>,
+  source: unknown,
+  knownKeys: string[],
+  subject: string,
+): Record<string, T> {
+  const parsed = schema.parse(source);
+  const known = new Set(knownKeys);
+  const unknown = Object.keys(parsed).filter((key) => !known.has(key));
+
+  if (unknown.length > 0) {
+    throw new Error(
+      `Russian translations name ${subject} keys the vendor snapshot does ` +
+        `not define: ${unknown.join(", ")}. Fix the key in data/ru/ — a typo ` +
+        `here would leave the intended record untranslated.`,
+    );
+  }
+
+  return parsed;
+}
+
+/**
+ * The Russian name of a rune or category, which the schema requires. Both
+ * lists are small, closed and fully translated, so a missing entry is a
+ * mistake rather than a state to render around.
+ */
+function requiredRu(
+  translation: { ru: string } | undefined,
+  name: string,
+  subject: string,
+): { ru: string } {
+  if (translation === undefined) {
+    throw new Error(
+      `No Russian name for ${subject} "${name}". Every ${subject} needs one — ` +
+        `add it to data/ru/.`,
+    );
+  }
+
+  return { ru: translation.ru };
 }
 
 // --- vendor shape -----------------------------------------------------------
@@ -150,7 +282,11 @@ const RUNE_TIERS = {
 
 type VendorRuneword = z.infer<typeof vendorRunewordSchema>;
 
-function buildRuneword(record: VendorRuneword, description: string): Runeword {
+function buildRuneword(
+  record: VendorRuneword,
+  description: string,
+  translation: z.infer<typeof runewordTranslationSchema> | undefined,
+): Runeword {
   return {
     name: record.title,
     runes: record.runes,
@@ -169,6 +305,32 @@ function buildRuneword(record: VendorRuneword, description: string): Runeword {
       record.title,
       record.ttypes,
     ),
+    // The variant minus its `source`. Dropping the note is the point: it names
+    // the community page a wording came from, which is review material, and
+    // this JSON is shipped in the bundle. The schema then checks the variant
+    // mirrors the record it has just been merged into.
+    ...(translation !== undefined && { ru: withoutSource(translation) }),
+  };
+}
+
+/**
+ * The variant as the JSON should hold it: every field the schema names, and not
+ * the `source` note. Built field by field rather than by spreading and deleting,
+ * so a field added to the translation shape has to be added here on purpose —
+ * the alternative silently ships whatever `data/ru/` starts carrying.
+ */
+function withoutSource(
+  translation: z.infer<typeof runewordTranslationSchema>,
+): NonNullable<Runeword["ru"]> {
+  return {
+    name: translation.name,
+    ...(translation.itemTypeRestriction !== undefined && {
+      itemTypeRestriction: translation.itemTypeRestriction,
+    }),
+    ...(translation.note !== undefined && { note: translation.note }),
+    propertyGroups: translation.propertyGroups.map((group) => ({
+      properties: group.properties,
+    })),
   };
 }
 

@@ -1,4 +1,5 @@
 import { runes, runewords } from "@/data";
+import type { Locale } from "@/i18n";
 import { matchesQuery } from "@/runewords/search";
 
 // The three fields are asserted separately, because "it searches text" is a
@@ -14,7 +15,7 @@ describe("the name", () => {
     // count but that everything absent really lacks the text everywhere.
     const missed = runewords.filter(
       (runeword) =>
-        !matchesQuery(runeword, "lea") &&
+        !matchesQuery(runeword, "lea", "en") &&
         [
           runeword.name,
           ...runeword.itemTypes,
@@ -69,7 +70,7 @@ describe("the item-type restriction", () => {
     const enigma = named("Enigma");
 
     expect(enigma.itemTypeRestriction).toBeUndefined();
-    expect(matchesQuery(enigma, "assassin")).toBe(false);
+    expect(matchesQuery(enigma, "assassin", "en")).toBe(false);
   });
 });
 
@@ -111,7 +112,7 @@ describe("what the query is not", () => {
     const mosaic = named("Mosaic");
 
     expect(mosaic.note).toBeDefined();
-    expect(matchesQuery(mosaic, mosaic.note ?? "")).toBe(false);
+    expect(matchesQuery(mosaic, mosaic.note ?? "", "en")).toBe(false);
   });
 
   it("does not match on a granted property", () => {
@@ -141,10 +142,61 @@ describe("how the query is read", () => {
   });
 });
 
+describe("under the Russian locale", () => {
+  // The rule is that matching reads the text on screen. So these cases are as
+  // much about what stops matching as about what starts.
+
+  it("matches a fragment of a Russian name", () => {
+    expect(matching("клятва древних", "ru")).toEqual(["Ancient's Pledge"]);
+  });
+
+  it("matches a fragment of a Russian category", () => {
+    // `Доспех` is `Body Armors`, and all 22 runewords naming it are found.
+    expect(matching("доспех", "ru")).toHaveLength(22);
+  });
+
+  it("matches a Russian restriction", () => {
+    expect(matching("ассасин", "ru").sort()).toEqual([
+      "Chaos",
+      "Mosaic",
+      "Pattern",
+      "Treachery",
+    ]);
+  });
+
+  it("does not match a translated record's English name", () => {
+    // The English text is not on screen under this locale, so it is not what is
+    // searched. `Enigma` is `Тайна` in Russian and shares no fragment with it.
+    expect(matching("enigma", "ru")).toEqual([]);
+    expect(matching("enigma", "en")).toEqual(["Enigma"]);
+  });
+
+  it("does not match an English category either", () => {
+    expect(matching("body armors", "ru")).toEqual([]);
+    expect(matching("body armors", "en")).toHaveLength(22);
+  });
+
+  it("treats ё and е as the same letter, in both directions", () => {
+    // `Лёд` is `Ice`. A typist writing `лед` has to find it, and the reverse
+    // has to hold too or the folding would only be one-way.
+    expect(matching("лёд", "ru")).toContain("Ice");
+    expect(matching("лед", "ru")).toEqual(matching("лёд", "ru"));
+    expect(matching("гнездо", "ru")).toEqual(matching("гнёздо", "ru"));
+  });
+
+  it("ignores case in Cyrillic as it does in Latin", () => {
+    expect(matching("ЩИТЫ", "ru")).toEqual(matching("щиты", "ru"));
+  });
+
+  it("still removes no row for an empty query", () => {
+    expect(matching("", "ru")).toHaveLength(99);
+  });
+});
+
 /** The names of the runewords a query matches, in the dataset's own order. */
-function matching(query: string) {
+function matching(query: string, locale: Locale = "en") {
   return runewords
-    .filter((runeword) => matchesQuery(runeword, query))
+    .filter((runeword) => matchesQuery(runeword, query, locale))
     .map((runeword) => runeword.name);
 }
 

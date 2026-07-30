@@ -1,4 +1,6 @@
 import type { Runeword } from "@/data";
+import type { Locale } from "@/i18n";
+import { displayRuneword } from "@/runewords/display";
 import { byRequiredLevel } from "@/runewords/order";
 
 /**
@@ -69,18 +71,26 @@ export function firstDirectionFor(key: SortKey): SortDirection {
  *
  * The crafted set is a parameter rather than a module read, because two of the
  * five uses of it — this and the crafted filter — need the same value and neither
- * owns it.
+ * owns it. The locale is one for the same reason: two of the five keys order
+ * text, and the language that text is in belongs to the caller.
+ *
+ * **The tiebreak stays locale-independent.** `byRequiredLevel` ends in the
+ * *canonical* name, and that is deliberate: the tiebreak is a determinism
+ * guarantee at the level of identifiers, invisible as presentation, so keeping
+ * it out of the locale means a row's tiebroken position never shifts with the
+ * language.
  */
 export function comparatorFor(
   key: SortKey,
   direction: SortDirection,
   crafted: ReadonlySet<string>,
+  locale: Locale,
 ): (a: Runeword, b: Runeword) => number {
   const compareKey = KEY_COMPARATORS[key];
   const sign = direction === "descending" ? -1 : 1;
 
   return (a, b) => {
-    const byKey = compareKey(a, b, crafted);
+    const byKey = compareKey(a, b, crafted, locale);
 
     return byKey === 0 ? byRequiredLevel(a, b) : byKey * sign;
   };
@@ -113,19 +123,38 @@ export function comparatorFor(
  * `itemTypes` compares the **first** category only — the first line of what the
  * cell draws, so the order is visibly the column's own content. Comparing the
  * joined list would order by a string nothing renders.
+ *
+ * The two textual keys read the locale projection, so each orders the text its
+ * column actually presents. That is the same reason `matchesQuery` reads it:
+ * ordering by a string nothing renders is as wrong as matching one.
  */
 const KEY_COMPARATORS: Record<
   SortKey,
-  (a: Runeword, b: Runeword, crafted: ReadonlySet<string>) => number
+  (
+    a: Runeword,
+    b: Runeword,
+    crafted: ReadonlySet<string>,
+    locale: Locale,
+  ) => number
 > = {
   crafted: (a, b, crafted) =>
     Number(crafted.has(a.name)) - Number(crafted.has(b.name)),
 
-  name: (a, b) => byCodePoint(a.name, b.name),
+  name: (a, b, _crafted, locale) =>
+    byLocale(
+      displayRuneword(a, locale).name,
+      displayRuneword(b, locale).name,
+      locale,
+    ),
 
   runes: (a, b) => a.runes.length - b.runes.length,
 
-  itemTypes: (a, b) => byCodePoint(a.itemTypes[0], b.itemTypes[0]),
+  itemTypes: (a, b, _crafted, locale) =>
+    byLocale(
+      displayRuneword(a, locale).itemTypes[0],
+      displayRuneword(b, locale).itemTypes[0],
+      locale,
+    ),
 
   // Level alone, not `byRequiredLevel`. The name half of that function is the
   // tiebreak every key shares, and folding it in here would make it the one
@@ -134,18 +163,45 @@ const KEY_COMPARATORS: Record<
 };
 
 /**
+ * Compares two pieces of displayed text the way the active locale reads them.
+ *
+ * **English keeps `byCodePoint`**, whose premise still holds there: every
+ * canonical name and category is ASCII and initially capitalised, so code-point
+ * order *is* alphabetical order, with no dependence on the runtime's collation.
+ *
+ * **Russian goes through a collator**, which is the question `search.ts` and this
+ * file both deferred. Code-point order puts `ё` (U+0451) past `я` (U+044F),
+ * exiling every word that contains it to the end of the list; Russian
+ * alphabetical order puts it between `е` and `ж`, which is where a reader looks
+ * for it. `Intl.Collator` is in every browser this site targets and adds no
+ * dependency, so there is nothing to weigh against getting the order right.
+ */
+function byLocale(a: string, b: string, locale: Locale): number {
+  if (a === b) return 0;
+  if (locale === "ru") return russianCollator.compare(a, b);
+
+  return byCodePoint(a, b);
+}
+
+/**
+ * Built once at module level rather than per comparison. A comparator runs
+ * O(n log n) times over 99 rows, and constructing a collator is the expensive
+ * part of using one.
+ */
+const russianCollator = new Intl.Collator("ru");
+
+/**
  * Compares two strings by code point rather than through `localeCompare`.
  *
  * The same reasoning as `byRequiredLevel`'s name tiebreak: the presented order
- * has to be the same everywhere it renders, and every name and category in the
- * dataset is ASCII and initially capitalised, so code-point order *is*
- * alphabetical order here without depending on the runtime's collation.
+ * has to be the same everywhere it renders, and every canonical name and
+ * category in the dataset is ASCII and initially capitalised, so code-point
+ * order *is* alphabetical order here without depending on the runtime's
+ * collation.
  *
- * The Russian locale kept that premise: it scopes non-ASCII text to the
- * display-copy layer, which ordering never reads, so dataset text stays ASCII
- * and this comparison stays correct in both languages. Collating Cyrillic
- * becomes a question only with a dataset-localisation change that would put
- * Russian labels into the sorted fields, and is that change's to answer.
+ * Still the tiebreak's comparison in both locales, and still the English
+ * projection's: this is where the ASCII premise is true, and `byLocale` above is
+ * where text that may not be ASCII is handled.
  */
 function byCodePoint(a: string, b: string): number {
   if (a === b) return 0;
