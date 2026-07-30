@@ -140,6 +140,12 @@ const KEY_COMPARATORS: Record<
  * has to be the same everywhere it renders, and every name and category in the
  * dataset is ASCII and initially capitalised, so code-point order *is*
  * alphabetical order here without depending on the runtime's collation.
+ *
+ * The Russian locale kept that premise: it scopes non-ASCII text to the
+ * display-copy layer, which ordering never reads, so dataset text stays ASCII
+ * and this comparison stays correct in both languages. Collating Cyrillic
+ * becomes a question only with a dataset-localisation change that would put
+ * Russian labels into the sorted fields, and is that change's to answer.
  */
 function byCodePoint(a: string, b: string): number {
   if (a === b) return 0;

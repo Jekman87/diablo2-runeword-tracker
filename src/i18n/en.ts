@@ -1,5 +1,7 @@
-// English display copy. The only locale that exists; `russian-locale` adds the
-// second and types it against this record.
+// English display copy: the record every other locale is typed against.
+// `ru.ts` is the second, declared as `Strings`, so a key added here without a
+// Russian counterpart is a typecheck failure rather than an English word in
+// the middle of a Russian page.
 //
 // Not declared `as const`. Widening every value to `string` is deliberate: a
 // second locale has to match the *shape* of this record, not its words, and
@@ -263,5 +265,21 @@ export const en = {
     // the pointer rests on a name is left rather than closed. Copy with nothing
     // rendering it is the same defect as a colour token with no use site, so it
     // went out with the button.
+  },
+
+  // The language switch's five strings — and the four option strings are
+  // **identical in every record, deliberately**. A language's own name does not
+  // translate: a reader facing an interface they cannot read must be able to
+  // read the way out of it, so each option is written in the language it
+  // selects, whatever language the page is in. Only the group's label speaks
+  // the active language. The visible labels are the two-letter codes; the
+  // `…Name` entries are the accessible names behind them, whole words because
+  // `EN` read aloud says less than "English".
+  language: {
+    label: "Language",
+    en: "EN",
+    enName: "English",
+    ru: "RU",
+    ruName: "Русский",
   },
 };

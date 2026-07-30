@@ -33,8 +33,13 @@ import type { Runeword } from "@/data";
  * `toLowerCase()` and `includes()`, with no normalisation and no collator. The
  * dataset is ASCII throughout every name, category and restriction — the font
  * subset in `src/index.css` already depends on that — so case folding is the
- * whole of it. `russian-locale` is the change that introduces non-ASCII text and
- * therefore owns the collation question.
+ * whole of it. **The Russian locale settled the collation question this
+ * docblock used to defer: dataset text stays ASCII.** Non-ASCII text lives in
+ * the display-copy layer, which matching never reads, so a Cyrillic query
+ * correctly matches nothing — nothing Cyrillic renders in the searched
+ * columns, and the (translated) search hint says what the field matches. The
+ * question re-opens only with a dataset-localisation change that would put
+ * Russian labels into these fields, and belongs to that change.
  */
 export function matchesQuery(runeword: Runeword, query: string): boolean {
   const needle = query.trim().toLowerCase();
