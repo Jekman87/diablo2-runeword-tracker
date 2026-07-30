@@ -28,8 +28,11 @@ bases they still need.
   Actions on every push to `main` that clears the quality gate
 - Phase 1 ships English only; Russian in Phase 2
 - Visual style reads as Diablo II: black background, dark red table header,
-  tan small-caps rune text, green property text, serif display font, custom
-  cursor, ornamental divider
+  tan small-caps rune text, serif display font, custom cursor, ornamental
+  divider. Granted properties were sketched here as green, copying the reference
+  site; `detail-panel-tooltip` made them the game's blue, because the detail panel
+  reproduces the game's item tooltip and the game is the authority for that one
+  surface
 - **Rune inventory is out of scope.** The reference site is built around
   "which runes do I own"; we deliberately do not track that. It may never be
   added. Nothing in the data model needs to reserve space for it.
@@ -54,19 +57,21 @@ they are just kebab-case folder names. Capability names, which accumulate in
 The order is dependency order, not preference. Each change should end with the
 site still deployable.
 
-| #   | Change                | Status |
-| --- | --------------------- | ------ |
-| 1   | `project-scaffolding` | done   |
-| 2   | `deploy-github-pages` | done   |
-| 3   | `runeword-dataset`    | done   |
-| 4   | `d2-theme`            | done   |
-| 5   | `runeword-table`      | done   |
-| 6   | `crafted-tracking`    | done   |
-| 6a  | `detail-view-hover`   | done   |
-| 7   | `search-sort-filter`  | done   |
-| 8   | `remaining-panels`    | done   |
-| 9   | `property-groups`     | done   |
-| 10  | `site-header`         | next   |
+| #   | Change                   | Status |
+| --- | ------------------------ | ------ |
+| 1   | `project-scaffolding`    | done   |
+| 2   | `deploy-github-pages`    | done   |
+| 3   | `runeword-dataset`       | done   |
+| 4   | `d2-theme`               | done   |
+| 5   | `runeword-table`         | done   |
+| 6   | `crafted-tracking`       | done   |
+| 6a  | `detail-view-hover`      | done   |
+| 7   | `search-sort-filter`     | done   |
+| 8   | `remaining-panels`       | done   |
+| 9   | `property-groups`        | done   |
+| 10  | `site-header`            | done   |
+| 11  | `detail-panel-tooltip`   | done   |
+| 12  | `merged-remaining-panel` | done   |
 
 `detail-view-hover` is numbered `6a` because it is not a step in the sequence:
 it corrects four defects in what `runeword-table` shipped, found by comparing the
@@ -107,6 +112,110 @@ nobody owns it.
 - **`site-header`** — items 1 and 2 of the Phase 1 layout: the patch line, and
   the Help, Feedback and Update Notes links. Feedback points at the repository's
   GitHub Discussions, which has to be enabled in the repository settings first.
+
+  Landed, then revised on looking at the built page — the four reversals are the
+  part worth carrying forward, because each was decided the other way first with
+  reasons that read well and did not survive the page.
+
+  **Help is an in-page disclosure with real usage prose**, not a link
+  to the README. The link was justified as avoiding a new interactive surface; what
+  it actually offered a player was a repository written for whoever maintains the
+  project. Six strings in `src/i18n/en.ts` now answer "how do I use this" in the
+  header. In flow rather than the reference's overlay dropdown: an overlay needs a
+  `z-index` argued against two sticky bands, an outside-press dismissal, and an
+  answer at 390px. **It is the one disclosure in this project that is not a native
+  `<details>`**, and the reason is worth knowing: its control belongs on the
+  title's line beside Feedback while its panel belongs in the next row of the
+  header's grid, and a `<summary>` must be the first child of the element it
+  opens. So it is a button with `aria-expanded`, `aria-controls` and three lines
+  of state, and the price is Chromium's hidden-until-found — find-in-page cannot
+  open this panel the way it opens the remaining ones. **Both links open in a new
+  tab** with `rel="noopener noreferrer"` and the new-tab behaviour in each
+  accessible name — the tracker is a page a player keeps open while reading patch
+  notes, which is the case where the earlier "no `target=_blank`" rule was wrong.
+  **The patch notes hang off the patch value itself**, as the reference does, so
+  there is no separate Update Notes link and no single-link `nav` landmark left to
+  label. **The links are gold, not blue** — `text-gold-mid` → `text-gold-light`,
+  the pair a runeword's name already moves between.
+
+  Two things that did not change. **The patch value and the URLs are constants in
+  `src/header/site.ts`**, not dataset fields and not copy: the vendored source
+  carries no site-level patch version, so a generated field would have no source
+  behind it, and `3.1.1` is the same string in every locale, so the copy layer
+  takes it as a parameter. The patch constant and the patch-notes URL sit on
+  adjacent lines because they move together. **The `<header>` is a sibling of
+  `<main>`, not a grid item inside it** — inside `main` the element exposes no
+  `banner` landmark at all — which is why the width and gutter classes appear on
+  two elements with a comment on each naming the other.
+
+  **`--color-link` was rendered here and then deleted**, which is the other way a
+  token declared ahead of its use site is worked off. That takes the ahead-of-use
+  count to zero: three rendered, one removed. The class-list diff against the
+  previous build is every utility the header uses and nothing else — no prose
+  leakage, which is the check that mattered most on the change that put six
+  paragraphs of prose inside a component.
+
+- **`detail-panel-tooltip`** — the detail panel restyled to read as the game's own
+  item tooltip, which is what it is a copy of. Palette only: no positioning, no
+  content, no markup beyond one class list.
+
+  The interesting part is **which source owns a surface**. Most of this palette was
+  read off the reference site, and for this one surface the reference was the wrong
+  authority: it draws granted properties green, and in the game an item's magic
+  properties are blue. So `--color-property` and `--color-property-value` moved from
+  the reference's greens to `#7f7fff` and `#b0b0ff` — one step brighter than the
+  game's own `#6969ff`, which lands at about 4.0:1 on the new ground and is under AA
+  for the densest text in the panel. The two-step relationship stayed, because
+  "values brighter than the words" is `runeword-table`'s requirement rather than a
+  decoration.
+
+  Three more values. **The ground left the blood family** (`#200000` → `#17171a`):
+  a near-black panel on a black page has no edge, and every red on this page is a
+  _band_, so a floating box borrowing one would read as a band that came loose.
+  `--color-toast` and `--color-blood-dark` kept `#200000` — three tokens at one
+  value is exactly what lets one of them change its mind alone. **The edge became
+  `--color-panel-edge`** instead of borrowing the row hairline, because brightening
+  `--color-row-line` would have brightened every separator in a 99-row table to
+  sharpen one floating box. **The text became `--color-panel-text` at white**, as
+  the requirement lines in the tooltip are; the runeword's name and the labels
+  stayed gold, since those are structure this panel adds and the tooltip has no
+  equivalent for.
+
+  Worth knowing for the next palette change: **this one is invisible to the test
+  suite by design.** Tests assert token references, not colours, so the check is the
+  built stylesheet's values plus reading an open panel in a browser — which is also
+  what caught that the untouched tokens were genuinely untouched.
+
+- **`merged-remaining-panel`** — the remaining-runes and remaining-bases panels
+  became one panel with two sections, because two closed bands spent **160px above
+  the table to say two titles**, and a closed band carries no information beyond
+  its own name. Now one band: 120px, and the first runeword row moved up 68px at
+  both 1280px and 390px (y=554→486 and y=722→654 of a 900px viewport).
+
+  Open, the two lists sit **side by side from `md`**, which is where the bigger
+  number turned out to be: the bases list is 55 rows and 1680px with nothing
+  crafted, the rune list 440px, so stacking made 2144px of panel and two columns
+  make 1680px. Below `md` they stack, because two columns of 40px rune icons with
+  their names do not fit in 342px.
+
+  Two things this change is a good record of. **The estimate in its own design doc
+  was wrong by more than double** — it guessed the bases list at 25 rows and the
+  stacked height at 830px — and the conclusion survived the measurement while none
+  of the numbers did, which is the case for measuring even when the answer will not
+  change. And **`RemainingPanel` did not change at all**: it was written as one
+  shell used twice, so using it once was a change to `App.tsx` and a new
+  `RemainingNeeds` holding the two sections. The tier labels inside the runes list
+  dropped from `h3` to `h4` so the outline still reads `h1` → `h2` → `h3` → `h4`.
+
+  Three placements were considered and deliberately left: **counts in the closed
+  band** ("23 runes · 14 base types still needed"), which is the bigger win because
+  the closed state would then answer something rather than label itself;
+  **popovers from the browsing controls**, which frees all 160px and adds a floating
+  surface to arbitrate against two sticky bands; and **a sidebar at wide widths**,
+  the reference site's shape. Folding the counts into the sticky progress band was
+  rejected outright rather than deferred — it re-opens the
+  `--progress-band-height` arithmetic, whose failure mode shows at one scroll
+  offset only.
 
 - **`d2-theme`** — Tailwind colour tokens (black ground, dark red table band,
   tan rune text, green property text), the Bellefair display font, the custom
@@ -299,6 +408,11 @@ nobody owns it.
   that will plausibly want them: `site-header` for the link colour,
   `remaining-panels` for the rest. Whoever gets there first should either render
   them or delete them.
+
+  All four are rendered now: `remaining-panels` took the dark blood,
+  `search-sort-filter` the muted dark and the light blood, and `site-header` the
+  link colour. The count is zero and stays there by the rule that the change
+  rendering a surface declares its token.
 
 - **`search-sort-filter`** — search over name and item type, header-click
   sorting, the slot filter, view settings persisted. Needed the item-type to

@@ -19,8 +19,11 @@ describe("the tier bands", () => {
   it("presents three labelled bands in tier order", () => {
     render(<RemainingRunes runes={ONE_OF_EACH_TIER} />);
 
+    // Level 4: this list sits under the runes section's `h3`, which sits under
+    // the panel's `h2`. Asserted here as well as in `RemainingNeeds.test.tsx`,
+    // because this is the file that would change the level.
     const labels = screen
-      .getAllByRole("heading")
+      .getAllByRole("heading", { level: 4 })
       .map((heading) => heading.textContent);
 
     expect(labels).toEqual([
