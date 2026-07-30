@@ -1,25 +1,86 @@
 [
-  { "name": "Axes", "url": "https://diablo2.diablowiki.net/Axes" },
-  { "name": "Body Armors", "url": "https://diablo2.diablowiki.net/Body_Armor" },
-  { "name": "Claws", "url": "https://diablo2.diablowiki.net/Assassin_Items" },
-  { "name": "Clubs", "url": "https://diablo2.diablowiki.net/Clubs" },
-  { "name": "Daggers", "url": "https://diablo2.diablowiki.net/Daggers" },
-  { "name": "Grimoire" },
-  { "name": "Hammers", "url": "https://diablo2.diablowiki.net/Hammers" },
-  { "name": "Helms", "url": "https://diablo2.diablowiki.net/Helms" },
-  { "name": "Maces", "url": "https://diablo2.diablowiki.net/Maces" },
-  { "name": "Melee Weapons" },
-  { "name": "Missile Weapons" },
+  {
+    "name": "Axes",
+    "url": "https://diablo2.diablowiki.net/Axes",
+    "ru": "Топоры"
+  },
+  {
+    "name": "Body Armors",
+    "url": "https://diablo2.diablowiki.net/Body_Armor",
+    "ru": "Доспех"
+  },
+  {
+    "name": "Claws",
+    "url": "https://diablo2.diablowiki.net/Assassin_Items",
+    "ru": "Когти"
+  },
+  {
+    "name": "Clubs",
+    "url": "https://diablo2.diablowiki.net/Clubs",
+    "ru": "Дубины"
+  },
+  {
+    "name": "Daggers",
+    "url": "https://diablo2.diablowiki.net/Daggers",
+    "ru": "Кинжалы"
+  },
+  { "name": "Grimoire", "ru": "Гримуар" },
+  {
+    "name": "Hammers",
+    "url": "https://diablo2.diablowiki.net/Hammers",
+    "ru": "Молоты"
+  },
+  {
+    "name": "Helms",
+    "url": "https://diablo2.diablowiki.net/Helms",
+    "ru": "Шлемы"
+  },
+  {
+    "name": "Maces",
+    "url": "https://diablo2.diablowiki.net/Maces",
+    "ru": "Булавы"
+  },
+  { "name": "Melee Weapons", "ru": "Оружие ближнего боя" },
+  { "name": "Missile Weapons", "ru": "Луки и арбалеты" },
   {
     "name": "Paladin Shields",
-    "url": "https://diablo2.diablowiki.net/Paladin_Items"
+    "url": "https://diablo2.diablowiki.net/Paladin_Items",
+    "ru": "Щиты паладина"
   },
-  { "name": "Polearms", "url": "https://diablo2.diablowiki.net/Polearms" },
-  { "name": "Scepters", "url": "https://diablo2.diablowiki.net/Scepters" },
-  { "name": "Shields", "url": "https://diablo2.diablowiki.net/Shields" },
-  { "name": "Spears", "url": "https://diablo2.diablowiki.net/Spears" },
-  { "name": "Staves", "url": "https://diablo2.diablowiki.net/Staves" },
-  { "name": "Swords", "url": "https://diablo2.diablowiki.net/Swords" },
-  { "name": "Wands", "url": "https://diablo2.diablowiki.net/Wands" },
-  { "name": "Weapons" }
+  {
+    "name": "Polearms",
+    "url": "https://diablo2.diablowiki.net/Polearms",
+    "ru": "Древковое оружие"
+  },
+  {
+    "name": "Scepters",
+    "url": "https://diablo2.diablowiki.net/Scepters",
+    "ru": "Скипетры"
+  },
+  {
+    "name": "Shields",
+    "url": "https://diablo2.diablowiki.net/Shields",
+    "ru": "Щиты"
+  },
+  {
+    "name": "Spears",
+    "url": "https://diablo2.diablowiki.net/Spears",
+    "ru": "Копья"
+  },
+  {
+    "name": "Staves",
+    "url": "https://diablo2.diablowiki.net/Staves",
+    "ru": "Посохи"
+  },
+  {
+    "name": "Swords",
+    "url": "https://diablo2.diablowiki.net/Swords",
+    "ru": "Мечи"
+  },
+  {
+    "name": "Wands",
+    "url": "https://diablo2.diablowiki.net/Wands",
+    "ru": "Жезлы"
+  },
+  { "name": "Weapons", "ru": "Оружие" }
 ]

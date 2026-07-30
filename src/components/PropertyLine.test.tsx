@@ -11,29 +11,28 @@ const allLines = runewords.flatMap((runeword) =>
   runeword.propertyGroups.flatMap((group) => group.properties),
 );
 
+const allRussianLines = runewords.flatMap(
+  (runeword) =>
+    runeword.ru?.propertyGroups.flatMap((group) => group.properties) ?? [],
+);
+
 describe("the round-trip over the whole dataset", () => {
   it("holds 969 property lines to check", () => {
     expect(allLines).toHaveLength(969);
   });
 
   it("reproduces every line exactly from its rendered fragments", () => {
-    // One render for all 969, so the assertion is over what the browser would
-    // actually build rather than over the pattern in isolation.
-    const { container } = render(
-      <ul>
-        {allLines.map((line, index) => (
-          <li key={index}>
-            <PropertyLine line={line} />
-          </li>
-        ))}
-      </ul>,
-    );
+    expect(roundTrip(allLines)).toEqual(allLines);
+  });
 
-    const rendered = [...container.querySelectorAll("li")].map(
-      (item) => item.textContent,
-    );
-
-    expect(rendered).toEqual(allLines);
+  it("reproduces every Russian line exactly as well", () => {
+    // The same assertion over the other language, and it is not a formality:
+    // the split is by numeric pattern, and Russian lines put their numbers in
+    // different places — «Похищает 7% здоровья за удар» leads with a word where
+    // the English leads with the value, and «+(5-30) урона от огня» wraps a
+    // range in brackets the English does not have.
+    expect(allRussianLines).toHaveLength(969);
+    expect(roundTrip(allRussianLines)).toEqual(allRussianLines);
   });
 });
 
@@ -79,6 +78,52 @@ describe("which fragments are emphasised", () => {
     expect(text).toBe("Prevent Monster Heal");
   });
 
+  it("emphasises the value in a Russian line, and only the value", () => {
+    const { emphasised, text } = renderLine("+50% к защите");
+
+    expect(emphasised).toEqual(["+50%"]);
+    expect(text).toBe("+50% к защите");
+  });
+
+  it("emphasises a value that follows Russian words", () => {
+    // The English line leads with its value; this one does not, and the split
+    // has to find it in the middle just the same.
+    const { emphasised, text } = renderLine("Похищает 7% здоровья за удар");
+
+    expect(emphasised).toEqual(["7%"]);
+    expect(text).toBe("Похищает 7% здоровья за удар");
+  });
+
+  it("emphasises a bracketed Russian range as one value", () => {
+    // The brackets are the site's own convention and are not part of the value,
+    // so they stay in the unemphasised text around it.
+    const { emphasised, text } = renderLine("+(5-30) урона от огня");
+
+    expect(emphasised).toEqual(["5-30"]);
+    expect(text).toBe("+(5-30) урона от огня");
+  });
+
+  it("emphasises both values in a Russian line that carries two", () => {
+    const line = "+2 урона от яда за 4 сек.";
+    const { emphasised, text } = renderLine(line);
+
+    expect(emphasised).toEqual(["+2", "4"]);
+    expect(text).toBe(line);
+  });
+
+  it("emphasises a value in every Russian line that carries a digit", () => {
+    // The mechanism holding is the claim: Russian lines keep Arabic digits,
+    // `+`, `%` and hyphenated ranges, so every line with a number in it gets
+    // that number picked out rather than rendering flat.
+    const withDigits = allRussianLines.filter((line) => /\d/.test(line));
+    const unemphasised = withDigits.filter(
+      (line) => renderLine(line).emphasised.length === 0,
+    );
+
+    expect(withDigits.length).toBeGreaterThan(900);
+    expect(unemphasised).toEqual([]);
+  });
+
   it("leaves all 60 digitless lines unemphasised", () => {
     const digitless = allLines.filter((line) => !/\d/.test(line));
 
@@ -101,6 +146,26 @@ describe("PropertyLine's own markup", () => {
     expect(screen.getByText("Prevent Monster Heal")).toHaveClass("text-sm");
   });
 });
+
+/**
+ * Renders a whole set of lines at once and reports what each one came out as.
+ *
+ * One render for all 969, so the assertion is over what the browser would
+ * actually build rather than over the pattern in isolation.
+ */
+function roundTrip(lines: readonly string[]) {
+  const { container } = render(
+    <ul>
+      {lines.map((line, index) => (
+        <li key={index}>
+          <PropertyLine line={line} />
+        </li>
+      ))}
+    </ul>,
+  );
+
+  return [...container.querySelectorAll("li")].map((item) => item.textContent);
+}
 
 /**
  * Renders one line and reports its emphasised fragments and its full text.

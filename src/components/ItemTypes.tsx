@@ -1,5 +1,6 @@
 import type { Runeword } from "@/data";
-import { useStrings } from "@/i18n";
+import { useLocale, useStrings } from "@/i18n";
+import { displayRuneword } from "@/runewords/display";
 
 export interface ItemTypesProps {
   runeword: Runeword;
@@ -17,12 +18,12 @@ export interface ItemTypesProps {
  * Fifteen of the 99 carry one, and an exclusion that changes which item to go
  * looking for should not read as more of the category list.
  *
- * The split of responsibility does not move. The categories are canonical
- * identifiers joined by a separator from the strings layer; the parentheses are
- * punctuation and therefore copy; the words inside them are dataset content.
- * What changed is that the strings layer brackets the restriction alone instead
- * of joining both halves into one string, because the two halves are now two
- * elements.
+ * The split of responsibility does not move. The categories and the restriction
+ * are dataset text, read from the locale projection; the separator and the
+ * parentheses around the restriction are punctuation and therefore copy. So
+ * under the Russian locale the categories read `Щиты, Гримуар` and the
+ * restriction reads `(ассасин)` — the brackets from the strings layer, the word
+ * inside them from the dataset.
  *
  * Used by the row and by the detail view, exactly as the function was, so the
  * two still render from one place.
@@ -34,6 +35,7 @@ export interface ItemTypesProps {
  */
 export function ItemTypes({ runeword }: ItemTypesProps) {
   const strings = useStrings();
+  const projected = displayRuneword(runeword, useLocale());
 
   return (
     /* The size sits on the wrapper rather than on the categories, which is what
@@ -50,16 +52,16 @@ export function ItemTypes({ runeword }: ItemTypesProps) {
        reference's and does the work — the restriction follows to 12.6px. */
     <span className="block text-[14px]">
       <span className="block text-muted">
-        {runeword.itemTypes.join(strings.itemTypes.separator)}
+        {projected.itemTypes.join(strings.itemTypes.separator)}
       </span>
 
       {/* No element at all where there is no restriction — not an empty pair of
           parentheses and not an empty line. Eighty-four of the 99 have none, and
           a blank second line in each of them would make the column look like it
           had lost something. */}
-      {runeword.itemTypeRestriction === undefined ? null : (
+      {projected.itemTypeRestriction === undefined ? null : (
         <span className="block text-[0.9em] text-item-restriction">
-          {strings.itemTypes.restriction(runeword.itemTypeRestriction)}
+          {strings.itemTypes.restriction(projected.itemTypeRestriction)}
         </span>
       )}
     </span>

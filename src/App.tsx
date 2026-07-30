@@ -9,7 +9,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { UndoToast } from "@/components/UndoToast";
 import { useCraftedRunewords } from "@/crafted/useCraftedRunewords";
 import { itemTypes, runes, runewords } from "@/data";
-import { useStrings } from "@/i18n";
+import { useLocale, useStrings } from "@/i18n";
 import { remainingBases } from "@/remaining/bases";
 import { remainingRunes } from "@/remaining/runes";
 import { useViewSettings } from "@/view/useViewSettings";
@@ -43,6 +43,7 @@ import { visibleRunewords } from "@/view/visible";
 
 export function App() {
   const strings = useStrings();
+  const locale = useLocale();
   const { crafted, pendingUndo, toggle, undo, dismissUndo } =
     useCraftedRunewords();
   const {
@@ -69,9 +70,15 @@ export function App() {
   // The crafted set is a dependency because both the crafted filter and the
   // crafted sort key read it. Toggling a runeword therefore re-derives the array,
   // which is correct: under either of those the row must move or leave.
+  //
+  // The locale is a dependency for the same kind of reason and it is
+  // load-bearing: search matches the projected text and the two textual sort
+  // keys order it, so a switch to Russian can change both which rows are
+  // presented and the order they are in. Without it here the table would keep
+  // English's answers while rendering Russian labels.
   const visible = useMemo(
-    () => visibleRunewords(runewords, settings, query, crafted),
-    [settings, query, crafted],
+    () => visibleRunewords(runewords, settings, query, crafted, locale),
+    [settings, query, crafted, locale],
   );
 
   // The two shopping-list aggregates, keyed on the crafted set alone — the
