@@ -5,7 +5,8 @@
 The storage contract for a player's progress — that it survives a reload, that it
 is keyed by canonical runeword name under a namespaced versioned key, that what
 comes back out is validated rather than trusted, that a name the dataset no longer
-knows is kept rather than quietly dropped, that absent, corrupt or unavailable
+knows is kept rather than quietly dropped except where a wholesale replacement
+defines the stored value outright, that absent, corrupt or unavailable
 storage degrades to a tracker that still works for the session, and that a failed
 read never overwrites what it failed to read.
 
@@ -120,9 +121,20 @@ no progress rather than crashing the application or being used unchecked.
 
 A stored name that matches no runeword in the dataset SHALL NOT be marked, SHALL
 NOT be counted towards progress, and SHALL NOT be discarded. It SHALL be written
-back unchanged on every save, so that a runeword renamed or removed between game
-patches does not silently lose the player the mark they made, while a stored value
-full of nonsense still reports a truthful count out of the real total.
+back unchanged on every save that carries prior progress forward, so that a
+runeword renamed or removed between game patches does not silently lose the player
+the mark they made, while a stored value full of nonsense still reports a truthful
+count out of the real total.
+
+A wholesale replacement — an imported file becoming the whole of the player's
+progress, which `progress-transfer` specifies — is the one save that does not carry
+prior progress forward, and it SHALL NOT preserve the unknown names it replaces.
+A replacement defines the entire stored value, its unknown names included: the
+names the imported file carried that the dataset does not know become the stored
+unknown names, on the same terms as any other, and the ones held before it are
+gone with everything else the import replaced. This is also what finally gives a
+preserved unknown name a way off the page, since nothing rendered in the interface
+can reach one.
 
 #### Scenario: An unknown name does not appear in the interface
 
@@ -146,6 +158,19 @@ full of nonsense still reports a truthful count out of the real total.
 - **WHEN** a name that was unknown becomes present in the dataset again
 - **THEN** that runeword loads as marked, because the name was carried rather than
   dropped
+
+#### Scenario: A replacement does not carry the old unknown names
+
+- **WHEN** the stored list contains an unknown name and an imported file that does
+  not mention it replaces the player's progress
+- **THEN** the newly written value does not contain it, because a replacement is
+  the whole stored value and not an edit to it
+
+#### Scenario: A replacement's own unrecognised names are kept
+
+- **WHEN** an imported file lists names the dataset does not know
+- **THEN** the newly written value contains them, unmarked and uncounted, exactly
+  as any other unknown stored name
 
 ### Requirement: A failed read never overwrites what it failed to read
 
