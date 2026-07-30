@@ -259,4 +259,4 @@ const OPEN_DELAY = 250;
 // and `shift` place it as well as it can be placed; past that the content has
 // to scroll inside it, and this is what makes it able to.
 const PANEL =
-  "z-10 max-h-[calc(100dvh-2rem)] max-w-lg overflow-y-auto border border-row-line bg-panel p-4 text-body";
+  "z-10 max-h-[calc(100dvh-2rem)] max-w-lg overflow-y-auto border border-panel-edge bg-panel p-4 text-panel-text";

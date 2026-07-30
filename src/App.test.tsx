@@ -39,11 +39,36 @@ describe("App", () => {
     expect(screen.getByRole("status")).toBeEmptyDOMElement();
   });
 
-  it("builds no site header", () => {
+  it("exposes the header as a banner landmark outside main", () => {
     render(<App />);
 
-    expect(screen.queryByRole("banner")).not.toBeInTheDocument();
-    expect(screen.queryAllByRole("link")).toEqual([]);
+    const banner = screen.getByRole("banner");
+
+    // The whole reason the header is a sibling of `<main>` rather than its first
+    // grid item: inside `main` the element exposes no landmark at all, and this
+    // assertion is what would catch a later refactor wrapping the two in a grid.
+    expect(banner).toBeInTheDocument();
+    expect(banner.closest("main")).toBeNull();
+    expect(within(banner).getByRole("heading", { level: 1 })).toHaveTextContent(
+      en.app.title,
+    );
+  });
+
+  it("keeps the structure below the divider where it was", () => {
+    render(<App />);
+
+    // Progress, the remaining-needs panel, the controls and the table, in that
+    // order, and all of them inside `main` — the header went in above without
+    // moving any of it.
+    const main = screen.getByRole("main");
+    const progress = screen.getByRole("progressbar");
+    const search = screen.getByRole("searchbox");
+    const table = screen.getByRole("table");
+
+    expect(progress.closest("main")).toBe(main);
+    expect(follows(remainingPanel(), progress)).toBe(true);
+    expect(follows(search, remainingPanel())).toBe(true);
+    expect(follows(table, search)).toBe(true);
   });
 });
 
@@ -370,30 +395,50 @@ describe("the view an earlier session left behind", () => {
   });
 });
 
-describe("the remaining panels", () => {
-  it("mounts both between progress and the controls, each closed", () => {
+describe("the remaining-needs panel", () => {
+  it("mounts one panel between progress and the controls, closed", () => {
     render(<App />);
 
-    const runesPanel = panelFor(en.remaining.runesTitle);
-    const basesPanel = panelFor(en.remaining.basesTitle);
+    // One, not two: the runes and the bases are sections of it now, and both
+    // arrive with the single press this asserts is available. Counted as
+    // disclosures rather than by the `group` role, which the controls' two
+    // fieldsets also carry.
+    expect(screen.getByRole("main").querySelectorAll("details")).toHaveLength(
+      1,
+    );
+    expect(remainingPanel().open).toBe(false);
 
-    expect(runesPanel.open).toBe(false);
-    expect(basesPanel.open).toBe(false);
-
-    // Document order: progress, then the panels, then the search field.
+    // Document order: progress, then the panel, then the search field.
     const progress = screen.getByRole("progressbar");
     const search = screen.getByRole("searchbox");
 
-    expect(follows(runesPanel, progress)).toBe(true);
-    expect(follows(basesPanel, runesPanel)).toBe(true);
-    expect(follows(search, basesPanel)).toBe(true);
+    expect(follows(remainingPanel(), progress)).toBe(true);
+    expect(follows(search, remainingPanel())).toBe(true);
   });
 
-  it("updates both panels from one toggle, with no reload anywhere", async () => {
+  it("brings both lists with one press", async () => {
     render(<App />);
 
-    await userEvent.click(summaryFor(en.remaining.runesTitle));
-    await userEvent.click(summaryFor(en.remaining.basesTitle));
+    await userEvent.click(summaryFor(en.remaining.title));
+
+    expect(
+      screen.getByRole("heading", {
+        level: 3,
+        name: en.remaining.runesSection,
+      }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("heading", {
+        level: 3,
+        name: en.remaining.basesSection,
+      }),
+    ).toBeVisible();
+  });
+
+  it("updates both lists from one toggle, with no reload anywhere", async () => {
+    render(<App />);
+
+    await userEvent.click(summaryFor(en.remaining.title));
 
     // Steel is Tir El in a two-socket sword, axe or mace — and the only
     // two-socket sword there is, so its group must leave entirely.
@@ -408,11 +453,10 @@ describe("the remaining panels", () => {
     expect(baseRowFor("Swords", 2)).toBeNull();
   });
 
-  it("restores both panels when the undo is taken", async () => {
+  it("restores both lists when the undo is taken", async () => {
     render(<App />);
 
-    await userEvent.click(summaryFor(en.remaining.runesTitle));
-    await userEvent.click(summaryFor(en.remaining.basesTitle));
+    await userEvent.click(summaryFor(en.remaining.title));
     await userEvent.click(socketFor("Steel"));
     await userEvent.click(screen.getByRole("button", { name: en.undo.action }));
 
@@ -426,7 +470,7 @@ describe("the remaining panels", () => {
 
     render(<App />);
 
-    await userEvent.click(summaryFor(en.remaining.runesTitle));
+    await userEvent.click(summaryFor(en.remaining.title));
 
     // Steel and Leaf each spend one Tir; only Steel spends an El. Two crafted
     // in the bar, and the counts move with the same two — one set, three
@@ -471,11 +515,11 @@ function headerButtonFor(label: string) {
   return within(header).getByRole("button");
 }
 
-/** The remaining panel titled `title`. */
-function panelFor(title: string): HTMLDetailsElement {
-  const panel = screen.getByText(title).closest("details");
+/** The one remaining-needs panel. */
+function remainingPanel(): HTMLDetailsElement {
+  const panel = screen.getByText(en.remaining.title).closest("details");
 
-  if (!panel) throw new Error(`No panel titled ${title}`);
+  if (!panel) throw new Error("No remaining-needs panel");
 
   return panel;
 }
@@ -489,9 +533,26 @@ function summaryFor(title: string): HTMLElement {
   return summary;
 }
 
-/** The count beside one rune's name in the remaining-runes panel. */
+/**
+ * The section of the remaining-needs panel headed `heading`.
+ *
+ * By heading role inside the panel rather than by text anywhere on the page:
+ * "Runes" is also a table column and a detail-view label, so a text match finds
+ * three things and fails on the wrong one.
+ */
+function sectionFor(heading: string): HTMLElement {
+  const section = within(remainingPanel())
+    .getByRole("heading", { level: 3, name: heading })
+    .closest("section");
+
+  if (!section) throw new Error(`No section headed ${heading}`);
+
+  return section;
+}
+
+/** The count beside one rune's name in the runes section. */
 function runeCountFor(name: string) {
-  const entry = within(panelFor(en.remaining.runesTitle))
+  const entry = within(sectionFor(en.remaining.runesSection))
     .getByText(name)
     .closest("li");
 
@@ -500,10 +561,10 @@ function runeCountFor(name: string) {
   return entry.lastChild?.textContent;
 }
 
-/** The `(category, sockets)` row of the remaining-bases panel, or null. */
+/** The `(category, sockets)` row of the bases section, or null. */
 function baseRowFor(category: string, sockets: number) {
   return (
-    within(panelFor(en.remaining.basesTitle))
+    within(sectionFor(en.remaining.basesSection))
       .getAllByRole("listitem")
       .find(
         (row) =>
