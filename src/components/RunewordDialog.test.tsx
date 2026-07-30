@@ -150,7 +150,7 @@ describe("what the panel presents", () => {
     expect(infinity).not.toHaveProperty("socketCount");
   });
 
-  it("shows every property line, in the dataset's order", async () => {
+  it("shows every property line, in the dataset's order and grouping", async () => {
     const user = userEvent.setup();
     renderTable();
 
@@ -159,12 +159,37 @@ describe("what the panel presents", () => {
     const fortitude = runewords.find(
       (runeword) => runeword.name === "Fortitude",
     );
-    const lines = within(screen.getByRole("dialog"))
+    const panel = within(screen.getByRole("dialog"));
+    const lines = panel
       .getAllByRole("listitem")
       .map((line) => line.textContent);
 
-    expect(lines).toHaveLength(26);
-    expect(lines).toEqual(fortitude?.properties);
+    // 24 real lines — the source's two `####` headings became group labels
+    // rather than surviving as green property text.
+    expect(lines).toHaveLength(24);
+    expect(lines.filter((line) => line?.startsWith("####"))).toEqual([]);
+    expect(lines).toEqual(
+      fortitude?.propertyGroups.flatMap((group) => group.properties),
+    );
+
+    // The labels render as headings naming the base types, so a reader
+    // deciding which base to socket can tell the two lists apart.
+    expect(panel.getByRole("heading", { name: "Weapons" })).toBeVisible();
+    expect(panel.getByRole("heading", { name: "Body Armors" })).toBeVisible();
+  });
+
+  it("renders no group sub-heading for a single-group runeword", async () => {
+    const user = userEvent.setup();
+    renderTable();
+
+    await user.click(screen.getByRole("button", { name: "Steel" }));
+
+    // No heading element at all below the properties heading — not an empty
+    // one. The panel's headings are the name and the section label, nothing
+    // at the group level.
+    const panel = within(screen.getByRole("dialog"));
+
+    expect(panel.queryAllByRole("heading", { level: 4 })).toEqual([]);
   });
 
   it("restates patch, ladder status and the note in full words", async () => {
@@ -204,7 +229,7 @@ describe("one panel at a time, and none while closed", () => {
     const { container } = renderTable();
 
     // Not "one empty dialog element" — none. Ninety-nine rows would otherwise
-    // put 975 property lines into a document whose entire content is 99 rows.
+    // put 969 property lines into a document whose entire content is 99 rows.
     expect(container.querySelectorAll("dialog")).toHaveLength(0);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(

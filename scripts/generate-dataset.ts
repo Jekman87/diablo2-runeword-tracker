@@ -164,20 +164,115 @@ function buildRuneword(record: VendorRuneword, description: string): Runeword {
     ladderOnly: record.ladder === true,
     ...(record.version !== undefined && { patch: record.version }),
     ...(record.note !== undefined && { note: record.note }),
-    properties: splitProperties(description),
+    propertyGroups: splitPropertyGroups(
+      description,
+      record.title,
+      record.ttypes,
+    ),
   };
+}
+
+/**
+ * The source writes `#### Body Armor` singular where `Fortitude`'s category is
+ * `Body Armors` plural, so string equality alone misresolves one of the six
+ * headings. An enumerated mapping instead of automatic normalisation, because
+ * implicit pluralisation is wrong the first time a future heading pluralises
+ * differently — an unknown heading must fail loudly, matching the strict
+ * posture of the vendor schemas above.
+ */
+const HEADING_CATEGORIES: Record<string, string> = {
+  Weapons: "Weapons",
+  Swords: "Swords",
+  Shields: "Shields",
+  "Body Armor": "Body Armors",
+};
+
+interface PropertyGroup {
+  itemTypes?: string[];
+  properties: string[];
 }
 
 /**
  * The vendor property blocks are template literals, not clean lines: across the
  * 99 blocks there are 201 blank lines and 974 indented ones, so neither the
  * trim nor the blank-drop is optional.
+ *
+ * A `#### <text>` line starts a new labelled group — three runewords grant
+ * different properties per base type and the source expresses that with these
+ * sub-headings. Headings partition a block completely or not at all: a block
+ * with no headings becomes one unlabelled group, and a property line before the
+ * first heading fails the build, because lines outside every group have no
+ * determinable base types.
  */
-function splitProperties(description: string): string[] {
-  return description
+function splitPropertyGroups(
+  description: string,
+  runewordName: string,
+  itemTypes: string[],
+): PropertyGroup[] {
+  const lines = description
     .split("\n")
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
+
+  if (!lines.some((line) => line.startsWith("####"))) {
+    return [{ properties: lines }];
+  }
+
+  const groups: PropertyGroup[] = [];
+  let current: PropertyGroup | undefined;
+
+  for (const line of lines) {
+    const heading = /^####\s+(.*)$/.exec(line);
+
+    if (heading) {
+      current = {
+        itemTypes: [resolveHeading(heading[1], runewordName, itemTypes)],
+        properties: [],
+      };
+      groups.push(current);
+    } else if (current === undefined) {
+      throw new Error(
+        `Property block of "${runewordName}" places lines before its first ` +
+          `#### heading, so their base types are unknowable. Check the ` +
+          `vendor snapshot.`,
+      );
+    } else {
+      current.properties.push(line);
+    }
+  }
+
+  return groups;
+}
+
+/**
+ * Resolves a `####` heading to one of the record's own item categories, so a
+ * group label is always vocabulary the dataset already speaks. Failing here
+ * names the runeword and the heading, rather than letting the heading survive
+ * as a property line or ship as an unresolvable label.
+ */
+function resolveHeading(
+  heading: string,
+  runewordName: string,
+  itemTypes: string[],
+): string {
+  const category = HEADING_CATEGORIES[heading.trim()];
+
+  if (category === undefined) {
+    throw new Error(
+      `Unknown property sub-heading "${heading.trim()}" on "${runewordName}". ` +
+        `Extend HEADING_CATEGORIES after checking the vendor snapshot.`,
+    );
+  }
+
+  if (!itemTypes.includes(category)) {
+    throw new Error(
+      `Sub-heading "${heading.trim()}" on "${runewordName}" resolves to ` +
+        `"${category}", which is not one of that record's item categories ` +
+        `(${itemTypes.join(", ")}).`,
+    );
+  }
+
+  return category;
 }
 
 /**

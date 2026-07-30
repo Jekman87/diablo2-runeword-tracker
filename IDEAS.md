@@ -65,8 +65,8 @@ site still deployable.
 | 6a  | `detail-view-hover`   | done   |
 | 7   | `search-sort-filter`  | done   |
 | 8   | `remaining-panels`    | done   |
-| 9   | `property-groups`     | next   |
-| 10  | `site-header`         |        |
+| 9   | `property-groups`     | done   |
+| 10  | `site-header`         | next   |
 
 `detail-view-hover` is numbered `6a` because it is not a step in the sequence:
 it corrects four defects in what `runeword-table` shipped, found by comparing the
@@ -90,6 +90,20 @@ nobody owns it.
   Not urgent: nothing reads `properties` except the detail view, and the
   Chronicle counts a runeword once regardless of the base it went into, so no
   progress logic depends on this.
+
+  Landed as sketched: `propertyGroups` replaced `properties` outright — 96
+  records carry one unlabelled group, the three varying ones two labelled
+  groups each. The singular/plural gotcha is resolved by an explicit
+  `HEADING_CATEGORIES` mapping in the generator (`Body Armor` → `Body Armors`);
+  an unknown heading, a heading outside the record's categories, or lines
+  before the first heading all fail the build naming the runeword. The
+  per-record invariants — a single group carries no label, several groups
+  partition the record's `itemTypes` exactly — live in a schema `superRefine`,
+  so a hand-edit that breaks them blanks the page pointing at the record.
+  One count worth knowing: the dataset is now 969 property lines (975 minus
+  the six headings), and the six headings were also digitless, so the
+  emphasis test's digitless-line count dropped from 66 to 60.
+
 - **`site-header`** — items 1 and 2 of the Phase 1 layout: the patch line, and
   the Help, Feedback and Update Notes links. Feedback points at the repository's
   GitHub Discussions, which has to be enabled in the repository settings first.
