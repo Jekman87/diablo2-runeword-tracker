@@ -484,6 +484,102 @@ describe("the remaining-needs panel", () => {
   });
 });
 
+describe("moving progress in and out as a file", () => {
+  // The parsing, the count and the dialog's own behaviour are
+  // `ProgressTransfer.test.tsx`'s. What is asserted here is the wiring the page
+  // owns: that a confirmed import reaches everything a toggle reaches, and that
+  // it replaces rather than adds.
+
+  it("puts both controls in the browsing controls, reachable by keyboard", () => {
+    render(<App />);
+
+    for (const name of [en.transfer.exportAction, en.transfer.importAction]) {
+      const control = screen.getByRole("button", { name });
+
+      // In the control bar rather than in a bar of its own: the search field is
+      // the bar's first control, and both of these are inside the same block.
+      expect(control.closest("main")).toBe(screen.getByRole("main"));
+      expect(follows(control, screen.getByRole("searchbox"))).toBe(true);
+      expect(follows(screen.getByRole("table"), control)).toBe(true);
+      expect(control).not.toHaveAttribute("tabindex", "-1");
+    }
+  });
+
+  it("replaces progress rather than adding to it", async () => {
+    render(<App />);
+
+    await userEvent.click(socketFor("Steel"));
+    await importFile("Leaf\nMalice");
+
+    // `Steel` was marked and the file does not name it, so it is unmarked —
+    // this is the assertion that separates a replacement from a merge.
+    expect(socketFor("Steel")).toHaveAttribute("aria-pressed", "false");
+    expect(socketFor("Leaf")).toHaveAttribute("aria-pressed", "true");
+    expect(socketFor("Malice")).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("reaches the progress bar and storage from one import", async () => {
+    render(<App />);
+
+    await importFile("Leaf\nMalice\nSteel");
+
+    expect(screen.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuetext",
+      en.progress.count(3, 99),
+    );
+    expect(
+      JSON.parse(window.localStorage.getItem(CRAFTED_STORAGE_KEY) ?? "[]"),
+    ).toEqual(["Leaf", "Malice", "Steel"]);
+  });
+
+  it("takes the pending undo notice away with it", async () => {
+    render(<App />);
+
+    await userEvent.click(socketFor("Steel"));
+    expect(screen.getByText(en.undo.marked("Steel"))).toBeVisible();
+
+    await importFile("Leaf");
+
+    // The notice offered to unmark `Steel`. After the import there is no toggle
+    // for it to reverse, so it goes rather than sitting there acting on a set
+    // that no longer exists.
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+  });
+
+  it("changes nothing when the confirmation is cancelled", async () => {
+    render(<App />);
+
+    await userEvent.click(socketFor("Steel"));
+    await chooseFile("Leaf");
+    await userEvent.click(
+      screen.getByRole("button", { name: en.transfer.confirmCancel }),
+    );
+
+    expect(socketFor("Steel")).toHaveAttribute("aria-pressed", "true");
+    expect(socketFor("Leaf")).toHaveAttribute("aria-pressed", "false");
+    expect(window.localStorage.getItem(CRAFTED_STORAGE_KEY)).toBe('["Steel"]');
+  });
+});
+
+/** Chooses a file and leaves the confirmation open. */
+async function chooseFile(text: string) {
+  await userEvent.upload(
+    screen.getByLabelText(en.transfer.importAction),
+    new File([text], "progress.csv", { type: "text/csv" }),
+  );
+
+  await screen.findByRole("alertdialog");
+}
+
+/** Chooses a file and confirms the replacement. */
+async function importFile(text: string) {
+  await chooseFile(text);
+
+  await userEvent.click(
+    screen.getByRole("button", { name: en.transfer.confirmAccept }),
+  );
+}
+
 /** The runeword rows, without the header row or an empty-state row. */
 function runewordRows() {
   return screen

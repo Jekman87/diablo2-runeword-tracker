@@ -5,7 +5,7 @@ import {
   loadCrafted,
   saveCrafted,
 } from "@/crafted/storage";
-import { runewords } from "@/data";
+import { runewordNames } from "@/data";
 
 /** What the last toggle did, and how to put it back. */
 export interface PendingUndo {
@@ -32,6 +32,8 @@ export interface CraftedRunewords {
   /** The last toggle, or `null` once it has been undone or dismissed. */
   pendingUndo: PendingUndo | null;
   toggle: (name: string, control: HTMLElement | null) => void;
+  /** Makes an imported file the whole of the player's progress. */
+  replace: (next: StoredProgress) => void;
   undo: () => void;
   dismissUndo: () => void;
 }
@@ -58,7 +60,7 @@ export function useCraftedRunewords(): CraftedRunewords {
   // The one member of this API with a stable identity, because it is the one
   // the notice uses as an effect dependency: its auto-dismissal timer restarts
   // whenever this function changes, and a fresh closure on every render would
-  // mean the six seconds never elapsed.
+  // mean the dismissal interval never elapsed.
   const dismissUndo = useCallback(() => setPendingUndo(null), []);
 
   function write(crafted: ReadonlySet<string>) {
@@ -90,6 +92,33 @@ export function useCraftedRunewords(): CraftedRunewords {
       setPendingUndo({ name, marked, control });
     },
 
+    /**
+     * The import's write: the value handed in becomes the whole of progress.
+     *
+     * **Deliberately not `write()`.** That helper carries `progress.unknown`
+     * forward, which is right for a toggle and wrong for this: a replacement
+     * defines the entire stored value, the unknown names in it included. The
+     * ones the imported file brought are already inside `next`, put there by the
+     * same `splitStoredNames` that splits a stored list; the ones held before it
+     * go with everything else the import replaced.
+     *
+     * Takes the whole `StoredProgress` rather than a list of names because the
+     * confirmation has already split the file in order to count what it would
+     * mark. Re-splitting here would be a second answer to a question already
+     * answered, and the count the player agreed to and the progress they get
+     * could then differ.
+     *
+     * Clearing the notice is the small load-bearing line. Left in place, a
+     * notice raised by a toggle seconds before the import would sit there
+     * offering to reverse it against a set that no longer exists — and its
+     * `control` would still focus a row whose state the undo just contradicted.
+     */
+    replace(next) {
+      setProgress(next);
+      saveCrafted(next);
+      setPendingUndo(null);
+    },
+
     undo() {
       if (!pendingUndo) return;
 
@@ -108,10 +137,3 @@ export function useCraftedRunewords(): CraftedRunewords {
     },
   };
 }
-
-// The names the dataset knows, built once at module scope over data that cannot
-// change at runtime — the same reasoning as `orderedRunewords`. This is what
-// `loadCrafted` splits a stored list against.
-const runewordNames: ReadonlySet<string> = new Set(
-  runewords.map((runeword) => runeword.name),
-);

@@ -233,17 +233,23 @@
      structure this panel adds and the tooltip has no equivalent for: the
      runeword's name and the labels beside each value.
 
-     There was another here — `--color-backdrop`, the dim behind the detail
-     view while it was a modal `<dialog>`. The view opens on hover now and has no
-     business interrupting the page, so the backdrop is gone and the token went
-     with it: a token nothing renders is the same defect as a surface with no
-     token, and leaving it declared would invite the next change to dim
-     something just because the colour was already named. */
+     `--color-backdrop` was removed from here once and is back, which is the
+     rule working rather than the rule bending. It was the dim behind the detail
+     view while that view was a modal `<dialog>`; the view opens on hover now and
+     has no business interrupting the page, so both the backdrop and its token
+     went — a token nothing renders being the same defect as a surface with no
+     token. The note left behind warned that leaving it declared would invite the
+     next change to dim something just because the colour was already named. It
+     is declared again because the import confirmation is a surface that has to
+     dim the page: it is destructive, irreversible, and the only thing standing
+     between a stray press and a season of marks. The token followed the use
+     site, in that order. */
   --color-row-line: #24221c;
   --color-row-hover: #191712;
   --color-panel: #17171a;
   --color-panel-edge: #4b4b52;
   --color-panel-text: #fff;
+  --color-backdrop: rgb(0 0 0 / 0.72);
 
   /* Crafted tracking's own surfaces: the tint a marked row takes, the unfilled
      groove of the progress bar, and the undo notice's panel.

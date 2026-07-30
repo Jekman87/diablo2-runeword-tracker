@@ -74,7 +74,11 @@ export const ru: Strings = {
       "Поле поиска ищет по названию рунного слова, его базам и ограничениям по классу или типу предмета. Две группы кнопок рядом сужают список по готовности и по слоту экипировки, а каждый заголовок столбца сортирует таблицу.",
       "«Оставшиеся руны и базы» складывают всё, что ещё нужно несобранным рунным словам, — список покупок на оставшиеся, а не на всю игру.",
       "Наведите указатель на название рунного слова, чтобы увидеть его свойства, руны по порядку, число гнёзд и требуемый уровень.",
-      "Прогресс хранится в этом браузере и больше нигде. Ничего не отправляется в сеть, ничего не передаётся между устройствами, а очистка данных сайта стирает и его.",
+      // Amended when import and export shipped, as the English point was: the
+      // claim is that nothing leaves the browser on its own, not that nothing
+      // can be taken out of it.
+      "Прогресс хранится в этом браузере и больше нигде. Ничего не отправляется в сеть и ничего не переносится между устройствами само по себе, а очистка данных сайта стирает и его.",
+      "«Экспорт прогресса» сохраняет отмеченные рунные слова в небольшой текстовый файл, а «Импорт прогресса» читает его обратно — так список переносится в другой браузер или сохраняется про запас. Импорт заменяет все ваши отметки, а не добавляет к ним, поэтому сначала спрашивает и показывает, сколько рунных слов будет отмечено из файла; отменить его потом нельзя. Таблица тоже подойдёт, если сохранить её в CSV с названиями в первом столбце.",
     ],
   },
 
@@ -155,6 +159,32 @@ export const ru: Strings = {
     reset: "Очистить поиск и фильтры",
 
     empty: "Ни одно рунное слово не подходит под текущий поиск и фильтры",
+  },
+
+  // Project-authored Russian throughout, and it says so rather than claiming a
+  // source: the client has no file export, so it has no words for one.
+  // «Экспорт» and «импорт» are the ordinary Russian computing loanwords, not a
+  // translation of anything in the game.
+  transfer: {
+    exportAction: "Экспорт прогресса",
+    importAction: "Импорт прогресса",
+
+    confirmTitle: "Заменить прогресс?",
+
+    // «Заменит», not «добавит» — the same expectation the English warning
+    // corrects, and the one a Russian reader of «импорт» brings too.
+    confirmWarning:
+      "Импорт заменит все ваши отметки. Текущий прогресс будет стёрт, и отменить это будет нельзя.",
+
+    // Three plural forms, as every count-bearing Russian string in this record
+    // has: 1 рунное слово, 2 рунных слова, 5 рунных слов. Zero takes the many
+    // form — «будет отмечено 0 рунных слов» — which is the reading a player
+    // gets when the file was wrong, and it has to be grammatical.
+    confirmCount: (count: number) =>
+      `Из файла будет отмечено ${count} ${plural(count, "рунное слово", "рунных слова", "рунных слов")}.`,
+
+    confirmAccept: "Заменить",
+    confirmCancel: "Отмена",
   },
 
   sort: {

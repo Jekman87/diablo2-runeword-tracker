@@ -57,11 +57,16 @@ export const en = {
     feedbackName: "Feedback, opens in a new tab",
 
     // The disclosure that replaced a link to the repository. Everything a reader
-    // needs in order to use the page is in these seven strings, in the order the
+    // needs in order to use the page is in these strings, in the order the
     // page presents the features: what the list is, how a runeword is marked,
     // what the two sticky answers above the table mean, how the table is
     // narrowed, what the two panels add up, where a runeword's properties are,
-    // and where the progress is kept.
+    // where the progress is kept, and how it is carried to another browser.
+    //
+    // **A feature that ships adds its point here.** The transfer point is the
+    // second half of that rule working: import and export did not only need
+    // describing, they made the sentence before them wrong, because progress
+    // that can be exported is no longer progress that never leaves the browser.
     //
     // Prose, not a manual. A tracker whose whole interface is one screen does not
     // need sections, and a reader who opened a disclosure labelled Help wants the
@@ -74,7 +79,12 @@ export const en = {
       "The search field matches a runeword's name, its base items and any class or item restriction. The two groups of buttons beside it narrow the list by crafted state and by equipment slot, and every column heading sorts the table.",
       "Remaining Runes and Remaining Bases add up everything the runewords you have not made yet still need — the shopping list for the rest of them, not for the whole game.",
       "Rest the pointer on a runeword's name to see the properties it grants, its runes in order, the sockets it needs and the level it requires.",
-      "Your progress is kept in this browser and nowhere else. Nothing is uploaded, nothing is shared between devices, and clearing this site's data clears it.",
+      // Amended when import and export shipped. It used to end "nothing is
+      // shared between devices", which the file below now makes false — the
+      // point is that nothing leaves the browser *by itself*, not that nothing
+      // can leave it at all.
+      "Your progress is kept in this browser and nowhere else. Nothing is uploaded and nothing travels between devices on its own, and clearing this site's data clears it.",
+      "Export progress saves your ticked runewords to a small text file, and Import progress reads one back — that is how you carry a list to another browser or keep a backup. Importing replaces everything you have ticked rather than adding to it, so it asks first and tells you how many runewords the file will tick; there is no undo once it is done. A spreadsheet works too, as long as it is saved as CSV with the names in the first column.",
     ],
   },
 
@@ -139,6 +149,46 @@ export const en = {
     // Rendered inside the table's own body rather than beside it, so a reader
     // navigating by row arrives at the explanation instead of at nothing.
     empty: "No runeword matches the current search and filters",
+  },
+
+  // Moving progress between browsers as a file: the two controls, and the
+  // confirmation standing in front of every import.
+  //
+  // The exported file's own name is **not** here. It is never rendered, and it
+  // must be the same file whichever language wrote it — see `EXPORT_FILENAME`
+  // in `src/transfer/format.ts`, which says so at the declaration.
+  transfer: {
+    // There is deliberately no label over the pair. The two buttons sit at the
+    // end of the count's row rather than among the filters, so there is no
+    // column of legends for one to line up with, and "Export progress" and
+    // "Import progress" already say what a heading would.
+    //
+    // "Progress" rather than "runewords": the file is the player's marks, and
+    // the export is the thing they reach for when they are about to lose them.
+    exportAction: "Export progress",
+    importAction: "Import progress",
+
+    // The confirmation. It is the whole safety mechanism — an import cannot be
+    // undone — so the heading asks the destructive question outright rather
+    // than announcing a feature.
+    confirmTitle: "Replace your progress?",
+
+    // Says erased and says permanent. Both halves are load-bearing: a player
+    // who reads "import" expects a merge, and one who expects the undo notice
+    // this page raises for every toggle would be wrong about this one.
+    confirmWarning:
+      "Importing replaces everything you have marked. Your current progress will be erased, and this cannot be undone.",
+
+    // The number the file is judged by. It counts what will actually be marked,
+    // so a file of typos offers to import nothing and says so — which is the
+    // signal that replaced the unmatched-name report.
+    confirmCount: (count: number) =>
+      `This file will mark ${count} ${count === 1 ? "runeword" : "runewords"} as crafted.`,
+
+    // Named for what it does rather than "OK", because the thing it does is the
+    // thing the heading warned about.
+    confirmAccept: "Replace",
+    confirmCancel: "Cancel",
   },
 
   // A column header's sort control. Three functions rather than one, because the

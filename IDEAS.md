@@ -286,9 +286,14 @@ nobody owns it.
   excluded from the crafted set and from the count, and written back out on
   every save, so a runeword renamed between patches does not silently lose the
   player their mark. Those preserved names are invisible in the interface and
-  have no way to be cleared from the page — which makes them exactly what
-  `csv-import-export`'s unmatched-name report is for, since that change already
-  owes the player a way to see them.
+  have no way to be cleared from the page.
+
+  This used to say that is what `csv-import-export`'s unmatched-name report is
+  for. That report was withdrawn on 2026-07-31 and the gap is closed the other
+  way: an import **replaces** the whole stored value rather than editing it, so
+  the names it brings become the unknown list and the ones held before it are
+  gone. That is the one save that does not carry them forward, and it is the only
+  way one can ever be cleared. `progress-persistence` records the exception.
 
   **Progress is written from the toggle and never from an effect.** An effect
   fires on mount, so a value that failed to parse would be overwritten with an
@@ -907,17 +912,53 @@ what it is doing, which is the honest form of the same idea.
 
 ## Phase 3 — CSV import / export
 
+**Shipped** as `csv-import-export`. What follows is the requirement it was built
+against, kept for the record, with the two places the shipped behaviour departs
+from it marked.
+
 - Purpose: move progress between devices without a backend
 - Export: one crafted runeword name per line. No timestamp — agreed, it
   carries no information the user needs.
 - Import: parse, match by name, mark matches as crafted
 - Two additions that cost almost nothing and prevent silent data loss:
-  - a first line marking format and version, e.g.
+  - ~~a first line marking format and version, e.g.
     `# diablo2-runeword-tracker export v1`. Import ignores `#` lines. Without
-    it, a future format change has no way to announce itself.
-  - import must **report unmatched names** rather than skip them quietly. A
+    it, a future format change has no way to announce itself.~~ **Built, then
+    removed before shipping.** Nothing read the line and nothing would until a
+    second format existed, so it was ceremony at the top of every file the player
+    opens, paid for by a version that may never arrive. A v2 can introduce its own
+    marker and read an unmarked file as v1. Import still skips `#` lines — that
+    keeps files exported while the header existed readable, and lets a
+    hand-written list carry a comment.
+  - ~~import must **report unmatched names** rather than skip them quietly. A
     typo or a renamed runeword otherwise looks like a successful import that
-    lost entries.
+    lost entries.~~ **Superseded 2026-07-31.** There is no report. An import
+    replaces everything, so it is preceded by a confirmation stating how many
+    runewords the file will actually mark — and that count is the signal the
+    report was for: a file of typos offers to import nothing and says so, in the
+    one place the player is already reading. Unmatched names are still not lost;
+    they are preserved in storage on the terms `progress-persistence` already
+    sets, uncounted and unrendered.
+
+Decided on 2026-07-31 and shipped:
+
+- **Import replaces, it does not merge.** What the file lists becomes the crafted
+  set; everything held before it is gone. A confirmation dialog states that, gives
+  the count, and offers to cancel — and **there is no undo**, because that dialog
+  is the safety mechanism and the toggle notice stays one toggle deep.
+- **Text is parsed, `.xlsx` is refused.** `.csv`, `.tsv`, `.txt` and any
+  single-column list: BOM stripped, CRLF tolerated, `#` lines skipped, first cell
+  of each line taken, quotes unwrapped. A workbook parser would be the largest
+  dependency in the project, added to read a list of names; a workbook chosen
+  anyway degrades to a confirmation counting zero. Whoever has a spreadsheet saves
+  it as CSV in two clicks.
+- **Matching folds case**, and nothing beyond that — no fuzzy distance, no
+  matching a locale's translated labels. Without the unmatched-name report, case
+  was the one near-miss worth absorbing, and the 99 canonical names are distinct
+  case-insensitively so it cannot make a match ambiguous.
+- **The two controls sit at the far end of the result-count row**, not among the
+  filters as first sketched: that row is a search field and nine chips wide, and
+  two more controls on it wrap into a third bar in all but name.
 
 ---
 
