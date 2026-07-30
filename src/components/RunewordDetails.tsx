@@ -117,7 +117,7 @@ export function RunewordDetails({
     strategy: "fixed",
     middleware: [
       offset(GAP),
-      // The two that earn the dependency. A panel of up to 26 property lines
+      // The two that earn the dependency. A panel of up to 24 property lines
       // has to flip above the name for rows near the bottom of the table, and
       // shift inward at the edges — on both axes, because a tall panel
       // overflows the viewport vertically as readily as a wide one does
@@ -167,7 +167,7 @@ export function RunewordDetails({
       </button>
 
       {/* Rendered only while open, so 99 rows put no detail markup in the
-          document — 975 property lines for a page whose entire content is 99
+          document — 969 property lines for a page whose entire content is 99
           rows. Portalled out of the `<td>` it belongs to, because a positioned
           panel inside a table cell is at the mercy of the table's own layout. */}
       {open ? (
@@ -254,8 +254,9 @@ const EDGE = 8;
 const OPEN_DELAY = 250;
 
 // The height cap and the scroll are load-bearing rather than defensive.
-// `Fortitude` has 26 property lines, and unbounded the panel grows taller than
-// the viewport. `flip` and `shift` place it as well as it can be placed; past
-// that the content has to scroll inside it, and this is what makes it able to.
+// `Fortitude` has 24 property lines plus two group sub-headings — visually as
+// tall as ever — and unbounded the panel grows taller than the viewport. `flip`
+// and `shift` place it as well as it can be placed; past that the content has
+// to scroll inside it, and this is what makes it able to.
 const PANEL =
   "z-10 max-h-[calc(100dvh-2rem)] max-w-lg overflow-y-auto border border-row-line bg-panel p-4 text-body";
