@@ -132,73 +132,100 @@ without rendering anything.
 - **WHEN** all 99 runewords are marked crafted
 - **THEN** the result is empty
 
-### Requirement: The panels are collapsible and collapsed by default
+### Requirement: The remaining-needs panel is collapsible and collapsed by default
 
-The remaining runes and remaining bases SHALL each be presented in its own
-collapsible panel placed between the overall progress indicator and the
-browsing controls. Each panel SHALL load collapsed, and its open state SHALL
-NOT be persisted — the panels are reference material consulted on demand,
-not a view setting. The control that opens and closes a panel SHALL be
-reachable by Tab and operable by keyboard, and SHALL expose its expanded or
-collapsed state to assistive technology. The panels' titles are display copy
-and SHALL resolve through the display-copy layer.
+The remaining runes and remaining bases SHALL be presented together in **one**
+collapsible panel placed between the overall progress indicator and the browsing
+controls, each list under its own heading within it. One panel rather than two,
+because the two lists answer one question from two sides and are consulted
+together, and because two closed bands cost twice the vertical space above the
+table for the same one press. The panel SHALL load collapsed, and its open state
+SHALL NOT be persisted — it is reference material consulted on demand, not a view
+setting. The control that opens and closes it SHALL be reachable by Tab and
+operable by keyboard, and SHALL expose its expanded or collapsed state to
+assistive technology. The panel's title and its two section headings are display
+copy and SHALL resolve through the display-copy layer, and the headings SHALL sit
+one level below the panel's own so that a reader navigating by heading meets the
+panel, then the list.
 
-#### Scenario: Both panels load collapsed
+From the width at which two columns of rune entries fit, the two lists SHALL be
+presented side by side, so an open panel is as tall as its taller list rather than
+as tall as both; below that width they SHALL stack.
+
+#### Scenario: One panel loads collapsed
 
 - **WHEN** the page loads
-- **THEN** both panels are present between the progress indicator and the
-  browsing controls, each showing its title and hiding its content
+- **THEN** one panel is present between the progress indicator and the browsing
+  controls, showing its title and hiding both lists
 
-#### Scenario: A panel opens and closes by keyboard
+#### Scenario: The panel opens and closes by keyboard
 
-- **WHEN** a panel's control receives keyboard focus and is activated
+- **WHEN** the panel's control receives keyboard focus and is activated
 - **THEN** the panel's content is revealed
 - **AND** activating it again hides the content
 
 #### Scenario: The state is exposed to assistive technology
 
-- **WHEN** a panel's control is inspected by assistive technology
+- **WHEN** the panel's control is inspected by assistive technology
 - **THEN** it reports whether the panel is expanded or collapsed
 
 #### Scenario: The open state does not survive a reload
 
-- **WHEN** a panel is opened and the page is reloaded
+- **WHEN** the panel is opened and the page is reloaded
 - **THEN** the panel is collapsed again, and nothing about it was written to
   storage
 
-### Requirement: The panels update immediately when crafted state changes
+#### Scenario: Both lists are reachable under their own headings
 
-Both panels SHALL reflect the crafted set as it is now: toggling a runeword —
-including reversing one through the undo affordance — SHALL update both
-panels' contents immediately, without a reload and regardless of whether the
-panels are open. The panels SHALL derive from the same crafted set the
-progress indicator reads, so the three cannot disagree.
+- **WHEN** the panel is opened
+- **THEN** the runes and the bases are each under a heading naming that list, one
+  level below the panel's title, in that order
 
-#### Scenario: A toggle updates both panels
+#### Scenario: The open panel is as tall as its taller list
 
-- **WHEN** a runeword is marked crafted while both panels are open
-- **THEN** its runes leave or decrease in the runes panel and its base
-  groups leave or decrease in the bases panel, without a reload
+- **WHEN** the panel is opened at a width that fits two columns of rune entries
+- **THEN** the two lists are presented side by side rather than stacked
 
-#### Scenario: An undo restores both panels
+### Requirement: The remaining-needs panel updates immediately when crafted state changes
+
+Both lists SHALL reflect the crafted set as it is now: toggling a runeword —
+including reversing one through the undo affordance — SHALL update both lists
+immediately, without a reload and regardless of whether the panel is open. They
+SHALL derive from the same crafted set the progress indicator reads, so the three
+cannot disagree.
+
+#### Scenario: A toggle updates both lists
+
+- **WHEN** a runeword is marked crafted while the panel is open
+- **THEN** its runes leave or decrease in the runes list and its base groups
+  leave or decrease in the bases list, without a reload
+
+#### Scenario: An undo restores both lists
 
 - **WHEN** a toggle is reversed from the transient notice
-- **THEN** both panels present what they presented before the toggle
+- **THEN** both lists present what they presented before the toggle
 
-#### Scenario: The panels and progress agree
+#### Scenario: The lists and progress agree
 
 - **WHEN** the crafted set changes by any means
-- **THEN** the panels and the progress indicator all reflect the same set
+- **THEN** the lists and the progress indicator all reflect the same set
 
-### Requirement: A panel with nothing left says so
+### Requirement: A list with nothing left says so
 
-A panel whose aggregation is empty SHALL remain present with its title and
-SHALL present a completion message from the display-copy layer rather than
-an empty body or no panel at all, because an absent block reads as a defect
-where a present one with an answer reads as done.
+A list whose aggregation is empty SHALL remain present under its heading and
+SHALL present a completion message from the display-copy layer rather than an
+empty body or no section at all, because an absent block reads as a defect where a
+present one with an answer reads as done. The panel itself SHALL remain present
+whether either list is empty or both are.
 
-#### Scenario: Full completion leaves both panels standing
+#### Scenario: Full completion leaves both sections standing
 
-- **WHEN** all 99 runewords are crafted and a panel is opened
-- **THEN** the panel presents a message stating nothing is needed, resolved
-  from the display-copy layer
+- **WHEN** all 99 runewords are crafted and the panel is opened
+- **THEN** each list's heading is present and each presents a message stating
+  nothing is needed, resolved from the display-copy layer
+
+#### Scenario: One empty list leaves the other alone
+
+- **WHEN** one aggregation is empty and the other is not
+- **THEN** the empty list presents its completion message under its heading and
+  the other presents its entries

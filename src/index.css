@@ -100,7 +100,14 @@
    Nothing was added for the browsing controls either, and that is the same rule
    read the other way: the search field, the filter chips, the sorted column's
    band and the empty-result message all take tokens that were already declared
-   with nothing rendering them. See the note beside `--color-accent` below. */
+   with nothing rendering them. See the note beside `--color-accent` below.
+
+   Nothing was added for the site header either, and one token left: its patch
+   line takes `--color-muted`, its links and the help disclosure's trigger take
+   the gold family, and `--color-link` — the last token here with no use site —
+   was removed rather than rendered. The count of tokens declared ahead of a
+   surface is now zero, and the way it stays there is that the change rendering a
+   new surface declares its token then. See the note beside `--color-muted`. */
 @theme {
   /* Page */
   --color-ground: #000;
@@ -129,18 +136,25 @@
   --color-gold-mid: #a79663;
   --color-gold-light: #bab197;
 
-  /* The two greens the game distinguishes, both inside a granted-property
-     line: the line itself, and the numbers within it picked out brighter.
-     Deliberately not `green` / `green-light` — in this application these two
-     are only ever those two things.
+  /* A granted-property line, and the numbers within it picked out brighter. Two
+     tokens for two things, deliberately not `blue` / `blue-light` — in this
+     application these are only ever those two.
 
-     Read from the reference's `.rw-RunewordPopup-body` and its nested
-     `.is-mod`, not from its token names: it calls `#48ac3f`
-     `--color-runeword-text`, which reads like the runeword's name but is
-     applied to the property list. Naming it `property` here is the point of
-     naming tokens for their role. */
-  --color-property: #48ac3f;
-  --color-property-value: #5cbd4b;
+     **Blue, and that is a departure from the reference on purpose.** These held
+     the reference's greens (`#48ac3f` and `#5cbd4b`, read from its
+     `.rw-RunewordPopup-body` and the nested `.is-mod`) and the reference is not
+     the authority for this surface: the detail panel is a copy of the game's own
+     item tooltip, and in the game an item's magic properties are blue. Green was
+     the one place the panel spoke the reference's vocabulary instead of the
+     game's.
+
+     One step brighter than the game's own `#6969ff`, which lands at about 4.0:1
+     on `--color-panel` below and is therefore under AA for the densest text in
+     the panel. These are 5.4:1 and 9.9:1 measured against it. The patch badges
+     took the reference's contrast knowingly at 2:1 because they are
+     two-character bands; a paragraph of properties goes the legible way. */
+  --color-property: #7f7fff;
+  --color-property-value: #b0b0ff;
 
   /* Badges: the ladder marker's band and its label, the note marker's band and
      its label, and one band per era of patch.
@@ -188,17 +202,38 @@
   --color-crafted: #a79663;
 
   /* The runeword table's own surfaces: the hairline between rows, the row's
-     hover state, and the detail panel. No new hue — the two row states are
-     steps of the muted family and the panel is the blood family's dark end, so
-     the table reads as part of the same palette rather than as three decisions
-     taken separately.
+     hover state, and the detail panel — its ground, its edge and the text inside
+     it. The two row states are steps of the muted family, so the table reads as
+     part of the same palette rather than as decisions taken separately.
 
      Rows are separated rather than striped: alternating backgrounds on pure
      black either disappear or turn muddy, and the reference does not stripe.
      The hover sits below the line so a hovered row lifts off the ground
      without swallowing its own separator.
 
-     There was a fourth here — `--color-backdrop`, the dim behind the detail
+     **The panel is grey, and it used to be `#200000`, the blood family's dark
+     end.** A near-black panel on a black page has no edge of its own, and this
+     one floats over content — the game's tooltip is grey for exactly that reason.
+     Grey rather than a lighter red because every red on this page is a *band*
+     (the table header, the panel summaries, the toast), and a floating box
+     borrowing one would read as a band that came loose. `--color-toast` and
+     `--color-blood-dark` keep `#200000`: three tokens at one value is precisely
+     what lets one of them move its mind without moving the others.
+
+     **The edge is its own token rather than the row hairline it used to borrow.**
+     Brightening `--color-row-line` would have brightened every separator in a
+     99-row table to sharpen the edge of one box floating over them, which is the
+     defect the naming rule exists to prevent. Not gold: the frame would compete
+     with the runeword's gold name inside it.
+
+     **The text is white**, as the requirement lines in the game's tooltip are,
+     rather than the page's tan `--color-body`. `--color-note-label` already holds
+     `#fff` for the note badge's label — two roles at one value under two names,
+     which is the direction the naming rule permits. What stays gold is the
+     structure this panel adds and the tooltip has no equivalent for: the
+     runeword's name and the labels beside each value.
+
+     There was another here — `--color-backdrop`, the dim behind the detail
      view while it was a modal `<dialog>`. The view opens on hover now and has no
      business interrupting the page, so the backdrop is gone and the token went
      with it: a token nothing renders is the same defect as a surface with no
@@ -206,7 +241,9 @@
      something just because the colour was already named. */
   --color-row-line: #24221c;
   --color-row-hover: #191712;
-  --color-panel: #200000;
+  --color-panel: #17171a;
+  --color-panel-edge: #4b4b52;
+  --color-panel-text: #fff;
 
   /* Crafted tracking's own surfaces: the tint a marked row takes, the unfilled
      groove of the progress bar, and the undo notice's panel.
@@ -265,13 +302,26 @@
      sorted column's band. Rendering a declared token is the fix that rule asks
      for; declaring a sixth family beside it would have been the defect.
 
-     `--color-link` is still owed a use site, for `site-header`. One, down
-     from four: `remaining-panels` rendered `--color-blood-dark` as the
-     summary band of both its panels, exactly the surface it was held for. */
+     `--color-link` was the last of the four and is **gone**, which is the other
+     way a token declared ahead of its use site is worked off. `site-header`
+     rendered it first — `#39a9f7`, held for exactly those links since `d2-theme`
+     — and then took it back out: a blue that passes contrast on black is still
+     the one colour on the page from outside the gold family, and it read as a
+     link borrowed from another site. The header's links take `--color-gold-mid`
+     and `--color-gold-light` instead, the pair a runeword's name already moves
+     between, so nothing here is declared for them. A token whose last use site
+     is removed goes with it, as `--color-backdrop`, `--color-title` and
+     `--color-danger` did.
+
+     So the count of tokens declared ahead of any surface is zero: three were
+     rendered (`--color-blood-dark` by `remaining-panels`, `--color-muted-dark`
+     and `--color-blood-light` by `search-sort-filter`) and one was deleted.
+     `--color-muted` below gains the header's patch line as a further use site,
+     which is the rule read the useful way: a declared token whose role fits is
+     used rather than joined by a second one. */
   --color-accent: #bd8547;
   --color-muted: #74706c;
   --color-muted-dark: #24221c;
-  --color-link: #39a9f7;
 
   /* Bellefair, then a fallback that is load-bearing rather than defensive:
      Bellefair ships no Cyrillic subset, so every Russian glyph Phase 2 adds
