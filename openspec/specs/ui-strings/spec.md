@@ -84,27 +84,62 @@ not a stray English word in a Russian interface.
 - **THEN** `pnpm typecheck` fails, rather than the interface rendering the key name
   or an empty string
 
-### Requirement: One locale ships, and the seam is not more than a seam
+### Requirement: Two locales ship, and the accessor selects between them
 
-The layer SHALL ship exactly one locale, English, until a change introduces
-another. It SHALL NOT carry a locale switch, a persisted language preference,
-plural or gender machinery, message interpolation beyond what the interface
-actually renders, or a third-party internationalisation dependency, because no
-requirement calls for any of them yet and unused mechanism is harder to remove than
-to add.
+The layer SHALL ship exactly two locales, English and Russian, with the Russian
+record typed against the English one so that the completeness guarantee holds in
+both directions. The accessor SHALL return the active locale's record, and a
+change of active locale SHALL take effect in every rendered string without any
+copy-consuming component being edited and without the page reloading. The layer
+SHALL still NOT adopt a third-party internationalisation dependency: grammar a
+locale requires — Russian plural forms among it — SHALL be implemented inside
+that locale's own value functions, so each record carries its own language's
+rules and no shared machinery exists for a rule only one of them has.
 
-#### Scenario: English is the only locale present
+#### Scenario: Both locales are present and complete
 
 - **WHEN** the layer is inspected
-- **THEN** exactly one locale is defined
+- **THEN** exactly two locale records are defined, English and Russian, and each
+  defines every key the other does, enforced by `pnpm typecheck`
 
-#### Scenario: No language switch exists yet
+#### Scenario: A switch reaches every string without a reload
 
-- **WHEN** the interface is inspected
-- **THEN** it offers no control for changing language, and no language preference
-  is persisted
+- **WHEN** the active locale changes from English to Russian
+- **THEN** every rendered piece of display copy is presented in Russian, without
+  a page reload and without any copy-consuming component having been modified to
+  make that possible
+
+#### Scenario: Russian plural forms are correct
+
+- **WHEN** a count-bearing string is rendered in Russian with counts that select
+  different Russian plural forms, such as 1, 2 and 5
+- **THEN** each count renders with the grammatically correct form, produced by
+  the Russian record's own value function rather than by shared plural machinery
 
 #### Scenario: No internationalisation library is added
 
 - **WHEN** the project's dependencies are inspected
 - **THEN** none is an internationalisation framework
+
+### Requirement: Game vocabulary in Russian copy comes from the game
+
+Words in the Russian copy that name game concepts — equipment slots, rune
+tiers, sockets, runewords, runes, ladder, patch and their kin — SHALL match the
+official Russian game client's terms where the client has one, and SHALL NOT be
+machine-translated. Copy the project itself authored, such as help prose and
+empty-state messages, is project-authored Russian. Each game-derived term SHALL
+carry a note of its source in the Russian record, so the sourcing is reviewable
+rather than asserted.
+
+#### Scenario: A game term matches the client
+
+- **WHEN** a Russian string naming a game concept is reviewed against the
+  official Russian client
+- **THEN** the term is the client's own, or is explicitly flagged as having no
+  client equivalent
+
+#### Scenario: The sourcing is recorded
+
+- **WHEN** the Russian record is inspected
+- **THEN** game-derived terms carry source notes identifying where in the client
+  the term appears
