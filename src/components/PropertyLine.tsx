@@ -12,7 +12,7 @@ export interface PropertyLineProps {
  * text, odd indices are values — and concatenating that array reproduces the
  * input *by construction*, because `split` never builds a new string. That is
  * the whole reason for the choice, and it is what the round-trip test asserts
- * over all 975 lines in the dataset.
+ * over all 969 lines in the dataset.
  *
  * The obvious alternatives all build a new string: `replace` with markup, or
  * walking match indices by hand. Both can silently drop a leading `-`, and
@@ -53,7 +53,7 @@ export function PropertyLine({ line, className }: PropertyLineProps) {
  * Seconds`; requiring a digit immediately after the sign is what keeps that one
  * from reading as a range.
  *
- * Sixty-six of the 975 lines contain no digit at all. Those split into a single
+ * Sixty of the 969 lines contain no digit at all. Those split into a single
  * fragment and render unemphasised, which needs no special case.
  */
 const VALUE = /([+-]?\d+(?:\.\d+)?(?:-\d+(?:\.\d+)?)?%?)/;

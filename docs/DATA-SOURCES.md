@@ -340,9 +340,17 @@ of `undefined`.
 | `version`        | `patch`               | omitted on the 25 pre-1.10 runewords          |
 | `ladder`         | `ladderOnly`          | normalised to a boolean on all 99, 9 set      |
 | `note`           | `note`                | omitted unless present; only `Mosaic` has one |
-| _(descriptions)_ | `properties`          | merged in, one entry per line, 4 to 26        |
+| _(descriptions)_ | `propertyGroups`      | merged in, one entry per line, grouped        |
 | `tier: 1\|2\|3`  | `tier`                | `common` / `semirare` / `rare`                |
 | _(none)_         | —                     | socket count stays derived                    |
+
+The description blocks of `Fortitude`, `Phoenix` and `Spirit` carry `####`
+sub-headings because those three grant different properties per base type. The
+generator turns each sub-heading into a labelled property group rather than a
+property line; the other 96 records carry a single unlabelled group. Heading
+text resolves to the record's own item categories through an explicit mapping —
+the source writes `#### Body Armor` singular where `Fortitude`'s category is
+`Body Armors` plural — and an unknown heading fails the build.
 
 Verified against the generated output: 99 runewords with distinct names, 343
 rune slots, socket counts 2 to 6, 33 runes in 11/11/11 tier bands from `El` to

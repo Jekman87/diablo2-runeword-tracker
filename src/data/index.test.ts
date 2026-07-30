@@ -143,35 +143,93 @@ describe("socket count", () => {
 });
 
 describe("granted properties", () => {
-  it("gives every runeword at least one line", () => {
+  it("gives every runeword at least one group with at least one line", () => {
     const empty = runewords
-      .filter((entry) => entry.properties.length === 0)
+      .filter(
+        (entry) =>
+          entry.propertyGroups.length === 0 ||
+          entry.propertyGroups.some((group) => group.properties.length === 0),
+      )
       .map((entry) => entry.name);
 
     expect(empty).toEqual([]);
   });
 
-  it("carries no empty or whitespace-padded line", () => {
+  it("carries no empty or whitespace-padded line in any group", () => {
     const malformed = runewords.flatMap((entry) =>
-      entry.properties.filter((line) => line !== line.trim() || line === ""),
+      entry.propertyGroups.flatMap((group) =>
+        group.properties.filter((line) => line !== line.trim() || line === ""),
+      ),
     );
 
     expect(malformed).toEqual([]);
   });
 
   it("splits a block into individual lines", () => {
-    expect(runeword("Ancient's Pledge").properties.at(0)).toBe(
-      "+50% Enhanced Defense",
-    );
+    expect(
+      runeword("Ancient's Pledge").propertyGroups[0].properties.at(0),
+    ).toBe("+50% Enhanced Defense");
   });
 
-  it("keeps the longest list complete at 26 lines", () => {
-    const longest = Math.max(
-      ...runewords.map((entry) => entry.properties.length),
+  it("gives 96 runewords exactly one unlabelled group", () => {
+    const uniform = runewords.filter(
+      (entry) => entry.propertyGroups.length === 1,
     );
 
-    expect(longest).toBe(26);
-    expect(runeword("Fortitude").properties).toHaveLength(26);
+    expect(uniform).toHaveLength(96);
+    expect(
+      uniform.filter(
+        (entry) => entry.propertyGroups[0].itemTypes !== undefined,
+      ),
+    ).toEqual([]);
+  });
+
+  it("gives the three varying runewords two labelled groups each", () => {
+    const varying = runewords
+      .filter((entry) => entry.propertyGroups.length > 1)
+      .map((entry) => entry.name);
+
+    expect(varying).toEqual(["Fortitude", "Phoenix", "Spirit"]);
+
+    for (const name of varying) {
+      const groups = runeword(name).propertyGroups;
+
+      expect(groups).toHaveLength(2);
+      expect(groups.filter((group) => group.itemTypes === undefined)).toEqual(
+        [],
+      );
+    }
+  });
+
+  it("keeps Fortitude complete at 12 lines per base", () => {
+    const [weapons, bodyArmors] = runeword("Fortitude").propertyGroups;
+
+    expect(weapons.itemTypes).toEqual(["Weapons"]);
+    expect(weapons.properties).toHaveLength(12);
+    expect(bodyArmors.itemTypes).toEqual(["Body Armors"]);
+    expect(bodyArmors.properties).toHaveLength(12);
+  });
+
+  it("labels every group with the record's own categories, each claimed once", () => {
+    for (const entry of runewords.filter(
+      (record) => record.propertyGroups.length > 1,
+    )) {
+      const claimed = entry.propertyGroups.flatMap(
+        (group) => group.itemTypes ?? [],
+      );
+
+      expect([...claimed].sort()).toEqual([...entry.itemTypes].sort());
+      expect(new Set(claimed).size).toBe(claimed.length);
+    }
+  });
+
+  it("lets no heading survive as a property line, leaving 969 in total", () => {
+    const lines = runewords.flatMap((entry) =>
+      entry.propertyGroups.flatMap((group) => group.properties),
+    );
+
+    expect(lines.filter((line) => line.startsWith("####"))).toEqual([]);
+    expect(lines).toHaveLength(969);
   });
 });
 
@@ -246,10 +304,53 @@ describe("malformed data", () => {
     expect(() => runewordsSchema.parse([wrongType])).toThrow(/runes/);
   });
 
-  it("throws when a required list is empty", () => {
-    const noProperties = { ...validRecord(), properties: [] };
+  it("throws when a record carries no group at all", () => {
+    const noGroups = { ...validRecord(), propertyGroups: [] };
 
-    expect(() => runewordsSchema.parse([noProperties])).toThrow(/properties/);
+    expect(() => runewordsSchema.parse([noGroups])).toThrow(/propertyGroups/);
+  });
+
+  it("throws when a group carries no line", () => {
+    const emptyGroup = {
+      ...validRecord(),
+      propertyGroups: [{ properties: [] }],
+    };
+
+    expect(() => runewordsSchema.parse([emptyGroup])).toThrow(/properties/);
+  });
+
+  it("throws when a single group carries a label", () => {
+    const record = validRecord();
+    const labelled = {
+      ...record,
+      propertyGroups: [
+        { ...record.propertyGroups[0], itemTypes: [record.itemTypes[0]] },
+      ],
+    };
+
+    expect(() => runewordsSchema.parse([labelled])).toThrow(
+      /single property group/,
+    );
+  });
+
+  it("throws when one of several groups is unlabelled", () => {
+    const record = varyingRecord();
+    delete record.propertyGroups[1].itemTypes;
+
+    expect(() => runewordsSchema.parse([record])).toThrow(
+      /every group must be labelled/,
+    );
+  });
+
+  it("throws when two groups claim the same category", () => {
+    const record = varyingRecord();
+    record.propertyGroups[1].itemTypes = record.propertyGroups[0].itemTypes;
+
+    expect(() => runewordsSchema.parse([record])).toThrow(/claimed by 2/);
+  });
+
+  it("accepts a valid single-unlabelled-group record", () => {
+    expect(() => runewordsSchema.parse([validRecord()])).not.toThrow();
   });
 });
 
@@ -263,4 +364,9 @@ function runeword(name: string) {
 
 function validRecord() {
   return structuredClone(runeword("Ancient's Pledge"));
+}
+
+/** A record with two labelled groups, for the partition-invariant cases. */
+function varyingRecord() {
+  return structuredClone(runeword("Fortitude"));
 }

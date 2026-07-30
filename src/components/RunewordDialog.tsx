@@ -116,13 +116,25 @@ export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
       </dl>
 
       <h3 className="text-xl">{strings.detail.properties}</h3>
-      <ul className="grid gap-0.5 text-property">
-        {runeword.properties.map((line, index) => (
-          <li key={index}>
-            <PropertyLine line={line} />
-          </li>
-        ))}
-      </ul>
+      {/* One pass over the groups, one code path for all 99 records. A label
+          renders as a gold heading — the categories it applies to are dataset
+          content, the same vocabulary `ItemTypes` renders, not display copy —
+          so it cannot read as another green property line. A single unlabelled
+          group renders no heading element at all, not an empty one. */}
+      {runeword.propertyGroups.map((group, groupIndex) => (
+        <div key={groupIndex} className="grid gap-1">
+          {group.itemTypes ? (
+            <h4 className="text-gold">{group.itemTypes.join(", ")}</h4>
+          ) : null}
+          <ul className="grid gap-0.5 text-property">
+            {group.properties.map((line, index) => (
+              <li key={index}>
+                <PropertyLine line={line} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
