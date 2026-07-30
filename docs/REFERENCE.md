@@ -155,13 +155,15 @@ Bellefair ships three subsets — hebrew (6 752 B), latin-ext (11 336 B) and
 latin (16 536 B) — and **none of them is Cyrillic**. Only latin is vendored,
 because the dataset is 100 % ASCII.
 
-That matters beyond this change: **the Phase 2 Russian translation inherits an
-open font question.** Every Cyrillic glyph will fall through to the fallback
-stack, because there is no Bellefair Cyrillic to fall back from. So the
-translation change either accepts the fallback for Russian display text or
-adopts a second family for it. The fallback in `src/index.css` is chosen as a
-real reading serif with Cyrillic coverage for that reason, not as a defensive
-`serif`.
+That matters beyond this change: **the Russian locale renders its Cyrillic copy
+in the fallback stack, by design.** Every Cyrillic glyph falls through, because
+there is no Bellefair Cyrillic to fall back from — which is exactly why the
+fallback in `src/index.css` was chosen as a real reading serif with Cyrillic
+coverage (Cambria, Georgia, Noto Serif, Liberation Serif) rather than a
+defensive `serif`. The `russian-locale` change accepted that fallback rather
+than adopting a second family; if the mixed typography — Latin dataset names in
+Bellefair beside Cyrillic copy in the fallback serif — proves ugly in practice,
+a Cyrillic-capable family is its own follow-up change.
 
 ---
 

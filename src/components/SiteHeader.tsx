@@ -2,12 +2,14 @@ import { useId, useState } from "react";
 
 import clsx from "clsx";
 
+import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { FEEDBACK_URL, GAME_PATCH, UPDATE_NOTES_URL } from "@/header/site";
 import { useStrings } from "@/i18n";
 
 /**
  * The header band: what this page is, which patch its list reflects, where to say
- * something about it, and — behind a disclosure — how to use it.
+ * something about it, which language it speaks, and — behind a disclosure — how
+ * to use it.
  *
  * A `<header>` **outside** `<main>`, which is the whole reason `App.tsx` mounts
  * it as a sibling: the element only exposes the `banner` landmark when it is not
@@ -95,8 +97,12 @@ export function SiteHeader() {
             </p>
           </div>
 
-          {/* Help first, then Feedback, which is the reference's own order. */}
-          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          {/* Help first, then Feedback, which is the reference's own order —
+              then the language switch, a control and not a link, so the
+              two-link rule below stands. `items-center` rather than the
+              row's own `items-baseline`: the switch's chips are boxes, and a
+              box hung from a text baseline sits visibly low beside words. */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <button
               aria-controls={helpId}
               aria-expanded={helpOpen}
@@ -132,6 +138,8 @@ export function SiteHeader() {
             >
               {strings.header.feedback}
             </a>
+
+            <LanguageSwitch />
           </div>
         </div>
 
