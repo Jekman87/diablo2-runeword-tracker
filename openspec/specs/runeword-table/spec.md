@@ -308,6 +308,15 @@ restriction, and every granted property line in the order the dataset holds them
 The socket count SHALL be derived from the length of the rune sequence at the point
 of display and SHALL NOT be read from a stored field.
 
+Where the dataset carries a runeword's properties as labelled groups — because the
+runeword grants different properties per base type — the view SHALL present each
+group's lines under a sub-heading naming the base types that group applies to, so
+that a reader deciding which base to socket can tell the two lists apart. The
+sub-heading SHALL be presented as a heading and SHALL NOT read as another property
+line. A runeword carrying a single unlabelled group SHALL present its lines with no
+sub-heading, exactly as a flat property list. The group labels are dataset content —
+item category names — and SHALL NOT pass through the display-copy layer.
+
 The view SHALL open on any of three triggers on the runeword's name: a pointer
 hovering it, keyboard focus reaching it, and a click or tap activating it. No one
 of the three SHALL be the only way in — a touch device has no hover, and a keyboard
@@ -328,7 +337,29 @@ travels from the name toward it, so that reaching the panel does not dismiss it.
 #### Scenario: Property lines keep their order and their count
 
 - **WHEN** the detail view for the runeword with the most property lines is opened
-- **THEN** all 26 lines are present, in the dataset's order
+- **THEN** all 24 of `Fortitude`'s lines are present, in the dataset's order,
+  grouped as the dataset groups them
+
+#### Scenario: A varying runeword's groups are told apart by sub-headings
+
+- **WHEN** the detail view for `Fortitude` is opened
+- **THEN** its 12 `Weapons` lines appear under a sub-heading naming `Weapons`
+  and its 12 `Body Armors` lines under a sub-heading naming `Body Armors`
+- **AND** each sub-heading is presented as a heading rather than as another
+  property line
+
+#### Scenario: A uniform runeword shows no group sub-heading
+
+- **WHEN** the detail view for a runeword carrying a single unlabelled group is
+  opened
+- **THEN** its property lines are presented as one list with no sub-heading and
+  no empty heading slot
+
+#### Scenario: Group labels come from the dataset
+
+- **WHEN** the source of a rendered group sub-heading is inspected
+- **THEN** it is the dataset's item category names and did not pass through the
+  display-copy layer, because category names are identifiers rather than copy
 
 #### Scenario: Socket count is derived at display
 
