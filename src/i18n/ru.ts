@@ -78,8 +78,52 @@ export const ru: Strings = {
       // claim is that nothing leaves the browser on its own, not that nothing
       // can be taken out of it.
       "Прогресс хранится в этом браузере и больше нигде. Ничего не отправляется в сеть и ничего не переносится между устройствами само по себе, а очистка данных сайта стирает и его.",
-      "«Экспорт прогресса» сохраняет отмеченные рунные слова в небольшой текстовый файл, а «Импорт прогресса» читает его обратно — так список переносится в другой браузер или сохраняется про запас. Импорт заменяет все ваши отметки, а не добавляет к ним, поэтому сначала спрашивает и показывает, сколько рунных слов будет отмечено из файла; отменить его потом нельзя. Таблица тоже подойдёт, если сохранить её в CSV с названиями в первом столбце.",
+      "«Экспорт прогресса» сохраняет отмеченные рунные слова в небольшой CSV-файл, а «Импорт прогресса» читает его обратно — так список переносится в другой браузер или сохраняется про запас. Импорт заменяет все ваши отметки, а не добавляет к ним, поэтому сначала спрашивает и показывает, сколько рунных слов будет отмечено из файла; отменить его потом нельзя. Таблица тоже подойдёт, если сохранить её в CSV с названиями в первом столбце.",
     ],
+
+    // Badge legend. Game terms from the same sources as the rest of this
+    // record: «ладдер» as already settled for ladder, «патч» as already settled,
+    // «примечание» for the note marker. The classic-era explanation is project
+    // prose.
+    helpBadgesIntro:
+      "Цветные метки рядом с названием — украшение: когда слово добавили, только ли оно на ладдере, и есть ли у него оговорка:",
+    helpBadgePatch: (patch: string) =>
+      patch === "1.10" || patch === "1.11"
+        ? "Классическая эра (патчи 1.10 и 1.11), до Diablo II Resurrected"
+        : `Добавлено в патче Diablo II Resurrected ${patch}`,
+    helpBadgeLadder: "Только ладдер — доступно в сезонах ладдера",
+    helpBadgeNote:
+      "Примечание — у рунного слова есть оговорка; откройте подробности, чтобы прочитать её",
+    // «Хорадрический куб» — the official localisation's name for the Horadric
+    // Cube. Tier explanation is project prose about this page's own grouping.
+    helpRuneTiers:
+      "«Оставшиеся руны» делят руны на три уровня — от обычных к редким — по формулам улучшения Хорадрического куба (например, три Tal дают один Ral). Поэтому у самых редких рун самые маленькие счётчики.",
+  },
+
+  footer: {
+    copyright: (siteName: string, year: number) => `© ${year} ${siteName}`,
+    // Same six lines as English. Boss names and Tyrael's Might use official
+    // D2R Russian; the spoken taunts themselves have no UI string in-client.
+    easterEggs: [
+      "Андариэль: Сдохни, червь!",
+      "Дюриэль: Ищешь Баала?",
+      "Мефисто: Мои братья ушли от тебя!",
+      "Диабло: Даже смерть не спасет тебя от меня.",
+      "Баал: Смерть моих братьев не будет напрасной!",
+      "История: Ты не найдешь Мощь Тираэля!",
+    ],
+    donationHeading: "Поддержать автора",
+    donationInstrument: (coin: string, network: string) =>
+      `${coin} в сети ${network}`,
+    donationClose: "Закрыть",
+    copyAddress: "Скопировать адрес",
+    copySuccess: "Адрес скопирован.",
+    copyFailure:
+      "Не удалось скопировать — выделите адрес и скопируйте его сами.",
+  },
+
+  scrollToTop: {
+    label: "Наверх",
   },
 
   table: {
@@ -118,11 +162,11 @@ export const ru: Strings = {
     // categories, so these are only partly game terms — and checking them
     // against the official localisation is what separates the two halves.
     //
-    // «Шлемы» and «Доспех» are the client's own class names, and they are also
-    // what the base-items column now renders from the dataset, so a chip and
-    // the column beside it say the same word. «Доспех» took two corrections to
-    // arrive at: «Доспехи» from diablo2-resurrected.ru, then «Броня» from the
-    // noob-club transcription's base lists, then the client's own singular.
+    // «Шлемы» and «Доспехи» match the other plural category names on this page.
+    // The client writes the singular «Доспех» in runeword base lists; the plural
+    // is kept for chips and the column so they read like «Шлемы» and «Щиты».
+    // Earlier wrong values were «Броня» and a singular chip beside plural
+    // neighbours.
     //
     // «Ближний бой» is the official «Оружие ближнего боя» shortened for a chip
     // — the chips sit under a legend that already says these are equipment
@@ -147,7 +191,7 @@ export const ru: Strings = {
     slotMelee: "Ближний бой",
     slotMissile: "Дальний бой",
     slotOffhand: "Левая рука",
-    slotBodyArmour: "Доспех",
+    slotBodyArmour: "Доспехи",
 
     // Unlike the English "Showing 5 of 99", the Russian sentence needs the
     // noun — and with the noun come the three plural forms.

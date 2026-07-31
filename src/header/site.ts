@@ -1,6 +1,7 @@
-// What the site header states about itself, and where its links go. Four
-// constants rather than four literals in a component, and none of them copy: a
-// URL is not translated, and the patch number is the same word in every locale.
+// What the site states about itself, and where its links go. Constants rather
+// than literals in a component, and none of them copy: a URL is not translated,
+// a patch number is the same word in every locale, and a receive address is the
+// same string whichever language named the coin beside it.
 //
 // The patch value is deliberately not a dataset field. The vendored source
 // carries per-runeword `version` values but nothing site-level (see
@@ -8,6 +9,20 @@
 // which is the defect the dataset rules exist to prevent. It was read off the
 // reference site's own header on 2026-07-28, and `docs/REFERENCE.md` records
 // where.
+//
+// The file used to be named for the header alone. The footer and the donation
+// control share the same kind of value — site-level, language-invariant — so
+// they live here rather than inventing a second constants module for the same
+// role. The directory name still says `header`; renaming the folder for one
+// more consumer is not worth the import churn.
+
+/**
+ * The site's own name, as it appears in the copyright line.
+ *
+ * Same string in every locale: it is a proper name, not a translation of the
+ * `<h1>`. The display-copy layer wraps it; it does not invent it.
+ */
+export const SITE_NAME = "Diablo II Runeword Tracker";
 
 /**
  * The game patch the tracked runeword list reflects.
@@ -43,3 +58,25 @@ export const UPDATE_NOTES_URL =
  */
 export const FEEDBACK_URL =
   "https://github.com/Jekman87/diablo2-runeword-tracker/discussions";
+
+/**
+ * USDT (Jetton) receive address on The Open Network.
+ *
+ * **USDT on TON**, chosen over USDT-TRC20 for fees and over on-chain BTC, where
+ * the fee can exceed the donation. Stated as coin + network beside the address
+ * in the footer, because an address alone is ambiguous between chains and a
+ * sender who picks the wrong one loses the money.
+ *
+ * A receive address only — public and permanent by nature. No key or seed
+ * belongs in this repository. Verified against the owner's wallet by shape
+ * (user-friendly non-bounceable `UQ…`, 48 characters, base64url alphabet) on
+ * 2026-07-31; a wrong character sends money nowhere.
+ */
+export const DONATION_ADDRESS =
+  "UQBal7YRJ8IkVxiFppY3O2_YvnYTnSAyqo88R8pmV6JWFIng";
+
+/** The coin the donation address receives. Displayed beside the address. */
+export const DONATION_COIN = "USDT";
+
+/** The network the donation address belongs to. Displayed beside the address. */
+export const DONATION_NETWORK = "TON";

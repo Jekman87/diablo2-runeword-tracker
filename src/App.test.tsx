@@ -54,6 +54,15 @@ describe("App", () => {
     );
   });
 
+  it("exposes the footer as a contentinfo landmark outside main", () => {
+    render(<App />);
+
+    const footer = screen.getByRole("contentinfo");
+
+    expect(footer).toBeInTheDocument();
+    expect(footer.closest("main")).toBeNull();
+  });
+
   it("keeps the structure below the divider where it was", () => {
     render(<App />);
 
