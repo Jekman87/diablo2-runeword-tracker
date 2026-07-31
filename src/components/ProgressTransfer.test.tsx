@@ -29,6 +29,33 @@ function dialog() {
   return screen.getByRole("alertdialog", { name: en.transfer.confirmTitle });
 }
 
+/**
+ * Chooses a file and waits until the confirmation has actually taken focus.
+ *
+ * **`findByRole` alone is not enough, and the difference only shows on a slow
+ * machine.** `FloatingFocusManager` moves focus asynchronously, so the dialog is
+ * in the document for a moment before `initialFocus` has landed. A test that acts
+ * in that window is racing: the active element is still `<body>`, the first Tab
+ * goes nowhere near the dialog, and — worse — closing it returns focus nowhere,
+ * because the manager only hands focus back when it had focus to begin with. Both
+ * of those failed on CI and neither ever failed locally.
+ */
+async function openConfirmation(
+  user: ReturnType<typeof userEvent.setup>,
+  text: string,
+) {
+  await choose(user, text);
+  await screen.findByRole("alertdialog");
+
+  await waitFor(() =>
+    expect(
+      within(dialog()).getByRole("button", {
+        name: en.transfer.confirmCancel,
+      }),
+    ).toHaveFocus(),
+  );
+}
+
 // `URL.createObjectURL` and `revokeObjectURL` do not exist in jsdom 30. Stubbed
 // here, at the one seam that needs them, rather than in `src/test/setup.ts` —
 // that file was emptied of exactly this kind of hand-written stand-in for a
@@ -39,19 +66,24 @@ const created: Blob[] = [];
 beforeEach(() => {
   created.length = 0;
 
-  vi.stubGlobal("URL", {
-    ...URL,
-    createObjectURL: (blob: Blob) => {
-      created.push(blob);
+  // The two methods are added to the real `URL`, not swapped for an object
+  // standing in for it. `vi.stubGlobal("URL", { ...URL, … })` reads as the
+  // obvious way and is a trap: spreading a constructor copies none of its
+  // non-enumerable statics and leaves behind something that cannot be called
+  // with `new`, so any `new URL(…)` in the same test would throw for a reason
+  // nothing on screen would explain.
+  URL.createObjectURL = (blob: Blob) => {
+    created.push(blob);
 
-      return "blob:stub";
-    },
-    revokeObjectURL: () => {},
-  });
+    return "blob:stub";
+  };
+  URL.revokeObjectURL = () => {};
 });
 
 afterEach(() => {
-  vi.unstubAllGlobals();
+  // jsdom ships neither, so removing them restores the environment exactly.
+  Reflect.deleteProperty(URL, "createObjectURL");
+  Reflect.deleteProperty(URL, "revokeObjectURL");
   setLocale("en");
 });
 
@@ -259,8 +291,7 @@ describe("the confirmation's focus behaviour", () => {
   it("never lets Tab reach a control behind it", async () => {
     const { user } = renderTransfer();
 
-    await choose(user, "Enigma");
-    await screen.findByRole("alertdialog");
+    await openConfirmation(user, "Enigma");
 
     for (let press = 0; press < 6; press += 1) {
       await user.tab();
@@ -289,8 +320,9 @@ describe("the confirmation's focus behaviour", () => {
   it("hides the page behind it from assistive technology", async () => {
     const { user } = renderTransfer();
 
-    await choose(user, "Enigma");
-    await screen.findByRole("alertdialog");
+    // The manager applies the hiding on mount, in the same asynchronous pass
+    // that moves focus — so this waits for the same signal the other two do.
+    await openConfirmation(user, "Enigma");
 
     // The export button is still in the document and is no longer reachable —
     // which is what `modal` means, and what the backdrop says visually.
@@ -302,8 +334,9 @@ describe("the confirmation's focus behaviour", () => {
   it("gives focus back to the import control on close", async () => {
     const { user } = renderTransfer();
 
-    await choose(user, "Enigma");
-    await screen.findByRole("alertdialog");
+    // Waiting for the dialog to hold focus is the whole precondition: the
+    // manager returns focus on unmount only if it had focus to return.
+    await openConfirmation(user, "Enigma");
 
     await user.keyboard("{Escape}");
 
