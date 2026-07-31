@@ -176,6 +176,19 @@ describe("what the panel presents", () => {
     // deciding which base to socket can tell the two lists apart.
     expect(panel.getByRole("heading", { name: "Weapons" })).toBeVisible();
     expect(panel.getByRole("heading", { name: "Body Armors" })).toBeVisible();
+
+    // Property lines and group headings are centred; the name and the labelled
+    // values above stay left-aligned — the structure the tooltip has no
+    // equivalent for.
+    expect(
+      panel.getByRole("heading", { name: en.detail.properties }).className,
+    ).toContain("text-center");
+    expect(
+      panel.getByRole("heading", { name: "Weapons" }).closest("div")?.className,
+    ).toContain("text-center");
+    expect(
+      panel.getByRole("heading", { name: "Fortitude" }).className,
+    ).not.toContain("text-center");
   });
 
   it("renders no group sub-heading for a single-group runeword", async () => {

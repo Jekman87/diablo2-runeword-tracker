@@ -73,7 +73,7 @@ export function AvailabilityBadges({ runeword }: AvailabilityBadgesProps) {
   );
 }
 
-interface BadgeProps {
+export interface BadgeProps {
   kind: "patch" | "ladder" | "note";
   /** What the badge draws — short enough to sit beside a name. */
   marker: string;
@@ -84,6 +84,14 @@ interface BadgeProps {
    * where the patch has no colour decided, which leaves the badge plain.
    */
   colour?: string;
+  /**
+   * When true, the badge is a visual sample beside words that already say what
+   * it means — as in the help legend. It is hidden from assistive technology
+   * rather than announcing the meaning a second time. In a table row the
+   * opposite is true: nothing beside the badge says what it is, so the meaning
+   * is its accessible name.
+   */
+  decorative?: boolean;
 }
 
 /**
@@ -97,8 +105,26 @@ interface BadgeProps {
  * read the badge. A reader who cannot distinguish `#513B2C` from `#7B3FE4` — or
  * cannot see either — loses nothing, and the detail view restates all three
  * fields in full sentences besides.
+ *
+ * Exported so the help legend can render the same shape the table does, rather
+ * than a copy that can drift. A `decorative` sample there is `aria-hidden`
+ * because the sentence beside it already carries the meaning.
  */
-function Badge({ kind, marker, meaning, colour }: BadgeProps) {
+export function Badge({
+  kind,
+  marker,
+  meaning,
+  colour,
+  decorative = false,
+}: BadgeProps) {
+  if (decorative) {
+    return (
+      <span aria-hidden className={twMerge(badge({ kind }), colour)}>
+        {marker}
+      </span>
+    );
+  }
+
   return (
     <span
       className={twMerge(badge({ kind }), colour)}

@@ -1,13 +1,45 @@
-# d2-theme Specification
+# d2-theme Delta Specification
 
-## Purpose
+## ADDED Requirements
 
-The visual contract every component renders against — the named colour tokens
-and what each is for, the self-hosted display font, how a rune name becomes the
-correct sprite cell, the cursor and divider decorations, and the attribution the
-borrowed assets require.
+### Requirement: One corner radius, applied as a system
 
-## Requirements
+The palette SHALL declare a single corner radius token and every surface the
+project draws itself SHALL take it, so that a square corner beside a rounded one
+is impossible rather than merely unlikely. The value SHALL stay small enough that
+the interface still reads as the game's own, which is angular.
+
+Geometry copied from a source SHALL be exempt, and the exemption SHALL be recorded
+where the geometry is declared. A radius that arrived as part of a borrowed shape
+belongs to that shape, and overruling it for internal consistency would replace a
+deliberate copy with an accidental one.
+
+Where a control's rounded surface is drawn by the engine as well as by the
+stylesheet, the radius SHALL be declared on every part that paints, so that no
+engine renders a square fill inside a rounded frame.
+
+#### Scenario: Every self-drawn surface takes the radius token
+
+- **WHEN** the search field, the filter controls, the progress indicator, the
+  table's header band, the detail panel and the transient undo notice are inspected
+- **THEN** each takes its corner radius from the one declared token rather than from
+  a literal length or from nothing
+
+#### Scenario: Borrowed geometry keeps its own radius
+
+- **WHEN** the availability badges are inspected
+- **THEN** their radius is the one copied from the reference site rather than the
+  project's own token
+- **AND** the exemption is recorded beside the declaration, so the difference reads
+  as a decision rather than as a surface that was missed
+
+#### Scenario: A composite control is rounded in every part that paints
+
+- **WHEN** the progress indicator is rendered at 0% and at 100% in each supported
+  engine
+- **THEN** no square corner appears inside the rounded groove
+
+## MODIFIED Requirements
 
 ### Requirement: Named colour tokens
 
@@ -34,7 +66,15 @@ patch line — SHALL be covered by tokens already declared: the gold display fam
 for the pressable text, the muted text colour for the patch line. No token SHALL
 be declared for them, and the token held for a link colour of its own SHALL be
 removed, because the header renders the gold family instead and nothing else
-renders that colour. The surfaces the page's closing furniture introduces — the footer's text and links, the donation address and the control that copies it, and the control that returns the reader to the top — SHALL likewise be covered by tokens already declared, because each is a role the palette already names: the muted text colour for a line that states a fact, the gold pair for pressable text, and the floating panel's ground and edge for a control that floats over the page.
+renders that colour. The surfaces the page's closing furniture introduces — the
+footer's text and links, the donation address and the control that copies it, and
+the control that returns the reader to the top — SHALL likewise be covered by
+tokens already declared, because each is a role the palette already names: the
+muted text colour for a line that states a fact, the gold pair for pressable text,
+and the floating panel's ground and edge for a control that floats over the page.
+
+**The page ground SHALL remain black.** A grey ground was tried and reverted;
+translucent panels only read on that grey, so the detail panel stays opaque.
 
 Where the palette copies a source, it SHALL copy the source that owns the surface:
 the reference site for the surfaces the reference invented, and the game itself for
@@ -69,7 +109,9 @@ value matches, because the name would then describe neither.
 
 Where a borrowed token's own name misdescribes what it is applied to, the role
 SHALL be taken from the use site rather than from the name. A borrowed name that
-misdescribes its own subject SHALL NOT be copied.
+misdescribes its own subject SHALL NOT be copied. A token whose name states a
+hue's job in the abstract rather than the role it plays SHALL be renamed for that
+role, and the rename SHALL carry its use sites with it.
 
 #### Scenario: Tokens are available as utilities
 
@@ -88,12 +130,24 @@ misdescribes its own subject SHALL NOT be copied.
 - **THEN** each name identifies what the colour is for, so a component reading it
   states its intent rather than a coincidence of hue
 
-#### Scenario: A token named for a hue is renamed for its role
+#### Scenario: The page ground maintains its current appearance
 
-- **WHEN** the token drawing the detail view's note text is read
-- **THEN** its name states that role rather than naming an accent in the abstract
-- **AND** the token it shares a value with is unchanged, because two roles sharing a
-  value is what having two names was for
+- **WHEN** the page ground token is read
+- **THEN** it remains black as currently implemented
+- **AND** it is a flat colour, with no texture asset in the page's background
+
+#### Scenario: Recessed surfaces maintain appropriate appearance
+
+- **WHEN** the search field at rest and the progress indicator's unfilled groove are
+  compared with the page ground
+- **THEN** each maintains appropriate visual hierarchy and contrast
+
+#### Scenario: Band maintains appropriate contrast
+
+- **WHEN** the table's header band is compared with the page ground and with the
+  text it carries
+- **THEN** the band maintains appropriate contrast relationships
+- **AND** the text on it remains clearly readable
 
 #### Scenario: A role is taken from the use site, not from a borrowed name
 
@@ -102,6 +156,13 @@ misdescribes its own subject SHALL NOT be copied.
 - **THEN** the token is named for what it actually styles
 - **AND** no token implies a role the reference never renders, so a component
   cannot apply the wrong one and have it look deliberate
+
+#### Scenario: A token named for a hue is renamed for its role
+
+- **WHEN** the token drawing the detail view's note text is read
+- **THEN** its name states that role rather than naming an accent in the abstract
+- **AND** the token it shares a value with is unchanged, because two roles sharing a
+  value is what having two names was for
 
 #### Scenario: The table's own surfaces are tokens
 
@@ -188,6 +249,16 @@ misdescribes its own subject SHALL NOT be copied.
   page's resting-and-hover pair for interactive text and the muted token already
   plays this role elsewhere
 
+#### Scenario: The footer and the back-to-top control declare no tokens
+
+- **WHEN** the footer's text and links, the donation address and its copy control,
+  and the control returning the reader to the top are inspected
+- **THEN** each takes an already-declared token whose role it shares, through a
+  utility class rather than a literal value
+- **AND** no token is added for them, because a floating control is the role the
+  panel's ground and edge already name and a stated fact is the role the muted text
+  colour already names
+
 #### Scenario: A token held for a role the project then decided against is removed
 
 - **WHEN** the palette is read after the site header ships
@@ -199,10 +270,11 @@ misdescribes its own subject SHALL NOT be copied.
 
 #### Scenario: A surface with no component still has no token
 
-- **WHEN** the token set is read for surfaces no component renders yet, such as a
-  page footer no change has proposed
+- **WHEN** the token set is read for surfaces no component renders yet
 - **THEN** no token exists for them beyond what is already declared, because the
   change that builds each one adds its own
+- **AND** the page footer is no longer such a surface, because a change has built
+  it — and it still added no token, which is the other half of the same rule
 
 #### Scenario: A token declared ahead of its use site is worked off, not explained
 
@@ -247,182 +319,3 @@ misdescribes its own subject SHALL NOT be copied.
 - **THEN** they may hold the same value under two names, because one is the colour
   of a restriction and the other is the colour of a note, and a single token would
   describe neither
-
-### Requirement: Self-hosted display font
-
-The display typeface SHALL be served from the project's own assets rather than a
-third-party font service, so that the deployed page makes no external request and
-renders without network access beyond its own origin. It SHALL be declared with a
-fallback stack that remains readable for characters the typeface does not cover.
-
-#### Scenario: The page requests no third-party font
-
-- **WHEN** the deployed page is loaded and its network requests are inspected
-- **THEN** every font request resolves to the project's own origin
-- **AND** no request is made to a font content-delivery network
-
-#### Scenario: Text remains visible while the font loads
-
-- **WHEN** the display font has not yet loaded
-- **THEN** text renders in the fallback rather than staying invisible
-
-#### Scenario: Uncovered characters fall back readably
-
-- **WHEN** text contains characters the display typeface does not include
-- **THEN** those characters render in the declared fallback stack rather than as
-  missing glyphs
-
-### Requirement: Rune icons render from a sprite
-
-A rune SHALL be rendered as an icon addressed by its name, drawn from the single
-sprite sheet holding all 33 rune images. The icon's position within the sprite
-SHALL be derived from the rune's position in the rune reference data and SHALL NOT
-be stored as a field or precomputed into a stylesheet, so that no second
-representation of the same fact can drift from the first. Icon dimensions SHALL be
-driven by a single size value so the sprite scales without restating any offset.
-
-#### Scenario: Every rune resolves to its own cell
-
-- **WHEN** an icon is requested for each of the 33 runes in turn
-- **THEN** each resolves to a distinct cell of the sprite
-- **AND** the cell matches that rune's position in the rune reference data
-
-#### Scenario: The first and last runes anchor the sprite
-
-- **WHEN** icons are requested for `El` and for `Zod`
-- **THEN** `El` resolves to the first cell of the first row
-- **AND** `Zod` resolves to the last cell of the last row
-
-#### Scenario: Sprite rows correspond to tier bands
-
-- **WHEN** the sprite row of every rune is compared with its rarity tier
-- **THEN** all `common` runes share the first row, all `semirare` the second and
-  all `rare` the third
-
-#### Scenario: No sprite position is stored
-
-- **WHEN** a rune record is inspected
-- **THEN** it exposes no sprite index or offset field
-
-#### Scenario: Icon size is driven by one value
-
-- **WHEN** the rune icon size is changed
-- **THEN** every rune still renders its own correct cell, with no offset restated
-
-#### Scenario: Icons render at full strength
-
-- **WHEN** a rune icon is rendered
-- **THEN** it is not dimmed, because the project tracks no rune inventory that a
-  dimmed state could represent
-
-#### Scenario: An unknown rune name does not render a wrong rune
-
-- **WHEN** an icon is requested for a name that is not one of the 33 runes
-- **THEN** the failure is surfaced rather than resolving to an arbitrary cell
-
-### Requirement: Borrowed assets are copied, not referenced in place
-
-Assets taken from the vendored snapshot SHALL be copied under `src/` and consumed
-from there, leaving the snapshot unmodified and unimported. A copy SHALL remain
-byte-identical to the vendored original it was taken from, so that an edit to
-either is detected rather than silently diverging inside a binary file.
-
-#### Scenario: The copy matches its origin
-
-- **WHEN** an asset copied from the snapshot is compared with the vendored
-  original
-- **THEN** the two are byte-identical
-- **AND** the test suite fails if either is changed without the other
-
-#### Scenario: The snapshot keeps its own copy
-
-- **WHEN** the vendored directory is inspected after the copy is made
-- **THEN** the original asset is still present and unmodified
-
-### Requirement: Interface decorations
-
-The interface SHALL carry the game's custom pointer and its ornamental divider.
-The pointer SHALL be applied from a single root-level rule and SHALL NOT declare
-every element interactive, so that cursor appearance continues to indicate what
-can actually be clicked. The divider SHALL be a repeating horizontal band that
-spans whatever width it is given rather than a fixed-width image.
-
-#### Scenario: The pointer applies document-wide from one rule
-
-- **WHEN** the stylesheet is inspected
-- **THEN** the custom pointer is declared once at the document root
-- **AND** no rule forces it onto every element regardless of interactivity
-
-#### Scenario: Interactive elements still read as interactive
-
-- **WHEN** the pointer is over a control rather than over inert page area
-- **THEN** the cursor still distinguishes the two
-
-#### Scenario: The divider spans any width
-
-- **WHEN** the divider is rendered in containers of differing widths
-- **THEN** it fills each one by repeating horizontally, with no seam or crop at a
-  fixed width
-
-### Requirement: Attribution for borrowed assets and fonts
-
-The rune sprite, the pointer and the divider derive from the MIT-licensed
-`fabd/diablo2-runewizard` project, and the display font carries the SIL Open Font
-License. The repository SHALL name each borrowed asset and its licence, and each
-licence text SHALL remain alongside the asset it covers. The reference project's
-own branding SHALL NOT be reused.
-
-#### Scenario: Each borrowed asset is attributed
-
-- **WHEN** the attribution is read
-- **THEN** it names the rune sprite, the pointer and the divider as derived from
-  the upstream project under the MIT licence
-- **AND** it names the display font and its Open Font License
-
-#### Scenario: The font licence travels with the font
-
-- **WHEN** the font directory is inspected
-- **THEN** the Open Font License text is present within it
-
-#### Scenario: Reference branding is not reused
-
-- **WHEN** the project's assets are inspected
-- **THEN** none is a logo or wordmark of the reference project, because reusing
-  its identity would misrepresent this project as that one
-
-### Requirement: One corner radius, applied as a system
-
-The palette SHALL declare a single corner radius token and every surface the
-project draws itself SHALL take it, so that a square corner beside a rounded one
-is impossible rather than merely unlikely. The value SHALL stay small enough that
-the interface still reads as the game's own, which is angular.
-
-Geometry copied from a source SHALL be exempt, and the exemption SHALL be recorded
-where the geometry is declared. A radius that arrived as part of a borrowed shape
-belongs to that shape, and overruling it for internal consistency would replace a
-deliberate copy with an accidental one.
-
-Where a control's rounded surface is drawn by the engine as well as by the
-stylesheet, the radius SHALL be declared on every part that paints, so that no
-engine renders a square fill inside a rounded frame.
-
-#### Scenario: Every self-drawn surface takes the radius token
-
-- **WHEN** the search field, the filter controls, the progress indicator, the
-  table's header band, the detail panel and the transient undo notice are inspected
-- **THEN** each takes its corner radius from the one declared token rather than from
-  a literal length or from nothing
-
-#### Scenario: Borrowed geometry keeps its own radius
-
-- **WHEN** the availability badges are inspected
-- **THEN** their radius is the one copied from the reference site rather than the
-  project's own token
-- **AND** the exemption is recorded beside the declaration, so the difference reads
-  as a decision rather than as a surface that was missed
-
-#### Scenario: A composite control is rounded in every part that paints
-
-- **WHEN** the progress indicator is rendered at 0% and at 100% in each supported
-  engine
-- **THEN** no square corner appears inside the rounded groove

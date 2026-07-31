@@ -113,17 +113,23 @@ export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
         {projected.note ? (
           <>
             <dt className="text-gold">{strings.detail.note}</dt>
-            <dd className="text-accent">{projected.note}</dd>
+            <dd className="text-note-text">{projected.note}</dd>
           </>
         ) : null}
       </dl>
 
-      <h3 className="text-xl">{strings.detail.properties}</h3>
+      <h3 className="text-center text-xl">{strings.detail.properties}</h3>
       {/* One pass over the groups, one code path for all 99 records. A label
           renders as a gold heading — the categories it applies to are dataset
           content, the same vocabulary `ItemTypes` renders, not display copy —
           so it cannot read as another green property line. A single unlabelled
           group renders no heading element at all, not an empty one.
+
+          The property lines (and a group's own heading) are centred, as the
+          game centres them in the item tooltip this panel reproduces. The
+          name, the labelled values and the note above stay left-aligned —
+          those are the structure this panel adds and the tooltip has no
+          equivalent for.
 
           The heading and the lines come from different halves of the same
           projection: the label is a category name, which localises through the
@@ -131,7 +137,7 @@ export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
           own. That is why a Russian variant stores no group labels — restating
           them per record would be a second copy of the reference data. */}
       {runeword.propertyGroups.map((group, groupIndex) => (
-        <div key={groupIndex} className="grid gap-1">
+        <div key={groupIndex} className="grid gap-1 text-center">
           {group.itemTypes ? (
             <h4 className="text-gold">
               {group.itemTypes

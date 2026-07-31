@@ -266,3 +266,14 @@ describe("replacing progress with an imported file", () => {
     expect(result.current.crafted.has("Grief")).toBe(true);
   });
 });
+
+describe("callback identity", () => {
+  it("keeps toggle stable across renders", () => {
+    const { result, rerender } = renderHook(() => useCraftedRunewords());
+    const before = result.current.toggle;
+
+    rerender();
+
+    expect(result.current.toggle).toBe(before);
+  });
+});

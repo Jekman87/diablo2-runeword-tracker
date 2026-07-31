@@ -84,8 +84,49 @@ export const en = {
       // point is that nothing leaves the browser *by itself*, not that nothing
       // can leave it at all.
       "Your progress is kept in this browser and nowhere else. Nothing is uploaded and nothing travels between devices on its own, and clearing this site's data clears it.",
-      "Export progress saves your ticked runewords to a small text file, and Import progress reads one back — that is how you carry a list to another browser or keep a backup. Importing replaces everything you have ticked rather than adding to it, so it asks first and tells you how many runewords the file will tick; there is no undo once it is done. A spreadsheet works too, as long as it is saved as CSV with the names in the first column.",
+      "Export progress saves your ticked runewords to a small CSV file, and Import progress reads one back — that is how you carry a list to another browser or keep a backup. Importing replaces everything you have ticked rather than adding to it, so it asks first and tells you how many runewords the file will tick; there is no undo once it is done. A spreadsheet works too, as long as it is saved as CSV with the names in the first column.",
     ],
+
+    // Badge legend: each sample is rendered by the table's own Badge component;
+    // the words below are what a reader who cannot see the sample still gets.
+    // Four patch colours for five values — `1.10` stands for the classic era
+    // that `1.11` shares.
+    helpBadgesIntro:
+      "Coloured tags beside a runeword's name are decoration — they mark when it was added, whether it is ladder-only, and whether it carries a caveat:",
+    helpBadgePatch: (patch: string) =>
+      patch === "1.10" || patch === "1.11"
+        ? "Classic era (patches 1.10 and 1.11), before Diablo II Resurrected"
+        : `Added in Diablo II Resurrected patch ${patch}`,
+    helpBadgeLadder: "Ladder only — available in ladder seasons",
+    helpBadgeNote:
+      "Note! — the runeword carries a caveat; open its details to read it",
+    helpRuneTiers:
+      "Remaining Runes groups runes into three tiers from common to rare, following the Horadric Cube's upgrade ratios (for example, three Tal make one Ral). That is why the rarest runes carry the smallest counts.",
+  },
+
+  footer: {
+    copyright: (siteName: string, year: number) => `© ${year} ${siteName}`,
+    // Act-boss taunts plus one site line. Combat VO is English in-client;
+    // Russian mirrors the wording players recognise from D2R documentation.
+    easterEggs: [
+      "Andariel: Die, maggot!",
+      "Duriel: Looking for Baal?",
+      "Mephisto: My brothers have escaped you!",
+      "Diablo: Not even death can save you from me!",
+      "Baal: My brothers will not have died in vain!",
+      "Chronicle: You will not find Tyrael's Might!",
+    ],
+    donationHeading: "Support the author",
+    donationInstrument: (coin: string, network: string) =>
+      `${coin} on ${network}`,
+    donationClose: "Close",
+    copyAddress: "Copy address",
+    copySuccess: "Address copied.",
+    copyFailure: "Could not copy — select the address and copy it yourself.",
+  },
+
+  scrollToTop: {
+    label: "Back to top",
   },
 
   table: {

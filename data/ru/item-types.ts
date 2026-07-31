@@ -22,9 +22,9 @@ export const itemTypeTranslations: Record<string, NameTranslation> = {
       "https://www.noob-club.ru/index.php?topic=70236.0 — the base lists of the official localisation's runeword entries, which names this class in exactly these words",
   },
   "Body Armors": {
-    ru: "Доспех",
+    ru: "Доспехи",
     source:
-      "https://www.noob-club.ru/index.php?topic=70236.0 — the base lists of the official localisation's runeword entries; the client's own word, checked there directly: «Доспех», singular among the plural category names because that is how the game writes it. Two earlier values were wrong — «Доспехи» from diablo2-resurrected.ru, then «Броня» from the noob-club transcription's base lists",
+      "https://www.noob-club.ru/index.php?topic=70236.0 — category label in the plural, matching the other base classes on this page («Шлемы», «Щиты»). The client writes the singular «Доспех» in runeword base lists; this project prefers the plural for a category chip and column, as diablo2-resurrected.ru does",
   },
   Claws: {
     ru: "Когти",

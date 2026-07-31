@@ -4,6 +4,7 @@
 
 - [`IDEAS.md`](IDEAS.md) — the backlog and phase plan. Decisions recorded there
   are settled; do not relitigate them in a proposal.
+- [`docs/SITE.md`](docs/SITE.md) — site-level constants (patch, URLs, donation).
 - [`docs/DATA-SOURCES.md`](docs/DATA-SOURCES.md) — where the runeword data comes
   from and its confirmed schema.
 - [`docs/REFERENCE.md`](docs/REFERENCE.md) — analysis of the reference site,
@@ -18,6 +19,13 @@ This project uses OpenSpec. Requirements live in `openspec/`, not in chat
 history. Before implementing anything, check that a corresponding change exists
 under `openspec/changes/`. Keep changes small — one feature per change, never a
 whole phase.
+
+**Exception for a finishing stage.** A polish phase whose items are each a
+handful of lines — and that share one palette pass, one layout restructure, or
+one set of closing furniture — MAY be one OpenSpec change covering the stage,
+with one propose–apply–archive cycle. `phase-5-polish` is the precedent. A
+token rename still does not earn its own cycle; a whole new capability still
+does.
 
 ## Language
 
