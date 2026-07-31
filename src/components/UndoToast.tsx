@@ -54,7 +54,7 @@ export function UndoToast({ pending, onUndo, onDismiss }: UndoToastProps) {
           // React's focus events bubble, so these fire for the button inside.
           onFocus={() => setHoldsFocus(true)}
           onBlur={() => setHoldsFocus(false)}
-          className="fixed bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-4 border border-row-line bg-toast px-4 py-2 text-body"
+          className="fixed bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-4 rounded-xs border border-row-line bg-toast px-4 py-2 text-body"
         >
           <span>
             {/* The projected label inside the sentence: `pending.name` is the

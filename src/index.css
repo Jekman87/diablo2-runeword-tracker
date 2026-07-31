@@ -100,7 +100,7 @@
    Nothing was added for the browsing controls either, and that is the same rule
    read the other way: the search field, the filter chips, the sorted column's
    band and the empty-result message all take tokens that were already declared
-   with nothing rendering them. See the note beside `--color-accent` below.
+   with nothing rendering them. See the note beside `--color-note-text` below.
 
    Nothing was added for the site header either, and one token left: its patch
    line takes `--color-muted`, its links and the help disclosure's trigger take
@@ -220,6 +220,10 @@
      `--color-blood-dark` keep `#200000`: three tokens at one value is precisely
      what lets one of them move its mind without moving the others.
 
+     A translucent black panel was tried with a grey page ground in
+     `phase-5-polish` and withdrawn when the ground returned to black: over
+     `#000` the alpha composes to ink and the edge disappears again.
+
      **The edge is its own token rather than the row hairline it used to borrow.**
      Brightening `--color-row-line` would have brightened every separator in a
      99-row table to sharpen the edge of one box floating over them, which is the
@@ -255,9 +259,9 @@
      groove of the progress bar, and the undo notice's panel.
 
      No new hue again. The tint is `--color-crafted` at low alpha, so a marked
-     row reads as the accent itself rather than as a colour of its own; the groove is the
-     muted family the row hairline already comes from; the notice is the blood
-     family's dark end, as the detail panel is.
+     row reads as the accent itself rather than as a colour of its own; the groove
+     is the muted family the row hairline already comes from; the notice is the
+     blood family's dark end, as the detail panel is.
 
      There is deliberately no token for the bar's *filled* portion. That is
      `--color-crafted` above, declared by `d2-theme` for exactly this role and
@@ -270,13 +274,13 @@
 
   /* The exclusion an item-type line carries — `(Not Orbs/Wands)`, `(Assassin)`.
 
-     Its own token, not `--color-accent`, which holds this very value. "Accent"
-     names no role and is already spoken for as the detail view's note colour, so
-     one token serving both would describe neither. Two roles sharing a hex is
-     fine; one name covering two unrelated roles is the drift the naming rule is
-     for. The categories the restriction qualifies take `--color-muted` below,
-     which is already exactly the colour the reference gives them and already
-     states its role — that is the case where sharing is right.
+     Its own token, not `--color-note-text`, which holds this very value.
+     "Note text" and "item-type restriction" are different roles, so one token
+     serving both would describe neither. Two roles sharing a hex is fine; one
+     name covering two unrelated roles is the drift the naming rule is for. The
+     categories the restriction qualifies take `--color-muted` below, which is
+     already exactly the colour the reference gives them and already states its
+     role — that is the case where sharing is right.
 
      Not named after the reference's own `rw-ItemTypes-class`: the field holds
      `(Not Orbs/Wands)` as readily as `(Assassin)`, so "class" describes half of
@@ -292,42 +296,32 @@
      introduces a surface meaning "danger" declares it then, and names it for
      whatever that surface turns out to be.
 
-     `--color-accent` stays, and its name is poor by this file's own rule — it
-     states a hue's job in the abstract rather than a role. It is the detail
-     view's note colour and nothing else, so `--color-note-text` is what it
-     should be called. Renaming it is not this change's business; it is reported
-     in `IDEAS.md` instead. It holds the same value as
+     `--color-note-text` is the detail view's note colour (was `--color-accent`,
+     renamed for the role it actually holds). It shares its value with
      `--color-item-restriction` above, which is fine: two roles may share a
      value, and that is exactly why they do not share a token.
 
-     `--color-muted-dark` now has one, and so does `--color-blood-light` above.
-     Both arrived declared for surfaces nothing rendered — the defect
-     `d2-theme` forbids from the other direction — and the browsing controls are
-     the surfaces they were exactly right for: the muted dark is the search field
-     and a filter chip at rest, the light blood is the selected chip and the
-     sorted column's band. Rendering a declared token is the fix that rule asks
-     for; declaring a sixth family beside it would have been the defect.
+     `--color-muted` holds `#74706c` at 4.28:1 on black — already under AA, and
+     that standing is recorded rather than repaired here.
 
-     `--color-link` was the last of the four and is **gone**, which is the other
-     way a token declared ahead of its use site is worked off. `site-header`
-     rendered it first — `#39a9f7`, held for exactly those links since `d2-theme`
-     — and then took it back out: a blue that passes contrast on black is still
-     the one colour on the page from outside the gold family, and it read as a
-     link borrowed from another site. The header's links take `--color-gold-mid`
-     and `--color-gold-light` instead, the pair a runeword's name already moves
-     between, so nothing here is declared for them. A token whose last use site
-     is removed goes with it, as `--color-backdrop`, `--color-title` and
-     `--color-danger` did.
-
-     So the count of tokens declared ahead of any surface is zero: three were
-     rendered (`--color-blood-dark` by `remaining-panels`, `--color-muted-dark`
-     and `--color-blood-light` by `search-sort-filter`) and one was deleted.
-     `--color-muted` below gains the header's patch line as a further use site,
-     which is the rule read the useful way: a declared token whose role fits is
-     used rather than joined by a second one. */
-  --color-accent: #bd8547;
+     `--color-link` was the last of the four tokens declared ahead of a surface
+     and is **gone**. `site-header` rendered it first — `#39a9f7` — and then took
+     it back out: a blue that passes contrast on black is still the one colour on
+     the page from outside the gold family. The header's links take
+     `--color-gold-mid` and `--color-gold-light` instead. */
+  --color-note-text: #bd8547;
   --color-muted: #74706c;
   --color-muted-dark: #24221c;
+
+  /* One corner radius for every surface the project draws itself. 2px — small
+     enough that the interface still reads as the game's own, which is angular.
+     Applied as `rounded-xs` / `var(--radius-xs)` on the search field, chips,
+     progress groove, table header band, detail panel and undo notice.
+
+     The availability badges are exempt: their `2px 4px` on a 4px radius and the
+     round ladder marker are geometry copied from the reference, and a system for
+     our own surfaces does not overrule a deliberate copy. */
+  --radius-xs: 2px;
 
   /* Bellefair, then a fallback that is load-bearing rather than defensive:
      Bellefair ships no Cyrillic subset, so every Russian glyph Phase 2 adds
@@ -454,7 +448,8 @@
 @utility progress-band {
   position: sticky;
   top: 0;
-  /* Above the header band, which is above the rows. See the note there. */
+  /* Above the header band (1) and below the back-to-top control (3) and the
+     detail panel (10). See the note on `table-header-band`. */
   z-index: 2;
   height: var(--progress-band-height);
   padding-block: 0.5rem;
@@ -474,8 +469,8 @@
    near the top of the viewport, scroll, and a header with the higher value slides
    over it — a defect that exists at exactly one scroll offset, which is where
    review does not look. So the band sits at 1: above the rows, below the progress
-   band at 2, and eight levels below the panel. Changing any of the three without
-   reading the other two is how that comes back.
+   band at 2, below the back-to-top control at 3, and eight levels below the panel.
+   Changing any of the four without reading the others is how that comes back.
 
    Stated as one declaration rather than as `sticky top-14 z-1` at the use site, so
    the value and the reason for it cannot drift apart. */

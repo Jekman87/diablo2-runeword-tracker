@@ -63,77 +63,84 @@ export function useCraftedRunewords(): CraftedRunewords {
   // mean the dismissal interval never elapsed.
   const dismissUndo = useCallback(() => setPendingUndo(null), []);
 
-  function write(crafted: ReadonlySet<string>) {
-    const next = { crafted, unknown: progress.unknown };
-
-    setProgress(next);
-
-    // Saved here, from the player's action, and **never from an effect**. An
-    // effect fires on mount, which would write this empty set over the value
-    // that failed to parse and take the evidence with it.
-    saveCrafted(next);
-  }
-
-  return {
-    crafted: progress.crafted,
-    pendingUndo,
-    dismissUndo,
-
-    toggle(name, control) {
-      // Copy-on-write. Mutating the set in place does not change its identity,
-      // and React would not re-render.
-      const crafted = new Set(progress.crafted);
+  // Stable too: every presented row receives it, and a fresh identity on every
+  // render — which typing in the search field used to cause — re-renders all
+  // 99 of them for a change that has nothing to do with crafted state. Functional
+  // updates mean it closes over nothing that changes per render.
+  const toggle = useCallback((name: string, control: HTMLElement | null) => {
+    setProgress((prev) => {
+      const crafted = new Set(prev.crafted);
       const marked = !crafted.has(name);
 
       if (marked) crafted.add(name);
       else crafted.delete(name);
 
-      write(crafted);
-      setPendingUndo({ name, marked, control });
-    },
-
-    /**
-     * The import's write: the value handed in becomes the whole of progress.
-     *
-     * **Deliberately not `write()`.** That helper carries `progress.unknown`
-     * forward, which is right for a toggle and wrong for this: a replacement
-     * defines the entire stored value, the unknown names in it included. The
-     * ones the imported file brought are already inside `next`, put there by the
-     * same `splitStoredNames` that splits a stored list; the ones held before it
-     * go with everything else the import replaced.
-     *
-     * Takes the whole `StoredProgress` rather than a list of names because the
-     * confirmation has already split the file in order to count what it would
-     * mark. Re-splitting here would be a second answer to a question already
-     * answered, and the count the player agreed to and the progress they get
-     * could then differ.
-     *
-     * Clearing the notice is the small load-bearing line. Left in place, a
-     * notice raised by a toggle seconds before the import would sit there
-     * offering to reverse it against a set that no longer exists — and its
-     * `control` would still focus a row whose state the undo just contradicted.
-     */
-    replace(next) {
-      setProgress(next);
+      const next = { crafted, unknown: prev.unknown };
+      // Saved here, from the player's action, and **never from an effect**. An
+      // effect fires on mount, which would write this empty set over the value
+      // that failed to parse and take the evidence with it.
       saveCrafted(next);
-      setPendingUndo(null);
-    },
+      setPendingUndo({ name, marked, control });
+      return next;
+    });
+  }, []);
 
-    undo() {
-      if (!pendingUndo) return;
+  /**
+   * The import's write: the value handed in becomes the whole of progress.
+   *
+   * **Deliberately not the toggle's path.** That path carries `unknown`
+   * forward, which is right for a toggle and wrong for this: a replacement
+   * defines the entire stored value, the unknown names in it included. The
+   * ones the imported file brought are already inside `next`, put there by the
+   * same `splitStoredNames` that splits a stored list; the ones held before it
+   * go with everything else the import replaced.
+   *
+   * Takes the whole `StoredProgress` rather than a list of names because the
+   * confirmation has already split the file in order to count what it would
+   * mark. Re-splitting here would be a second answer to a question already
+   * answered, and the count the player agreed to and the progress they get
+   * could then differ.
+   *
+   * Clearing the notice is the small load-bearing line. Left in place, a
+   * notice raised by a toggle seconds before the import would sit there
+   * offering to reverse it against a set that no longer exists — and its
+   * `control` would still focus a row whose state the undo just contradicted.
+   */
+  const replace = useCallback((next: StoredProgress) => {
+    setProgress(next);
+    saveCrafted(next);
+    setPendingUndo(null);
+  }, []);
 
-      const crafted = new Set(progress.crafted);
+  const undo = useCallback(() => {
+    setPendingUndo((pending) => {
+      if (!pending) return null;
 
-      if (pendingUndo.marked) crafted.delete(pendingUndo.name);
-      else crafted.add(pendingUndo.name);
+      setProgress((prev) => {
+        const crafted = new Set(prev.crafted);
 
-      write(crafted);
-      setPendingUndo(null);
+        if (pending.marked) crafted.delete(pending.name);
+        else crafted.add(pending.name);
+
+        const next = { crafted, unknown: prev.unknown };
+        saveCrafted(next);
+        return next;
+      });
 
       // Somewhere deliberate rather than nowhere. Without this, removing the
       // notice drops focus to `<body>` and a keyboard reader loses their place
       // in a 99-row table.
-      pendingUndo.control?.focus();
-    },
+      pending.control?.focus();
+      return null;
+    });
+  }, []);
+
+  return {
+    crafted: progress.crafted,
+    pendingUndo,
+    dismissUndo,
+    toggle,
+    replace,
+    undo,
   };
 }
