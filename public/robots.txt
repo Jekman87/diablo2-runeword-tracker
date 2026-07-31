@@ -1,0 +1,8 @@
+# Everything here is public and there is one page to crawl.
+# Served from the project's Pages sub-path; github.io's own root robots.txt is
+# what a crawler actually reads for the host, so this file is documentation of
+# intent and a place to name the sitemap. See docs/SITE.md.
+User-agent: *
+Allow: /
+
+Sitemap: https://jekman87.github.io/diablo2-runeword-tracker/sitemap.xml

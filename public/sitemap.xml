@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- One entry, because there is one URL: the tracker has no router, and every
+     view of it is a state of the same page. The URL is pinned in
+     src/header/site.ts and checked against this file by
+     scripts/crawl-files.test.ts. No <lastmod>: a date written by hand is a date
+     that stops being true on the next deploy. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://jekman87.github.io/diablo2-runeword-tracker/</loc>
+  </url>
+</urlset>
