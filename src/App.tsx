@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import { CraftedProgress } from "@/components/CraftedProgress";
 import { ProgressTransfer } from "@/components/ProgressTransfer";
@@ -6,6 +6,8 @@ import { RemainingNeeds } from "@/components/RemainingNeeds";
 import { RemainingPanel } from "@/components/RemainingPanel";
 import { RunewordControls } from "@/components/RunewordControls";
 import { RunewordTable } from "@/components/RunewordTable";
+import { ScrollToTop } from "@/components/ScrollToTop";
+import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { UndoToast } from "@/components/UndoToast";
 import { useCraftedRunewords } from "@/crafted/useCraftedRunewords";
@@ -17,7 +19,7 @@ import { useViewSettings } from "@/view/useViewSettings";
 import { visibleRunewords } from "@/view/visible";
 
 // The page: the site header, overall progress, the remaining-needs panel, the
-// browsing controls, the table, and the undo notice.
+// browsing controls, the table, the footer, and the undo notice.
 //
 // Crafted state is owned here rather than in the table, because the progress
 // bar and the notice are the table's siblings and read the same value. That is
@@ -33,14 +35,15 @@ import { visibleRunewords } from "@/view/visible";
 // 1 layout. Items 1 and 2 of that layout, the patch line and the three links,
 // are the header above, and slotting them in moved nothing below the divider.
 //
-// **The header is a sibling of `<main>`, not a grid item inside it**, because a
-// `<header>` inside `main` exposes no `banner` landmark at all. The `<h1>` and
-// the divider went with it, so this grid now starts at the progress band. The
-// cost is that the centring constraint appears on two elements; a wrapper `<div>`
-// carrying the grid around both would fix that by demoting the page's two
-// landmarks to children of a presentational box, and would re-parent the sticky
-// band while doing it. Two class lists that must agree is the smaller risk — the
-// comment in `SiteHeader` names this one, and this one names it.
+// **The header and the footer are siblings of `<main>`, not grid items inside
+// it**, because a `<header>` inside `main` exposes no `banner` landmark and a
+// `<footer>` inside it exposes no `contentinfo`. The `<h1>` and the divider went
+// with the header, so this grid now starts at the progress band. The cost is
+// that the centring constraint appears on measure wrappers in each landmark; a
+// wrapper `<div>` carrying the grid around all three would fix that by demoting
+// the page's landmarks to children of a presentational box. Class lists that
+// must agree is the smaller risk — the comments in `SiteHeader` and
+// `SiteFooter` name this one, and this one names them.
 
 export function App() {
   const strings = useStrings();
@@ -97,6 +100,22 @@ export function App() {
     [crafted],
   );
 
+  // Row motion under a crafted-state sort used View Transitions, and was
+  // withdrawn: scrolling mid-transition desyncs the snapshots from the table
+  // and there is no clean fix. Instant reorder is enough.
+  //
+  // **Scroll stays put.** A focused toggle that jumps with its row (or leaves
+  // the list under a filter) would otherwise drag the viewport along via
+  // `scrollIntoView` for the focused node.
+  const onToggle = useCallback(
+    (name: string, control: HTMLElement | null) => {
+      const scrollY = window.scrollY;
+      toggle(name, control);
+      if (window.scrollY !== scrollY) window.scrollTo(0, scrollY);
+    },
+    [toggle],
+  );
+
   return (
     <>
       <SiteHeader />
@@ -106,8 +125,8 @@ export function App() {
           896px beside a search field, and a control bar that wraps at every width
           reads as three separate bars.
 
-          The width and gutter classes are repeated on the `<header>` above and
-          have to stay in step. */}
+          The width and gutter classes are repeated on the measure wrappers inside
+          the `<header>` and `<footer>` and have to stay in step. */}
       <main className="mx-auto grid min-h-dvh max-w-6xl content-start gap-6 p-6">
         {/* Nothing about the visible count reaches this. Its maximum is the
             dataset's length, read there rather than passed in — written that way
@@ -154,7 +173,7 @@ export function App() {
           sortKey={settings.sortKey}
           sortDirection={settings.sortDirection}
           onSort={sortBy}
-          onToggle={toggle}
+          onToggle={onToggle}
         />
 
         <UndoToast
@@ -163,6 +182,9 @@ export function App() {
           onDismiss={dismissUndo}
         />
       </main>
+
+      <SiteFooter />
+      <ScrollToTop />
     </>
   );
 }

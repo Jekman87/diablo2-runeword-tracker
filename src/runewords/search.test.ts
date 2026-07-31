@@ -151,7 +151,7 @@ describe("under the Russian locale", () => {
   });
 
   it("matches a fragment of a Russian category", () => {
-    // `Доспех` is `Body Armors`, and all 22 runewords naming it are found.
+    // `Доспехи` is `Body Armors`; a fragment still matches all 22 that name it.
     expect(matching("доспех", "ru")).toHaveLength(22);
   });
 

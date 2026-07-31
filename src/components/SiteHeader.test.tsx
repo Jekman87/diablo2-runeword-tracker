@@ -135,6 +135,46 @@ describe("the help disclosure", () => {
     }
   });
 
+  it("keeps the divider full-bleed and the title at the page measure", () => {
+    const { container } = render(<SiteHeader />);
+
+    const header = container.querySelector("header");
+    const divider = container.querySelector(".gold-divider");
+    const measure = container.querySelector(".max-w-6xl");
+
+    if (!header || !divider || !measure) {
+      throw new Error("Missing header structure");
+    }
+
+    expect(header.contains(divider)).toBe(true);
+    expect(measure.contains(divider)).toBe(false);
+    expect(measure.contains(screen.getByRole("heading", { level: 1 }))).toBe(
+      true,
+    );
+  });
+
+  it("shows a badge legend with every era colour and decorative samples", async () => {
+    render(<SiteHeader />);
+
+    await userEvent.click(helpButton());
+
+    expect(screen.getByText(en.header.helpBadgesIntro)).toBeVisible();
+    expect(screen.getByText(en.header.helpBadgeLadder)).toBeVisible();
+    expect(screen.getByText(en.header.helpBadgeNote)).toBeVisible();
+    expect(screen.getByText(en.header.helpRuneTiers)).toBeVisible();
+
+    for (const patch of ["1.10", "2.4", "2.6", "3.0"] as const) {
+      expect(screen.getByText(en.header.helpBadgePatch(patch))).toBeVisible();
+    }
+
+    // Samples are decorative: present in the DOM, absent from the a11y tree.
+    const samples = screen
+      .getByText(en.header.helpBadgesIntro)
+      .parentElement?.querySelectorAll("[aria-hidden]");
+
+    expect(samples && samples.length).toBeGreaterThanOrEqual(6);
+  });
+
   it("opens beneath the divider, not above it", async () => {
     const { container } = render(<SiteHeader />);
 

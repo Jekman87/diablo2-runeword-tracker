@@ -72,11 +72,22 @@ site still deployable.
 | 10  | `site-header`            | done   |
 | 11  | `detail-panel-tooltip`   | done   |
 | 12  | `merged-remaining-panel` | done   |
+| 13  | `russian-locale`         | done   |
+| 14  | `dataset-localisation`   | done   |
+| 15  | `csv-import-export`      | done   |
+| —   | `chronicle-styling`      | partly |
 
 `detail-view-hover` is numbered `6a` because it is not a step in the sequence:
 it corrects four defects in what `runeword-table` shipped, found by comparing the
 deployed page against the reference. Kept in the table so the order changes
 actually landed in is readable.
+
+Changes 13 to 15 are Phases 2 and 3, which are shipped — see those sections
+below for what landed. `chronicle-styling` carries no number because it is not an
+OpenSpec change: part of it went straight onto `main`, and the rest was reviewed
+on 2026-07-31 and dropped. [Phase 5](#phase-5--polish-shipped) is shipped;
+[Not this phase](#not-this-phase) is what was declined or deferred;
+nothing else in this document is a to-do list.
 
 Changes 9 and 10 were missing from the original breakdown. Both were found by
 `runeword-table` rather than planned, which is the sequence working as intended —
@@ -761,8 +772,11 @@ runewords`, never a bare number.
   frames** rather than on pure black. None of those is obviously right for a web page
   that has to work at 390px, which is why they are a list here rather than a commit.
 
-Phases 2 to 4 become their own changes later: `russian-locale`,
-`csv-import-export`, `row-animations`.
+Phase 2 shipped as two changes rather than one — `russian-locale` for the copy
+layer, `dataset-localisation` for the dataset text inside it — and Phase 3 as
+`csv-import-export`. Phase 4's `row-animations` has not been proposed and is
+carried into [Phase 5](#phase-5--the-current-phase), where its row-movement half
+is kept and its "further visual flourishes" half is dropped.
 
 ---
 
@@ -897,6 +911,14 @@ what it is doing, which is the honest form of the same idea.
 
 ## Phase 2 — Russian localisation
 
+**Shipped** as two changes, and the split is the part worth knowing:
+`russian-locale` gave the copy layer a second record, a switch in the header and
+a persisted preference, while every runeword name, rune name, category, property
+line and restriction on the page stayed English. `dataset-localisation` then
+localised that dataset text. What follows is the requirement they were built
+against, kept for the record, and then the four things that landed which it did
+not ask for.
+
 - Bilingual UI with a language switch
 - Runeword names, rune names and item properties must match the official
   Russian game client exactly. Taken from official sources, never
@@ -907,6 +929,46 @@ what it is doing, which is the honest form of the same idea.
   field after runeword names that has to be sourced from the game client rather
   than translated. Only the parentheses live in the strings layer.
 - English names remain the canonical identifiers in the data layer
+
+**The sourcing rule survived contact with the sources, and got stricter rather
+than looser.** The official localisation turned out to be reachable in two
+forms — noob-club.ru transcribes the client's runeword and rune text in full,
+and a reader with the game open settles whatever the transcription leaves
+doubtful, the client winning where they disagree. It caught a transcription typo
+on `Shael`. Community sites are cross-checks for what neither covers. Machine
+translation stayed forbidden and each entry carries a source note, so the
+`ui-strings` requirement was modified rather than dropped: it still asks for the
+game's own terms, and now says how the game is read. Two terms turned out to have
+no source at all — the off-hand and missile-weapon slot names — and are
+documented as this project's own words.
+
+Reading the sources changed three terms that had shipped as guesses: «Основы» is
+nobody's word for a base item, «Броня» became the client's own «Доспех», and the
+**ladder badge is not a Latin `L` in Russian** — it abbreviated a loanword every
+source does use. Worth knowing because the availability-marker section below
+still describes the badge as `L`, which is now the English locale's letter rather
+than the badge's definition.
+
+**Strictly one language on screen**, which is stronger than "translated". A
+record either carries a complete Russian variant or falls back to English as a
+whole record, so no row is half-translated, and not one Latin letter appears in
+Russian dataset text. That outranks quoting the client verbatim in the one place
+they conflict: its per-level formulas leave the character-level variable in Latin
+(`+(2*clvl)`), and these render `+2*ур`.
+
+**Search and sort follow the selected language.** This is the collation question
+`search-sort-filter` left open, and it was answered twice — `russian-locale`
+answered it by scoping non-ASCII text to the copy layer that neither matching nor
+ordering reads, and `dataset-localisation` then had to answer it properly:
+matching folds case and `ё`/`е` on both sides, and ordering uses
+`Intl.Collator("ru")` for Russian projections with `byCodePoint` kept for
+English. The tiebreak stays required level then canonical name, so it is
+locale-independent.
+
+**Canonical English names stayed the identifiers**, which is what kept the blast
+radius small: crafted-progress storage, the CSV format, rune sprite lookup and
+the progress count are all keyed on them, so none of them changed shape. A locale
+switch does not touch stored progress.
 
 ---
 
@@ -964,9 +1026,366 @@ Decided on 2026-07-31 and shipped:
 
 ## Phase 4 — polish
 
+**Not shipped**, and folded into Phase 5 rather than kept as its own phase — one
+item and a placeholder is not a phase, and the item is now one entry in a longer
+list. Kept here so the numbering does not lie.
+
 - Row movement animation. Sorting by crafted state and toggling a row
   animates it to its new position; a filter that hides it fades it out.
 - Further visual flourishes
+
+---
+
+## Phase 5 — polish (shipped)
+
+**Shipped** as one OpenSpec change, `phase-5-polish` — a deliberate exception to
+the one-feature-per-change rule for a finishing stage (recorded in `AGENTS.md`).
+
+### What landed
+
+- **Centred property lines** in the detail panel (name / labelled values stay
+  left-aligned; grouped headings centre with their groups).
+- **Full-width ornamental divider** in the header (content keeps the page measure;
+  no `100vw`, no sideways scroll from the band).
+- **Help badge legend** (all four patch colours, ladder, note) plus a line on
+  Remaining Runes tiers / Horadric Cube ratios — the mitigation claimed for the
+  badge contrast decision is now on the page.
+- **Footer** with copyright (site name + year from the clock), a donation control
+  that opens a dialog for **USDT on TON** (selectable address + copy), and a
+  copyright easter egg (six random act-boss / Chronicle lines; restores after 5s).
+- **Back-to-top** circular control, revealed when the header leaves the viewport.
+- **`--radius-xs`** on every self-drawn surface (badges keep borrowed geometry);
+  **`--color-accent` → `--color-note-text`**; stable `toggle` via `useCallback`.
+
+### Tried and reverted
+
+- **Grey ground / translucent panel** — grey was measured from diablo2.io then
+  reverted to black `#000`; translucent only made sense on grey, so the panel
+  stays opaque `#17171a`.
+- **Row View Transitions** — glitched when scrolling mid-animation and fought the
+  sticky header; removed. Scroll position on toggle is still frozen in `App.tsx`.
+
+### Settled while building
+
+- Donation: USDT on TON (not TRC-20, not on-chain BTC). Details in
+  [`docs/SITE.md`](docs/SITE.md).
+- Copyright: site name + dynamic year.
+- Legend: all four patch colours, classic era included.
+
+### Not this phase (unchanged)
+
+Narrow-viewport table overflow remains **deferred**. Items dropped on 2026-07-31
+stay dropped — see [Not this phase](#not-this-phase).
+
+---
+
+## Phase 5 — planning record (superseded by the shipped section above)
+
+The work in flight. Everything above this line is a record of what landed;
+everything below it is either this phase or explicitly out of it.
+
+**Reviewed and cut down on 2026-07-31.** The list this section carried was every
+loose end the first four phases left, which is not a phase — it is an inventory. Of
+that inventory the owner kept the row animation and three small fixes, deferred the
+narrow-viewport layout, and dropped everything else; the dropped ones are named in
+[Not this phase](#not-this-phase) rather than deleted, because a loose end that was
+looked at and declined is worth more as a record than as an absence. **Seven new
+ideas came in with that review**: the grey ground, the transparent tooltip that
+depends on it, centred property lines, a full-width divider, a footer carrying a
+donation control, a back-to-top button, and a badge legend in the help panel.
+
+**It is one OpenSpec change**, `phase-5-polish`, and that is a deliberate exception
+to `AGENTS.md`'s one-feature-per-change rule: a stage of finishing work is the unit
+here, because a token rename does not earn its own propose–apply–archive cycle. The
+groups below are the task groups inside it, not separate proposals.
+
+### The grey ground, and the game's own tooltip
+
+The page is pure black today. The idea is the ground of
+[diablo2.io](https://diablo2.io/) — a dark textured grey — and then the detail
+panel becomes **transparent black over it, as the game's item tooltip is**.
+
+Measured on that site rather than guessed at, because what reads as "grey" there is
+not a colour:
+
+- The ground is a **590×590 tiled stone texture** (`bgtile.webp`) on `<main>`,
+  averaging `rgb(38,38,38)` with per-pixel luminance from 12 to 79, over a
+  `#111111` body. A second tile (`bgtile2.webp`, 590×295, averaging
+  `rgb(48,48,48)`) repeats along the x axis at the top, which is what makes the
+  head of the page lighter than its foot.
+- Their panels are **`rgba(0,0,0,0.5)`** over that texture, and the sidebar
+  `rgba(15,11,8,0.52)`. So the effect being asked for is exactly theirs: a
+  semi-transparent black box that lets the texture read through it.
+
+**The asset cannot be copied, and the effect can.** Every borrowed asset in this
+project comes from the reference site, which is MIT licensed and credited;
+diablo2.io publishes no such licence, its theme is its own work, and the texture is
+plausibly derived from Blizzard artwork besides. A tiled dark texture is not an
+idea anyone owns, so this ships with a texture of our own — generated, or a CSS
+gradient-and-noise ground with no image at all — and diablo2.io is named as the
+inspiration, not as a source. Whoever proposes this decides which, and the
+no-image version is worth costing first: `d2-theme`'s self-hosting rule exists so
+the page makes no third-party request, and a ground that is pure CSS also makes no
+request of its own.
+
+**It reopens `detail-panel-tooltip`, and the reason inverts cleanly.** That change
+moved the panel's ground from `#200000` to an opaque `#17171a` because "a
+near-black panel on a black page has no edge". On a textured grey ground the
+opposite holds: transparent black now has an edge, and the game's own tooltip is
+what it looks like. So this is not a reversal of the reasoning, it is the same
+reasoning under a changed page.
+
+**The sticky progress band is the trap.** `--color-ground` is `#000` and exactly
+two things paint it: `body`, and the progress band — which is opaque precisely so
+that rows scrolling under it are hidden. Give the body a texture and that band
+paints a flat black stripe over it at every scroll offset but the top. It cannot
+simply inherit the texture either: a `position: sticky` element moves relative to
+the page, so a tile inside it slides against the tile behind it unless the
+attachment is fixed. So the band needs its own answer, and "make it transparent" is
+not one — the rows would read through it.
+
+Open questions a proposal has to answer. **Every contrast ratio on the page is
+measured against black and has to be re-measured** — the palette was built on
+`#000`, and the panel text, the property blues, the badges and the row hairlines
+all sit on a lighter ground now. **What the table's rows sit on**, since a
+transparent tooltip over a transparent row over a texture is three layers of
+translucency stacked. And **whether the ornamental divider and the blood-red bands
+still read** against grey; they were chosen against black.
+
+### Centred properties in the tooltip
+
+The game centres the text in an item tooltip. **Only the blue property lines get
+centred**, and the descriptive text above them stays as it is — left-aligned — so
+this is a change to one block inside the panel rather than to the panel.
+
+Worth knowing before it is proposed: three runewords carry two labelled property
+groups (`Fortitude`, `Phoenix`, `Spirit`), so "the properties" is a list of groups
+with optional headings, not a flat run of lines, and centring has to look right
+with a heading above a centred group. The 26-line panels are the ones to check.
+
+### The ornamental divider goes full width
+
+It currently ends where the content does. The divider is a row of the `<header>`'s
+own grid, and that grid is `mx-auto max-w-6xl px-6`, so the band is 1104px wide and
+centred at any viewport past about 1152px. Edge to edge is what the idea asks for.
+
+**No theme requirement changes**, which is the pleasant part: `d2-theme` already
+says the divider "SHALL be a repeating horizontal band that spans whatever width it
+is given rather than a fixed-width image", and the asset is an 800×16 tile drawn
+with `repeat-x`. What changes is which container it is given, so this lands in
+`site-header`'s layout requirement rather than in the theme's.
+
+Two things it has to get right. **`100vw` is the wrong tool here** — `html` carries
+`scrollbar-gutter: stable`, so a viewport-width band overflows by the gutter's width
+and re-introduces the sideways scroll that the deferred narrow-viewport entry is
+about. A full-width element wrapping a constrained inner block is the shape that
+does not lie about the available width. And **that inner block is where the header's
+duplicated measure classes go**, so the comment pair in `SiteHeader.tsx` and
+`App.tsx` that names each other has to move with them; the `<header>` also has to
+keep closing with the divider and keep the help panel opening below it at the
+page's own measure, both of which are stated requirements.
+
+### A badge legend in the help panel
+
+Taken from the reference site's own help, which our help never looked at. Theirs has
+a **Runewords** section that renders each badge inline in the prose and says what it
+is: the ladder `L`, the coloured patch tags, and `Note!` with "pay special attention
+to this". Ours explains how to use the page in six points and **says nothing about
+the badges at all**.
+
+Two reasons it matters more here than there. **The patch colours are a system
+nobody can infer** — four colours for the dataset's five values, because `1.10` and
+`1.11` are treated as one classic era, and the only place that is written down is a
+comment in `src/index.css`. And **this is the mitigation the project already claims**
+for adopting the reference's badge contrast knowingly at 2.01:1: the defence was
+that no badge's meaning depends on seeing it, which is true of the tooltips and the
+accessible names and was never true of the page as a whole.
+
+The other thing worth taking from their help is **what the rune tiers mean**. They
+explain that their rune order follows the Horadric Cube's upgrade ratios — three Tal
+make one Ral — which is why rarity runs the way it does. Remaining Runes groups by
+those same three tiers and says nothing about them, and it is also the answer to why
+the rarest runes carry the smallest counts, an observation that has sat in this
+document since the first draft without ever reaching the page.
+
+**Settled on 2026-07-31**: the legend shows all four patch colours, the
+pre-remaster era included, where the reference shows only its three new ones. A
+reader meeting the brown tag has nowhere else to learn what it means.
+
+One consequence for whoever builds it: a legend rendering real badges makes the
+header the first consumer of the table's badge component, and that component
+currently needs a runeword behind it. The words stay in the copy layer; the samples
+are components, which is a distinction the help panel's "every word resolves through
+the display-copy layer" requirement does not currently draw.
+
+### A footer, and a donation control
+
+Neither exists today. The page ends at the table.
+
+The reference's footer is worth knowing before ours is designed: it is centred, in
+the gold display colour, and holds two links — the author's other site and the
+GitHub repository, the latter with an inline GitHub mark — over the same ornamental
+divider drawn at half opacity. So the shape "divider, then two centred lines" is
+already the house style, and a donation control is the one thing ours adds that
+theirs has no equivalent for.
+
+**Settled on 2026-07-31.** The instrument is **USDT on TON** — chosen over TRC-20
+for fees, and over on-chain BTC, where the fee can exceed the donation. The footer
+names the coin and the network beside the address, because an address alone is
+ambiguous between chains and a sender who picks the wrong one loses the money. The
+copyright line is the site's name and the year read from the clock at load: a fixed
+year goes stale on a page that is otherwise entirely static.
+
+- **A footer line with the copyright sign, the year, and probably the site's name.**
+  The wording is to be settled while it is built. One real question in it: a fixed
+  year goes stale and a year from `new Date()` is the one piece of text on this
+  static page that depends on when it is read — which is fine, but it should be a
+  decision rather than a habit. The name and any URL belong beside the patch
+  constants in `src/header/site.ts`, and the words themselves go through the copy
+  layer in both locales like everything else.
+- **A donation control beside it.** The author is in Belarus, so the card
+  processors and the usual "buy me a coffee" services are out, and a **crypto
+  address is the only instrument that reaches him**. What is not settled: which
+  coin, which network, and how it is presented — a selectable address, a copy
+  button, a QR image, or a link out. Each has a cost worth naming: an address in
+  the repository is public and permanent, a QR is a new asset, a copy button is a
+  new interactive surface with a clipboard permission story, and the address must
+  stay selectable text either way so it is reachable without the clipboard. To be
+  settled while it is built.
+
+### A back-to-top button
+
+Bottom right, appearing once the page has scrolled past the header. The table is
+about 7400px at a wide viewport and 10200px at a narrow one, so the top is a long
+way up.
+
+Three constraints this inherits, all of them already written down. **It is a fourth
+thing in the stacking order** — the progress band is `z-index: 2`, the table's
+header band `1`, the detail panel `z-10` — and those numbers are eight apart on
+purpose. **The scroll offset that reveals it wants to be the header's own height**
+rather than a magic number, and `--progress-band-height` is the precedent for how
+this project holds a height that CSS cannot ask for. And **it must not cover the
+last row's crafted toggle at 390px**, which is the width where a floating control
+has the least room to be out of the way. Smooth scrolling has to respect
+`prefers-reduced-motion`.
+
+### Row movement — carried from Phase 4
+
+A decision already taken rather than an open question. `search-sort-filter` shipped
+sorting by crafted state, which is the first control on this page that can move a
+row out from under the pointer, and deliberately added no animation; the undo
+notice is the existing answer to the misclick that causes.
+
+- **Toggling a row while sorted by crafted state animates it to its new position.**
+- **A filter that hides a row fades it out.**
+
+Two things whoever proposes this should know. The rows are **memoised, and the memo
+is load-bearing** — unmemoised, opening a detail panel cost long tasks to 127ms
+against none — so an animation that gives every row a changing prop each frame
+undoes a measured win. And the table is `table-fixed` with a **sticky header**, so
+a transform-based reorder has to be checked against both rather than reasoned
+about.
+
+Phase 4's other line, "further visual flourishes", is **dropped**: nothing was ever
+behind it.
+
+### Three small fixes
+
+One tidying change, taken together because each is a few lines.
+
+- **The 2px radius is a system, and that answers the open question.** The search
+  field, the filter chips, the progress bar and the table's header band have it;
+  the detail panel and the undo notice get it too. `--radius-xs` is the token, and
+  2px is the value because Diablo II's interface is angular and more stops reading
+  as the game.
+- **`--color-accent` is renamed `--color-note-text`.** It holds `#BD8547` for the
+  detail view's note text and nothing else, so the current name says nothing true
+  about it. Reported by `detail-view-hover`, fixed here.
+- **`useCraftedRunewords`' `toggle` gets a stable identity.** It is a fresh closure
+  per render today, so typing in the search field re-renders every presented row —
+  the one prop standing between the table and a fully stable set.
+
+---
+
+## Not this phase
+
+### Deferred — the narrow-viewport layout
+
+**The one real defect on the list, and deliberately held for a later phase** so it
+gets a change of its own rather than a corner of a mixed one. The table scrolls
+sideways below about 542px. Nobody owns it, no requirement covers it, and three
+archived changes each made it worse while measuring it — it is the only entry that
+accumulates, which is also why it should not be squeezed in.
+
+The measurements, from the records above. `detail-view-hover` took the overflow at a
+390px viewport from 74px to 198px — 152px of that from the runes collapsing into the
+name cell, which takes it from 170px to 276px. `search-sort-filter` added about
+32px of permanently reserved space for the sort arrow across five headers, putting
+the document at 620px against a 390px viewport. `chronicle-styling` then stopped the
+fixed column percentages at `md`, because below it they clipped the `Crafted`
+heading by 37px and spilled name cells over their neighbours — six 40px rune icons
+do not fit in about 124px.
+
+**The open question is what the phone layout should be**, and it is a layout
+decision rather than a bug with one fix: a smaller rune size, a horizontally
+scrolling table by intent, or fewer columns. Two constraints for whoever answers
+it. Reclaiming the arrows means hiding the indicator below `md`, not making it
+conditional again — conditional is what made the sorted column 12px wider than the
+others and shifted every row beside it. And rows below `md` are taller than any
+design figure covers, 103px against 69px, which puts `tbody` at 10197px against
+7103px.
+
+Note that Phase 5 has business here: a back-to-top button and a transparent tooltip
+both have to answer for themselves at 390px, and the ground texture is a page-wide
+change. None of that fixes the table, and none of it should make it worse — the
+overflow figure above is the number to re-measure.
+
+### Dropped on 2026-07-31
+
+Reviewed and declined. Kept as a record so none of them is proposed again as if it
+were new ground, and so the reasoning that produced them is not mistaken for
+oversight. The detail behind each is in the change records above.
+
+- **Every item from the in-game Chronicle window** that `chronicle-styling` left:
+  letter-spaced small caps for the labels, filters as a vertical list with diamond
+  bullets, the percentage centred over the bar, and charcoal panels in bevelled gold
+  frames. The parts of that pass which had already landed stay; nothing further is
+  taken from the screenshot. **The missing change folder is dropped with them** — the
+  requirements were written into `crafted-tracking` and `runeword-browsing` after the
+  fact, so the specs are current and only the folder is absent.
+- **Everything the remaining panel and the filters had pending**: counts in the
+  closed band, popovers from the browsing controls, a sidebar at wide widths, a
+  count per slot-filter option (`Shield (10)`), and defaulting the crafted filter to
+  "remaining" once anything is crafted. Folding the counts into the sticky progress
+  band was already rejected outright rather than deferred, and stays rejected.
+- **Two tabs observing each other.** No `storage` event listener; the same tracker
+  open twice keeps having the last write win.
+- **A Cyrillic display font.** Bellefair is Latin-only, so under the Russian locale
+  nearly every glyph comes from the fallback stack — Cambria, Georgia, Noto Serif,
+  Liberation Serif — which was chosen for exactly that and is judged good enough.
+  Worth knowing that this is now a bigger surface than when `russian-locale`
+  deferred it: it accepted the mixed typography on the grounds that only interface
+  copy was Russian, and `dataset-localisation` then localised the dataset text too.
+- **The badge contrast.** Black on the classic brown is 2.01:1 and black on the
+  `3.0` purple 3.67:1, against 4.5:1 for AA. Fidelity to the reference was the
+  decision, taken with the numbers in hand, and no badge's meaning depends on it —
+  each carries its full text as its accessible name. If it is ever revisited the fix
+  is one foreground per token in `--color-patch-label`. **Phase 5 touches this
+  indirectly**: those ratios were measured against black, and the grey ground
+  changes them.
+- **Find-in-page opening the Help panel.** It is the one disclosure here that is not
+  a native `<details>`, because its control belongs on the title's line while its
+  panel belongs in the next grid row, and a `<summary>` must be the first child of
+  what it opens. Chromium's hidden-until-found is the price.
+
+### Not work at all
+
+**The Tailwind source-scan defect cannot be fixed, only managed**, so it is a method
+rather than a task. Prose in TypeScript comments generates utilities and the scanner
+cannot tell a comment from markup. Diff the generated class list between builds;
+`pnpm build` alone does not show it. Every change should expect to find its own —
+and this phase writes a footer, a donation control and a page of new colour, so it
+should expect several.
 
 ---
 
@@ -1047,6 +1466,13 @@ Badges carry a tooltip with the full text, exactly as the reference does —
 
 ## Open questions
 
-None outstanding. Vendored data is in place and verified — see
-[`docs/DATA-SOURCES.md`](docs/DATA-SOURCES.md) for the confirmed schema.
-Ready for the first OpenSpec proposal.
+**About the data, none.** The vendored source is in place and verified — see
+[`docs/DATA-SOURCES.md`](docs/DATA-SOURCES.md) for the confirmed schema — and it
+has since been generated, validated, corrected for property groups and given
+Russian labels. This section said "none outstanding" for the whole project, which
+was true when the first proposal had not been written and stopped being true
+somewhere around change 7.
+
+**About the interface, they are inside [Phase 5](#phase-5--the-current-phase)** —
+each group names the questions its proposal has to answer, and the footer's wording
+and the donation instrument are settled while they are built rather than here.

@@ -112,16 +112,15 @@ describe("the terms checked against the game client", () => {
   // to get wrong again, and the client is the one source that outranks
   // everything a later reader could cite against them.
 
-  it("names the base categories as the client does", () => {
-    expect(displayItemType("Body Armors", "ru")).toBe("Доспех");
+  it("names the base categories in the plural where the page groups them", () => {
+    expect(displayItemType("Body Armors", "ru")).toBe("Доспехи");
     expect(displayItemType("Grimoire", "ru")).toBe("Гримуар");
     expect(displayItemType("Helms", "ru")).toBe("Шлемы");
     expect(displayItemType("Shields", "ru")).toBe("Щиты");
   });
 
-  it("keeps «Доспех» singular, as the client writes it", () => {
-    // The odd one out among plural category names, and deliberately so.
-    expect(displayItemType("Body Armors", "ru")).not.toBe("Доспехи");
+  it("keeps «Доспехи» plural, matching neighbouring category names", () => {
+    expect(displayItemType("Body Armors", "ru")).not.toBe("Доспех");
     expect(displayItemType("Body Armors", "ru")).not.toBe("Броня");
   });
 
@@ -177,7 +176,7 @@ describe("reference labels", () => {
 
   it("give a category its canonical name under English and its label under Russian", () => {
     expect(displayItemType("Body Armors", "en")).toBe("Body Armors");
-    expect(displayItemType("Body Armors", "ru")).toBe("Доспех");
+    expect(displayItemType("Body Armors", "ru")).toBe("Доспехи");
   });
 
   it("fall back to the canonical name for an unknown reference", () => {
