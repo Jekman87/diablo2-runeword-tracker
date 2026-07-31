@@ -50,6 +50,28 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # The crawl files are checked against the site constant by the test
+      # suite, but nothing there proves they reach the deployed artifact:
+      # `public/` is a Vite convention, and a config change could stop
+      # copying it without failing a single unit test.
+      - name: Assert the crawl files are published
+        env:
+          BASE_PATH: /diablo2-runeword-tracker/
+        run: |
+          status=0
+          for file in robots.txt sitemap.xml; do
+            if [ ! -f "dist/$file" ]; then
+              echo "::error::dist/$file is missing — the build did not publish it"
+              status=1
+            elif ! grep -q "$BASE_PATH" "dist/$file"; then
+              echo "::error file=dist/$file::no absolute URL under '$BASE_PATH' — the site is not deployed at the domain root"
+              status=1
+            else
+              echo "ok    dist/$file"
+            fi
+          done
+          exit $status
+
       # A wrong `base` passes every local check and only breaks once
       # deployed, so assert it here rather than trusting it.
       - name: Assert asset references carry the base path

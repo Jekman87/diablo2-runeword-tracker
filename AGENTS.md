@@ -4,7 +4,8 @@
 
 - [`IDEAS.md`](IDEAS.md) — the backlog and phase plan. Decisions recorded there
   are settled; do not relitigate them in a proposal.
-- [`docs/SITE.md`](docs/SITE.md) — site-level constants (patch, URLs, donation).
+- [`docs/SITE.md`](docs/SITE.md) — site-level constants (patch, URLs, donation)
+  and what the deployed page gives search engines.
 - [`docs/DATA-SOURCES.md`](docs/DATA-SOURCES.md) — where the runeword data comes
   from and its confirmed schema.
 - [`docs/REFERENCE.md`](docs/REFERENCE.md) — analysis of the reference site,
