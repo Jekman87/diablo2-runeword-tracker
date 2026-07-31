@@ -25,6 +25,23 @@
 export const SITE_NAME = "Diablo II Runeword Tracker";
 
 /**
+ * Where the site lives, as a crawler must see it: absolute, with the GitHub
+ * Pages project sub-path, and with the trailing slash the canonical form has.
+ *
+ * Nothing in the running application reads it — the page is already at this
+ * address by the time any of it executes. It is here because three static files
+ * state the same URL and none of them can import a constant: the
+ * `<link rel="canonical">` in `index.html`, the `<loc>` in
+ * `public/sitemap.xml`, and the `Sitemap:` line in `public/robots.txt`. This is
+ * the copy they are checked against, by `scripts/crawl-files.test.ts`, so a URL
+ * corrected in one place cannot quietly stay wrong in the other three.
+ *
+ * It matches Vite's `base` by construction. Changing one without the other
+ * deploys a canonical URL that points at a 404.
+ */
+export const SITE_URL = "https://jekman87.github.io/diablo2-runeword-tracker/";
+
+/**
  * The game patch the tracked runeword list reflects.
  *
  * Moves together with `UPDATE_NOTES_URL` below — they are on adjacent lines for
