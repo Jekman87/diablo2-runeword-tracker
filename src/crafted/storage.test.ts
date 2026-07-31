@@ -2,6 +2,7 @@ import {
   CRAFTED_STORAGE_KEY,
   loadCrafted,
   saveCrafted,
+  splitStoredNames,
 } from "@/crafted/storage";
 
 // No component is rendered anywhere in this file, which is the point of the
@@ -109,6 +110,65 @@ describe("a name the dataset does not know", () => {
 
     expect(loadCrafted(restored).crafted.has("Ondal's Wisdom")).toBe(true);
     expect(loadCrafted(restored).unknown).toEqual([]);
+  });
+});
+
+describe("splitting a list against the dataset", () => {
+  // The same split the load path uses, reached directly because it is also what
+  // an imported file goes through. One implementation, two callers — the point
+  // of extracting it.
+
+  it("is what the load path produces", () => {
+    plant('["Enigma","Ondal\'s Wisdom"]');
+
+    expect(loadCrafted(KNOWN)).toEqual(
+      splitStoredNames(["Enigma", "Ondal's Wisdom"], KNOWN),
+    );
+  });
+
+  it("matches a name whatever case it is written in", () => {
+    const { crafted } = splitStoredNames(["enigma", "SPIRIT"], KNOWN);
+
+    // Stored in the dataset's own spelling, so nothing downstream folds again.
+    expect([...crafted]).toEqual(["Enigma", "Spirit"]);
+  });
+
+  it("matches a name padded with whitespace", () => {
+    expect([...splitStoredNames(["  Enigma  "], KNOWN).crafted]).toEqual([
+      "Enigma",
+    ]);
+  });
+
+  it("counts one runeword once however many spellings name it", () => {
+    const { crafted } = splitStoredNames(["Enigma", "enigma", "ENIGMA"], KNOWN);
+
+    expect(crafted.size).toBe(1);
+  });
+
+  it("does not match a Russian label", () => {
+    // The transfer format is canonical English names, whatever locale is
+    // active — `localised-dataset-text` settled that, and folding case is not a
+    // crack for a translation to get in through.
+    const { crafted, unknown } = splitStoredNames(["Энигма"], KNOWN);
+
+    expect(crafted.size).toBe(0);
+    expect(unknown).toEqual(["Энигма"]);
+  });
+
+  it("keeps an unmatched name in the order it arrived, as it was written", () => {
+    const { unknown } = splitStoredNames(
+      ["Ondal's Wisdom", "Enigma", "Plague"],
+      KNOWN,
+    );
+
+    expect(unknown).toEqual(["Ondal's Wisdom", "Plague"]);
+  });
+
+  it("splits an empty list into empty halves", () => {
+    expect(splitStoredNames([], KNOWN)).toEqual({
+      crafted: new Set(),
+      unknown: [],
+    });
   });
 });
 

@@ -135,6 +135,38 @@ describe("the help disclosure", () => {
     }
   });
 
+  it("opens beneath the divider, not above it", async () => {
+    const { container } = render(<SiteHeader />);
+
+    await userEvent.click(helpButton());
+
+    const divider = container.querySelector(".gold-divider");
+    const panel = screen.getByText(en.header.helpIntro).closest("[id]");
+
+    if (!divider) throw new Error("No divider in the header");
+    if (!panel) throw new Error("No help panel");
+
+    // The divider is the header's bottom edge. Prose wedged in above it pushes
+    // that edge down and reads as part of the title block; below it, the help is
+    // an explanation opened over the top of the page.
+    expect(
+      divider.compareDocumentPosition(panel) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("describes moving progress in and out as a file", async () => {
+    render(<SiteHeader />);
+
+    await userEvent.click(helpButton());
+
+    // A feature that ships adds its point here. This one had to: exporting made
+    // the sentence before it — progress never leaving the browser — untrue.
+    const panel = screen.getByText(en.header.helpIntro).closest("[id]");
+
+    expect(panel).toHaveTextContent(en.transfer.exportAction);
+    expect(panel).toHaveTextContent(en.transfer.importAction);
+  });
+
   it("keeps the panel mounted while closed", () => {
     // Closed is a display state, not a conditional render, so `aria-controls`
     // always resolves to a real element rather than to nothing half the time.

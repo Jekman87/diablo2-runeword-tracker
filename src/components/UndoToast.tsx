@@ -82,6 +82,7 @@ export function UndoToast({ pending, onUndo, onDismiss }: UndoToastProps) {
 }
 
 // Long enough that a misclick has time to register as one, short enough not to
-// sit over the page. The number is only a guess, and the focus rule above is
+// sit over the page. Six seconds at first and five after using it, which is the
+// only way this number was ever going to be settled; the focus rule above is
 // what removes the case where guessing wrong does actual harm.
-const DISMISS_AFTER_MS = 6000;
+const DISMISS_AFTER_MS = 5000;
