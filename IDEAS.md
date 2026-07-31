@@ -75,6 +75,7 @@ site still deployable.
 | 13  | `russian-locale`         | done   |
 | 14  | `dataset-localisation`   | done   |
 | 15  | `csv-import-export`      | done   |
+| 16  | `search-indexing`        | done   |
 | —   | `chronicle-styling`      | partly |
 
 `detail-view-hover` is numbered `6a` because it is not a step in the sequence:
@@ -88,6 +89,20 @@ OpenSpec change: part of it went straight onto `main`, and the rest was reviewed
 on 2026-07-31 and dropped. [Phase 5](#phase-5--polish-shipped) is shipped;
 [Not this phase](#not-this-phase) is what was declined or deferred;
 nothing else in this document is a to-do list.
+
+`search-indexing` comes after the phases rather than inside one: the product was
+finished and the page still told a crawler nothing. It added a meta description,
+Open Graph, a canonical link and a `<noscript>` paragraph to `index.html`, plus
+`robots.txt` and `sitemap.xml` from `public/`, with the site's address pinned as
+`SITE_URL` in `src/header/site.ts` and a test holding the four copies of it
+together. Two things learned there are worth keeping. **`robots.txt` on a project
+page is advisory** — crawlers read `jekman87.github.io/robots.txt`, which belongs
+to the account and not to this repository, so ours states intent and names the
+sitemap while the sitemap itself has to be submitted in Search Console by hand.
+And **the last step is not a code step**: verifying the property and submitting
+the sitemap are account actions, documented in [`docs/SITE.md`](docs/SITE.md)
+rather than automated, because automating them would mean a third-party script on
+a page that refuses to carry one.
 
 Changes 9 and 10 were missing from the original breakdown. Both were found by
 `runeword-table` rather than planned, which is the sequence working as intended —
