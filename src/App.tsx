@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import { CraftedProgress } from "@/components/CraftedProgress";
+import { ProgressTransfer } from "@/components/ProgressTransfer";
 import { RemainingNeeds } from "@/components/RemainingNeeds";
 import { RemainingPanel } from "@/components/RemainingPanel";
 import { RunewordControls } from "@/components/RunewordControls";
@@ -44,7 +45,7 @@ import { visibleRunewords } from "@/view/visible";
 export function App() {
   const strings = useStrings();
   const locale = useLocale();
-  const { crafted, pendingUndo, toggle, undo, dismissUndo } =
+  const { crafted, pendingUndo, toggle, replace, undo, dismissUndo } =
     useCraftedRunewords();
   const {
     settings,
@@ -134,6 +135,13 @@ export function App() {
           slotFilter={settings.slotFilter}
           visibleCount={visible.length}
           narrowed={narrowed}
+          // Built here rather than inside the control bar, for the reason the
+          // undo notice is built here: this is where the crafted set lives, and
+          // the bar is about the view. It arrives as a slot so that the
+          // component deciding *where* the two buttons sit is not also the one
+          // that knows what they do — the whole crafted set goes to the export,
+          // never the narrowed one.
+          transfer={<ProgressTransfer crafted={crafted} onReplace={replace} />}
           onQueryChange={setQuery}
           onCraftedFilterChange={setCraftedFilter}
           onSlotFilterChange={setSlotFilter}

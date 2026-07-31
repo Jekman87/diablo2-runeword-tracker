@@ -55,14 +55,49 @@ export function loadCrafted(known: ReadonlySet<string>): StoredProgress {
 
   if (!parsed.success) return empty();
 
+  return splitStoredNames(parsed.data, known);
+}
+
+/**
+ * A list of names split into the ones the dataset knows and the ones it does not.
+ *
+ * Extracted from `loadCrafted` so that an imported file goes through **the same
+ * split a stored value goes through**. Two implementations of "does the dataset
+ * know this name" would agree on the day they were written and are one patch
+ * apart from disagreeing about a renamed runeword — which is the one case both
+ * of them exist to handle.
+ *
+ * Takes the known names rather than importing the dataset, which is what keeps
+ * this module testable without one and is why `loadCrafted` has the parameter it
+ * has.
+ *
+ * **Matching folds case and surrounding whitespace, and nothing else.** The
+ * exporter writes canonical names, so a file this application produced round-trips
+ * exactly; the tolerance is for the file a player typed or pulled out of a
+ * spreadsheet. It is bounded there deliberately: an import reports nothing about
+ * what it failed to match, so a near-miss is invisible, and every further step —
+ * fuzzy distance, punctuation stripping, matching a locale's translated labels —
+ * is a way for an import to mark a runeword the file did not name. Case cannot do
+ * that: the 99 canonical names are distinct case-insensitively.
+ *
+ * What is stored for a match is the dataset's own spelling, whatever the file
+ * used, so nothing downstream has to fold anything again.
+ */
+export function splitStoredNames(
+  names: Iterable<string>,
+  known: ReadonlySet<string>,
+): StoredProgress {
+  const canonical = foldedIndex(known);
   const crafted = new Set<string>();
   const unknown: string[] = [];
 
-  // A `Set` first, so a hand-edited list naming the same runeword twice marks
-  // it once and cannot inflate the count.
-  for (const name of new Set(parsed.data)) {
-    if (known.has(name)) crafted.add(name);
-    else unknown.push(name);
+  // A `Set` first, so a hand-edited list or an imported file naming the same
+  // runeword twice marks it once and cannot inflate the count.
+  for (const name of new Set(names)) {
+    const match = canonical.get(fold(name));
+
+    if (match === undefined) unknown.push(name);
+    else crafted.add(match);
   }
 
   return { crafted, unknown };
@@ -75,9 +110,21 @@ export function loadCrafted(known: ReadonlySet<string>): StoredProgress {
  * dataset does not have is either something the player typed or a runeword
  * renamed between game patches — and in the second case dropping it means that
  * when the patch restores the runeword, it comes back unmarked, for a reason the
- * player has no way to see. `IDEAS.md` already rules the same failure out for
- * CSV import, where unmatched names must be reported rather than skipped
- * quietly.
+ * player has no way to see.
+ *
+ * This used to add that `IDEAS.md` rules the same failure out for CSV import,
+ * "where unmatched names must be reported rather than skipped quietly". That
+ * decision was withdrawn on 2026-07-31. An import reports nothing: it preserves
+ * an unmatched name exactly as this does, and the count in its confirmation is
+ * what a player judges a file by. The preservation is the part that survived, and
+ * `splitStoredNames` below is where an import gets it from.
+ *
+ * **An import is the one save that does not carry these forward**, because it
+ * replaces the whole stored value rather than editing it — the names it brings
+ * become the unknown list and the ones held before it are gone with everything
+ * else. `progress-transfer` specifies that, `progress-persistence` records the
+ * exception, and it is the only way one of these names can ever be cleared:
+ * nothing in the interface renders one.
  *
  * Sorted, so the same set of marks produces byte-identical storage regardless of
  * the order they were made in. Code-point order rather than `localeCompare`, for
@@ -98,6 +145,30 @@ export function saveCrafted({ crafted, unknown }: StoredProgress): void {
  * trusting this instead would be exactly backwards.
  */
 const storedNamesSchema = z.array(z.string().min(1));
+
+/**
+ * The known names indexed by their folded form, so a match is one lookup.
+ *
+ * Built per call rather than hoisted to module scope, because the known set is a
+ * parameter — hoisting it would mean this module importing the dataset, which is
+ * the dependency the parameter exists to avoid. The cost is 99 `toLowerCase()`
+ * calls on the two occasions a session performs a split: once on load, once if an
+ * import happens.
+ */
+function foldedIndex(known: ReadonlySet<string>): Map<string, string> {
+  return new Map([...known].map((name) => [fold(name), name]));
+}
+
+/**
+ * The form both sides of a name comparison are reduced to.
+ *
+ * `toLowerCase()` and **never** `toLocaleLowerCase()`: the mapping must not
+ * depend on the runtime's locale, and under `tr` the locale-aware form maps `I`
+ * to `ı`, which would stop `Infinity` matching itself.
+ */
+function fold(name: string): string {
+  return name.trim().toLowerCase();
+}
 
 /** A fresh object each time, so no caller can mutate a shared empty. */
 function empty(): StoredProgress {
