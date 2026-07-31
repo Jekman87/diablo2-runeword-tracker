@@ -291,30 +291,41 @@ describe("the confirmation's focus behaviour", () => {
   it("never lets Tab reach a control behind it", async () => {
     const { user } = renderTransfer();
 
+    // Captured before the dialog opens, because the manager takes them out of
+    // the accessibility tree once it is up and no role query would find them.
+    const behind = [
+      screen.getByRole("button", { name: en.transfer.exportAction }),
+      screen.getByRole("button", { name: en.transfer.importAction }),
+      screen.getByLabelText(en.transfer.importAction),
+    ];
+
     await openConfirmation(user, "Enigma");
 
     for (let press = 0; press < 6; press += 1) {
       await user.tab();
 
-      const active = document.activeElement;
-
-      if (!(active instanceof HTMLElement)) continue;
-      // The trap's own sentinels are skipped rather than asserted on. Focus
-      // passes through them on its way back into the dialog — that is *how*
-      // `FloatingFocusManager` closes the cycle — and in a browser nothing
-      // observes it.
-      if ("floatingUiFocusGuard" in active.dataset) continue;
-
-      expect(dialog()).toContainElement(active);
+      // **The assertion is "not the page behind", not "inside the dialog".**
+      // Those differ only in jsdom, and the difference is the whole reason this
+      // test failed on CI while passing on every local run. `FloatingFocusManager`
+      // closes its cycle with sentinel spans whose focus handler sends focus back
+      // to the first control; jsdom does not reliably run that handler, so Tab
+      // walks off the end of the document and lands on `<body>`. `<body>` is not
+      // a control behind the dialog, it is nowhere — asserting against it was
+      // asserting jsdom's fidelity to a browser rather than anything this
+      // component does.
+      //
+      // What escaping would actually look like is focus arriving on one of the
+      // three controls captured above; jsdom's Tab wraps to the start of the
+      // document, so that is exactly where a missing trap would put it, and this
+      // catches it.
+      expect(behind).not.toContain(document.activeElement);
     }
 
-    // **That the cycle reaches both buttons is a browser check, not this one.**
-    // jsdom never runs the guards' redirect — a sentinel's focus handler is what
-    // sends focus back to the first control, and without it Tab here bounces
-    // between the last button and the sentinel. What this file can prove is the
-    // half that matters for correctness: nothing behind the dialog is ever
-    // reached. Keyboard use of the confirmation end to end is verified in a real
-    // browser, which is what the `run-app` step of this change is for.
+    // **That the cycle reaches both of the dialog's buttons is a browser check,
+    // not this one**, for the same reason. It is verified in Chrome by the
+    // `run-app` step of this change, which observed Tab cycling Отмена →
+    // Заменить → Отмена. Here, the neighbouring test that the page behind is
+    // hidden from assistive technology is the other half of the guarantee.
   });
 
   it("hides the page behind it from assistive technology", async () => {
