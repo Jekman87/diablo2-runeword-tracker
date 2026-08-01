@@ -18,15 +18,16 @@
 
 This project uses OpenSpec. Requirements live in `openspec/`, not in chat
 history. Before implementing anything, check that a corresponding change exists
-under `openspec/changes/`. Keep changes small — one feature per change, never a
-whole phase.
+under `openspec/changes/`.
 
-**Exception for a finishing stage.** A polish phase whose items are each a
-handful of lines — and that share one palette pass, one layout restructure, or
-one set of closing furniture — MAY be one OpenSpec change covering the stage,
-with one propose–apply–archive cycle. `phase-5-polish` is the precedent. A
-token rename still does not earn its own cycle; a whole new capability still
-does.
+**Grouping.** Related features the owner asks for together SHOULD be one OpenSpec
+change with one propose–apply–archive cycle — not one change per bullet. Split
+only when the pieces have no shared surface, would ship on different timelines,
+or one is blocked on an unsettled decision the others do not need. A whole
+backlog phase still does not become one change by default; a coherent batch the
+owner named in one request does. `phase-5-polish` is the precedent for a
+finishing batch; a request that lists toggle confirmation, a completion message
+and bilingual import in one breath is the same shape.
 
 ## Language
 

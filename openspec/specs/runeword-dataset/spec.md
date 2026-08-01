@@ -207,7 +207,7 @@ progress, whereas a stale badge is only a cosmetic inaccuracy.
 
 - **WHEN** any runeword record is read
 - **THEN** it exposes a ladder-only boolean
-- **AND** exactly 9 of the 99 records have it set
+- **AND** exactly 8 of the 99 records have it set
 
 #### Scenario: Patch is absent on the original runewords
 
@@ -218,8 +218,10 @@ progress, whereas a stale badge is only a cosmetic inaccuracy.
 #### Scenario: A season caveat is data, not logic
 
 - **WHEN** the `Mosaic` record is read
-- **THEN** it is flagged ladder-only, carries patch `2.6`, and carries a note
-  recording that it is disabled in Season 13 and craftable offline non-ladder
+- **THEN** it is not flagged ladder-only, carries patch `2.6`, and carries a note
+  recording that it is disabled on ladder and craftable offline non-ladder
+- **AND** the cleared ladder flag is a data correction: the vendor still marks
+  Mosaic ladder-only, which would contradict the note if shipped as-is
 
 #### Scenario: The progress denominator ignores availability
 

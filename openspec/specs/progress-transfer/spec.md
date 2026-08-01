@@ -8,10 +8,10 @@ names in a stable order and nothing else, that an imported file replaces stored
 progress outright rather than merging into it, that nothing is replaced until a
 modal confirmation states how many runewords the file will mark and the player
 accepts it, that import parses text itself and reads no spreadsheet, that a name
-is matched on its canonical English name whatever locale is active, that a name
+is matched on its English or Russian label whatever locale is active, that a name
 the dataset does not know is carried into storage while being neither marked nor
-counted, that a replacement raises no undo notice and cancels a pending one, and
-that both controls sit with the browsing controls and are operable by keyboard.
+counted, that a replacement raises no transient toggle notice, and that both
+controls sit with the browsing controls and are operable by keyboard.
 
 ## Requirements
 
@@ -272,26 +272,44 @@ leave progress untouched and SHALL NOT raise the confirmation.
 - **WHEN** the chosen file cannot be read
 - **THEN** no confirmation appears and progress is unchanged
 
-### Requirement: A matched name is matched on the canonical English name
+### Requirement: A matched name is matched on the canonical English name or its Russian label
 
 A candidate SHALL be matched against the dataset's canonical English runeword
-names, and SHALL NOT be matched against a locale's translated labels, so that a
-file written under one language imports identically under the other. Matching SHALL
-disregard letter case and surrounding whitespace, because without an unmatched-name
-report, a file that says `fortitude` would otherwise lose a mark for a reason the
-player never sees. What is stored for a matched candidate SHALL be the dataset's
-canonical name, whatever case the file used.
+names **and** against each runeword's Russian label from the dataset, so that a
+hand-written or mixed-language list still marks recognised runewords. Matching
+SHALL disregard letter case, surrounding whitespace, and the `ё`/`е` distinction
+on both sides, for the same reason search does. What is stored for a matched
+candidate SHALL be the dataset's canonical English name, whatever form the file
+used.
+
+Export SHALL continue to write canonical English names only. The active UI locale
+SHALL NOT change which candidates match or what is stored.
+
+Fuzzy matching beyond those folds SHALL NOT be used. A candidate that matches
+neither English nor Russian remains unmatched on the terms already set for unknown
+names.
 
 #### Scenario: Case does not prevent a match
 
 - **WHEN** a file lists a runeword name in lower case
 - **THEN** it is counted and marked, and the canonical name is what is stored
 
-#### Scenario: A Russian label is not a match
+#### Scenario: A Russian label matches
 
-- **WHEN** a file lists a runeword's Russian label
-- **THEN** it does not match, because the transfer format is canonical English
-  names only
+- **WHEN** a file lists a runeword's Russian dataset label
+- **THEN** it is counted and marked, and the canonical English name is what is
+  stored
+
+#### Scenario: A mixed file marks both languages
+
+- **WHEN** a file lists some runewords by English name and others by Russian label
+- **THEN** every recognised line is marked, and the confirmation counts all of them
+
+#### Scenario: ё and е do not prevent a Russian match
+
+- **WHEN** a file lists a Russian label with е where the dataset uses ё, or the
+  reverse
+- **THEN** it still matches that runeword
 
 #### Scenario: The locale does not change the result
 
@@ -338,23 +356,16 @@ player judges a file by.
 - **WHEN** an import with unmatched lines is confirmed
 - **THEN** nothing lists them, and no notice mentions them
 
-### Requirement: A replacement raises no undo notice and cancels a pending one
+### Requirement: A replacement raises no transient toggle notice
 
-An import SHALL NOT raise the transient undo notice, because that notice reverses
-one toggle and an import is not one. A notice left over from a toggle made before
-the import SHALL be dismissed when the import is applied, so that its undo cannot
-be taken against a set it was never about.
+An import SHALL NOT raise any transient notice about the previous crafted set.
+The page already asks before applying the import; a second post-apply affordance
+is not required.
 
-#### Scenario: Importing raises no notice
+#### Scenario: Importing raises no toggle notice
 
 - **WHEN** an import is confirmed
-- **THEN** no undo notice appears
-
-#### Scenario: A pending notice does not survive the import
-
-- **WHEN** a runeword is toggled and, while its notice is still on screen, an
-  import is confirmed
-- **THEN** the notice is gone, and the imported set is what is marked
+- **THEN** no transient notice about reversing a single mark appears
 
 ### Requirement: Both controls sit with the browsing controls and are operable by keyboard
 

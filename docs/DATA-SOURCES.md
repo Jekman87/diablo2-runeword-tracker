@@ -230,12 +230,13 @@ patches that added runewords.
 account-wide and shared between ladder and non-ladder, so a runeword crafted
 on ladder still counts. The tracker therefore mirrors all 99.
 
-**Ladder-only runewords: 9 of 99.** From the reference badges:
+**Ladder-only runewords shipped: 8 of 99.** The vendor/reference still lists
+nine (including Mosaic); the generator clears Mosaic because its note says it
+is disabled on ladder. The eight that keep the flag:
 
 | Runeword                              | Patch |
 | ------------------------------------- | ----- |
 | Bulwark, Cure, Ground, Hearth, Temper | 2.6   |
-| Mosaic                                | 2.6   |
 | Metamorphosis                         | 2.6   |
 | Mania, Hysteria                       | 3.0   |
 
@@ -248,15 +249,15 @@ renders three separate badges per row, each with a tooltip:
 | `2.6`   | `Patch version`  | `rw-Table-tdTitlePatch patch-2-6` |
 | `Note!` | free-form caveat | `rw-Md-note`                      |
 
-Mosaic carries all three, and its note reads:
+Mosaic carries patch and note (not the ladder flag). Its note reads:
 
-> Disabled in Season 13! Can be crafted offline non-ladder.
+> Disabled on ladder! Can be crafted offline non-ladder.
 
-So a runeword flagged ladder-only is currently impossible to craft _on_
-ladder and possible only outside it. Availability flips between seasons, which
-means any availability rule expressed as code will be wrong within a season or
-two. Model it as `ladderOnly`, `patch` and a free-text `note`, and edit the
-data rather than the logic.
+The vendor snapshot still marks Mosaic ladder-only; that flag contradicts the
+note, so the generator clears it before shipping. Availability flips between
+seasons, which means any availability rule expressed as code will be wrong
+within a season or two. Model it as `ladderOnly`, `patch` and a free-text
+`note`, and edit the data rather than the logic.
 
 Decided consequence: the progress bar always shows all 99. Denominators
 derived from ladder status would be built on shifting ground.
@@ -266,12 +267,12 @@ derived from ladder status would be built on shifting ground.
 All seven files match the sizes reported by the GitHub API byte for byte, and
 the contents cross-check against what the live site renders:
 
-| Check                                  | Result                                     |
-| -------------------------------------- | ------------------------------------------ |
-| Entries in `runewords.ts`              | 99                                         |
-| Entries in `runewords-descriptions.ts` | 99 — matches                               |
-| `ladder:` occurrences                  | 9 — matches the nine badges seen in the UI |
-| `note:` occurrences                    | 1 — Mosaic, as expected                    |
+| Check                                  | Result                                           |
+| -------------------------------------- | ------------------------------------------------ |
+| Entries in `runewords.ts`              | 99                                               |
+| Entries in `runewords-descriptions.ts` | 99 — matches                                     |
+| `ladder:` occurrences                  | 9 in vendor (shipped UI shows 8; Mosaic cleared) |
+| `note:` occurrences                    | 1 — Mosaic, as expected                          |
 
 ### Confirmed record schema
 
@@ -330,19 +331,19 @@ of `undefined`.
 
 ### Confirmed field mapping
 
-| Vendor           | Ours                  | Note                                          |
-| ---------------- | --------------------- | --------------------------------------------- |
-| `title`          | `name`                | unique; the canonical identifier              |
-| `runes`          | `runes`               | order significant, repeats preserved          |
-| `level`          | `requiredLevel`       | 13–69                                         |
-| `ttypes`         | `itemTypes`           | each resolves to `item-types.json`            |
-| `tinfos`         | `itemTypeRestriction` | parentheses stripped: `Assassin`, not `(…)`   |
-| `version`        | `patch`               | omitted on the 25 pre-1.10 runewords          |
-| `ladder`         | `ladderOnly`          | normalised to a boolean on all 99, 9 set      |
-| `note`           | `note`                | omitted unless present; only `Mosaic` has one |
-| _(descriptions)_ | `propertyGroups`      | merged in, one entry per line, grouped        |
-| `tier: 1\|2\|3`  | `tier`                | `common` / `semirare` / `rare`                |
-| _(none)_         | —                     | socket count stays derived                    |
+| Vendor           | Ours                  | Note                                                             |
+| ---------------- | --------------------- | ---------------------------------------------------------------- |
+| `title`          | `name`                | unique; the canonical identifier                                 |
+| `runes`          | `runes`               | order significant, repeats preserved                             |
+| `level`          | `requiredLevel`       | 13–69                                                            |
+| `ttypes`         | `itemTypes`           | each resolves to `item-types.json`                               |
+| `tinfos`         | `itemTypeRestriction` | parentheses stripped: `Assassin`, not `(…)`                      |
+| `version`        | `patch`               | omitted on the 25 pre-1.10 runewords                             |
+| `ladder`         | `ladderOnly`          | normalised boolean on all 99; 8 set (Mosaic overridden to false) |
+| `note`           | `note`                | omitted unless present; only `Mosaic` has one                    |
+| _(descriptions)_ | `propertyGroups`      | merged in, one entry per line, grouped                           |
+| `tier: 1\|2\|3`  | `tier`                | `common` / `semirare` / `rare`                                   |
+| _(none)_         | —                     | socket count stays derived                                       |
 
 The description blocks of `Fortitude`, `Phoenix` and `Spirit` carry `####`
 sub-headings because those three grant different properties per base type. The
