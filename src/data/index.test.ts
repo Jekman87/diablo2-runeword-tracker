@@ -14,10 +14,10 @@ import { runewordsSchema } from "@/data/schema";
 // transcription risk one layer up.
 
 describe("dataset counts and identity", () => {
-  it("holds exactly 99 runewords, 33 runes and 20 item categories", () => {
+  it("holds exactly 99 runewords, 33 runes and 21 item categories", () => {
     expect(runewords).toHaveLength(99);
     expect(runes).toHaveLength(33);
-    expect(itemTypes).toHaveLength(20);
+    expect(itemTypes).toHaveLength(21);
   });
 
   it("gives every runeword a distinct name", () => {
@@ -103,6 +103,7 @@ describe("item type references", () => {
       "Grimoire",
       "Melee Weapons",
       "Missile Weapons",
+      "Voodoo Heads",
       "Weapons",
     ]);
   });

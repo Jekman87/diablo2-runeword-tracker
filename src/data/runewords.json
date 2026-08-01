@@ -1044,7 +1044,7 @@
           "7% Mana Stolen Per Hit",
           "12-15% Life Stolen Per Hit (varies)",
           "Prevent Monster Heal",
-          "<U>+30 To All Attributes</U>",
+          "+30 To All Attributes",
           "+1 To Light Radius",
           "Requirements -20%"
         ]
@@ -1089,9 +1089,9 @@
           "+250-290% Enhanced Damage (varies)",
           "Adds 5-30 Fire Damage",
           "7% Life Stolen Per Hit",
-          "+2-6 To Battle Command (varies)*",
-          "+1-6 To Battle Orders (varies)*",
-          "+1-4 To Battle Cry (varies)*",
+          "+2-6 To Battle Command (varies)",
+          "+1-6 To Battle Orders (varies)",
+          "+1-4 To Battle Cry (varies)",
           "Prevent Monster Heal",
           "Replenish Life +12",
           "30% Better Chance of Getting Magic Items"
@@ -4069,7 +4069,7 @@
           "+2 to All Skills",
           "+40% Faster Cast Rate",
           "+10-15% to Magic Skill Damage",
-          "+1 to Abyss (Level 3)",
+          "+1-3 to Abyss",
           "+8-12 to all Attributes",
           "Level 4 Decrepify (35/35 Charges)",
           "Adds 3-14 Cold Damage",
@@ -4086,7 +4086,7 @@
             "+2 ко всем умениям",
             "+40% к скорости применения умений",
             "+(10-15)% к урону от магических умений",
-            "+1 к умению \"Бездна\" (3-го уровня)",
+            "+(1-3) к умению \"Бездна\"",
             "+(8-12) ко всем характеристикам",
             "\"Одряхление\" 4-го уровня (35/35 зарядов)",
             "+3-14 урона от льда",
@@ -4101,7 +4101,7 @@
     "name": "Vigilance",
     "runes": ["Dol", "Gul"],
     "requiredLevel": 53,
-    "itemTypes": ["Shields", "Paladin Shields", "Grimoire"],
+    "itemTypes": ["Shields", "Paladin Shields", "Grimoire", "Voodoo Heads"],
     "ladderOnly": false,
     "patch": "3.0",
     "propertyGroups": [
@@ -4230,7 +4230,7 @@
           "+6 to Evade",
           "+10 to Dexterity",
           "50% Slower Stamina Drain",
-          "+All Resistances +10"
+          "All Resistances +10"
         ]
       }
     ],

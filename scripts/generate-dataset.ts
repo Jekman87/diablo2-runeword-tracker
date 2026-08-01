@@ -59,6 +59,11 @@ export function buildDataset(
   vendor: VendorData,
   translations: Translations = REPO_TRANSLATIONS,
 ): Dataset {
+  // Known upstream errors the read-only vendor snapshot still carries. Applied
+  // here rather than by editing `vendor/`, so a refresh keeps the corrections
+  // until upstream catches up — and so the drift test still owns the JSON.
+  vendor = applyVendorCorrections(vendor);
+
   assertDescriptionKeysAgree(vendor);
 
   const runeword = validatedTranslations(
@@ -270,6 +275,72 @@ export interface VendorData {
   descriptions: z.infer<typeof vendorDescriptionsSchema>;
   runes: z.infer<typeof vendorRunesSchema>;
   itemTypes: z.infer<typeof vendorItemTypesSchema>;
+}
+
+/**
+ * Patches confirmed game-data mistakes in the vendored snapshot without editing
+ * `vendor/` itself. Only touches records that exist, so one-runeword fakes used
+ * by the generator tests stay unaffected.
+ *
+ * Sources for each correction: diablo2.io, Maxroll, D2Runewizard (2026 audit).
+ */
+export function applyVendorCorrections(vendor: VendorData): VendorData {
+  const descriptions = { ...vendor.descriptions };
+
+  if (descriptions.Void !== undefined) {
+    descriptions.Void = descriptions.Void.replaceAll(
+      "+1 to Abyss (Level 3)",
+      "+1-3 to Abyss",
+    );
+  }
+
+  if (descriptions["Breath of the Dying"] !== undefined) {
+    descriptions["Breath of the Dying"] = descriptions[
+      "Breath of the Dying"
+    ].replaceAll(/<\/?U>/g, "");
+  }
+
+  if (descriptions.Hysteria !== undefined) {
+    descriptions.Hysteria = descriptions.Hysteria.replaceAll(
+      "+All Resistances +10",
+      "All Resistances +10",
+    );
+  }
+
+  if (descriptions["Call to Arms"] !== undefined) {
+    descriptions["Call to Arms"] = descriptions["Call to Arms"].replaceAll(
+      "(varies)*",
+      "(varies)",
+    );
+  }
+
+  const runewords = vendor.runewords.map((record) => {
+    if (record.title !== "Vigilance") return record;
+    if (record.ttypes.includes("Voodoo Heads")) return record;
+    return { ...record, ttypes: [...record.ttypes, "Voodoo Heads"] };
+  });
+
+  const vigilanceNeedsVoodoo = runewords.some(
+    (record) =>
+      record.title === "Vigilance" && record.ttypes.includes("Voodoo Heads"),
+  );
+
+  let itemTypes = vendor.itemTypes;
+  if (vigilanceNeedsVoodoo && vendor.itemTypes["Voodoo Heads"] === undefined) {
+    itemTypes = {};
+    for (const [name, value] of Object.entries(vendor.itemTypes)) {
+      itemTypes[name] = value;
+      // Beside the other class-specific off-hands, so a diff stays readable.
+      if (name === "Paladin Shields") {
+        itemTypes["Voodoo Heads"] = {};
+      }
+    }
+    if (itemTypes["Voodoo Heads"] === undefined) {
+      itemTypes["Voodoo Heads"] = {};
+    }
+  }
+
+  return { runewords, descriptions, runes: vendor.runes, itemTypes };
 }
 
 // --- transformation ---------------------------------------------------------

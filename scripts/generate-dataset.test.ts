@@ -46,14 +46,40 @@ describe("Russian translations are merged in full", () => {
   // The coverage assertion the design asks for. Without it an omitted variant
   // would render its English fallback — coherent, and therefore invisible.
 
-  it("translates all 99 runewords, all 33 runes and all 20 categories", () => {
+  it("translates all 99 runewords, all 33 runes and all 21 categories", () => {
     expect(
       generated.runewords.filter((record) => record.ru !== undefined),
     ).toHaveLength(99);
     expect(generated.runes).toHaveLength(33);
-    expect(generated.itemTypes).toHaveLength(20);
+    expect(generated.itemTypes).toHaveLength(21);
     // `ru` is required on both reference schemas, so parsing already proved
     // every entry carries one; these two assert the lists are whole.
+  });
+
+  it("applies known upstream corrections without editing vendor/", () => {
+    const byName = Object.fromEntries(
+      generated.runewords.map((record) => [record.name, record]),
+    );
+
+    expect(byName.Void.propertyGroups[0].properties).toContain("+1-3 to Abyss");
+    expect(byName.Void.ru?.propertyGroups[0].properties).toContain(
+      '+(1-3) к умению "Бездна"',
+    );
+    expect(byName.Vigilance.itemTypes).toContain("Voodoo Heads");
+    expect(
+      byName["Breath of the Dying"].propertyGroups[0].properties,
+    ).toContain("+30 To All Attributes");
+    expect(
+      byName["Breath of the Dying"].propertyGroups[0].properties.join(""),
+    ).not.toMatch(/<\/?U>/);
+    expect(byName.Hysteria.propertyGroups[0].properties).toContain(
+      "All Resistances +10",
+    );
+    expect(
+      byName["Call to Arms"].propertyGroups[0].properties.every(
+        (line) => !line.endsWith("*"),
+      ),
+    ).toBe(true);
   });
 
   it("mirrors every English property line with a Russian one", () => {

@@ -1,4 +1,4 @@
-// Russian names for the 20 base item categories, keyed by canonical English
+// Russian names for the 21 base item categories, keyed by canonical English
 // name.
 //
 // From the official Russian localisation. The transcription at
@@ -7,7 +7,7 @@
 // reader with the client open checked the four this project had either got wrong
 // or could not find at all.
 //
-// Eighteen of the twenty are the game's own words. Two are not, and cannot be:
+// Eighteen of the twenty-one are the game's own words. Two are not, and cannot be:
 // the client has no collective name for missile weapons — it names bows and
 // crossbows separately — and none for polearms either, so those two labels
 // enumerate and describe respectively. Each note says which case it is. No
@@ -75,6 +75,11 @@ export const itemTypeTranslations: Record<string, NameTranslation> = {
     ru: "Щиты паладина",
     source:
       "https://www.noob-club.ru/index.php?topic=70236.0 — the base lists of the official localisation's runeword entries, which names this class in exactly these words",
+  },
+  "Voodoo Heads": {
+    ru: "Усохшие головы",
+    source:
+      "Official Russian localisation for Necromancer shrunken heads / voodoo heads; confirmed as a Vigilance base by diablo2.io, Maxroll and D2Runewizard. The noob-club runeword guide predates Vigilance naming this class in its base list",
   },
   Polearms: {
     ru: "Древковое оружие",

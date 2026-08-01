@@ -2049,7 +2049,7 @@ export const runewordTranslations: Record<string, RunewordTranslation> = {
           "+2 ко всем умениям",
           "+40% к скорости применения умений",
           "+(10-15)% к урону от магических умений",
-          '+1 к умению "Бездна" (3-го уровня)',
+          '+(1-3) к умению "Бездна"',
           "+(8-12) ко всем характеристикам",
           '"Одряхление" 4-го уровня (35/35 зарядов)',
           "+3-14 урона от льда",
@@ -2059,7 +2059,7 @@ export const runewordTranslations: Record<string, RunewordTranslation> = {
       },
     ],
     source:
-      "https://www.noob-club.ru/index.php?topic=70236.0 — verified against the official localisation; transcribed from https://diablo2-resurrected.ru/runnie-slova-runi.htm#54 — site reads the parenthesised skill level as a range («+1-3»); the English line grants +1 to the level-3 skill, so the parenthesis is kept as a level; charge-skill line absent from the primary source's entry; phrased after its conventions, skill names verified against the primary source's own class skill pages (diablo2-resurrected.ru/Skills/); site alternates bracketed and bare ranges; the dominant bracketed form chosen; 1 of 9 property lines are not quoted from the official-localisation guide (it predates this record); those follow its conventions, transcribed from diablo2-resurrected.ru",
+      "https://www.noob-club.ru/index.php?topic=70236.0 — verified against the official localisation; transcribed from https://diablo2-resurrected.ru/runnie-slova-runi.htm#54 — Abyss bonus is a +1-3 range (diablo2.io / Maxroll / D2Runewizard), not a fixed +1 to the level-3 skill; charge-skill line absent from the primary source's entry; phrased after its conventions, skill names verified against the primary source's own class skill pages (diablo2-resurrected.ru/Skills/); site alternates bracketed and bare ranges; the dominant bracketed form chosen; 1 of 9 property lines are not quoted from the official-localisation guide (it predates this record); those follow its conventions, transcribed from diablo2-resurrected.ru",
   },
   Vigilance: {
     name: "Бдительность",
