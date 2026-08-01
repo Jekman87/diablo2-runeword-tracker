@@ -101,6 +101,9 @@ export function slotsOf(runeword: Runeword): Slot[] {
  * named for the hand rather than for the shield is what makes that read as a fact
  * instead of as an exception.
  *
+ * `Voodoo Heads → offhand`. Necromancer shrunken heads; `Vigilance` lists them
+ * beside Shields / Paladin Shields / Grimoire.
+ *
  * `Weapons → melee and missile`, the one category with two. See `slotsOfCategory`.
  *
  * `Wands`, `Staves` and `Scepters → melee`. All three are melee weapons in the game
@@ -115,6 +118,7 @@ const SLOTS_BY_CATEGORY: Record<string, readonly Slot[]> = {
   Shields: ["offhand"],
   "Paladin Shields": ["offhand"],
   Grimoire: ["offhand"],
+  "Voodoo Heads": ["offhand"],
 
   // Any weapon at all, so both of the weapon slots.
   Weapons: ["melee", "missile"],

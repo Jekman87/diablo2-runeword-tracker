@@ -23,7 +23,7 @@ describe("the mapping's totality", () => {
       .filter((category) => slotsOfCategory(category).length === 0);
 
     expect(unmapped).toEqual([]);
-    expect(itemTypes).toHaveLength(20);
+    expect(itemTypes).toHaveLength(21);
   });
 
   it("reports nothing for a category the dataset does not have", () => {
@@ -187,9 +187,11 @@ describe("the entries worth defending", () => {
     expect(slotsOfCategory("Missile Weapons")).toEqual(["missile"]);
   });
 
-  it("makes both shield categories shields", () => {
+  it("makes the off-hand shield categories offhand", () => {
     expect(slotsOfCategory("Shields")).toEqual(["offhand"]);
     expect(slotsOfCategory("Paladin Shields")).toEqual(["offhand"]);
+    expect(slotsOfCategory("Grimoire")).toEqual(["offhand"]);
+    expect(slotsOfCategory("Voodoo Heads")).toEqual(["offhand"]);
   });
 
   it("keeps helm and body armour to one category each", () => {
