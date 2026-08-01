@@ -3,9 +3,12 @@ import {
   itemTypesByName,
   runes,
   runesByName,
+  runewordNameAliases,
   runewords,
+  runewordsByName,
 } from "@/data";
 import { runewordsSchema } from "@/data/schema";
+import { foldLabel } from "@/runewords/fold";
 
 // This change ships no visible surface, so these tests are its acceptance
 // evidence. They target counts and cross-references rather than spot-checking
@@ -24,6 +27,37 @@ describe("dataset counts and identity", () => {
     const names = runewords.map((runeword) => runeword.name);
 
     expect(new Set(names).size).toBe(names.length);
+  });
+});
+
+describe("the names progress matching answers to", () => {
+  // A collision here would not throw: `new Map` keeps the last writer, so one
+  // runeword would quietly lose its name to another and an import would mark
+  // the wrong row. These are the tests that turn that into a build failure.
+
+  it("indexes both the English name and the Russian label of every runeword", () => {
+    const translated = runewords.filter(
+      (runeword) => runeword.ru !== undefined,
+    );
+
+    expect(runewordNameAliases.size).toBe(runewords.length + translated.length);
+  });
+
+  it("resolves every alias to a canonical name the dataset has", () => {
+    const unresolved = [...runewordNameAliases.values()].filter(
+      (canonical) => !runewordsByName.has(canonical),
+    );
+
+    expect(unresolved).toEqual([]);
+  });
+
+  it("resolves each name in the language it was written in", () => {
+    const pledge = runeword("Ancient's Pledge");
+    const russian = pledge.ru?.name;
+
+    expect(russian).toBeDefined();
+    expect(runewordNameAliases.get(foldLabel(pledge.name))).toBe(pledge.name);
+    expect(runewordNameAliases.get(foldLabel(russian ?? ""))).toBe(pledge.name);
   });
 });
 
@@ -249,13 +283,13 @@ describe("required levels", () => {
 });
 
 describe("availability metadata", () => {
-  it("exposes a ladder-only boolean on all 99, set on exactly 9", () => {
+  it("exposes a ladder-only boolean on all 99, set on exactly 8", () => {
     const missing = runewords.filter(
       (entry) => typeof entry.ladderOnly !== "boolean",
     );
 
     expect(missing).toEqual([]);
-    expect(runewords.filter((entry) => entry.ladderOnly)).toHaveLength(9);
+    expect(runewords.filter((entry) => entry.ladderOnly)).toHaveLength(8);
   });
 
   it("carries a patch on 74 records and none on the 25 that predate tracking", () => {
@@ -265,16 +299,19 @@ describe("availability metadata", () => {
     expect(runewords.length - withPatch.length).toBe(25);
   });
 
-  it("carries a note only on Mosaic, alongside its other two badges", () => {
+  it("carries a note only on Mosaic, with patch and no ladder flag", () => {
     const noted = runewords.filter((entry) => entry.note !== undefined);
 
     expect(noted.map((entry) => entry.name)).toEqual(["Mosaic"]);
 
     const mosaic = runeword("Mosaic");
 
-    expect(mosaic.ladderOnly).toBe(true);
+    // Vendor marks Mosaic ladder-only, but that contradicts the note (disabled
+    // on ladder). The generator clears the flag so the L badge does not lie.
+    expect(mosaic.ladderOnly).toBe(false);
     expect(mosaic.patch).toBe("2.6");
-    expect(mosaic.note).toContain("Season 13");
+    expect(mosaic.note).toContain("ladder");
+    expect(mosaic.note).not.toMatch(/Season \d+/);
   });
 
   it("does not reduce the progress denominator", () => {

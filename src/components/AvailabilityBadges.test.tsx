@@ -1,11 +1,12 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { AvailabilityBadges } from "@/components/AvailabilityBadges";
 import { type Runeword, runewords } from "@/data";
 import { en } from "@/i18n/en";
 
 describe("AvailabilityBadges", () => {
-  it("renders all three for `Mosaic`", () => {
+  it("renders patch and note for `Mosaic`, without a ladder marker", () => {
     const mosaic = named("Mosaic");
 
     render(<AvailabilityBadges runeword={mosaic} />);
@@ -14,22 +15,39 @@ describe("AvailabilityBadges", () => {
       screen.getByRole("img", { name: en.availability.patchMeaning("2.6") }),
     ).toHaveTextContent("2.6");
     expect(
-      screen.getByRole("img", { name: en.availability.ladderMeaning }),
-    ).toHaveTextContent(en.availability.ladderMarker);
+      screen.queryByRole("img", { name: en.availability.ladderMeaning }),
+    ).not.toBeInTheDocument();
     expect(screen.getByRole("img", { name: mosaic.note })).toHaveTextContent(
       en.availability.noteMarker,
     );
   });
 
   it("states a badge's meaning rather than the letter it draws", () => {
-    render(<AvailabilityBadges runeword={named("Mosaic")} />);
+    render(<AvailabilityBadges runeword={named("Bulwark")} />);
 
     const ladder = screen.getByRole("img", {
       name: en.availability.ladderMeaning,
     });
 
     expect(ladder).not.toHaveAccessibleName(en.availability.ladderMarker);
-    expect(ladder).toHaveAttribute("title", en.availability.ladderMeaning);
+    // The browser's `title` is gone on purpose: the tip is a Floating UI
+    // panel in the detail view's own surface, not OS chrome.
+    expect(ladder).not.toHaveAttribute("title");
+  });
+
+  it("shows the meaning in a tooltip on hover", async () => {
+    const user = userEvent.setup();
+    render(<AvailabilityBadges runeword={named("Bulwark")} />);
+
+    await user.hover(
+      screen.getByRole("img", { name: en.availability.ladderMeaning }),
+    );
+
+    expect(
+      await screen.findByRole("tooltip", {
+        name: en.availability.ladderMeaning,
+      }),
+    ).toBeVisible();
   });
 
   it("renders nothing for a runeword predating patch tracking", () => {
@@ -48,7 +66,7 @@ describe("AvailabilityBadges", () => {
     expect(screen.queryAllByRole("img")).toEqual([]);
   });
 
-  it("marks exactly the 9 ladder-only runewords", () => {
+  it("marks exactly the 8 ladder-only runewords", () => {
     const { container } = render(
       <ul>
         {runewords.map((runeword) => (
@@ -63,7 +81,7 @@ describe("AvailabilityBadges", () => {
       `[aria-label="${en.availability.ladderMeaning}"]`,
     );
 
-    expect(ladder).toHaveLength(9);
+    expect(ladder).toHaveLength(8);
   });
 
   it("marks exactly the one runeword carrying a note", () => {
@@ -111,7 +129,6 @@ describe("what a patch badge's colour says", () => {
 
     // The colour is a second channel over a meaning already stated, never the
     // only one. A badge whose colour cannot be seen is still readable.
-    expect(badge).toHaveAttribute("title", en.availability.patchMeaning("2.6"));
     expect(badge).toHaveAccessibleName(en.availability.patchMeaning("2.6"));
   });
 });

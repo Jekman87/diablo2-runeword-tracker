@@ -49,8 +49,8 @@ export interface RunewordTableProps {
  * one decision about two components and neither of them owns it.
  *
  * The crafted set arrives as a prop and is not read from a hook here. It is
- * owned by `App`, because the progress bar and the undo notice are this table's
- * siblings and need the same value — two levels of prop drilling for one piece
+ * owned by `App`, because the progress bar and the mark/unmark confirmation are
+ * this table's siblings and need the same value — two levels of prop drilling for one piece
  * of state, which is not a context and is certainly not a store library.
  *
  * The one `<dialog>` every row used to share is gone — a panel that opens on
