@@ -12,11 +12,12 @@ describe("remainingBases with nothing crafted", () => {
   const remaining = remainingBases(runewords, itemTypes, NOTHING_CRAFTED);
 
   it("counts every category membership, not every runeword", () => {
-    // 144 memberships across 99 runewords, in 55 (category, sockets) groups —
+    // 145 memberships across 99 runewords, in 56 (category, sockets) groups —
     // a runeword allowing three categories counts in all three, on the
-    // precedent the slot filter set.
-    expect(remaining).toHaveLength(55);
-    expect(remaining.reduce((sum, group) => sum + group.count, 0)).toBe(144);
+    // precedent the slot filter set. Vigilance's Voodoo Heads base is the
+    // membership that pushed the group count from 55 to 56.
+    expect(remaining).toHaveLength(56);
+    expect(remaining.reduce((sum, group) => sum + group.count, 0)).toBe(145);
   });
 
   it("counts the runewords a group would serve", () => {
