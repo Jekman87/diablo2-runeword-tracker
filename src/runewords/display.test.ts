@@ -25,8 +25,9 @@ describe("the English projection", () => {
     expect(displayRuneword(runeword("Leaf"), "en").itemTypeRestriction).toBe(
       "Not Orbs/Wands",
     );
-    expect(displayRuneword(runeword("Mosaic"), "en").note).toContain(
-      "Season 13",
+    expect(displayRuneword(runeword("Mosaic"), "en").note).toContain("ladder");
+    expect(displayRuneword(runeword("Mosaic"), "en").note).not.toMatch(
+      /Season \d+/,
     );
   });
 

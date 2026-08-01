@@ -1,6 +1,7 @@
 import type { Runeword } from "@/data";
 import type { Locale } from "@/i18n";
 import { displayRuneword } from "@/runewords/display";
+import { foldLabel } from "@/runewords/fold";
 
 /**
  * Whether a runeword matches a search query, in the language it is displayed in.
@@ -44,40 +45,29 @@ import { displayRuneword } from "@/runewords/display";
  * `Intl.Collator`. Ordering is the part that does, and that is `sort.ts`'s.
  *
  * One normalisation is added, and it is a deliberate inexactness: `ё` folds to
- * `е` on both sides. Russian typists routinely write `е` for `ё`, and an
- * exact-match miss on that distinction reads as a bug rather than as precision.
- * It is scoped to matching — the displayed text keeps its own spelling.
+ * `е` on both sides. It comes from `foldLabel`, which import matching shares, so
+ * a tolerance this field offers is one an imported file gets too.
  */
 export function matchesQuery(
   runeword: Runeword,
   query: string,
   locale: Locale,
 ): boolean {
-  const needle = fold(query.trim());
+  const needle = foldLabel(query);
 
   if (needle === "") return true;
 
   const projected = displayRuneword(runeword, locale);
 
-  if (fold(projected.name).includes(needle)) return true;
+  if (foldLabel(projected.name).includes(needle)) return true;
 
-  if (projected.itemTypes.some((category) => fold(category).includes(needle))) {
+  if (
+    projected.itemTypes.some((category) => foldLabel(category).includes(needle))
+  ) {
     return true;
   }
 
   return projected.itemTypeRestriction === undefined
     ? false
-    : fold(projected.itemTypeRestriction).includes(needle);
-}
-
-/**
- * The form both sides of a comparison are reduced to: case-folded, with `ё`
- * treated as `е`.
- *
- * Applied to the query and the haystack alike, which is the only way the
- * interchange can be symmetric — a query written `ё` has to find text written
- * `е` as readily as the reverse.
- */
-function fold(text: string): string {
-  return text.toLowerCase().replaceAll("ё", "е");
+    : foldLabel(projected.itemTypeRestriction).includes(needle);
 }

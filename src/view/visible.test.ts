@@ -238,9 +238,9 @@ describe("what the locale may not influence", () => {
   });
 
   it("returns records carrying their canonical names, whatever the locale", () => {
-    // What a caller gets back is the dataset's own records. Progress, the undo
-    // notice and the open-panel flag all key on `name`, so the projection must
-    // never replace it.
+    // What a caller gets back is the dataset's own records. Progress, the
+    // mark/unmark confirmation and the open-panel flag all key on `name`, so
+    // the projection must never replace it.
     const rows = visibleRunewords(
       runewords,
       DEFAULT_VIEW_SETTINGS,

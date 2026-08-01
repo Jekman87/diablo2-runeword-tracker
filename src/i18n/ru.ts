@@ -70,7 +70,7 @@ export const ru: Strings = {
     helpIntro:
       "Все рунные слова игры — с рунами, которые для них нужны, и базами, в которые их можно вставить. Патч выше указывает, какой версии игры соответствует список.",
     helpPoints: [
-      "Отметьте ячейку в столбце «Создано», чтобы записать собранное рунное слово. Полоса вверху страницы считает, сколько из всех 99 уже готово, а если отметили не то — уведомление предложит отмену.",
+      "Отметьте ячейку в столбце «Создано», чтобы записать собранное рунное слово, — щелчок по любому месту строки делает то же самое. И в том и в другом случае страница сначала спросит подтверждение, поэтому случайный щелчок ничего не стоит, а полоса вверху считает, сколько из всех 99 уже готово.",
       "Поле поиска ищет по названию рунного слова, его базам и ограничениям по классу или типу предмета. Две группы кнопок рядом сужают список по готовности и по слоту экипировки, а каждый заголовок столбца сортирует таблицу.",
       "«Оставшиеся руны и базы» складывают всё, что ещё нужно несобранным рунным словам, — список покупок на оставшиеся, а не на всю игру.",
       "Наведите указатель на название рунного слова, чтобы увидеть его свойства, руны по порядку, число гнёзд и требуемый уровень.",
@@ -276,6 +276,30 @@ export const ru: Strings = {
     mark: (name: string) => `Отметить рунное слово ${name} как созданное`,
     unmark: (name: string) =>
       `Снять с рунного слова ${name} отметку о создании`,
+
+    // The confirmation before every mark and unmark. Project prose: the client
+    // has no dialog of this kind, so there is nothing to source — the terms
+    // inside it are the ones already settled above («рунное слово»,
+    // «созданное»), and the sentences around them are written as natural
+    // Russian rather than translated word for word from the English record.
+    //
+    // «Отмена» for cancelling, as `transfer.confirmCancel` already uses, and
+    // never «Отменить», which is the imperative the undo notice used and reads
+    // as "undo it" beside a button that means "do nothing".
+    //
+    // `{name}` is the same placeholder English uses: the component paints the
+    // projected label gold. «Добавить» matches English "Add" — short, and the
+    // title already carries the longer question.
+    confirmMarkTitle: "Отметить как созданное?",
+    confirmMarkBody: "Рунное слово {name} будет учтено в вашем прогрессе.",
+    confirmMarkAction: "Добавить",
+
+    confirmUnmarkTitle: "Снять отметку?",
+    confirmUnmarkBody:
+      "Рунное слово {name} перестанет учитываться в вашем прогрессе.",
+    confirmUnmarkAction: "Снять отметку",
+
+    confirmCancel: "Отмена",
   },
 
   progress: {
@@ -283,12 +307,13 @@ export const ru: Strings = {
     // Bare numerals, as in English — no noun, so no plural form to select.
     count: (crafted: number, total: number) =>
       `${total === 0 ? 0 : Math.round((crafted / total) * 100)}% (${crafted} из ${total})`,
-  },
 
-  undo: {
-    marked: (name: string) => `Рунное слово ${name} отмечено как созданное`,
-    unmarked: (name: string) => `Отметка с рунного слова ${name} снята`,
-    action: "Отменить",
+    // Project prose as well: the Chronicle's own completion text is not a UI
+    // string this project can source, and machine translation stays forbidden.
+    // «Награда» is the word the in-game screen's reward is called by, and the
+    // sentence sends the player back to the game to claim it.
+    complete:
+      "Поздравляем, вы собрали все рунные слова! Заберите награду в игре!",
   },
 
   remaining: {

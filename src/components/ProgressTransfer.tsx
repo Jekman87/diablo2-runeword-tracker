@@ -11,10 +11,15 @@ import {
 } from "@floating-ui/react";
 
 import { type StoredProgress, splitStoredNames } from "@/crafted/storage";
-import { runewordNames } from "@/data";
+import { runewordNameAliases } from "@/data";
 import { useStrings } from "@/i18n";
 import { downloadText } from "@/transfer/download";
-import { EXPORT_FILENAME, formatExport, parseImport } from "@/transfer/format";
+import {
+  EXPORT_FILENAME,
+  decodeImportBytes,
+  formatExport,
+  parseImport,
+} from "@/transfer/format";
 
 export interface ProgressTransferProps {
   /** Every crafted runeword, which is what an export writes. */
@@ -219,9 +224,14 @@ export function ProgressTransfer({
 
     try {
       // Split by the same function a stored list goes through, so an import and
-      // a reload cannot disagree about which names the dataset knows.
+      // a reload cannot disagree about which names the dataset knows. The
+      // aliases are English and Russian alike, so a translated or mixed list
+      // marks what it names and the count below says so.
       setPending(
-        splitStoredNames(parseImport(await file.text()), runewordNames),
+        splitStoredNames(
+          parseImport(decodeImportBytes(await file.arrayBuffer())),
+          runewordNameAliases,
+        ),
       );
     } catch {
       // The file could not be read at all — removed from the disk between the

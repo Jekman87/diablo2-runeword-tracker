@@ -19,8 +19,9 @@ export interface RunewordRowProps {
   detailsOpen: boolean;
   onDetailsOpenChange: RunewordDetailsProps["onOpenChange"];
   /**
-   * Marks or unmarks the runeword. The control is handed over so that an undo
-   * taken later can return focus to it.
+   * Asks to mark or unmark the runeword, which opens the confirmation rather
+   * than changing anything. The control is handed over so that the dialog can
+   * return focus to it however it closes.
    */
   onToggle: (name: string, control: HTMLElement | null) => void;
 }
@@ -33,8 +34,8 @@ export interface RunewordRowProps {
  * the two share one floating context. The name is still a real `<button>`, which
  * is what makes it focusable and operable by Space and Enter. It is also the seam
  * this row inherited: the row-level handler below must not fire for a click that
- * landed on the name, or opening the detail view would silently mark the runeword
- * crafted.
+ * landed on the name, or opening the detail view would also ask whether to mark
+ * the runeword crafted.
  *
  * The row is a pointer target and **not** a second keyboard stop — no
  * `role="button"`, no `tabindex`. Ninety-nine focusable rows would double every
@@ -64,7 +65,7 @@ export const RunewordRow = memo(function RunewordRow({
   const control = useRef<HTMLButtonElement>(null);
 
   // Both paths hand over the same node, so a row click and a press on the
-  // socket record the same place for focus to come back to.
+  // socket raise the same question and come back to the same control.
   const toggle = () => onToggle(runeword.name, control.current);
 
   return (
@@ -144,8 +145,9 @@ export const RunewordRow = memo(function RunewordRow({
  * Whether this click was already somebody else's, and so is not a toggle.
  *
  * Two exclusions, and the first is the one that matters. Without it, clicking a
- * runeword's name would open the detail view **and** mark it crafted — the
- * collision `runeword-table` recorded when it made the name a button. It is
+ * runeword's name would open the detail view **and** raise the crafted
+ * confirmation over it — the collision `runeword-table` recorded when it made
+ * the name a button. It is
  * written as a selector matched with `closest()` rather than as a comparison
  * against the two controls that exist today, so a control added inside a row
  * later is excluded without this function being revisited.

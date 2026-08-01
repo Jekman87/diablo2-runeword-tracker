@@ -15,10 +15,10 @@ describe("toggling", () => {
   it("marks and unmarks a runeword", () => {
     const { result } = renderHook(() => useCraftedRunewords());
 
-    act(() => result.current.toggle("Enigma", null));
+    act(() => result.current.toggle("Enigma"));
     expect(result.current.crafted.has("Enigma")).toBe(true);
 
-    act(() => result.current.toggle("Enigma", null));
+    act(() => result.current.toggle("Enigma"));
     expect(result.current.crafted.has("Enigma")).toBe(false);
   });
 
@@ -26,7 +26,7 @@ describe("toggling", () => {
     const { result } = renderHook(() => useCraftedRunewords());
     const before = result.current.crafted;
 
-    act(() => result.current.toggle("Enigma", null));
+    act(() => result.current.toggle("Enigma"));
 
     expect(result.current.crafted).not.toBe(before);
   });
@@ -34,7 +34,7 @@ describe("toggling", () => {
   it("persists the mark", () => {
     const { result } = renderHook(() => useCraftedRunewords());
 
-    act(() => result.current.toggle("Enigma", null));
+    act(() => result.current.toggle("Enigma"));
 
     expect(window.localStorage.getItem(CRAFTED_STORAGE_KEY)).toBe('["Enigma"]');
   });
@@ -48,81 +48,9 @@ describe("toggling", () => {
   });
 });
 
-describe("the pending undo", () => {
-  it("records what the toggle did", () => {
-    const { result } = renderHook(() => useCraftedRunewords());
-
-    act(() => result.current.toggle("Enigma", null));
-
-    expect(result.current.pendingUndo).toMatchObject({
-      name: "Enigma",
-      marked: true,
-    });
-  });
-
-  it("reverses exactly that toggle", () => {
-    const { result } = renderHook(() => useCraftedRunewords());
-
-    act(() => result.current.toggle("Enigma", null));
-    act(() => result.current.undo());
-
-    expect(result.current.crafted.has("Enigma")).toBe(false);
-    expect(result.current.pendingUndo).toBeNull();
-  });
-
-  it("reverses an unmark as readily as a mark", () => {
-    window.localStorage.setItem(CRAFTED_STORAGE_KEY, '["Enigma"]');
-    const { result } = renderHook(() => useCraftedRunewords());
-
-    act(() => result.current.toggle("Enigma", null));
-    act(() => result.current.undo());
-
-    expect(result.current.crafted.has("Enigma")).toBe(true);
-  });
-
-  it("is replaced by a second toggle rather than queued behind it", () => {
-    const { result } = renderHook(() => useCraftedRunewords());
-
-    act(() => result.current.toggle("Enigma", null));
-    act(() => result.current.toggle("Spirit", null));
-    act(() => result.current.undo());
-
-    // Only the most recent one comes back. There is no history stack.
-    expect(result.current.crafted.has("Spirit")).toBe(false);
-    expect(result.current.crafted.has("Enigma")).toBe(true);
-  });
-
-  it("returns focus to the control it was given", () => {
-    const control = document.createElement("button");
-    document.body.append(control);
-
-    const { result } = renderHook(() => useCraftedRunewords());
-
-    act(() => result.current.toggle("Enigma", control));
-    act(() => result.current.undo());
-
-    expect(document.activeElement).toBe(control);
-
-    control.remove();
-  });
-
-  it("does nothing when there is nothing to undo", () => {
-    const { result } = renderHook(() => useCraftedRunewords());
-
-    expect(() => act(() => result.current.undo())).not.toThrow();
-    expect(result.current.crafted.size).toBe(0);
-  });
-
-  it("clears on dismissal without reversing the toggle", () => {
-    const { result } = renderHook(() => useCraftedRunewords());
-
-    act(() => result.current.toggle("Enigma", null));
-    act(() => result.current.dismissUndo());
-
-    expect(result.current.pendingUndo).toBeNull();
-    expect(result.current.crafted.has("Enigma")).toBe(true);
-  });
-});
+// There is no undo here to test any more. The confirmation dialog in front of
+// every mark and unmark is the protection now, and it is `App`'s to prove: this
+// hook is the write that a confirmed answer performs.
 
 describe("what mounting must not do", () => {
   it("writes nothing", () => {
@@ -152,7 +80,7 @@ describe("what mounting must not do", () => {
 
     const { result } = renderHook(() => useCraftedRunewords());
 
-    act(() => result.current.toggle("Enigma", null));
+    act(() => result.current.toggle("Enigma"));
 
     expect(result.current.crafted.has("Enigma")).toBe(true);
   });
@@ -169,7 +97,7 @@ describe("names the dataset does not know", () => {
 
     expect([...result.current.crafted]).toEqual(["Enigma"]);
 
-    act(() => result.current.toggle("Spirit", null));
+    act(() => result.current.toggle("Spirit"));
 
     expect(
       JSON.parse(window.localStorage.getItem(CRAFTED_STORAGE_KEY) ?? "[]"),
@@ -181,8 +109,8 @@ describe("replacing progress with an imported file", () => {
   it("makes the imported value the whole of the crafted set", () => {
     const { result } = renderHook(() => useCraftedRunewords());
 
-    act(() => result.current.toggle("Enigma", null));
-    act(() => result.current.toggle("Spirit", null));
+    act(() => result.current.toggle("Enigma"));
+    act(() => result.current.toggle("Spirit"));
 
     act(() =>
       result.current.replace({ crafted: new Set(["Grief"]), unknown: [] }),
@@ -211,7 +139,7 @@ describe("replacing progress with an imported file", () => {
   it("clears progress when the imported file listed nothing", () => {
     const { result } = renderHook(() => useCraftedRunewords());
 
-    act(() => result.current.toggle("Enigma", null));
+    act(() => result.current.toggle("Enigma"));
     act(() => result.current.replace({ crafted: new Set(), unknown: [] }));
 
     expect(result.current.crafted.size).toBe(0);
@@ -235,21 +163,6 @@ describe("replacing progress with an imported file", () => {
     expect(
       JSON.parse(window.localStorage.getItem(CRAFTED_STORAGE_KEY) ?? "[]"),
     ).toEqual(["Enigma", "Plague"]);
-  });
-
-  it("leaves no undo behind", () => {
-    const { result } = renderHook(() => useCraftedRunewords());
-
-    act(() => result.current.toggle("Enigma", null));
-    expect(result.current.pendingUndo).not.toBeNull();
-
-    act(() =>
-      result.current.replace({ crafted: new Set(["Grief"]), unknown: [] }),
-    );
-
-    // A notice offering to reverse a toggle against a set that no longer exists
-    // is worse than no notice.
-    expect(result.current.pendingUndo).toBeNull();
   });
 
   it("still replaces in memory when storage is unusable", () => {

@@ -353,11 +353,42 @@ const RUNE_TIERS = {
 
 type VendorRuneword = z.infer<typeof vendorRunewordSchema>;
 
+/**
+ * Corrections to vendor editorial notes that age out between seasons.
+ *
+ * The vendor snapshot named Season 13; Mosaic stayed disabled into Season 14
+ * and the number became a lie. The restriction is "not on ladder", and that is
+ * what the shipped note says. Kept here rather than in `vendor/`, which is
+ * read-only.
+ */
+const NOTE_OVERRIDES: Readonly<Record<string, string>> = {
+  Mosaic: "Disabled on ladder! Can be crafted offline non-ladder.",
+};
+
+/**
+ * Corrections to the vendor's ladder flag when it contradicts the note.
+ *
+ * Mosaic shipped as ladder-only, then became craftable only offline /
+ * non-ladder while disabled on ladder. Showing an "L" badge next to that
+ * note is a contradiction, so the shipped flag is cleared. `vendor/` stays
+ * untouched.
+ */
+const LADDER_OVERRIDES: Readonly<Record<string, boolean>> = {
+  Mosaic: false,
+};
+
 function buildRuneword(
   record: VendorRuneword,
   description: string,
   translation: z.infer<typeof runewordTranslationSchema> | undefined,
 ): Runeword {
+  // A project-owned override wins over the vendor's editorial note: the
+  // snapshot pins a season number that goes stale, and `vendor/` is
+  // read-only. Only Mosaic has a note today; the map is the place a future
+  // one would be corrected the same way.
+  const note = NOTE_OVERRIDES[record.title] ?? record.note;
+  const ladderOnly = LADDER_OVERRIDES[record.title] ?? record.ladder === true;
+
   return {
     name: record.title,
     runes: record.runes,
@@ -368,9 +399,9 @@ function buildRuneword(
     }),
     // Normalised to a real boolean on all 99 records, unlike the other three
     // optional fields, so consumers read a boolean instead of testing a key.
-    ladderOnly: record.ladder === true,
+    ladderOnly,
     ...(record.version !== undefined && { patch: record.version }),
-    ...(record.note !== undefined && { note: record.note }),
+    ...(note !== undefined && { note }),
     propertyGroups: splitPropertyGroups(
       description,
       record.title,

@@ -3896,9 +3896,9 @@
     "requiredLevel": 53,
     "itemTypes": ["Claws"],
     "itemTypeRestriction": "Assassin",
-    "ladderOnly": true,
+    "ladderOnly": false,
     "patch": "2.6",
-    "note": "Disabled in Season 13! Can be crafted offline non-ladder.",
+    "note": "Disabled on ladder! Can be crafted offline non-ladder.",
     "propertyGroups": [
       {
         "properties": [
@@ -3918,7 +3918,7 @@
     "ru": {
       "name": "Мозаика",
       "itemTypeRestriction": "ассасин",
-      "note": "Отключено в 13-м сезоне! Можно создать в автономной игре вне ладдера.",
+      "note": "Отключено в сезоне! Можно создать в одиночной игре вне ладдера.",
       "propertyGroups": [
         {
           "properties": [

@@ -1,5 +1,9 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
+import {
+  CraftedConfirm,
+  type PendingToggle,
+} from "@/components/CraftedConfirm";
 import { CraftedProgress } from "@/components/CraftedProgress";
 import { ProgressTransfer } from "@/components/ProgressTransfer";
 import { RemainingNeeds } from "@/components/RemainingNeeds";
@@ -9,7 +13,6 @@ import { RunewordTable } from "@/components/RunewordTable";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { UndoToast } from "@/components/UndoToast";
 import { useCraftedRunewords } from "@/crafted/useCraftedRunewords";
 import { itemTypes, runes, runewords } from "@/data";
 import { useLocale, useStrings } from "@/i18n";
@@ -19,12 +22,12 @@ import { useViewSettings } from "@/view/useViewSettings";
 import { visibleRunewords } from "@/view/visible";
 
 // The page: the site header, overall progress, the remaining-needs panel, the
-// browsing controls, the table, the footer, and the undo notice.
+// browsing controls, the table, the footer, and the mark/unmark confirmation.
 //
 // Crafted state is owned here rather than in the table, because the progress
-// bar and the notice are the table's siblings and read the same value. That is
-// two levels of prop drilling for one `Set`, which is not a context and is
-// certainly not a store library.
+// bar and the confirmation are the table's siblings and read the same value.
+// That is two levels of prop drilling for one `Set`, which is not a context and
+// is certainly not a store library.
 //
 // The view settings are owned here for the same reason: the control bar and the
 // table are siblings, one renders the settings and the other renders their
@@ -48,8 +51,12 @@ import { visibleRunewords } from "@/view/visible";
 export function App() {
   const strings = useStrings();
   const locale = useLocale();
-  const { crafted, pendingUndo, toggle, replace, undo, dismissUndo } =
-    useCraftedRunewords();
+  const { crafted, toggle, replace } = useCraftedRunewords();
+
+  // The mark or unmark the player has asked for and not yet answered for. It
+  // lives here rather than on the row for the same reason the crafted set does:
+  // one dialog serves all 99 rows, and only one request can be open.
+  const [pending, setPending] = useState<PendingToggle | null>(null);
   const {
     settings,
     query,
@@ -88,8 +95,8 @@ export function App() {
   // The two shopping-list aggregates, keyed on the crafted set alone — the
   // search, the filters and the sort answer "what am I looking at" and these
   // answer "what does the whole Chronicle still cost", so typing in the search
-  // field re-derives neither. A toggle, including an undo, re-derives both
-  // immediately; each is one linear scan over 99 records.
+  // field re-derives neither. A confirmed toggle re-derives both immediately;
+  // each is one linear scan over 99 records.
   const stillNeededRunes = useMemo(
     () => remainingRunes(runewords, runes, crafted),
     [crafted],
@@ -100,21 +107,37 @@ export function App() {
     [crafted],
   );
 
+  // A row or its control asking to change state: the dialog opens and nothing
+  // else happens. Stable, because every presented row receives it and a fresh
+  // identity would re-render all 99 of them whenever anything else on the page
+  // changed.
+  //
+  // The current state is read here rather than by the dialog, so the question
+  // asked is the one the row was showing when it was clicked.
+  const requestToggle = useCallback(
+    (name: string, control: HTMLElement | null) => {
+      setPending({ name, crafted: crafted.has(name), control });
+    },
+    [crafted],
+  );
+
   // Row motion under a crafted-state sort used View Transitions, and was
   // withdrawn: scrolling mid-transition desyncs the snapshots from the table
   // and there is no clean fix. Instant reorder is enough.
   //
-  // **Scroll stays put.** A focused toggle that jumps with its row (or leaves
-  // the list under a filter) would otherwise drag the viewport along via
+  // **Scroll stays put.** A confirmed toggle can move its row under a
+  // crafted-state sort, or take it out of the list under a filter, and the
+  // control focus returns to would otherwise drag the viewport along via
   // `scrollIntoView` for the focused node.
-  const onToggle = useCallback(
-    (name: string, control: HTMLElement | null) => {
-      const scrollY = window.scrollY;
-      toggle(name, control);
-      if (window.scrollY !== scrollY) window.scrollTo(0, scrollY);
-    },
-    [toggle],
-  );
+  const confirmToggle = useCallback(() => {
+    if (pending === null) return;
+
+    const scrollY = window.scrollY;
+    toggle(pending.name);
+    if (window.scrollY !== scrollY) window.scrollTo(0, scrollY);
+
+    setPending(null);
+  }, [pending, toggle]);
 
   return (
     <>
@@ -155,8 +178,8 @@ export function App() {
           visibleCount={visible.length}
           narrowed={narrowed}
           // Built here rather than inside the control bar, for the reason the
-          // undo notice is built here: this is where the crafted set lives, and
-          // the bar is about the view. It arrives as a slot so that the
+          // confirmation is built here: this is where the crafted set lives,
+          // and the bar is about the view. It arrives as a slot so that the
           // component deciding *where* the two buttons sit is not also the one
           // that knows what they do — the whole crafted set goes to the export,
           // never the narrowed one.
@@ -173,13 +196,13 @@ export function App() {
           sortKey={settings.sortKey}
           sortDirection={settings.sortDirection}
           onSort={sortBy}
-          onToggle={onToggle}
+          onToggle={requestToggle}
         />
 
-        <UndoToast
-          pending={pendingUndo}
-          onUndo={undo}
-          onDismiss={dismissUndo}
+        <CraftedConfirm
+          pending={pending}
+          onConfirm={confirmToggle}
+          onCancel={() => setPending(null)}
         />
       </main>
 

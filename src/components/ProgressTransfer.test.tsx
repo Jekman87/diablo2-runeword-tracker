@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { ProgressTransfer } from "@/components/ProgressTransfer";
 import { setLocale } from "@/i18n";
 import { en } from "@/i18n/en";
+import { ru } from "@/i18n/ru";
 
 function renderTransfer(crafted: Iterable<string> = []) {
   const onReplace = vi.fn();
@@ -160,6 +161,64 @@ describe("choosing a file", () => {
     expect(await screen.findByText(en.transfer.confirmCount(1))).toBeVisible();
   });
 
+  it("counts a list written in Russian", async () => {
+    const { user } = renderTransfer();
+
+    // The dataset's own labels: `Тайна` is Enigma, `Дух` is Spirit, `Бред` is
+    // Delirium. A player who reads the page in Russian writes their list in
+    // Russian, and a count of zero for a file of real runewords is the bug this
+    // is here about.
+    await choose(user, "Тайна\nДух\nБред");
+
+    expect(await screen.findByText(en.transfer.confirmCount(3))).toBeVisible();
+  });
+
+  it("counts a Windows-1251 file of Russian names", async () => {
+    const { user } = renderTransfer();
+
+    // What Excel and Notepad write on a Russian Windows install. The bytes are
+    // `Дух` and `Злоба`; read as UTF-8 they are � and match nothing.
+    await user.upload(
+      screen.getByLabelText(en.transfer.importAction),
+      new File(
+        [
+          Uint8Array.from([
+            0xc4, 0xf3, 0xf5, 0x0d, 0x0a, 0xc7, 0xeb, 0xee, 0xe1, 0xe0, 0x0d,
+            0x0a,
+          ]),
+        ],
+        "progress.csv",
+        { type: "text/csv" },
+      ),
+    );
+
+    expect(await screen.findByText(en.transfer.confirmCount(2))).toBeVisible();
+  });
+
+  it("counts every recognised line of a file that mixes the languages", async () => {
+    const { user } = renderTransfer();
+
+    await choose(user, "Enigma\nДух\nБред");
+
+    expect(await screen.findByText(en.transfer.confirmCount(3))).toBeVisible();
+  });
+
+  it("matches the same names whichever locale is active", async () => {
+    setLocale("ru");
+
+    const { user } = renderTransfer();
+
+    await user.upload(
+      screen.getByLabelText(ru.transfer.importAction),
+      new File(["Enigma\nДух"], "progress.csv", { type: "text/csv" }),
+    );
+
+    // Matching reads the dataset, not the interface. The locale decides what the
+    // page says and never what a file means — an English name still matches
+    // here, and the count is the one an English session would show.
+    expect(await screen.findByText(ru.transfer.confirmCount(2))).toBeVisible();
+  });
+
   it("says none will be marked when the file matches nothing", async () => {
     const { user } = renderTransfer(["Enigma"]);
 
@@ -238,6 +297,26 @@ describe("answering the confirmation", () => {
     // Uncounted and unreported, but stored — the terms `progress-persistence`
     // already sets for a name the dataset does not know.
     expect(next.unknown).toEqual(["Ondal's Wisdom"]);
+  });
+
+  it("stores canonical English names for a Russian file", async () => {
+    const { user, onReplace } = renderTransfer();
+
+    await choose(user, "Тайна\nДух");
+    await user.click(
+      within(await screen.findByRole("alertdialog")).getByRole("button", {
+        name: en.transfer.confirmAccept,
+      }),
+    );
+
+    const [next] = onReplace.mock.calls[0] as [
+      { crafted: ReadonlySet<string>; unknown: readonly string[] },
+    ];
+
+    // The label is a key to match on and never an identity. Progress, storage
+    // and the next export are English whatever language the file was in.
+    expect([...next.crafted]).toEqual(["Enigma", "Spirit"]);
+    expect(next.unknown).toEqual([]);
   });
 
   it("closes and changes nothing when cancelled", async () => {
@@ -376,7 +455,7 @@ describe("a file that is not a list of names", () => {
 
     const unreadable = new File([""], "gone.csv");
 
-    vi.spyOn(unreadable, "text").mockRejectedValue(
+    vi.spyOn(unreadable, "arrayBuffer").mockRejectedValue(
       new DOMException("not found", "NotFoundError"),
     );
 

@@ -1,3 +1,16 @@
+import { useState } from "react";
+
+import {
+  FloatingPortal,
+  autoUpdate,
+  flip,
+  offset,
+  shift,
+  useFloating,
+  useHover,
+  useInteractions,
+  useRole,
+} from "@floating-ui/react";
 import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
@@ -25,11 +38,12 @@ export interface AvailabilityBadgesProps {
  * and no empty slot, so the name of a runeword with no markers sits where the
  * name of one with three does.
  *
- * Nothing here is hover-only. Each badge draws a short marker, carries its full
- * meaning as its accessible name and repeats that meaning as a `title` for
- * pointer users — and the detail view restates all three in full words, which is
- * the path a touch user with no screen reader takes. The reference puts these
- * meanings in tooltips alone, which is unreachable on a phone.
+ * Nothing here is hover-only for the *fact*. Each badge draws a short marker,
+ * carries its full meaning as its accessible name, and shows that meaning in a
+ * Floating UI tooltip styled like the detail panel — replacing the browser's
+ * native `title`, which was the one surface on the page that still looked like
+ * the OS rather than the game. The detail view restates all three in full words,
+ * which is the path a touch user with no screen reader takes.
  */
 export function AvailabilityBadges({ runeword }: AvailabilityBadgesProps) {
   const strings = useStrings();
@@ -87,9 +101,10 @@ export interface BadgeProps {
   /**
    * When true, the badge is a visual sample beside words that already say what
    * it means — as in the help legend. It is hidden from assistive technology
-   * rather than announcing the meaning a second time. In a table row the
-   * opposite is true: nothing beside the badge says what it is, so the meaning
-   * is its accessible name.
+   * rather than announcing the meaning a second time, and it draws no tooltip:
+   * the sentence beside it is the meaning. In a table row the opposite is true:
+   * nothing beside the badge says what it is, so the meaning is its accessible
+   * name and its hover tip.
    */
   decorative?: boolean;
 }
@@ -99,7 +114,7 @@ export interface BadgeProps {
  * the full meaning the element's accessible name instead of the letter drawn
  * inside it, and it stops a screen reader announcing `L` on its own.
  *
- * The accessible name and the `title` are unchanged by the colour-coding, which
+ * The accessible name and the tooltip are unchanged by the colour-coding, which
  * is the point of it being colour-coding: the era is an additional channel laid
  * over a meaning that is already stated in words, so it is never the only way to
  * read the badge. A reader who cannot distinguish `#513B2C` from `#7B3FE4` — or
@@ -126,14 +141,84 @@ export function Badge({
   }
 
   return (
-    <span
-      className={twMerge(badge({ kind }), colour)}
-      role="img"
-      aria-label={meaning}
-      title={meaning}
-    >
-      {marker}
-    </span>
+    <BadgeWithTooltip
+      kind={kind}
+      marker={marker}
+      meaning={meaning}
+      colour={colour}
+    />
+  );
+}
+
+/**
+ * The table-row badge: marker plus a hover tip in the detail panel's own
+ * surface, not the browser's `title` chrome.
+ *
+ * One floating context per badge rather than one shared tip for the table —
+ * the same trade `RunewordDetails` made for the name. A badge tip is a sentence
+ * at most, so the per-instance cost is small against 99 rows that already each
+ * run a floating context for the detail panel.
+ */
+function BadgeWithTooltip({
+  kind,
+  marker,
+  meaning,
+  colour,
+}: Omit<BadgeProps, "decorative">) {
+  const [open, setOpen] = useState(false);
+
+  const {
+    refs: { setReference, setFloating },
+    floatingStyles,
+    context,
+  } = useFloating({
+    open,
+    onOpenChange: setOpen,
+    placement: "top",
+    strategy: "fixed",
+    middleware: [
+      offset(GAP),
+      flip({ padding: EDGE }),
+      shift({ padding: EDGE }),
+    ],
+    whileElementsMounted: autoUpdate,
+  });
+
+  const interactions = useInteractions([
+    useHover(context, {
+      // Same delay as the detail panel: a pointer crossing the badges on the
+      // way to a name should not flash three tips.
+      delay: { open: OPEN_DELAY },
+      mouseOnly: true,
+    }),
+    useRole(context, { role: "tooltip" }),
+  ]);
+
+  return (
+    <>
+      <span
+        ref={setReference}
+        className={twMerge(badge({ kind }), colour)}
+        role="img"
+        aria-label={meaning}
+        {...interactions.getReferenceProps()}
+      >
+        {marker}
+      </span>
+
+      {open ? (
+        <FloatingPortal>
+          <div
+            ref={setFloating}
+            {...interactions.getFloatingProps()}
+            style={floatingStyles}
+            className={TOOLTIP}
+          >
+            {meaning}
+          </div>
+        </FloatingPortal>
+      ) : null}
+    </>
   );
 }
 
@@ -165,3 +250,13 @@ const badge = cva("inline-block align-middle text-xs leading-normal", {
     },
   },
 });
+
+// The detail panel's surface at a tip's size: same ground, edge and text, so a
+// badge tip and a property panel read as one family rather than two chrome
+// systems. Above the sticky bands (1–2) and level with the detail panel (10).
+const TOOLTIP =
+  "z-10 max-w-xs rounded-xs border border-panel-edge bg-panel px-2 py-1 text-sm text-panel-text";
+
+const GAP = 6;
+const EDGE = 8;
+const OPEN_DELAY = 250;
