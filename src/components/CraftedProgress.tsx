@@ -19,6 +19,18 @@ export interface CraftedProgressProps {
  * The same sentence is the bar's `aria-valuetext`, so it is announced as
  * "37 of 99 crafted" rather than as a percentage.
  *
+ * **At 99 the line says so in words.** Finishing the Chronicle's list is the
+ * thing this page exists to be used for, and until now it changed a percentage
+ * to 100 and nothing else. The sentence follows the counts on the same line
+ * rather than arriving as a banner of its own: the line is where a player has
+ * been watching the number, so it is where the number landing is answered, and
+ * a surface that exists in exactly one state of the page is a surface that will
+ * be wrong the first time the state is reached by an import.
+ *
+ * `aria-valuetext` stays the counts alone. A progress indicator's value is a
+ * value; a reader who depends on it being one should not have to hear a
+ * congratulation every time focus passes the bar.
+ *
  * **The denominator is read from the dataset here, and is deliberately not a
  * prop.** `IDEAS.md` settles that progress is always out of all 99 — no toggle,
  * no shifting denominator — and every change still to come gives the *visible*
@@ -33,6 +45,8 @@ export function CraftedProgress({ crafted }: CraftedProgressProps) {
 
   const total = runewords.length;
   const count = strings.progress.count(crafted, total);
+  const line =
+    crafted === total ? `${count} ${strings.progress.complete}` : count;
 
   return (
     <div className="progress-band grid gap-1">
@@ -44,7 +58,7 @@ export function CraftedProgress({ crafted }: CraftedProgressProps) {
         aria-valuetext={count}
       />
 
-      <p className="text-gold-mid">{count}</p>
+      <p className="text-gold-mid">{line}</p>
     </div>
   );
 }

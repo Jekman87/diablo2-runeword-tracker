@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { App } from "@/App";
@@ -32,11 +32,10 @@ describe("App", () => {
     expect(screen.getAllByRole("row")).toHaveLength(100);
   });
 
-  it("renders overall progress and an empty live region", () => {
+  it("renders overall progress", () => {
     render(<App />);
 
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
-    expect(screen.getByRole("status")).toBeEmptyDOMElement();
   });
 
   it("exposes the header as a banner landmark outside main", () => {
@@ -82,32 +81,74 @@ describe("App", () => {
 });
 
 describe("the state the page owns", () => {
-  it("reaches the row, the progress bar and the notice from one toggle", async () => {
+  it("reaches the row and the progress bar from one confirmed mark", async () => {
     render(<App />);
 
-    await userEvent.click(socketFor("Steel"));
+    await mark("Steel");
 
     expect(socketFor("Steel")).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("progressbar")).toHaveAttribute(
       "aria-valuetext",
       en.progress.count(1, 99),
     );
-    expect(screen.getByText(en.undo.marked("Steel"))).toBeVisible();
   });
 
-  it("puts everything back when the undo is taken", async () => {
+  it("takes the mark off again on a confirmed remove", async () => {
     render(<App />);
 
-    await userEvent.click(socketFor("Steel"));
-    await userEvent.click(screen.getByRole("button", { name: en.undo.action }));
+    await mark("Steel");
+    await unmark("Steel");
 
     expect(socketFor("Steel")).toHaveAttribute("aria-pressed", "false");
     expect(screen.getByRole("progressbar")).toHaveAttribute(
       "aria-valuetext",
       en.progress.count(0, 99),
     );
-    // Focus is on the socket it reverted, not on `<body>`.
-    expect(socketFor("Steel")).toHaveFocus();
+  });
+
+  it("changes nothing when the confirmation is cancelled", async () => {
+    render(<App />);
+
+    await userEvent.click(socketFor("Steel"));
+    await userEvent.click(
+      within(await screen.findByRole("dialog")).getByRole("button", {
+        name: en.crafted.confirmCancel,
+      }),
+    );
+
+    // The whole point of asking: a stray press on a row-sized target costs
+    // nothing, and nothing is written for it either.
+    expect(socketFor("Steel")).toHaveAttribute("aria-pressed", "false");
+    expect(window.localStorage.getItem(CRAFTED_STORAGE_KEY)).toBeNull();
+  });
+
+  it("raises the same confirmation from a click on the row", async () => {
+    render(<App />);
+
+    const row = socketFor("Steel").closest("tr");
+
+    if (!row) throw new Error("No row for Steel");
+
+    // The required-level cell: away from the socket and away from the name,
+    // which is the detail view's control. The row's own target is everything
+    // else.
+    await userEvent.click(row.cells[row.cells.length - 1]);
+
+    expect(
+      await screen.findByRole("dialog", {
+        name: en.crafted.confirmMarkTitle,
+      }),
+    ).toBeVisible();
+  });
+
+  it("gives focus back to the socket it asked about", async () => {
+    render(<App />);
+
+    await mark("Steel");
+
+    // Somewhere deliberate rather than `<body>`, which in a 99-row table means
+    // losing your place with no way back but Tab from the top.
+    await waitFor(() => expect(socketFor("Steel")).toHaveFocus());
   });
 
   it("loads the progress an earlier session left behind", () => {
@@ -122,10 +163,10 @@ describe("the state the page owns", () => {
     );
   });
 
-  it("persists a toggle without waiting for anything", async () => {
+  it("persists a confirmed mark without waiting for anything", async () => {
     render(<App />);
 
-    await userEvent.click(socketFor("Steel"));
+    await mark("Steel");
 
     expect(window.localStorage.getItem(CRAFTED_STORAGE_KEY)).toBe('["Steel"]');
   });
@@ -181,7 +222,7 @@ describe("narrowing the table", () => {
     await userEvent.click(
       screen.getByRole("radio", { name: en.controls.craftedRemaining }),
     );
-    await userEvent.click(socketFor("Steel"));
+    await mark("Steel");
 
     // What is shown continues to answer the question that was asked.
     expect(screen.queryByRole("button", { name: "Steel" })).toBeNull();
@@ -256,7 +297,7 @@ describe("what narrowing the view must not change", () => {
   it("keeps the two stored values in separate keys", async () => {
     render(<App />);
 
-    await userEvent.click(socketFor("Steel"));
+    await mark("Steel");
     await userEvent.click(
       screen.getByRole("radio", { name: en.controls.slotHelm }),
     );
@@ -444,7 +485,7 @@ describe("the remaining-needs panel", () => {
     ).toBeVisible();
   });
 
-  it("updates both lists from one toggle, with no reload anywhere", async () => {
+  it("updates both lists from one confirmed mark, with no reload anywhere", async () => {
     render(<App />);
 
     await userEvent.click(summaryFor(en.remaining.title));
@@ -455,19 +496,19 @@ describe("the remaining-needs panel", () => {
     expect(runeCountFor("Tir")).toBe(en.remaining.runeCount(14));
     expect(baseRowFor("Swords", 2)).not.toBeNull();
 
-    await userEvent.click(socketFor("Steel"));
+    await mark("Steel");
 
     expect(runeCountFor("El")).toBe(en.remaining.runeCount(8));
     expect(runeCountFor("Tir")).toBe(en.remaining.runeCount(13));
     expect(baseRowFor("Swords", 2)).toBeNull();
   });
 
-  it("restores both lists when the undo is taken", async () => {
+  it("restores both lists when the mark is removed again", async () => {
     render(<App />);
 
     await userEvent.click(summaryFor(en.remaining.title));
-    await userEvent.click(socketFor("Steel"));
-    await userEvent.click(screen.getByRole("button", { name: en.undo.action }));
+    await mark("Steel");
+    await unmark("Steel");
 
     expect(runeCountFor("El")).toBe(en.remaining.runeCount(9));
     expect(runeCountFor("Tir")).toBe(en.remaining.runeCount(14));
@@ -517,7 +558,7 @@ describe("moving progress in and out as a file", () => {
   it("replaces progress rather than adding to it", async () => {
     render(<App />);
 
-    await userEvent.click(socketFor("Steel"));
+    await mark("Steel");
     await importFile("Leaf\nMalice");
 
     // `Steel` was marked and the file does not name it, so it is unmarked —
@@ -541,24 +582,10 @@ describe("moving progress in and out as a file", () => {
     ).toEqual(["Leaf", "Malice", "Steel"]);
   });
 
-  it("takes the pending undo notice away with it", async () => {
-    render(<App />);
-
-    await userEvent.click(socketFor("Steel"));
-    expect(screen.getByText(en.undo.marked("Steel"))).toBeVisible();
-
-    await importFile("Leaf");
-
-    // The notice offered to unmark `Steel`. After the import there is no toggle
-    // for it to reverse, so it goes rather than sitting there acting on a set
-    // that no longer exists.
-    expect(screen.getByRole("status")).toBeEmptyDOMElement();
-  });
-
   it("changes nothing when the confirmation is cancelled", async () => {
     render(<App />);
 
-    await userEvent.click(socketFor("Steel"));
+    await mark("Steel");
     await chooseFile("Leaf");
     await userEvent.click(
       screen.getByRole("button", { name: en.transfer.confirmCancel }),
@@ -569,6 +596,32 @@ describe("moving progress in and out as a file", () => {
     expect(window.localStorage.getItem(CRAFTED_STORAGE_KEY)).toBe('["Steel"]');
   });
 });
+
+/**
+ * Marks a runeword the way a player does: press its socket, answer the dialog.
+ *
+ * Every crafted change on the page goes through a confirmation now, so a test
+ * that clicks the socket and asserts a mark is asserting the old behaviour.
+ */
+async function mark(name: string) {
+  await answerConfirmation(name, en.crafted.confirmMarkAction);
+}
+
+/** The same, in the other direction. */
+async function unmark(name: string) {
+  await answerConfirmation(name, en.crafted.confirmUnmarkAction);
+}
+
+async function answerConfirmation(name: string, action: string) {
+  await userEvent.click(socketFor(name));
+
+  const dialog = await screen.findByRole("dialog");
+
+  await userEvent.click(within(dialog).getByRole("button", { name: action }));
+  await waitFor(() =>
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+  );
+}
 
 /** Chooses a file and leaves the confirmation open. */
 async function chooseFile(text: string) {

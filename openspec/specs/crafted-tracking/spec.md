@@ -2,11 +2,11 @@
 
 ## Purpose
 
-What it means for a runeword to be marked crafted — the per-row toggle and its
-states, the enlarged row hit target and the nested controls it must not swallow,
-how a crafted row is distinguished by more than colour, the progress indicator
-and its fixed denominator of all 99, and the undo affordance and what it may not
-do to keyboard focus.
+What it means for a runeword to be marked crafted — the per-row control and its
+states, the confirmation that gates every mark and unmark, the enlarged row hit
+target and the nested controls it must not swallow, how a crafted row is
+distinguished by more than colour, and the progress indicator with its fixed
+denominator of all 99 and its completion message at full progress.
 
 ## Requirements
 
@@ -16,7 +16,9 @@ The table SHALL present a crafted-state control on every runeword's row, in its
 own leading column with its own column header, so that the state is a property of
 the row that later changes can sort on rather than an ornament attached to the
 name. The control SHALL be a real button carrying its pressed state, so that it is
-reachable by Tab and operable by Space and Enter without a pointer.
+reachable by Tab and operable by Space and Enter without a pointer. Activating the
+control SHALL open the mark or unmark confirmation rather than applying the change
+immediately; confirming that dialog SHALL change the crafted state.
 
 #### Scenario: Every row carries a control
 
@@ -32,7 +34,7 @@ reachable by Tab and operable by Space and Enter without a pointer.
 #### Scenario: The control is operable by keyboard alone
 
 - **WHEN** a crafted-state control receives keyboard focus and is activated by
-  keyboard
+  keyboard, and the resulting confirmation is accepted
 - **THEN** the runeword's crafted state changes
 
 #### Scenario: The state is its own column
@@ -41,11 +43,10 @@ reachable by Tab and operable by Space and Enter without a pointer.
 - **THEN** crafted state occupies a leading column with a column header of its
   own, so that a later change can make that header a sort control
 
-#### Scenario: Activating the control twice returns to the starting state
+#### Scenario: Confirming mark then confirming remove returns to the starting state
 
-- **WHEN** a control is activated and then activated again
-- **THEN** the runeword is back in the state it started in, because the control
-  is a toggle and reverting needs no other affordance
+- **WHEN** an uncrafted runeword is confirmed marked and then confirmed unmarked
+- **THEN** the runeword is back in the state it started in
 
 ### Requirement: The control names the runeword and the direction
 
@@ -65,17 +66,90 @@ being written into the component.
 - **WHEN** the accessible names of a crafted and an uncrafted control are compared
 - **THEN** they differ, each stating the direction its activation would take
 
+### Requirement: Marking or unmarking asks for confirmation first
+
+Activating the crafted-state control or clicking the row SHALL NOT change crafted
+state immediately. It SHALL open a modal confirmation that names the runeword and
+states the proposed direction. When the runeword is not crafted, the dialog SHALL
+ask to mark it as crafted and offer Cancel plus a visually distinct confirm action
+(green). When the runeword is already crafted, the dialog SHALL ask to remove it
+from crafted and offer Cancel plus a visually distinct remove action (red).
+
+Progress SHALL be written only when the player confirms. Cancelling, pressing
+Escape, or dismissing the backdrop SHALL leave crafted state and storage unchanged.
+There SHALL be no transient undo notice after a confirmed change: the confirmation
+is the safety mechanism.
+
+The dialog SHALL behave as a modal: named by its heading, focus trapped while
+open, initial focus on Cancel, focus returned to the crafted-state control when it
+closes. Copy SHALL come from the display-copy layer; the runeword's name in the
+dialog SHALL be the locale projection, while storage continues to use the
+canonical English name.
+
+#### Scenario: Activating an uncrafted control opens a mark dialog
+
+- **WHEN** the crafted-state control of an uncrafted runeword is activated
+- **THEN** a modal confirmation appears asking to mark that runeword as crafted
+- **AND** crafted state and stored progress are unchanged until the confirm action
+  is taken
+
+#### Scenario: Activating a crafted control opens a remove dialog
+
+- **WHEN** the crafted-state control of a crafted runeword is activated
+- **THEN** a modal confirmation appears asking to remove that runeword from crafted
+- **AND** crafted state is unchanged until the remove action is taken
+
+#### Scenario: Confirming marks the runeword
+
+- **WHEN** the mark confirmation's confirm action is taken
+- **THEN** that runeword becomes crafted, progress updates, and the dialog closes
+
+#### Scenario: Confirming removes the runeword
+
+- **WHEN** the remove confirmation's remove action is taken
+- **THEN** that runeword is no longer crafted, progress updates, and the dialog
+  closes
+
+#### Scenario: Cancelling leaves progress alone
+
+- **WHEN** the confirmation is cancelled, Escape is pressed, or the backdrop is
+  dismissed
+- **THEN** crafted state and stored progress are what they were before the dialog
+  opened
+
+#### Scenario: A row click raises the same confirmation
+
+- **WHEN** a pointer click lands on a row away from nested controls
+- **THEN** the same confirmation opens as for that row's crafted-state control
+
+#### Scenario: No undo notice appears after confirm
+
+- **WHEN** a mark or unmark is confirmed
+- **THEN** no transient notice offering to undo that change appears
+
+#### Scenario: Focus returns to the crafted control
+
+- **WHEN** the confirmation closes by any route
+- **THEN** focus is on the crafted-state control of the runeword that was asked
+  about
+
+#### Scenario: The reflex keypress is the safe one
+
+- **WHEN** the confirmation opens
+- **THEN** the focused control is Cancel
+
 ### Requirement: The whole row is a pointer target, and adds no keyboard stop
 
-A pointer click anywhere on a runeword's row SHALL toggle its crafted state, so
-that the target is larger than the control alone. The row SHALL NOT be given a
-button role or placed in the tab order, because 99 focusable rows would double the
-page's tab stops and cost the table the row and column semantics it is built on.
+A pointer click anywhere on a runeword's row SHALL open the mark or unmark
+confirmation for that runeword, so that the target is larger than the control
+alone. The row SHALL NOT be given a button role or placed in the tab order,
+because 99 focusable rows would double the page's tab stops and cost the table the
+row and column semantics it is built on.
 
-#### Scenario: Clicking the row toggles the runeword
+#### Scenario: Clicking the row opens confirmation
 
 - **WHEN** a pointer click lands on a row, away from any control within it
-- **THEN** that runeword's crafted state changes
+- **THEN** the mark or unmark confirmation for that runeword opens
 
 #### Scenario: The row is not focusable
 
@@ -165,6 +239,15 @@ both counts. The percentage is the form the in-game Chronicle uses and is what
 answers "how far am I"; the counts stay because the goal is a number of runewords
 rather than a proportion, and a percentage alone cannot be checked against a list of 99. Neither SHALL replace the other.
 
+When every runeword in the dataset is crafted, that same text line SHALL
+additionally include a completion message after the percentage and counts,
+congratulating the player and reminding them to claim the reward in the game. The
+message SHALL come from the display-copy layer. Below full progress the line SHALL
+show only the percentage and counts. The sticky progress band's reserved height
+SHALL accommodate the longer line (including when it wraps under a narrow viewport
+or the Russian locale) so the table header that sticks beneath it neither gaps nor
+overlaps rows incorrectly.
+
 Progress SHALL remain visible while the table is being read, rather than scrolling
 out of the viewport above it, because it is the question the page exists to answer
 and the table is thousands of pixels tall. Where it remains visible over the rows
@@ -176,6 +259,13 @@ detail view SHALL render above it.
 - **WHEN** three runewords are marked crafted
 - **THEN** the indicator's value is 3 and its maximum is 99
 - **AND** the text beside it states both the percentage and the two counts
+- **AND** the text does not include the completion message
+
+#### Scenario: Full progress adds the completion message
+
+- **WHEN** every runeword in the dataset is marked crafted
+- **THEN** the progress text states 100%, the full counts, and the completion
+  message on the same line of reading order
 
 #### Scenario: Progress stays in view
 
@@ -196,9 +286,9 @@ detail view SHALL render above it.
 - **THEN** it is the number of runewords in the dataset, taken directly and not
   counted from the rendered table
 
-#### Scenario: Progress updates immediately on a toggle
+#### Scenario: Progress updates immediately when a change is confirmed
 
-- **WHEN** a runeword's crafted state is toggled
+- **WHEN** a runeword's crafted state is confirmed marked or unmarked
 - **THEN** the progress indicator and its text reflect the new count without a
   reload
 
@@ -214,77 +304,8 @@ detail view SHALL render above it.
 - **THEN** it exposes a progress indicator with its value and maximum, without
   those being restated by hand alongside a generic element
 
-### Requirement: The most recent toggle can be undone from a transient notice
+#### Scenario: The sticky stack survives the longer line
 
-Toggling a runeword's crafted state SHALL raise a short-lived notice naming what
-happened and offering to reverse it, so that a misclick on the enlarged row target
-is recoverable. The notice SHALL be announced politely to assistive technology
-rather than interrupting it. At most one notice SHALL exist at a time, describing
-the most recent toggle; a further toggle SHALL replace it rather than stack beneath
-it. Undoing SHALL reverse exactly that one toggle and SHALL NOT be a history of
-earlier ones.
-
-#### Scenario: A toggle raises the notice
-
-- **WHEN** a runeword's crafted state is toggled
-- **THEN** a notice appears naming that runeword and offering to undo the change
-
-#### Scenario: Undo reverses the toggle
-
-- **WHEN** the notice's undo action is activated
-- **THEN** the runeword returns to the state it had before the toggle
-- **AND** the notice is dismissed
-
-#### Scenario: A second toggle replaces the first notice
-
-- **WHEN** one runeword is toggled and then another is
-- **THEN** exactly one notice is present, describing the second
-
-#### Scenario: The notice dismisses itself
-
-- **WHEN** a notice has been raised and no further interaction occurs
-- **THEN** it dismisses itself after a short interval, leaving the toggle applied
-
-#### Scenario: The notice is announced without interrupting
-
-- **WHEN** the notice's live region is inspected
-- **THEN** it is polite rather than assertive
-- **AND** the region is present in the document before the notice appears in it,
-  so the announcement is not lost
-
-#### Scenario: Undo is not the only way back
-
-- **WHEN** the notice has dismissed itself and the player wants the toggle
-  reversed
-- **THEN** activating the runeword's control again reverses it, because the
-  control is a toggle and the notice is an affordance for pointer misclicks rather
-  than the mechanism for reversal
-
-### Requirement: The transient notice never destroys keyboard focus
-
-The notice SHALL NOT take focus when it appears, and SHALL NOT remove itself while
-focus is inside it, because a focusable control that disappears drops focus to the
-document body and loses a keyboard reader their place in a 99-row table. When
-undoing moves focus, it SHALL move it somewhere deliberate rather than nowhere.
-
-#### Scenario: The notice does not steal focus
-
-- **WHEN** a notice appears
-- **THEN** focus remains where the player left it, on the control they activated
-
-#### Scenario: A focused notice does not vanish
-
-- **WHEN** focus is inside the notice and the dismissal interval elapses
-- **THEN** the notice remains present
-
-#### Scenario: Dismissal resumes once focus leaves
-
-- **WHEN** focus leaves the notice
-- **THEN** the dismissal interval starts again and the notice eventually goes
-
-#### Scenario: Undoing leaves focus somewhere deliberate
-
-- **WHEN** the undo action is activated from within the notice and the notice is
-  removed
-- **THEN** focus is placed on the crafted-state control of the runeword that was
-  reverted, rather than falling to the document body
+- **WHEN** progress is complete and the page is scrolled so the progress band and
+  the table header are stuck
+- **THEN** no strip of runeword row shows between them

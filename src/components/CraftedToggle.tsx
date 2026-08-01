@@ -11,6 +11,7 @@ export interface CraftedToggleProps {
    */
   name: string;
   crafted: boolean;
+  /** Asks for the change. What it opens is the confirmation, not the toggle. */
   onToggle: () => void;
   ref?: React.Ref<HTMLButtonElement>;
 }

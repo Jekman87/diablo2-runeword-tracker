@@ -2,7 +2,9 @@ import { render, screen } from "@testing-library/react";
 
 import { CraftedProgress } from "@/components/CraftedProgress";
 import { runewords } from "@/data";
+import { setLocale } from "@/i18n";
 import { en } from "@/i18n/en";
+import { ru } from "@/i18n/ru";
 
 function bar() {
   const element = screen.getByRole("progressbar");
@@ -78,6 +80,52 @@ describe("the progress indicator", () => {
 
     expect(bar().value).toBe(1);
     expect(screen.getByText(en.progress.count(1, 99))).toBeVisible();
+  });
+});
+
+describe("reaching the end of the list", () => {
+  it("says nothing about completion below 99", () => {
+    render(<CraftedProgress crafted={98} />);
+
+    expect(screen.queryByText(en.progress.complete)).toBeNull();
+    expect(screen.getByText(en.progress.count(98, 99))).toBeVisible();
+  });
+
+  it("congratulates on the same line as the counts at 99", () => {
+    render(<CraftedProgress crafted={99} />);
+
+    // One line, not a banner of its own: the percentage, the counts and the
+    // sentence are one piece of text in reading order.
+    const line = screen.getByText(en.progress.complete, { exact: false });
+
+    expect(line).toHaveTextContent("100%");
+    expect(line).toHaveTextContent("99 of 99");
+    expect(line).toHaveTextContent(en.progress.complete);
+  });
+
+  it("keeps the announced value the counts alone", () => {
+    render(<CraftedProgress crafted={99} />);
+
+    expect(bar()).toHaveAttribute("aria-valuetext", en.progress.count(99, 99));
+  });
+
+  it("takes the sentence back if a mark is removed", () => {
+    const { rerender } = render(<CraftedProgress crafted={99} />);
+
+    rerender(<CraftedProgress crafted={98} />);
+
+    expect(screen.queryByText(en.progress.complete)).toBeNull();
+  });
+
+  it("congratulates in the active locale", () => {
+    setLocale("ru");
+    render(<CraftedProgress crafted={99} />);
+
+    expect(
+      screen.getByText(ru.progress.complete, { exact: false }),
+    ).toBeVisible();
+
+    setLocale("en");
   });
 });
 

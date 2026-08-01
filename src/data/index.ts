@@ -1,3 +1,5 @@
+import { foldLabel } from "@/runewords/fold";
+
 import itemTypesData from "./item-types.json";
 import runesData from "./runes.json";
 import runewordsData from "./runewords.json";
@@ -29,21 +31,42 @@ export const itemTypes: ItemType[] = itemTypesSchema.parse(itemTypesData);
 // Built once at load rather than scanned per use. The table alone resolves 343
 // rune references.
 
-// Keyed by canonical name, which is the identifier crafted progress, the undo
-// notice and the open-panel flag all carry. It is what lets a component holding
+// Keyed by canonical name, which is the identifier crafted progress, the
+// mark/unmark confirmation and the open-panel flag all carry. It is what lets a component holding
 // only a name — rather than a record — still present that runeword in the
 // active locale.
 export const runewordsByName: ReadonlyMap<string, Runeword> = new Map(
   runewords.map((runeword) => [runeword.name, runeword]),
 );
 
-// Just the names, as a set, for the two places that ask "is this a runeword the
-// dataset has" about a string that came from outside it — a stored progress list
-// and an imported file. Both go through `splitStoredNames`, which takes the
-// known names as a parameter so that `src/crafted/storage.ts` need not import
-// the dataset; this is the argument they both pass.
-export const runewordNames: ReadonlySet<string> = new Set(
-  runewordsByName.keys(),
+// Every name a runeword answers to, folded, for the two places that ask "is
+// this a runeword the dataset has" about a string that came from outside it — a
+// stored progress list and an imported file. Both go through
+// `splitStoredNames`, which takes this map as a parameter so that
+// `src/crafted/storage.ts` need not import the dataset; this is the argument
+// they both pass.
+//
+// Two keys per runeword: the canonical English name and the Russian label the
+// dataset ships, both reduced by `foldLabel`, both resolving to the canonical
+// name. A hand-written or mixed-language list therefore marks what it names,
+// and what gets stored is English whatever the file said. The keys are folded
+// here rather than at each lookup because the map is built once and read on
+// every candidate.
+//
+// A collision would silently cost a runeword its name, so `index.test.ts`
+// asserts that the folded keys are all distinct.
+export const runewordNameAliases: ReadonlyMap<string, string> = new Map(
+  runewords.flatMap((runeword) => {
+    const aliases =
+      runeword.ru === undefined
+        ? [runeword.name]
+        : [runeword.name, runeword.ru.name];
+
+    return aliases.map((alias): [string, string] => [
+      foldLabel(alias),
+      runeword.name,
+    ]);
+  }),
 );
 
 export const runesByName: ReadonlyMap<string, Rune> = new Map(

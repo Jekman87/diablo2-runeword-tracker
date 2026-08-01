@@ -24,7 +24,7 @@ export interface RunewordControlsProps {
    * confirmation dialog into the component about search and filters, and would
    * make the thing that decides *where* the controls sit also the thing that
    * knows what they do. `App` builds them, for the same reason it builds the
-   * undo notice: it is where the crafted set lives.
+   * mark/unmark confirmation: it is where the crafted set lives.
    *
    * Optional, so every existing test that renders this bar still renders.
    */

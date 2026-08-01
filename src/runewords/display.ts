@@ -116,7 +116,7 @@ export function displayItemType(name: string, locale: Locale): string {
  * A runeword's label in the given locale, found by its canonical name.
  *
  * For the two places that hold an identifier rather than a record — the crafted
- * toggle's accessible name and the undo notice, both of which name a runeword
+ * toggle's accessible name and its confirmation, both of which name a runeword
  * inside a sentence from the strings layer. A Russian sentence with an English
  * name in the middle of it is exactly the mixed-language row the whole-record
  * fallback exists to prevent, so the sentence gets the projected label while

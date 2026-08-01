@@ -125,8 +125,11 @@ control a button reporting its expanded state rather than the native disclosure
 element used elsewhere in the project, since that element requires its control to
 be its own first child and therefore cannot straddle two rows of the header. The
 control SHALL report whether it is expanded and SHALL name the element it
-controls. The panel SHALL remain in the document while closed, and SHALL be
-hidden by a means that holds even where the stylesheet has not loaded. Nothing
+controls. Opening help SHALL explain marking (including that a confirmation stands
+before a mark or unmark), progress, search and filters, the remaining panels,
+detail properties, where progress is kept, and how progress is carried between
+browsers as a file. It SHALL NOT promise a transient undo notice after marking.
+The panel SHALL remain in the document while closed, and SHALL be hidden by a means that holds even where the stylesheet has not loaded. Nothing
 about the disclosure SHALL be persisted. Every word of it SHALL resolve through
 the display-copy layer.
 
@@ -165,9 +168,11 @@ between devices.
 
 - **WHEN** the help disclosure is opened
 - **THEN** it states what the list is and how the page is used — marking a
-  runeword as crafted, the progress it counts, the search, filters and sorting,
-  the two remaining panels, where a runeword's granted properties are, where the
-  reader's progress is kept, and how it is carried to another browser as a file
+  runeword as crafted (with confirmation before the mark or unmark is applied),
+  the progress it counts, the search, filters and sorting, the two remaining
+  panels, where a runeword's granted properties are, where the reader's progress
+  is kept, and how it is carried to another browser as a file
+- **AND** it does not describe a transient undo notice for marking
 
 #### Scenario: The panel opens beneath the divider
 
@@ -210,8 +215,8 @@ between devices.
 #### Scenario: Opening the help moves nothing that was already read
 
 - **WHEN** the help disclosure is opened
-- **THEN** it expands in normal flow within the header, and the sticky progress
-  and table-header bands continue to behave exactly as before
+- **THEN** the title, the patch line and the feedback link keep the positions they
+  had while the disclosure was closed
 
 ### Requirement: The header carries the language switch
 

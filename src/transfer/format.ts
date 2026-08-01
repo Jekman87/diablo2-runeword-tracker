@@ -111,6 +111,30 @@ export function parseImport(text: string): string[] {
 }
 
 /**
+ * The text of an imported file, decoded from its raw bytes.
+ *
+ * UTF-8 first — that is what this application writes, and what every editor that
+ * labels the encoding writes. **Windows-1251 if UTF-8 is not well-formed**,
+ * because that is what Excel and Notepad on a Russian Windows install save a
+ * CSV as when nobody picks an encoding: a list of Russian runeword names written
+ * that way arrives as bytes that are not UTF-8 at all, and `File.text()` would
+ * replace every letter with � and match nothing.
+ *
+ * Fatal UTF-8 rather than a heuristic over the decoded string. A file of ASCII
+ * English names is valid UTF-8 and must keep that path; a file of Windows-1251
+ * Cyrillic fails the fatal decode and takes the fallback. Guessing from
+ * replacement characters after a lenient decode would also catch a genuine UTF-8
+ * file that happened to contain one, and would be wrong about it.
+ */
+export function decodeImportBytes(bytes: BufferSource): string {
+  try {
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    return new TextDecoder("windows-1251").decode(bytes);
+  }
+}
+
+/**
  * The text before the first comma or tab, or the contents of a quoted cell.
  *
  * A spreadsheet saved as CSV puts the name in the first column and whatever else

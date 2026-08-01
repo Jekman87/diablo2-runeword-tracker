@@ -215,10 +215,10 @@
      end.** A near-black panel on a black page has no edge of its own, and this
      one floats over content — the game's tooltip is grey for exactly that reason.
      Grey rather than a lighter red because every red on this page is a *band*
-     (the table header, the panel summaries, the toast), and a floating box
-     borrowing one would read as a band that came loose. `--color-toast` and
-     `--color-blood-dark` keep `#200000`: three tokens at one value is precisely
-     what lets one of them move its mind without moving the others.
+     (the table header, the panel summaries), and a floating box borrowing one
+     would read as a band that came loose. `--color-blood-dark` keeps `#200000`:
+     two tokens at one value is precisely what lets one of them move its mind
+     without moving the other.
 
      A translucent black panel was tried with a grey page ground in
      `phase-5-polish` and withdrawn when the ground returned to black: over
@@ -255,13 +255,17 @@
   --color-panel-text: #fff;
   --color-backdrop: rgb(0 0 0 / 0.72);
 
-  /* Crafted tracking's own surfaces: the tint a marked row takes, the unfilled
-     groove of the progress bar, and the undo notice's panel.
+  /* Crafted tracking's own surfaces: the tint a marked row takes and the
+     unfilled groove of the progress bar.
 
      No new hue again. The tint is `--color-crafted` at low alpha, so a marked
      row reads as the accent itself rather than as a colour of its own; the groove
-     is the muted family the row hairline already comes from; the notice is the
-     blood family's dark end, as the detail panel is.
+     is the muted family the row hairline already comes from.
+
+     `--color-toast` was a third here, `#200000`, for the transient undo notice's
+     panel. A confirmation now stands in front of every mark and unmark, the
+     notice is gone, and a token whose last use site went with it goes too — the
+     rule that removed `--color-title` and `--color-danger`, applied again.
 
      There is deliberately no token for the bar's *filled* portion. That is
      `--color-crafted` above, declared by `d2-theme` for exactly this role and
@@ -270,7 +274,25 @@
      same way, rendering `--color-blood-dark` above rather than adding one. */
   --color-crafted-row: rgb(167 150 99 / 0.12);
   --color-progress-track: #24221c;
-  --color-toast: #200000;
+
+  /* The two answers the mark/unmark confirmation offers, as bands behind pale
+     gold text: green for making a runeword crafted, red for taking the mark off
+     it. The direction is the one thing a player must not misread at a glance in
+     a dialog they will see on every single mark, and the words alone carry it
+     only once they are read.
+
+     Both are dark enough to hold `--color-gold-light` at 5:1 and 5.2:1, which is
+     the same trade `--color-blood-light` makes as the import confirmation's
+     destructive band — the palette's reds and greens are bands with light text
+     on them, never light fills.
+
+     `--color-remove-action` is its own token at a value near
+     `--color-blood-light`'s rather than a second use of it. "The blood family's
+     bright end" and "the answer that removes a mark" are different roles, and
+     the naming rule is explicit that two roles may share a hue without sharing a
+     name — a component reading `bg-remove-action` states what it does. */
+  --color-confirm-action: #14481a;
+  --color-remove-action: #7a1010;
 
   /* The exclusion an item-type line carries — `(Not Orbs/Wands)`, `(Assassin)`.
 
@@ -316,7 +338,7 @@
   /* One corner radius for every surface the project draws itself. 2px — small
      enough that the interface still reads as the game's own, which is angular.
      Applied as `rounded-xs` / `var(--radius-xs)` on the search field, chips,
-     progress groove, table header band, detail panel and undo notice.
+     progress groove, table header band, detail panel and both confirmations.
 
      The availability badges are exempt: their `2px 4px` on a 4px radius and the
      round ladder marker are geometry copied from the reference, and a system for
@@ -422,7 +444,11 @@
 
    0.5rem of padding above and below a 0.75rem bar and one line of text measures
    3.5rem. Checked at 390px and with the count at its longest, where the line still
-   does not wrap; a locale that wraps it is a locale that has to raise this number. */
+   does not wrap; a locale that wraps it is a locale that has to raise this number.
+
+   The completion sentence is more text on the same line, not a taller band: raising
+   the reservation for it opened an empty strip under the count whenever the line
+   still fit in one, which is worse than a wrap that paints into the padding. */
 :root {
   --progress-band-height: 3.5rem;
 }

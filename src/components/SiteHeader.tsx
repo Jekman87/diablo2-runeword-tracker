@@ -178,11 +178,10 @@ export function SiteHeader() {
           is also how a jsdom test can tell that it is closed. It stays mounted
           either way, so `aria-controls` always resolves to a real element.
 
-          On the page ground, with no panel colour and no border: the three
-          tokens holding this exact value all name another surface — the detail
-          view's panel, the undo notice, the remaining panels' summary band — and
-          a fourth declared for a block of prose would be a name for a value
-          rather than for a role. The measure is capped because 1104px of prose is
+          On the page ground, with no panel colour and no border: the tokens
+          holding this exact value all name another surface — the detail view's
+          panel, the remaining panels' summary band — and one more declared for a
+          block of prose would be a name for a value rather than for a role. The measure is capped because 1104px of prose is
           not a paragraph, and the block keeps the page's left rule under
           right-aligned controls: text is read from the left however it opened.
 
