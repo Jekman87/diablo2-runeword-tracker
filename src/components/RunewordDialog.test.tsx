@@ -205,7 +205,7 @@ describe("what the panel presents", () => {
     expect(panel.queryAllByRole("heading", { level: 4 })).toEqual([]);
   });
 
-  it("restates patch, ladder status and the note in full words", async () => {
+  it("restates patch and the note in full words, without ladder status", async () => {
     const user = userEvent.setup();
     renderTable();
 
@@ -216,11 +216,11 @@ describe("what the panel presents", () => {
     expect(
       panel.getByText(en.availability.patchMeaning("2.6")),
     ).toBeInTheDocument();
-    expect(panel.getByText(en.availability.ladderMeaning)).toBeInTheDocument();
     expect(
-      panel.getByText(
-        "Disabled in Season 13! Can be crafted offline non-ladder.",
-      ),
+      panel.queryByText(en.availability.ladderMeaning),
+    ).not.toBeInTheDocument();
+    expect(
+      panel.getByText("Disabled on ladder! Can be crafted offline non-ladder."),
     ).toBeInTheDocument();
   });
 

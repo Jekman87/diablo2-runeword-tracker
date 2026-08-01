@@ -15,9 +15,11 @@ everything at once. The pre-commit hook runs a staged-files subset of it.
   without a DOM in plain functions.
 - No hardcoded user-facing text in components. Every display string goes
   through the i18n layer in `src/i18n/`: components call `useStrings()`, and the
-  English copy lives in `src/i18n/en.ts`. Accessible names and `title` tooltips
-  are display copy too — a screen reader's reading of the page is part of the
-  interface, not an exception to it.
+  English copy lives in `src/i18n/en.ts`. Accessible names and tooltip text are
+  display copy too — a screen reader's reading of the page is part of the
+  interface, not an exception to it. Prefer themed Floating UI tips over the
+  browser's native `title` when the surface is part of the D2 chrome (availability
+  badges already do this).
 
   Runeword names, rune names and item categories are canonical identifiers in
   English and come from the dataset, not from the layer. So is the game text the

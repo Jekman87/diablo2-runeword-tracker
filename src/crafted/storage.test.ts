@@ -1,16 +1,29 @@
 import {
   CRAFTED_STORAGE_KEY,
+  type NameAliases,
   loadCrafted,
   saveCrafted,
   splitStoredNames,
 } from "@/crafted/storage";
+import { foldLabel } from "@/runewords/fold";
 
 // No component is rendered anywhere in this file, which is the point of the
 // module being plain functions: the failure modes that matter here — corrupt
 // JSON, the wrong shape, a name the dataset lost, a store that throws — are
 // awkward to provoke through a rendered table and trivial to provoke directly.
 
-const KNOWN = new Set(["Enigma", "Spirit", "Infinity"]);
+// Four runewords with their shipped Russian labels, `Ice` among them for its
+// `ё`. A handful rather than the dataset, because this module takes the names
+// it matches against as a parameter precisely so that it can be tested without
+// one — and `src/data/index.test.ts` is where the real 99 are checked.
+const KNOWN_RUNEWORDS = [
+  { name: "Enigma", ru: "Тайна" },
+  { name: "Spirit", ru: "Дух" },
+  { name: "Infinity", ru: "Бесконечность" },
+  { name: "Ice", ru: "Лёд" },
+];
+
+const KNOWN = aliases(KNOWN_RUNEWORDS);
 
 beforeEach(() => {
   window.localStorage.clear();
@@ -80,7 +93,9 @@ describe("data it should not trust", () => {
   it("never reports more progress than the dataset has runewords", () => {
     plant(JSON.stringify(["Enigma", "Spirit", "Infinity", "Ondal's Wisdom"]));
 
-    expect(loadCrafted(KNOWN).crafted.size).toBeLessThanOrEqual(KNOWN.size);
+    expect(loadCrafted(KNOWN).crafted.size).toBeLessThanOrEqual(
+      KNOWN_RUNEWORDS.length,
+    );
   });
 });
 
@@ -106,7 +121,10 @@ describe("a name the dataset does not know", () => {
   it("recovers its mark once the dataset has the name again", () => {
     plant('["Ondal\'s Wisdom"]');
 
-    const restored = new Set([...KNOWN, "Ondal's Wisdom"]);
+    const restored = aliases([
+      ...KNOWN_RUNEWORDS,
+      { name: "Ondal's Wisdom", ru: "Мудрость Ондала" },
+    ]);
 
     expect(loadCrafted(restored).crafted.has("Ondal's Wisdom")).toBe(true);
     expect(loadCrafted(restored).unknown).toEqual([]);
@@ -145,16 +163,6 @@ describe("splitting a list against the dataset", () => {
     expect(crafted.size).toBe(1);
   });
 
-  it("does not match a Russian label", () => {
-    // The transfer format is canonical English names, whatever locale is
-    // active — `localised-dataset-text` settled that, and folding case is not a
-    // crack for a translation to get in through.
-    const { crafted, unknown } = splitStoredNames(["Энигма"], KNOWN);
-
-    expect(crafted.size).toBe(0);
-    expect(unknown).toEqual(["Энигма"]);
-  });
-
   it("keeps an unmatched name in the order it arrived, as it was written", () => {
     const { unknown } = splitStoredNames(
       ["Ondal's Wisdom", "Enigma", "Plague"],
@@ -169,6 +177,57 @@ describe("splitting a list against the dataset", () => {
       crafted: new Set(),
       unknown: [],
     });
+  });
+});
+
+describe("a list written in Russian", () => {
+  // A player's hand-written list is in the language they read the page in. What
+  // comes back out of a match is the canonical English name regardless, which
+  // is what keeps storage, the export file and progress identity in one
+  // language whatever the file was in.
+
+  it("marks the runeword its Russian label names", () => {
+    const { crafted, unknown } = splitStoredNames(["Тайна"], KNOWN);
+
+    expect([...crafted]).toEqual(["Enigma"]);
+    expect(unknown).toEqual([]);
+  });
+
+  it("marks both halves of a file that mixes the two languages", () => {
+    const { crafted, unknown } = splitStoredNames(
+      ["Enigma", "Дух", "Бесконечность", "Ondal's Wisdom"],
+      KNOWN,
+    );
+
+    expect([...crafted]).toEqual(["Enigma", "Spirit", "Infinity"]);
+    expect(unknown).toEqual(["Ondal's Wisdom"]);
+  });
+
+  it("matches a Russian label whatever case and padding it carries", () => {
+    expect([...splitStoredNames(["  дух  "], KNOWN).crafted]).toEqual([
+      "Spirit",
+    ]);
+  });
+
+  it("matches across the ё and е a Russian typist uses interchangeably", () => {
+    expect([...splitStoredNames(["Лед"], KNOWN).crafted]).toEqual(["Ice"]);
+    expect([...splitStoredNames(["Лёд"], KNOWN).crafted]).toEqual(["Ice"]);
+  });
+
+  it("marks a runeword once when the file names it in both languages", () => {
+    const { crafted } = splitStoredNames(["Enigma", "Тайна"], KNOWN);
+
+    expect([...crafted]).toEqual(["Enigma"]);
+  });
+
+  it("leaves a Russian word that names no runeword unmatched", () => {
+    const { crafted, unknown } = splitStoredNames(["Энигма"], KNOWN);
+
+    // The dataset's label for `Enigma` is `Тайна`. A transliteration is a
+    // near-miss like any other: the fold is case, padding and `ё`, and nothing
+    // beyond it gets to decide what a file meant.
+    expect(crafted.size).toBe(0);
+    expect(unknown).toEqual(["Энигма"]);
   });
 });
 
@@ -211,6 +270,21 @@ describe("reading never writes", () => {
     expect(stored()).toBeNull();
   });
 });
+
+/**
+ * The alias map `@/data` builds for the real dataset, over a fixture.
+ *
+ * Folded with the same `foldLabel` the matcher uses, because a fixture that
+ * folded its keys its own way would be testing a map no caller ever passes.
+ */
+function aliases(runewords: { name: string; ru: string }[]): NameAliases {
+  return new Map(
+    runewords.flatMap(({ name, ru }): [string, string][] => [
+      [foldLabel(name), name],
+      [foldLabel(ru), name],
+    ]),
+  );
+}
 
 function plant(value: string) {
   window.localStorage.setItem(CRAFTED_STORAGE_KEY, value);

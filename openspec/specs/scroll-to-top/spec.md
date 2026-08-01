@@ -23,8 +23,8 @@ fixed pixel offset, so that a change to the header's height cannot leave the
 threshold behind.
 
 The control SHALL NOT obstruct any other control at any supported width. In
-particular it SHALL NOT cover the transient undo notice, and it SHALL NOT cover a
-row's crafted toggle.
+particular it SHALL NOT cover a confirmation dialog while one is open, and it
+SHALL NOT cover a row's crafted toggle.
 
 Where the reader has asked for reduced motion, the return SHALL be immediate rather
 than animated.
@@ -61,8 +61,8 @@ Its copy SHALL resolve through the display-copy layer in both locales.
 
 #### Scenario: It obstructs nothing
 
-- **WHEN** the control is visible at the narrowest supported width, with the undo
-  notice also visible
+- **WHEN** the control is visible at the narrowest supported width, with a mark
+  confirmation dialog also open
 - **THEN** neither covers the other
 - **AND** no row's crafted toggle is underneath it
 

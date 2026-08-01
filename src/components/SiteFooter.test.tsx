@@ -167,7 +167,7 @@ describe("the site footer", () => {
     render(<SiteFooter />);
 
     // `userEvent` has its own timer plumbing and deadlocks alongside fake
-    // ones — same reason UndoToast drives dismissal with `fireEvent`.
+    // ones — the copy control's own reset timer is the thing under test here.
     fireEvent.click(
       screen.getByRole("button", {
         name: en.footer.copyright(SITE_NAME, year),

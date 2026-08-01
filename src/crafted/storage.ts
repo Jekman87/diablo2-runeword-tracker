@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { foldLabel } from "@/runewords/fold";
+
 /**
  * The one place that names the storage key or touches the storage API.
  *
@@ -14,6 +16,18 @@ export interface StoredProgress {
   /** Names it does not. Rendered nowhere, counted nowhere, written back always. */
   unknown: readonly string[];
 }
+
+/**
+ * Every name the dataset answers to, keyed by its **folded** form and resolving
+ * to the canonical English name.
+ *
+ * The keys being pre-folded is the one precondition this module cannot check.
+ * It is what lets a lookup be a lookup rather than a scan, and it is why the map
+ * is built where the dataset is — `runewordNameAliases` in `@/data` builds it
+ * with the same `foldLabel` used below, once, instead of this module rebuilding
+ * an index on every split.
+ */
+export type NameAliases = ReadonlyMap<string, string>;
 
 /**
  * The key, namespaced and versioned.
@@ -46,7 +60,7 @@ export const CRAFTED_STORAGE_KEY = "diablo2-runeword-tracker:crafted:v1";
  * instead of from an effect: a value that failed to parse is still there
  * afterwards to be inspected or repaired by hand.
  */
-export function loadCrafted(known: ReadonlySet<string>): StoredProgress {
+export function loadCrafted(known: NameAliases): StoredProgress {
   const raw = read();
 
   if (raw === null) return empty();
@@ -67,34 +81,36 @@ export function loadCrafted(known: ReadonlySet<string>): StoredProgress {
  * apart from disagreeing about a renamed runeword — which is the one case both
  * of them exist to handle.
  *
- * Takes the known names rather than importing the dataset, which is what keeps
- * this module testable without one and is why `loadCrafted` has the parameter it
- * has.
+ * Takes the names the dataset answers to rather than importing the dataset,
+ * which is what keeps this module testable without one and is why `loadCrafted`
+ * has the parameter it has.
  *
- * **Matching folds case and surrounding whitespace, and nothing else.** The
- * exporter writes canonical names, so a file this application produced round-trips
- * exactly; the tolerance is for the file a player typed or pulled out of a
- * spreadsheet. It is bounded there deliberately: an import reports nothing about
- * what it failed to match, so a near-miss is invisible, and every further step —
- * fuzzy distance, punctuation stripping, matching a locale's translated labels —
- * is a way for an import to mark a runeword the file did not name. Case cannot do
- * that: the 99 canonical names are distinct case-insensitively.
+ * **Matching folds case, surrounding whitespace and `ё`/`е`, and accepts a
+ * runeword's Russian label as readily as its canonical English name.** The
+ * exporter writes canonical names, so a file this application produced
+ * round-trips exactly; the tolerance is for the file a player typed, translated
+ * or pulled out of a spreadsheet, and a Russian reader's hand-written list is
+ * Russian. It stops there deliberately: an import reports nothing about what it
+ * failed to match, so a near-miss is invisible, and fuzzy distance or
+ * punctuation stripping would be ways for an import to mark a runeword the file
+ * did not name. The two labels per runeword cannot do that — they are the
+ * dataset's own text, and their folded forms are distinct across all 99
+ * runewords, which `src/data/index.test.ts` asserts.
  *
- * What is stored for a match is the dataset's own spelling, whatever the file
- * used, so nothing downstream has to fold anything again.
+ * What is stored for a match is the canonical English name, whatever language
+ * the file used, so nothing downstream has to fold or translate anything again.
  */
 export function splitStoredNames(
   names: Iterable<string>,
-  known: ReadonlySet<string>,
+  known: NameAliases,
 ): StoredProgress {
-  const canonical = foldedIndex(known);
   const crafted = new Set<string>();
   const unknown: string[] = [];
 
   // A `Set` first, so a hand-edited list or an imported file naming the same
   // runeword twice marks it once and cannot inflate the count.
   for (const name of new Set(names)) {
-    const match = canonical.get(fold(name));
+    const match = known.get(foldLabel(name));
 
     if (match === undefined) unknown.push(name);
     else crafted.add(match);
@@ -145,30 +161,6 @@ export function saveCrafted({ crafted, unknown }: StoredProgress): void {
  * trusting this instead would be exactly backwards.
  */
 const storedNamesSchema = z.array(z.string().min(1));
-
-/**
- * The known names indexed by their folded form, so a match is one lookup.
- *
- * Built per call rather than hoisted to module scope, because the known set is a
- * parameter — hoisting it would mean this module importing the dataset, which is
- * the dependency the parameter exists to avoid. The cost is 99 `toLowerCase()`
- * calls on the two occasions a session performs a split: once on load, once if an
- * import happens.
- */
-function foldedIndex(known: ReadonlySet<string>): Map<string, string> {
-  return new Map([...known].map((name) => [fold(name), name]));
-}
-
-/**
- * The form both sides of a name comparison are reduced to.
- *
- * `toLowerCase()` and **never** `toLocaleLowerCase()`: the mapping must not
- * depend on the runtime's locale, and under `tr` the locale-aware form maps `I`
- * to `ı`, which would stop `Infinity` matching itself.
- */
-function fold(name: string): string {
-  return name.trim().toLowerCase();
-}
 
 /** A fresh object each time, so no caller can mutate a shared empty. */
 function empty(): StoredProgress {

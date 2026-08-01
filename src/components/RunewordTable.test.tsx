@@ -503,17 +503,17 @@ describe("what a row carries", () => {
 });
 
 describe("availability across the table", () => {
-  it("marks exactly the 9 ladder-only rows", () => {
+  it("marks exactly the 8 ladder-only rows", () => {
     const { container } = renderTable();
 
     expect(
       container.querySelectorAll(
         `[aria-label="${en.availability.ladderMeaning}"]`,
       ),
-    ).toHaveLength(9);
+    ).toHaveLength(8);
   });
 
-  it("shows all three markers on `Mosaic`", () => {
+  it("shows patch and note on `Mosaic`, without a ladder marker", () => {
     renderTable();
 
     const row = within(rowFor("Mosaic"));
@@ -522,8 +522,8 @@ describe("availability across the table", () => {
       row.getByRole("img", { name: en.availability.patchMeaning("2.6") }),
     ).toBeVisible();
     expect(
-      row.getByRole("img", { name: en.availability.ladderMeaning }),
-    ).toBeVisible();
+      row.queryByRole("img", { name: en.availability.ladderMeaning }),
+    ).not.toBeInTheDocument();
     expect(row.getByText(en.availability.noteMarker)).toBeVisible();
   });
 });
@@ -573,7 +573,7 @@ describe("marking a runeword crafted", () => {
     expect(onToggle).not.toHaveBeenCalled();
   });
 
-  it("hands over the socket so an undo can restore focus to it", async () => {
+  it("hands over the socket so the confirmation can return focus to it", async () => {
     const { onToggle } = renderTable();
     const row = rowFor("Leaf");
 

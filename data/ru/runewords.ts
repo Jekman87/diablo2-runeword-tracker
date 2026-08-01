@@ -1963,7 +1963,10 @@ export const runewordTranslations: Record<string, RunewordTranslation> = {
   Mosaic: {
     name: "Мозаика",
     itemTypeRestriction: "ассасин",
-    note: "Отключено в 13-м сезоне! Можно создать в автономной игре вне ладдера.",
+    // Project-authored: the vendor note named Season 13, which went stale when
+    // the disable continued. "В сезоне" matches the English "on ladder" without
+    // pinning a number that will age out again.
+    note: "Отключено в сезоне! Можно создать в одиночной игре вне ладдера.",
     propertyGroups: [
       {
         properties: [
@@ -1981,7 +1984,7 @@ export const runewordTranslations: Record<string, RunewordTranslation> = {
       },
     ],
     source:
-      "https://www.noob-club.ru/index.php?topic=70236.0 — verified against the official localisation; transcribed from https://diablo2-resurrected.ru/runnie-slova-runi.htm#26_5 — 2 of 10 property lines are not quoted from the official-localisation guide (it predates this record); those follow its conventions, transcribed from diablo2-resurrected.ru; note: runewizard's own editorial text, translated as project-authored Russian",
+      "https://www.noob-club.ru/index.php?topic=70236.0 — verified against the official localisation; transcribed from https://diablo2-resurrected.ru/runnie-slova-runi.htm#26_5 — 2 of 10 property lines are not quoted from the official-localisation guide (it predates this record); those follow its conventions, transcribed from diablo2-resurrected.ru; note: project-authored Russian of the project's English override (vendor named Season 13; disable continued)",
   },
   Metamorphosis: {
     name: "Метаморфоза",

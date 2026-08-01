@@ -76,6 +76,7 @@ site still deployable.
 | 14  | `dataset-localisation`   | done   |
 | 15  | `csv-import-export`      | done   |
 | 16  | `search-indexing`        | done   |
+| 17  | `tracker-ux-batch`       | done   |
 | —   | `chronicle-styling`      | partly |
 
 `detail-view-hover` is numbered `6a` because it is not a step in the sequence:
@@ -89,6 +90,16 @@ OpenSpec change: part of it went straight onto `main`, and the rest was reviewed
 on 2026-07-31 and dropped. [Phase 5](#phase-5--polish-shipped) is shipped;
 [Not this phase](#not-this-phase) is what was declined or deferred;
 nothing else in this document is a to-do list.
+
+`tracker-ux-batch` is three small things in one change, under the same grouping
+rule `phase-5-polish` set: a confirmation dialog in front of every mark and
+unmark (which replaces the undo toast outright), a congratulation on the progress
+line at 99 of 99, and import matching a runeword by its Russian label as well as
+its English name. Each is a handful of lines, all three touch the crafted set and
+the display-copy layer, and three propose–apply–archive cycles for them would
+have been ceremony rather than review. Beside that batch, availability-badge
+hover tips left the browser's native `title` for Floating UI panels styled like
+the detail view — recorded in `runeword-table` rather than as its own change.
 
 `search-indexing` comes after the phases rather than inside one: the product was
 finished and the page still told a crawler nothing. It added a meta description,
@@ -849,7 +860,10 @@ is kept and its "further visual flourishes" half is dropped.
 - A crafted row gets a tint and a left accent border. **The tint is the
   Chronicle's gold, not the green this line first called for** — same note.
 - Toggling updates the progress bar and both remaining panels immediately
-- Undo affordance for misclicks — short-lived toast with an undo action
+- Undo affordance for misclicks — short-lived toast with an undo action.
+  **Superseded by `tracker-ux-batch`**: the page asks before it marks, and the
+  toast is gone. The protection is the same one and it arrives before the change
+  rather than after it, which is what import already did.
 
 ### Filters
 
@@ -1053,8 +1067,9 @@ list. Kept here so the numbering does not lie.
 
 ## Phase 5 — polish (shipped)
 
-**Shipped** as one OpenSpec change, `phase-5-polish` — a deliberate exception to
-the one-feature-per-change rule for a finishing stage (recorded in `AGENTS.md`).
+**Shipped** as one OpenSpec change, `phase-5-polish` — a finishing batch under
+the grouping rule in `AGENTS.md` (related items in one propose–apply–archive
+cycle).
 
 ### What landed
 
@@ -1109,9 +1124,8 @@ ideas came in with that review**: the grey ground, the transparent tooltip that
 depends on it, centred property lines, a full-width divider, a footer carrying a
 donation control, a back-to-top button, and a badge legend in the help panel.
 
-**It is one OpenSpec change**, `phase-5-polish`, and that is a deliberate exception
-to `AGENTS.md`'s one-feature-per-change rule: a stage of finishing work is the unit
-here, because a token rename does not earn its own propose–apply–archive cycle. The
+**It is one OpenSpec change**, `phase-5-polish`, under `AGENTS.md`'s grouping
+rule: a coherent finishing batch is one propose–apply–archive cycle. The
 groups below are the task groups inside it, not separate proposals.
 
 ### The grey ground, and the game's own tooltip
@@ -1461,20 +1475,21 @@ none of them set simply shows no badges.
 | `patch`      | version that introduced it, e.g. `2.6`, `3.0`    |
 | `note`       | free-form caveat, for season-specific exceptions |
 
-The nine ladder-only ones: Bulwark, Cure, Ground, Hearth, Temper, Mosaic,
-Metamorphosis, Mania, Hysteria.
+The eight ladder-only ones: Bulwark, Cure, Ground, Hearth, Temper,
+Metamorphosis, Mania, Hysteria. (Mosaic is no longer flagged: its note says
+it is disabled on ladder.)
 
 ### Why `note` has to be a data field and not hardcoded logic
 
-**Mosaic** is the case that proves it. The reference marks it ladder-only,
-patch 2.6, and then adds a note: _disabled in Season 13, can be crafted
-offline non-ladder_. So a runeword that is nominally ladder-only is currently
-impossible to craft on ladder, and possible only outside it.
+**Mosaic** is the case that proves it. The vendor marks it ladder-only and
+patch 2.6, then adds a note that it is disabled on ladder and craftable only
+offline / non-ladder. Showing an `L` badge next to that note would contradict
+the caveat, so the shipped dataset clears the ladder flag and keeps the note.
 
 Availability flips between seasons, so it is information for the player to
 read, not a rule for the app to enforce. Keeping it purely decorative is what
-makes it safe: a stale badge is a cosmetic inaccuracy, whereas stale logic
-would silently miscount progress.
+makes it safe: edit the data when a badge goes stale; do not encode season
+rules in application logic that would silently miscount progress.
 
 Badges carry a tooltip with the full text, exactly as the reference does —
 `L` with "Ladder Only", the patch number, and `Note!` with the caveat.

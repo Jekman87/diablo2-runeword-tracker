@@ -229,10 +229,10 @@ field — which colour a patch badge takes — is not such logic, and is permitt
 what is forbidden is any behaviour that changes what the application counts,
 orders, filters or reports.
 
-#### Scenario: All three badges render together
+#### Scenario: Patch and note render together without a ladder marker
 
 - **WHEN** the row for `Mosaic` is read
-- **THEN** it shows the patch `2.6`, a ladder-only marker and a note marker
+- **THEN** it shows the patch `2.6` and a note marker, and no ladder-only marker
 
 #### Scenario: A runeword with no availability fields shows no badges
 
@@ -243,7 +243,7 @@ orders, filters or reports.
 #### Scenario: The badge count matches the data
 
 - **WHEN** the rendered rows carrying a ladder-only marker are counted
-- **THEN** there are exactly 9, matching the dataset
+- **THEN** there are exactly 8, matching the dataset
 
 #### Scenario: No logic reads an availability field
 
@@ -283,10 +283,22 @@ pointer tooltip, and the runeword's detail view SHALL restate the patch, the
 ladder status and the note in full. A one-letter marker whose only explanation is
 a hover tooltip SHALL NOT be the sole presentation of a fact.
 
+On a pointer, a table-row badge SHALL also show that same meaning in a Floating UI
+tooltip whose surface matches the detail panel (theme tokens, not the browser's
+native `title` chrome). The badge SHALL NOT carry a `title` attribute for that
+tip. A decorative badge sample — as in the help legend, where adjacent copy
+already states the meaning — SHALL NOT open a tooltip.
+
 #### Scenario: A badge states its meaning to assistive technology
 
 - **WHEN** the ladder-only marker is inspected by its accessible name
 - **THEN** the name is the full meaning, not the single letter drawn on screen
+
+#### Scenario: A pointer tip matches the detail panel, not the OS
+
+- **WHEN** a pointer hovers a table-row availability badge
+- **THEN** a Floating UI tooltip opens with the badge's full meaning
+- **AND** the badge has no `title` attribute
 
 #### Scenario: The note is readable without hovering
 

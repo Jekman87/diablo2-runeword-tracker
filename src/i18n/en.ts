@@ -75,7 +75,7 @@ export const en = {
     helpIntro:
       "Every runeword in the game, with the runes it takes and the base items it can go into. The patch above says which version of the list this is.",
     helpPoints: [
-      "Tick the box in the Crafted column to record a runeword you have made. The bar at the top of the page counts what you have made out of all 99, and a notice offers an undo if you tick the wrong one.",
+      "Tick the box in the Crafted column to record a runeword you have made — clicking anywhere on its row does the same. Either way the page asks you to confirm first, so a stray click costs nothing, and the bar at the top counts what you have made out of all 99.",
       "The search field matches a runeword's name, its base items and any class or item restriction. The two groups of buttons beside it narrow the list by crafted state and by equipment slot, and every column heading sorts the table.",
       "Remaining Runes and Remaining Bases add up everything the runewords you have not made yet still need — the shopping list for the rest of them, not for the whole game.",
       "Rest the pointer on a runeword's name to see the properties it grants, its runes in order, the sockets it needs and the level it requires.",
@@ -215,8 +215,9 @@ export const en = {
     confirmTitle: "Replace your progress?",
 
     // Says erased and says permanent. Both halves are load-bearing: a player
-    // who reads "import" expects a merge, and one who expects the undo notice
-    // this page raises for every toggle would be wrong about this one.
+    // who reads "import" expects a merge, and one who has learned that a mark
+    // can be cancelled from its own dialog would be wrong about this one — the
+    // question is asked once and there is nothing behind it.
     confirmWarning:
       "Importing replaces everything you have marked. Your current progress will be erased, and this cannot be undone.",
 
@@ -278,6 +279,31 @@ export const en = {
     // sentence around it is copy.
     mark: (name: string) => `Mark ${name} as crafted`,
     unmark: (name: string) => `Mark ${name} as not crafted`,
+
+    // The confirmation standing in front of every mark and unmark, in both
+    // directions. It replaced the undo notice: a dialog that asks first and a
+    // notice that offers to take it back are the same protection twice, and the
+    // import confirmation had already settled which of the two this page uses.
+    //
+    // The heading asks the question and the body names the runeword, on the
+    // shape the import confirmation set. The name is a `{name}` placeholder
+    // rather than an interpolated argument: the component splits on it and
+    // wraps the projected label in gold, so the styling layer never has to
+    // parse a finished sentence.
+    //
+    // Each action is named for what it does rather than "Yes" or "OK", so the
+    // green and the red are the second signal of the direction and never the
+    // only one. "Add" rather than "Mark as crafted": the title already asked
+    // the question, and the button only needs to name the short answer.
+    confirmMarkTitle: "Mark as crafted?",
+    confirmMarkBody: "{name} will be counted towards your progress.",
+    confirmMarkAction: "Add",
+
+    confirmUnmarkTitle: "Remove from crafted?",
+    confirmUnmarkBody: "{name} will no longer count towards your progress.",
+    confirmUnmarkAction: "Remove",
+
+    confirmCancel: "Cancel",
   },
 
   progress: {
@@ -299,12 +325,20 @@ export const en = {
     // costs a character and beats rendering `NaN%` if it ever were.
     count: (crafted: number, total: number) =>
       `${total === 0 ? 0 : Math.round((crafted / total) * 100)}% (${crafted} of ${total})`,
-  },
 
-  undo: {
-    marked: (name: string) => `Marked ${name} as crafted`,
-    unmarked: (name: string) => `Unmarked ${name}`,
-    action: "Undo",
+    // The one sentence the page says only once. It follows the counts on the
+    // same line rather than taking a banner of its own: the progress line is
+    // where a player watches the number climb, so it is where the number
+    // arriving deserves to be answered.
+    //
+    // Not in `aria-valuetext`, which stays the counts alone — a value is a
+    // value, and a progress indicator that announces a congratulation as its
+    // value would be worse for the reader who most depends on it.
+    //
+    // The reward is the in-game one the Chronicle grants for the same list, so
+    // the sentence points back at the game rather than at this page.
+    complete:
+      "Congratulations, you have collected every runeword! Claim your reward in the game!",
   },
 
   // The two remaining panels: their titles, the tier bands' labels, the row

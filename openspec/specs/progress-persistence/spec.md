@@ -119,12 +119,18 @@ no progress rather than crashing the application or being used unchecked.
 
 ### Requirement: A name the dataset does not know is kept, not counted
 
-A stored name that matches no runeword in the dataset SHALL NOT be marked, SHALL
-NOT be counted towards progress, and SHALL NOT be discarded. It SHALL be written
-back unchanged on every save that carries prior progress forward, so that a
-runeword renamed or removed between game patches does not silently lose the player
-the mark they made, while a stored value full of nonsense still reports a truthful
-count out of the real total.
+A stored name that matches no runeword in the dataset — neither a canonical
+English name nor that runeword's Russian dataset label, under the fold used for
+import matching (case, trim, `ё`/`е`) — SHALL NOT be marked, SHALL NOT be counted
+towards progress, and SHALL NOT be discarded. It SHALL be written back unchanged
+on every save that carries prior progress forward, so that a runeword renamed or
+removed between game patches does not silently lose the player the mark they made,
+while a stored value full of nonsense still reports a truthful count out of the
+real total.
+
+A name that matches a Russian dataset label SHALL be treated as known: it SHALL
+be marked under the canonical English name and SHALL NOT remain in the unknown
+list.
 
 A wholesale replacement — an imported file becoming the whole of the player's
 progress, which `progress-transfer` specifies — is the one save that does not carry
@@ -138,7 +144,8 @@ can reach one.
 
 #### Scenario: An unknown name does not appear in the interface
 
-- **WHEN** the stored list contains a name that is in no runeword record
+- **WHEN** the stored list contains a name that matches neither an English
+  runeword name nor a Russian dataset label
 - **THEN** no row is marked for it and the progress count does not include it
 
 #### Scenario: An unknown name is preserved across a save
@@ -146,6 +153,11 @@ can reach one.
 - **WHEN** the stored list contains an unknown name and the player then toggles a
   real runeword
 - **THEN** the newly written value still contains the unknown name
+
+#### Scenario: A Russian label in storage loads as crafted
+
+- **WHEN** the stored list contains a runeword's Russian dataset label
+- **THEN** that runeword loads as crafted under its canonical English name
 
 #### Scenario: Progress cannot exceed the total
 
@@ -168,7 +180,8 @@ can reach one.
 
 #### Scenario: A replacement's own unrecognised names are kept
 
-- **WHEN** an imported file lists names the dataset does not know
+- **WHEN** an imported file lists names the dataset does not know in English or
+  Russian
 - **THEN** the newly written value contains them, unmarked and uncounted, exactly
   as any other unknown stored name
 
@@ -200,19 +213,19 @@ player has done anything.
 
 Where local storage cannot be read or written — because it is disabled, full, or
 throws in a private browsing mode — the application SHALL remain fully usable for
-the session, with marking, progress and undo all working in memory. A storage
-failure SHALL NOT produce a blank page, an error dialog or a lost interaction.
+the session, with marking and progress all working in memory. A storage failure
+SHALL NOT produce a blank page, an error dialog or a lost interaction.
 
 #### Scenario: A throwing read does not break the page
 
 - **WHEN** reading from storage throws
 - **THEN** the application renders with no progress and every control works
 
-#### Scenario: A throwing write does not break the toggle
+#### Scenario: A throwing write does not break the mark
 
 - **WHEN** writing to storage throws
-- **THEN** the runeword is still marked, the progress indicator still updates, and
-  no error surfaces to the player
+- **THEN** the runeword is still marked after confirmation, the progress indicator
+  still updates, and no error surfaces to the player
 
 #### Scenario: The failure is contained at the boundary
 
