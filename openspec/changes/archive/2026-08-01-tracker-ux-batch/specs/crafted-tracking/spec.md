@@ -1,70 +1,6 @@
-# crafted-tracking Specification
+# crafted-tracking Delta
 
-## Purpose
-
-What it means for a runeword to be marked crafted — the per-row control and its
-states, the confirmation that gates every mark and unmark, the enlarged row hit
-target and the nested controls it must not swallow, how a crafted row is
-distinguished by more than colour, and the progress indicator with its fixed
-denominator of all 99 and its completion message at full progress.
-
-## Requirements
-
-### Requirement: Every runeword can be marked crafted
-
-The table SHALL present a crafted-state control on every runeword's row, in its
-own leading column with its own column header, so that the state is a property of
-the row that later changes can sort on rather than an ornament attached to the
-name. The control SHALL be a real button carrying its pressed state, so that it is
-reachable by Tab and operable by Space and Enter without a pointer. Activating the
-control SHALL open the mark or unmark confirmation rather than applying the change
-immediately; confirming that dialog SHALL change the crafted state.
-
-#### Scenario: Every row carries a control
-
-- **WHEN** the table is rendered
-- **THEN** each of the 99 rows presents one crafted-state control
-
-#### Scenario: The control is a button with a pressed state
-
-- **WHEN** a row's crafted-state control is inspected
-- **THEN** it is a button whose pressed state states whether the runeword is
-  crafted
-
-#### Scenario: The control is operable by keyboard alone
-
-- **WHEN** a crafted-state control receives keyboard focus and is activated by
-  keyboard, and the resulting confirmation is accepted
-- **THEN** the runeword's crafted state changes
-
-#### Scenario: The state is its own column
-
-- **WHEN** the table's columns are inspected
-- **THEN** crafted state occupies a leading column with a column header of its
-  own, so that a later change can make that header a sort control
-
-#### Scenario: Confirming mark then confirming remove returns to the starting state
-
-- **WHEN** an uncrafted runeword is confirmed marked and then confirmed unmarked
-- **THEN** the runeword is back in the state it started in
-
-### Requirement: The control names the runeword and the direction
-
-The crafted-state control's accessible name SHALL identify both the runeword it
-belongs to and what activating it will do, so that the control is unambiguous when
-it is reached out of the context of its row. The name SHALL come from the
-display-copy layer with the runeword's canonical name supplied to it, rather than
-being written into the component.
-
-#### Scenario: The name identifies the runeword
-
-- **WHEN** a crafted-state control's accessible name is read
-- **THEN** it contains that runeword's name
-
-#### Scenario: The name states what the next activation does
-
-- **WHEN** the accessible names of a crafted and an uncrafted control are compared
-- **THEN** they differ, each stating the direction its activation would take
+## ADDED Requirements
 
 ### Requirement: Marking or unmarking asks for confirmation first
 
@@ -138,6 +74,46 @@ canonical English name.
 - **WHEN** the confirmation opens
 - **THEN** the focused control is Cancel
 
+## MODIFIED Requirements
+
+### Requirement: Every runeword can be marked crafted
+
+The table SHALL present a crafted-state control on every runeword's row, in its
+own leading column with its own column header, so that the state is a property of
+the row that later changes can sort on rather than an ornament attached to the
+name. The control SHALL be a real button carrying its pressed state, so that it is
+reachable by Tab and operable by Space and Enter without a pointer. Activating the
+control SHALL open the mark or unmark confirmation rather than applying the change
+immediately; confirming that dialog SHALL change the crafted state.
+
+#### Scenario: Every row carries a control
+
+- **WHEN** the table is rendered
+- **THEN** each of the 99 rows presents one crafted-state control
+
+#### Scenario: The control is a button with a pressed state
+
+- **WHEN** a row's crafted-state control is inspected
+- **THEN** it is a button whose pressed state states whether the runeword is
+  crafted
+
+#### Scenario: The control is operable by keyboard alone
+
+- **WHEN** a crafted-state control receives keyboard focus and is activated by
+  keyboard, and the resulting confirmation is accepted
+- **THEN** the runeword's crafted state changes
+
+#### Scenario: The state is its own column
+
+- **WHEN** the table's columns are inspected
+- **THEN** crafted state occupies a leading column with a column header of its
+  own, so that a later change can make that header a sort control
+
+#### Scenario: Confirming mark then confirming remove returns to the starting state
+
+- **WHEN** an uncrafted runeword is confirmed marked and then confirmed unmarked
+- **THEN** the runeword is back in the state it started in
+
 ### Requirement: The whole row is a pointer target, and adds no keyboard stop
 
 A pointer click anywhere on a runeword's row SHALL open the mark or unmark
@@ -162,68 +138,6 @@ row and column semantics it is built on.
 - **WHEN** the rendered table is inspected by role
 - **THEN** each row is still a table row rather than a button, and the table is
   still navigable by row and column
-
-### Requirement: A nested control's activation does not also toggle the row
-
-Activating any interactive element inside a row SHALL perform only that element's
-own action. Opening a runeword's detail view SHALL NOT mark it crafted, and
-activating the crafted control SHALL toggle the state exactly once rather than
-twice. A pointer gesture that ends a text selection SHALL NOT toggle the row.
-
-#### Scenario: Opening the detail view does not mark the runeword
-
-- **WHEN** a runeword's name is clicked
-- **THEN** the detail view opens
-- **AND** the runeword's crafted state is unchanged
-
-#### Scenario: The control toggles once, not twice
-
-- **WHEN** the crafted-state control is clicked
-- **THEN** the state changes once, rather than being toggled by the control and
-  again by the row beneath it
-
-#### Scenario: Selecting text does not toggle
-
-- **WHEN** a pointer drag selects text within a row and is released
-- **THEN** the runeword's crafted state is unchanged
-
-#### Scenario: The exclusion is by kind, not by identity
-
-- **WHEN** the row's handling of a click is inspected
-- **THEN** it excludes interactive elements as a class rather than naming the
-  particular controls that exist today, so a control added later is excluded
-  without this behaviour being revisited
-
-### Requirement: A crafted row is distinguishable without colour
-
-A crafted runeword's row SHALL be visually distinguished from an uncrafted one,
-and that distinction SHALL NOT rest on colour alone. The control's pressed state,
-its accessible name and a mark it draws when set and does not draw when unset SHALL
-each carry the same fact, so that the state is readable by a player who cannot
-distinguish the colours and by one who cannot see the row.
-
-The requirement is that a mark is present or absent, not which mark it is. This was
-first written around a socket rendering filled or hollow and the control is a square
-box drawing a check mark instead, because the in-game Chronicle this page tracks
-draws neither a socket nor a saturated green; what the shape must go on carrying is
-that colour is never the only difference between the two states.
-
-#### Scenario: The row is visually marked
-
-- **WHEN** a runeword is marked crafted
-- **THEN** its row is distinguished from the uncrafted rows around it
-
-#### Scenario: The state survives the loss of colour
-
-- **WHEN** a crafted and an uncrafted row are compared with colour disregarded
-- **THEN** the two are still distinguishable, because the set control draws a mark
-  the unset control does not draw
-
-#### Scenario: The state is exposed to assistive technology
-
-- **WHEN** a crafted runeword's control is inspected by assistive technology
-- **THEN** it reports itself as pressed, and its name states that activating it
-  would unmark the runeword
 
 ### Requirement: Overall progress out of all 99
 
@@ -309,3 +223,18 @@ detail view SHALL render above it.
 - **WHEN** progress is complete and the page is scrolled so the progress band and
   the table header are stuck
 - **THEN** no strip of runeword row shows between them
+
+## REMOVED Requirements
+
+### Requirement: The most recent toggle can be undone from a transient notice
+
+**Reason**: A modal confirmation now gates every mark and unmark, so the undo
+toast duplicated the same protection. Import already uses confirmation alone.
+**Migration**: Players cancel the dialog instead of undoing after the fact. Help
+copy that described the undo notice is updated to describe the confirmation.
+
+### Requirement: The transient notice never destroys keyboard focus
+
+**Reason**: The undo notice is removed with the requirement above.
+**Migration**: Focus management for the confirmation dialog covers return of
+focus to the crafted control.

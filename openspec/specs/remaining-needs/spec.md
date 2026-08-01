@@ -188,22 +188,21 @@ as tall as both; below that width they SHALL stack.
 
 ### Requirement: The remaining-needs panel updates immediately when crafted state changes
 
-Both lists SHALL reflect the crafted set as it is now: toggling a runeword —
-including reversing one through the undo affordance — SHALL update both lists
-immediately, without a reload and regardless of whether the panel is open. They
-SHALL derive from the same crafted set the progress indicator reads, so the three
-cannot disagree.
+Both lists SHALL reflect the crafted set as it is now: confirming a mark or
+unmark SHALL update both lists immediately, without a reload and regardless of
+whether the panel is open. They SHALL derive from the same crafted set the
+progress indicator reads, so the three cannot disagree.
 
-#### Scenario: A toggle updates both lists
+#### Scenario: A confirmed mark updates both lists
 
-- **WHEN** a runeword is marked crafted while the panel is open
+- **WHEN** a runeword is confirmed crafted while the panel is open
 - **THEN** its runes leave or decrease in the runes list and its base groups
   leave or decrease in the bases list, without a reload
 
-#### Scenario: An undo restores both lists
+#### Scenario: A confirmed unmark restores both lists
 
-- **WHEN** a toggle is reversed from the transient notice
-- **THEN** both lists present what they presented before the toggle
+- **WHEN** a crafted runeword is confirmed unmarked while the panel is open
+- **THEN** both lists present what they presented before that mark
 
 #### Scenario: The lists and progress agree
 

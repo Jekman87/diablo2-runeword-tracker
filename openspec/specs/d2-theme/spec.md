@@ -23,18 +23,28 @@ between table rows and the row's hover state, and the detail view's panel — it
 ground, its edge and its descriptive text, each a token of its own, because a
 panel that floats in front of the page is a different role from the hairline that
 separates two rows behind it. They SHALL further cover the surfaces crafted
-tracking introduces: the tint of a crafted row, the unfilled track of the progress
-indicator, and the panel of the transient undo notice. They SHALL further cover
-the surfaces the browsing controls introduce: the search field, the resting and
-selected states of a filter control, the indicator marking the sorted column, and
-the message shown when nothing matches. They SHALL further cover the surface the
-remaining panels introduce: the band of each panel's collapse control. The
-surfaces the site header introduces — its two links, its help control and its
-patch line — SHALL be covered by tokens already declared: the gold display family
-for the pressable text, the muted text colour for the patch line. No token SHALL
-be declared for them, and the token held for a link colour of its own SHALL be
-removed, because the header renders the gold family instead and nothing else
-renders that colour. The surfaces the page's closing furniture introduces — the footer's text and links, the donation address and the control that copies it, and the control that returns the reader to the top — SHALL likewise be covered by tokens already declared, because each is a role the palette already names: the muted text colour for a line that states a fact, the gold pair for pressable text, and the floating panel's ground and edge for a control that floats over the page.
+tracking introduces: the tint of a crafted row and the unfilled track of the
+progress indicator. They SHALL further cover the surfaces the browsing controls
+introduce: the search field, the resting and selected states of a filter control,
+the indicator marking the sorted column, and the message shown when nothing
+matches. They SHALL further cover the surface the remaining panels introduce: the
+band of each panel's collapse control. The surfaces the site header introduces —
+its two links, its help control and its patch line — SHALL be covered by tokens
+already declared: the gold display family for the pressable text, the muted text
+colour for the patch line. No token SHALL be declared for them, and the token held
+for a link colour of its own SHALL be removed, because the header renders the gold
+family instead and nothing else renders that colour. The surfaces the page's
+closing furniture introduces — the footer's text and links, the donation address
+and the control that copies it, and the control that returns the reader to the top
+— SHALL likewise be covered by tokens already declared, because each is a role the
+palette already names: the muted text colour for a line that states a fact, the
+gold pair for pressable text, and the floating panel's ground and edge for a
+control that floats over the page.
+
+They SHALL further cover the surfaces the mark/unmark confirmation introduces: a
+confirm-action colour (green) for marking a runeword crafted, and a remove-action
+colour (red) for unmarking one. The transient undo notice's panel token SHALL be
+removed with that notice.
 
 Where the palette copies a source, it SHALL copy the source that owns the surface:
 the reference site for the surfaces the reference invented, and the game itself for
@@ -153,11 +163,22 @@ misdescribes its own subject SHALL NOT be copied.
 
 #### Scenario: Crafted tracking's own surfaces are tokens
 
-- **WHEN** the crafted row's tint, the progress indicator's track and the undo
-  notice's panel are inspected
+- **WHEN** the crafted row's tint and the progress indicator's track are inspected
 - **THEN** each takes its colour from a named token rather than a literal value
 - **AND** the indicator's filled portion reuses the crafted-state accent already
   declared, rather than adding a second token for the same role
+
+#### Scenario: Confirmation action colours are tokens
+
+- **WHEN** the mark confirmation's confirm action and the remove confirmation's
+  remove action are inspected
+- **THEN** each takes its background from a named role token (confirm / remove)
+  rather than a literal colour value
+
+#### Scenario: The undo notice token is gone
+
+- **WHEN** the token set is read after the undo notice is removed
+- **THEN** no token exists solely for that notice's panel
 
 #### Scenario: The browsing controls' surfaces are tokens already declared
 
@@ -409,7 +430,8 @@ engine renders a square fill inside a rounded frame.
 #### Scenario: Every self-drawn surface takes the radius token
 
 - **WHEN** the search field, the filter controls, the progress indicator, the
-  table's header band, the detail panel and the transient undo notice are inspected
+  table's header band, the detail panel and the mark/unmark confirmation panel are
+  inspected
 - **THEN** each takes its corner radius from the one declared token rather than from
   a literal length or from nothing
 
