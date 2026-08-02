@@ -13,11 +13,16 @@
       content="8KEB_ImW46lZ1uEgVTf1tSrpM0-7fUmtRUIeJD9inq8"
     />
 
-    <title>Diablo II Runeword Tracker</title>
+    <title>Diablo II Runeword Tracker (D2R)</title>
 
-    <!-- What a search result gets to say about the page. English, like the rest
-         of the static shell: the locale switch happens after React mounts, and
-         a crawler reads the document before that.
+    <!-- What a search result gets to say about the page. English, because this
+         is the English entry: `ru/index.html` is the same application behind a
+         Russian document head, and the hreflang trio below is how a crawler
+         learns the two are one page in two languages.
+
+         "D2R" appears in the title and description on purpose — it is the
+         abbreviation players actually type into a search box, and it occurs
+         nowhere in the page's own prose.
 
          Kept to one sentence about what the tracker does rather than a list of
          runeword names — the names are in the table, and a description stuffed
@@ -25,27 +30,73 @@
          this same sentence deliberately: two wordings of one page are two things
          to keep in step, and the second one is the one that rots.
 
-         The canonical href, the sitemap's <loc> and the Sitemap: line in
-         robots.txt are the same absolute URL, pinned in `src/header/site.ts`
-         and checked against these files by `scripts/crawl-files.test.ts`. -->
+         The canonical href, the hreflang pair, the sitemap's <loc> entries and
+         the Sitemap: line in robots.txt are the same absolute URLs, pinned in
+         `src/header/site.ts` and checked against these files by
+         `scripts/crawl-files.test.ts`. -->
     <meta
       name="description"
-      content="Track which Diablo II: Resurrected runewords you have crafted, and see which runes and bases the remaining ones still need. All 99, in your browser."
+      content="Track which Diablo II: Resurrected (D2R) runewords you have crafted, and see which runes and bases the remaining ones still need. All 99, in your browser."
     />
     <link
       rel="canonical"
       href="https://jekman87.github.io/diablo2-runeword-tracker/"
     />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://jekman87.github.io/diablo2-runeword-tracker/"
+    />
+    <link
+      rel="alternate"
+      hreflang="ru"
+      href="https://jekman87.github.io/diablo2-runeword-tracker/ru/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://jekman87.github.io/diablo2-runeword-tracker/"
+    />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Diablo II Runeword Tracker" />
+    <meta property="og:title" content="Diablo II Runeword Tracker (D2R)" />
     <meta
       property="og:description"
-      content="Track which Diablo II: Resurrected runewords you have crafted, and see which runes and bases the remaining ones still need. All 99, in your browser."
+      content="Track which Diablo II: Resurrected (D2R) runewords you have crafted, and see which runes and bases the remaining ones still need. All 99, in your browser."
     />
     <meta
       property="og:url"
       content="https://jekman87.github.io/diablo2-runeword-tracker/"
     />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ru_RU" />
+
+    <!-- The social card. A committed file in `public/` rather than a hashed
+         asset in `src/`, because a crawler reads this URL out of the static
+         HTML and Vite does not rewrite meta content. 1200×630 is the size the
+         large-card renderers crop least. -->
+    <meta
+      property="og:image"
+      content="https://jekman87.github.io/diablo2-runeword-tracker/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Inert structured data, not a script that runs — within the page's
+         no-third-party rule. One block, saying what the application is and
+         that it speaks two languages. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Diablo II Runeword Tracker",
+        "url": "https://jekman87.github.io/diablo2-runeword-tracker/",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "inLanguage": ["en", "ru"]
+      }
+    </script>
 
     <!-- The Jah rune, cropped from the shared sprite at its native 40×40 cell
          rather than redrawn or scaled up. Same rule the icons in the table
