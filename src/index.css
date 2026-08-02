@@ -136,6 +136,16 @@
   --color-gold-mid: #a79663;
   --color-gold-light: #bab197;
 
+  /* The usefulness badges under a runeword's name — one token per judgement,
+     ordered by luminance within the page's own warm family so "worth runes"
+     reads brighter than "Chronicle filler" at a glance. The middle one shares
+     `--color-gold-mid`'s value for an unrelated role, which is the case the
+     naming rule explicitly permits; the word inside the badge carries the
+     meaning, so colour is never its only carrier. */
+  --color-usefulness-meta: #c9a24b;
+  --color-usefulness-situational: #a79663;
+  --color-usefulness-chronicle: #6f6a5e;
+
   /* A granted-property line, and the numbers within it picked out brighter. Two
      tokens for two things, deliberately not `blue` / `blue-light` — in this
      application these are only ever those two.

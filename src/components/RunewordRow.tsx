@@ -130,12 +130,20 @@ export const RunewordRow = memo(function RunewordRow({
           <AvailabilityBadges runeword={runeword} />
         </span>
 
-        {/* The usefulness line, under the name and visibly subordinate to it —
-            the words from the copy layer, the value from the dataset. No
-            element at all where the record carries none, so an unlabelled row
-            does not gain an empty line. */}
+        {/* The usefulness badge, under the name and visibly subordinate to it —
+            the word from the copy layer, the value from the dataset, the colour
+            from that value's own token so good and junk tell apart at a glance.
+            An outline chip rather than the availability badges' filled form,
+            because it is a different kind of information and should not read as
+            a fourth patch badge. No element at all where the record carries
+            none, so an unlabelled row does not gain an empty line. */}
         {runeword.usefulness === undefined ? null : (
-          <span className="block text-[12px] text-muted">
+          <span
+            className={clsx(
+              "mt-0.5 inline-block rounded-xs border px-1 text-[11px] leading-4",
+              USEFULNESS_BADGE[runeword.usefulness],
+            )}
+          >
             {strings.advice.usefulness[runeword.usefulness]}
           </span>
         )}
@@ -164,7 +172,10 @@ export const RunewordRow = memo(function RunewordRow({
         <RuneSequence runeword={runeword} className="flex" />
       </td>
 
-      <td className="p-2 align-top">
+      {/* `relative`, because the advice trigger inside stretches its hit area
+          over the whole cell — the pointer target is the cell, not the lines
+          of text that happen to be in it. */}
+      <td className="relative p-2 align-top">
         <RunewordAdvice
           runeword={runeword}
           open={adviceOpen}
@@ -213,3 +224,11 @@ function handledElsewhere(event: React.MouseEvent<HTMLTableRowElement>) {
 }
 
 const INTERACTIVE = "button, a, input, select, textarea, [role='button']";
+
+// Text and border together, from the judgement's own token: an outline chip is
+// its colour twice, and the two must not be able to disagree.
+const USEFULNESS_BADGE: Record<NonNullable<Runeword["usefulness"]>, string> = {
+  meta: "border-usefulness-meta text-usefulness-meta",
+  situational: "border-usefulness-situational text-usefulness-situational",
+  chronicle: "border-usefulness-chronicle text-usefulness-chronicle",
+};

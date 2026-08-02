@@ -90,9 +90,30 @@ describe("the advice panel", () => {
     expect(
       within(panel).getByRole("heading", { name: en.advice.heading }),
     ).toBeVisible();
+    // By whole-paragraph text content rather than `getByText`: the rendered
+    // paragraph is split by the roll-range emphasis spans.
+    const rendered = [...panel.querySelectorAll("p")].map((p) => p.textContent);
     for (const paragraph of record("Spirit").advice?.paragraphs ?? []) {
-      expect(within(panel).getByText(paragraph)).toBeVisible();
+      expect(rendered).toContain(paragraph);
     }
+  });
+
+  it("picks the roll ranges out of the prose", async () => {
+    const user = userEvent.setup();
+    renderTable([record("Spirit")]);
+
+    await user.click(
+      screen.getByRole("button", { name: en.advice.label("Spirit") }),
+    );
+    const panel = await screen.findByRole("dialog");
+
+    // Spirit's advice names its faster-cast-rate roll; the range is what a
+    // crafter has to pay attention to, so it renders emphasised.
+    const emphasised = [...panel.querySelectorAll("em")].map(
+      (em) => em.textContent,
+    );
+
+    expect(emphasised).toContain("25-35%");
   });
 
   it("renders the sources as real links that leave in a new tab", async () => {
@@ -141,11 +162,12 @@ describe("the advice panel", () => {
     );
     const panel = await screen.findByRole("dialog");
 
+    const rendered = [...panel.querySelectorAll("p")].map((p) => p.textContent);
     for (const paragraph of record("Spirit").ru?.advice?.paragraphs ?? []) {
-      expect(within(panel).getByText(paragraph)).toBeVisible();
+      expect(rendered).toContain(paragraph);
     }
     for (const paragraph of record("Spirit").advice?.paragraphs ?? []) {
-      expect(within(panel).queryByText(paragraph)).not.toBeInTheDocument();
+      expect(rendered).not.toContain(paragraph);
     }
   });
 
