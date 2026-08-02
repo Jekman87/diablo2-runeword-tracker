@@ -573,6 +573,21 @@ describe("marking a runeword crafted", () => {
     expect(onToggle).not.toHaveBeenCalled();
   });
 
+  it("does not toggle when plain text inside the open detail panel is clicked", async () => {
+    const { onToggle } = renderTable();
+
+    await userEvent.click(nameButtonIn(rowFor("Leaf")));
+    const panel = screen.getByRole("dialog");
+
+    // The panel is a portal: its DOM is outside the row, but its events still
+    // bubble through the component tree into the row's click handler. A reader
+    // clicking the panel's own text — mid-selection, or just resting the
+    // pointer — must not be asked whether to mark the runeword underneath.
+    await userEvent.click(within(panel).getByRole("heading", { name: "Leaf" }));
+
+    expect(onToggle).not.toHaveBeenCalled();
+  });
+
   it("hands over the socket so the confirmation can return focus to it", async () => {
     const { onToggle } = renderTable();
     const row = rowFor("Leaf");

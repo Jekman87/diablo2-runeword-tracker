@@ -144,20 +144,31 @@ export const RunewordRow = memo(function RunewordRow({
 /**
  * Whether this click was already somebody else's, and so is not a toggle.
  *
- * Two exclusions, and the first is the one that matters. Without it, clicking a
- * runeword's name would open the detail view **and** raise the crafted
- * confirmation over it — the collision `runeword-table` recorded when it made
- * the name a button. It is
- * written as a selector matched with `closest()` rather than as a comparison
- * against the two controls that exist today, so a control added inside a row
+ * Three exclusions. The first is containment, and it exists because of portals:
+ * the row's floating panels render at the end of the document through
+ * `FloatingPortal`, but a React portal's events still bubble through the
+ * *component* tree — so a click on plain text inside an open panel arrives
+ * here, with a target the row does not contain in the DOM. That click belongs
+ * to the panel, whatever the reader was doing in it (following a link,
+ * selecting a base name to copy), and must not raise the crafted confirmation
+ * underneath. Containment rather than naming the panels, so a panel added
  * later is excluded without this function being revisited.
  *
- * The second: a drag that ends inside the row has selected text, and finishing
+ * The second matters inside the row itself. Without it, clicking a runeword's
+ * name would open the detail view **and** raise the crafted confirmation over
+ * it — the collision `runeword-table` recorded when it made the name a button.
+ * It is written as a selector matched with `closest()` rather than as a
+ * comparison against the controls that exist today, for the same reason as
+ * above.
+ *
+ * The third: a drag that ends inside the row has selected text, and finishing
  * a selection is not a request to mark anything.
  */
 function handledElsewhere(event: React.MouseEvent<HTMLTableRowElement>) {
-  if (event.target instanceof Element && event.target.closest(INTERACTIVE)) {
-    return true;
+  if (event.target instanceof Element) {
+    if (!event.currentTarget.contains(event.target)) return true;
+
+    if (event.target.closest(INTERACTIVE)) return true;
   }
 
   return window.getSelection()?.isCollapsed === false;
