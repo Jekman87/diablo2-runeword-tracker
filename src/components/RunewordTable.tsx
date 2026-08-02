@@ -74,7 +74,13 @@ export function RunewordTable({
   onToggle,
 }: RunewordTableProps) {
   const strings = useStrings();
-  const [openDetails, setOpenDetails] = useState<string | null>(null);
+
+  // Which panel is open, as a `kind:name` key — a row has two panels now, the
+  // details on its name and the advice on its item-types cell, and "only one
+  // at a time" is a property of the page that has to span both kinds. A pair
+  // of values, one per kind, would let a pinned detail panel sit under a
+  // hovered advice panel; one key cannot express two open panels.
+  const [openPanel, setOpenPanel] = useState<string | null>(null);
 
   // What is open, mirrored into a ref so the handler below can read it
   // synchronously. Two requests can arrive in a single tick — the second panel
@@ -82,8 +88,8 @@ export function RunewordTable({
   // closure would still be showing the value from before the first of them.
   const open = useRef<string | null>(null);
 
-  // The row whose panel was just replaced, and whose next focus request is
-  // therefore its panel's farewell rather than a reader arriving.
+  // The panel that was just replaced, and whose next focus request is
+  // therefore its farewell rather than a reader arriving.
   //
   // When a panel is replaced, `FloatingFocusManager` hands focus back to the name
   // that opened it — right in itself, since the element focus was inside is
@@ -101,30 +107,30 @@ export function RunewordTable({
   // the second.
   const farewellFrom = useRef<string | null>(null);
 
-  // Stable, and takes the name rather than closing over it, so the 99 rows share
+  // Stable, and takes the key rather than closing over it, so the 99 rows share
   // one function instead of each being handed a freshly built one. That is what
   // lets `RunewordRow` be memoised, which is what keeps opening one panel from
   // re-rendering the 97 rows it has nothing to do with.
-  const handleDetailsOpenChange = useCallback(
-    (name: string, next: boolean, reason: OpenChangeReason | undefined) => {
+  const handlePanelOpenChange = useCallback(
+    (key: string, next: boolean, reason: OpenChangeReason | undefined) => {
       // Good for exactly one request, whether or not it turns out to be the one
       // it was set for — so a row cannot be left unable to open later.
       const farewell = farewellFrom.current;
       farewellFrom.current = null;
 
-      if (next && reason === "focus" && farewell === name) return;
+      if (next && reason === "focus" && farewell === key) return;
 
       if (next) {
-        if (open.current !== null && open.current !== name) {
+        if (open.current !== null && open.current !== key) {
           farewellFrom.current = open.current;
         }
 
-        open.current = name;
-      } else if (open.current === name) {
+        open.current = key;
+      } else if (open.current === key) {
         open.current = null;
       }
 
-      setOpenDetails(open.current);
+      setOpenPanel(open.current);
     },
     [],
   );
@@ -243,8 +249,9 @@ export function RunewordTable({
               key={runeword.name}
               runeword={runeword}
               crafted={crafted.has(runeword.name)}
-              detailsOpen={openDetails === runeword.name}
-              onDetailsOpenChange={handleDetailsOpenChange}
+              detailsOpen={openPanel === `details:${runeword.name}`}
+              adviceOpen={openPanel === `advice:${runeword.name}`}
+              onPanelOpenChange={handlePanelOpenChange}
               onToggle={onToggle}
             />
           ))

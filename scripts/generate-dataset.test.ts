@@ -98,9 +98,11 @@ describe("Russian translations are merged in full", () => {
 
   it("keeps source notes out of the emitted data", () => {
     // The notes name community pages and record disagreements — review
-    // material for the repository, not payload for the bundle.
+    // material for the repository, not payload for the bundle. The emitted
+    // `"sources"` arrays are shipped content, so the assertion matches the
+    // note field's exact key rather than the bare substring.
     expect(JSON.stringify(generated)).not.toContain("diablo2-resurrected.ru");
-    expect(JSON.stringify(generated)).not.toContain("source");
+    expect(JSON.stringify(generated)).not.toContain('"source":');
   });
 
   it("fails naming a translation key the vendor snapshot does not define", () => {
@@ -207,6 +209,21 @@ describe("advice entries are merged and policed", () => {
     expect(() => buildDataset(vendor, translations)).toThrow(
       /no Russian translation/,
     );
+  });
+
+  it("covers all 99 runewords with a usefulness value and advice", () => {
+    // The fields are optional in the schema so the dataset stays loadable
+    // while a future vendor refresh's runeword awaits authoring; the shipped
+    // dataset is pinned complete, exactly as the translation coverage is.
+    expect(
+      generated.runewords.filter((record) => record.usefulness !== undefined),
+    ).toHaveLength(99);
+    expect(
+      generated.runewords.filter((record) => record.advice !== undefined),
+    ).toHaveLength(99);
+    expect(
+      generated.runewords.filter((record) => record.ru?.advice !== undefined),
+    ).toHaveLength(99);
   });
 
   it("keeps advice source notes out of the emitted data", () => {

@@ -27,14 +27,15 @@
   // `src/header/site.ts` is shared for the same reason: the crawl-files test
   // checks the static files against the site URL the application declares.
   //
-  // `data/ru` belongs to this project rather than the app's: the authored
-  // translations are the generator's input, read at build time and never
-  // imported by anything the browser loads.
+  // `data/ru` and `data/advice` belong to this project rather than the app's:
+  // the authored translations and advice are the generator's input, read at
+  // build time and never imported by anything the browser loads.
   "include": [
     "vite.config.ts",
     "scripts",
     "src/data/schema.ts",
     "src/header/site.ts",
-    "data/ru"
+    "data/ru",
+    "data/advice"
   ]
 }

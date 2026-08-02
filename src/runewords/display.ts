@@ -28,6 +28,11 @@ export interface RunewordDisplay {
   /** Group labels stay canonical categories; only the lines are projected. */
   propertyGroups: { properties: string[] }[];
   runes: string[];
+  /**
+   * The crafting advice as the locale presents it. Paragraphs are projected;
+   * the sources are shared across locales, so they ride along unprojected.
+   */
+  advice?: { paragraphs: string[]; sources?: { label: string; url: string }[] };
 }
 
 /**
@@ -73,6 +78,7 @@ export function displayRuneword(
         properties: group.properties,
       })),
       runes: runeword.runes,
+      ...(runeword.advice !== undefined && { advice: runeword.advice }),
     };
   }
 
@@ -87,6 +93,17 @@ export function displayRuneword(
       properties: group.properties,
     })),
     runes: runeword.runes.map((name) => displayRune(name, locale)),
+    // Russian paragraphs from the variant, sources from the record — links are
+    // shared, not translated. The schema pins the variant's advice to exist
+    // exactly when the record's does, so this cannot mix the two languages.
+    ...(runeword.advice !== undefined && {
+      advice: {
+        paragraphs: variant.advice?.paragraphs ?? runeword.advice.paragraphs,
+        ...(runeword.advice.sources !== undefined && {
+          sources: runeword.advice.sources,
+        }),
+      },
+    }),
   };
 }
 
