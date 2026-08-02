@@ -9,31 +9,57 @@ names the coin beside it.
 ## Address
 
 The site is live at **<https://jekman87.github.io/diablo2-runeword-tracker/>**,
-a GitHub Pages project page. That URL is `SITE_URL` in `src/header/site.ts`, and
-the sub-path in it is the same one Vite's `base` carries — change one and the
-other is wrong.
+a GitHub Pages project page, with a second entry at
+**<https://jekman87.github.io/diablo2-runeword-tracker/ru/>** — the same
+application behind a Russian document head, built as a second Vite input from
+`ru/index.html`. The URLs are `SITE_URL` and `SITE_URL_RU` in
+`src/header/site.ts`, and the sub-path is the same one Vite's `base` carries —
+change one and the other is wrong. The social card's address is `OG_IMAGE_URL`
+beside them.
 
-Nothing the browser runs reads `SITE_URL`; the page is already at that address.
-It exists because three static files state it and none of them can import a
-constant:
+Nothing the browser runs reads the constants; the page is already at those
+addresses. They exist because the static files state them and none of the files
+can import a constant:
 
-| File                 | Where it says the URL              | Deployed at                              |
-| -------------------- | ---------------------------------- | ---------------------------------------- |
-| `index.html`         | `<link rel="canonical">`, `og:url` | `…/diablo2-runeword-tracker/`            |
-| `public/sitemap.xml` | the single `<loc>`                 | `…/diablo2-runeword-tracker/sitemap.xml` |
-| `public/robots.txt`  | the `Sitemap:` line                | `…/diablo2-runeword-tracker/robots.txt`  |
+| File                 | Where it says the URL                        | Deployed at                              |
+| -------------------- | -------------------------------------------- | ---------------------------------------- |
+| `index.html`         | canonical, `og:url`, hreflang trio, og:image | `…/diablo2-runeword-tracker/`            |
+| `ru/index.html`      | canonical, `og:url`, hreflang trio, og:image | `…/diablo2-runeword-tracker/ru/`         |
+| `public/sitemap.xml` | two `<loc>` entries                          | `…/diablo2-runeword-tracker/sitemap.xml` |
+| `public/robots.txt`  | the `Sitemap:` line                          | `…/diablo2-runeword-tracker/robots.txt`  |
 
-`scripts/crawl-files.test.ts` compares all three against the constant, so a URL
-corrected in one place cannot stay wrong in the others, and CI asserts that the
-build actually copied the two `public/` files into `dist/`.
+`scripts/crawl-files.test.ts` compares every copy against the constants, so a
+URL corrected in one place cannot stay wrong in the others, and CI asserts that
+the build actually copied the `public/` files into `dist/`.
+
+## The two languages
+
+The Russian entry exists for search: the root shell is English and the locale
+switch happens after React mounts, so before `/ru/` existed a query like
+«трекер рунных слов» had no Russian document to match. Each entry declares its
+own language (`lang="en"` / `lang="ru"`), carries its own title and
+description, and both carry the same hreflang trio (`en`, `ru`, `x-default` →
+root). **No redirects and no browser-language detection**: a first visit opens
+in the entry's language, and a stored language preference outranks whichever
+door it came through.
+
+## The social card
+
+`public/og-image.png` is the 1200×630 card `og:image` and `twitter:card` point
+at — committed, unhashed, so the URL in static HTML stays true. It was rendered
+once from the project's own themed assets (black ground, Bellefair, the rune
+sprite's Jah Ith Ber, the ornamental divider) via a throwaway headless-Chrome
+screenshot; regenerating it is a manual step, not part of the build.
 
 ## Search indexing
 
-The document head carries a title, a one-sentence English description (repeated
-as Open Graph) and the canonical link. A `<noscript>` paragraph says the same
-thing in the body, so a fetch without JavaScript is not an empty `#root`. Meta
-tags and static files only — no analytics and no verification script, per the
-own-origin rule.
+Each document head carries a title and one-sentence description in its own
+language (repeated as Open Graph), the canonical link, an `og:locale` pair, and
+one JSON-LD `WebApplication` block — inert data, not a script. "D2R" appears in
+both titles because it is the term players search. A `<noscript>` paragraph
+says the same thing in each body, so a fetch without JavaScript is not an empty
+`#root`. Meta tags and static files only — no analytics and no verification
+script, per the own-origin rule.
 
 **`robots.txt` on a project page is advisory.** Crawlers read
 `https://jekman87.github.io/robots.txt`, which belongs to the user account, not
@@ -51,13 +77,16 @@ After a deploy that includes these files, the owner does this once, by hand:
    merge, wait for the Pages deploy, then press Verify. The tag is inert markup,
    not a third-party script, so it is allowed here.
 3. Under **Sitemaps**, submit `sitemap.xml` (the path is relative to the
-   property, so the field takes `sitemap.xml`).
+   property, so the field takes `sitemap.xml`). The sitemap now lists both
+   entries, so no second submission is needed for `/ru/`.
 4. Optionally use **URL Inspection → Request indexing** on the page itself to
-   skip the wait for the first crawl.
+   skip the wait for the first crawl — worth doing once for `/ru/` too, since
+   it is a new URL.
 
 Yandex Webmaster is optional and works the same way: add the site, verify with
-its meta tag, submit the same sitemap URL. Do it only if Russian-language
-traffic matters enough to maintain a second property.
+its meta tag, submit the same sitemap URL. With the Russian entry live it is
+worth the second property if Russian traffic matters — Yandex is where the
+Russian-language queries mostly come from.
 
 None of this is a CI gate. The build publishes the files; indexing is an account
 action outside the repository.

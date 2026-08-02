@@ -2,20 +2,23 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { SITE_URL } from "../src/header/site.ts";
+import { OG_IMAGE_URL, SITE_URL, SITE_URL_RU } from "../src/header/site.ts";
 
-// What a crawler is given lives in three files that no module imports:
-// `index.html`, `public/robots.txt` and `public/sitemap.xml`. They are static by
-// design — Vite copies the last two into `dist/` untouched — so the site's own
-// URL is written out four times counting the constant, and the only failure mode
-// that matters is the three copies drifting from it. A canonical link pointing
-// at the wrong host does not break a single local check; it just quietly asks
-// Google to index an address that does not exist.
+// What a crawler is given lives in files that no module imports: two entry
+// documents (`index.html` and `ru/index.html`), `public/robots.txt`,
+// `public/sitemap.xml` and `public/og-image.png`. They are static by design —
+// Vite copies the public files into `dist/` untouched — so the site's URLs are
+// written out many times, and the failure mode that matters is the copies
+// drifting from the constants. A canonical link pointing at the wrong host
+// does not break a single local check; it just quietly asks Google to index an
+// address that does not exist.
 //
-// So this reads the shipped files and compares them with `SITE_URL`. It also
-// holds the parts of the head a search result is built from — a description that
-// is present and non-empty, and a body that says something without JavaScript —
-// because those are as easy to delete by accident as they were to add.
+// So this reads the shipped files and compares them with the constants. It
+// also holds the parts of the head a search result is built from — a
+// description that is present and non-empty, a hreflang trio that is identical
+// in both documents, a social card whose image really exists at the size it
+// declares, and a body that says something without JavaScript — because those
+// are as easy to delete by accident as they were to add.
 //
 // It lives in `scripts/` rather than `src/` for the reason the borrowed-assets
 // test next door does: it reads the repository from disk, and
@@ -23,43 +26,143 @@ import { SITE_URL } from "../src/header/site.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 
-const html = read("index.html");
+const documents = {
+  en: { html: read("index.html"), url: SITE_URL, lang: "en" },
+  ru: { html: read("ru", "index.html"), url: SITE_URL_RU, lang: "ru" },
+} as const;
+
 const robots = read("public", "robots.txt");
 const sitemap = read("public", "sitemap.xml");
 
-describe("the document head", () => {
+describe.each(Object.entries(documents))("the %s document head", (_, doc) => {
+  it("declares its own language before any script runs", () => {
+    expect(attribute(doc.html, "html", "lang", doc.lang, "lang")).toBe(
+      doc.lang,
+    );
+  });
+
   it("declares the canonical URL the site constant names", () => {
-    expect(attribute("link", "rel", "canonical", "href")).toBe(SITE_URL);
+    expect(attribute(doc.html, "link", "rel", "canonical", "href")).toBe(
+      doc.url,
+    );
   });
 
   it("carries a description, and repeats it for Open Graph", () => {
-    const description = attribute("meta", "name", "description", "content");
+    const description = attribute(
+      doc.html,
+      "meta",
+      "name",
+      "description",
+      "content",
+    );
 
     expect(description).toBeTruthy();
-    expect(description).toMatch(/runeword/i);
-    expect(attribute("meta", "property", "og:description", "content")).toBe(
-      description,
-    );
+    expect(description).toMatch(/runeword|рунн/i);
+    expect(
+      attribute(doc.html, "meta", "property", "og:description", "content"),
+    ).toBe(description);
   });
 
   it("gives Open Graph the same title and URL as the document", () => {
-    expect(attribute("meta", "property", "og:title", "content")).toBe(
-      /<title>([^<]+)<\/title>/.exec(html)?.[1],
+    expect(attribute(doc.html, "meta", "property", "og:title", "content")).toBe(
+      /<title>([^<]+)<\/title>/.exec(doc.html)?.[1],
     );
-    expect(attribute("meta", "property", "og:url", "content")).toBe(SITE_URL);
+    expect(attribute(doc.html, "meta", "property", "og:url", "content")).toBe(
+      doc.url,
+    );
   });
-});
 
-describe("the scriptless body", () => {
-  it("still explains what the page is", () => {
-    const fallback = /<noscript>([\s\S]*?)<\/noscript>/.exec(html)?.[1] ?? "";
+  it("names both languages through the same hreflang trio", () => {
+    expect(hreflangs(doc.html)).toEqual({
+      en: SITE_URL,
+      ru: SITE_URL_RU,
+      "x-default": SITE_URL,
+    });
+  });
+
+  it("carries the social card", () => {
+    expect(attribute(doc.html, "meta", "property", "og:image", "content")).toBe(
+      OG_IMAGE_URL,
+    );
+    expect(attribute(doc.html, "meta", "name", "twitter:card", "content")).toBe(
+      "summary_large_image",
+    );
+
+    const locale = attribute(
+      doc.html,
+      "meta",
+      "property",
+      "og:locale",
+      "content",
+    );
+    const alternate = attribute(
+      doc.html,
+      "meta",
+      "property",
+      "og:locale:alternate",
+      "content",
+    );
+
+    expect([locale, alternate].sort()).toEqual(["en_US", "ru_RU"]);
+    expect(locale?.startsWith(doc.lang)).toBe(true);
+  });
+
+  it("identifies the application as structured data", () => {
+    const block = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/
+      .exec(doc.html)?.[1]
+      ?.trim();
+
+    expect(block).toBeTruthy();
+
+    const data = JSON.parse(block ?? "{}") as Record<string, unknown>;
+
+    expect(data["@type"]).toBe("WebApplication");
+    expect(data.url).toBe(SITE_URL);
+    expect(data.inLanguage).toEqual(expect.arrayContaining(["en", "ru"]));
+  });
+
+  it("still explains what the page is without scripting", () => {
+    const fallback =
+      /<noscript>([\s\S]*?)<\/noscript>/.exec(doc.html)?.[1] ?? "";
     const text = fallback
       .replace(/<[^>]*>/g, " ")
       .replace(/\s+/g, " ")
       .trim();
 
-    expect(text).toMatch(/runeword/i);
+    expect(text).toMatch(doc.lang === "ru" ? /рунн/i : /runeword/i);
     expect(text.length).toBeGreaterThan(80);
+  });
+});
+
+describe("the search term players use", () => {
+  it("appears in the root title or description", () => {
+    const title = /<title>([^<]+)<\/title>/.exec(documents.en.html)?.[1] ?? "";
+    const description =
+      attribute(documents.en.html, "meta", "name", "description", "content") ??
+      "";
+
+    expect(`${title} ${description}`).toContain("D2R");
+  });
+
+  it("appears in the Russian title or description too", () => {
+    const title = /<title>([^<]+)<\/title>/.exec(documents.ru.html)?.[1] ?? "";
+    const description =
+      attribute(documents.ru.html, "meta", "name", "description", "content") ??
+      "";
+
+    expect(`${title} ${description}`).toContain("D2R");
+  });
+});
+
+describe("the social card image", () => {
+  it("is committed at the size the documents declare", () => {
+    const png = readFileSync(path.join(ROOT, "public", "og-image.png"));
+
+    // The PNG magic, then IHDR's width and height at fixed offsets — no image
+    // library needed to hold two numbers.
+    expect(png.subarray(1, 4).toString("ascii")).toBe("PNG");
+    expect(png.readUInt32BE(16)).toBe(1200);
+    expect(png.readUInt32BE(20)).toBe(630);
   });
 });
 
@@ -77,18 +180,19 @@ describe("robots.txt", () => {
 });
 
 describe("sitemap.xml", () => {
-  it("lists the site URL, and only it", () => {
+  it("lists both entry URLs, and only them", () => {
     const locations = [...sitemap.matchAll(/<loc>([^<]*)<\/loc>/g)].map(
       ([, location]) => location,
     );
 
-    expect(locations).toEqual([SITE_URL]);
+    expect(locations).toEqual([SITE_URL, SITE_URL_RU]);
   });
 
-  // Not a parse: the file is six lines of hand-written XML and pulling in a
-  // parser to read them would cost more than it proves. What can plausibly go
-  // wrong by hand is a missing declaration, a dropped namespace, or an unclosed
-  // root, and those are visible from the outside of the document.
+  // Not a parse: the file is a handful of lines of hand-written XML and
+  // pulling in a parser to read them would cost more than it proves. What can
+  // plausibly go wrong by hand is a missing declaration, a dropped namespace,
+  // or an unclosed root, and those are visible from the outside of the
+  // document.
   it("is a urlset a crawler will accept", () => {
     expect(sitemap.startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(
       true,
@@ -104,10 +208,30 @@ function read(...segments: string[]): string {
   return readFileSync(path.join(ROOT, ...segments), "utf8");
 }
 
+/** Every hreflang link in a document, as a `hreflang → href` record. */
+function hreflangs(html: string): Record<string, string> {
+  const found: Record<string, string> = {};
+
+  for (const [tag] of html.matchAll(/<link\b[^>]*>/gi)) {
+    const attributes = new Map(
+      [...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map(([, k, v]) => [k, v]),
+    );
+
+    const hreflang = attributes.get("hreflang");
+    const href = attributes.get("href");
+
+    if (attributes.get("rel") === "alternate" && hreflang && href) {
+      found[hreflang] = href;
+    }
+  }
+
+  return found;
+}
+
 /**
  * The value of `wanted` on the first `<name>` tag whose `key` attribute is
- * `value` — `attribute("meta", "name", "description", "content")` for the meta
- * description.
+ * `value` — `attribute(html, "meta", "name", "description", "content")` for
+ * the meta description.
  *
  * Attribute order and line breaks inside a tag are Prettier's to decide and it
  * rewraps them as the file grows, so matching a whole tag with one expression
@@ -116,6 +240,7 @@ function read(...segments: string[]): string {
  * laid out.
  */
 function attribute(
+  html: string,
   name: string,
   key: string,
   value: string,

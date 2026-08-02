@@ -11,6 +11,16 @@ export default defineConfig({
   base: "/diablo2-runeword-tracker/",
   plugins: [react(), tailwindcss()],
   build: {
+    rollupOptions: {
+      // Two entry documents, one bundle: `ru/index.html` is the Russian front
+      // door — Russian title, description and default locale for a first
+      // visit — deployed as `/ru/` on Pages. Everything the two load is the
+      // same fingerprinted output.
+      input: {
+        main: fileURLToPath(new URL("./index.html", import.meta.url)),
+        ru: fileURLToPath(new URL("./ru/index.html", import.meta.url)),
+      },
+    },
     // Emit every asset as a fingerprinted file instead of inlining the small
     // ones. Vite's 4 KB default would inline the cursor (1 928 B) and the
     // divider (3 482 B) as base64 data URIs, which is not merely a different
@@ -22,6 +32,7 @@ export default defineConfig({
     // of that trade.
     assetsInlineLimit: 0,
   },
+
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

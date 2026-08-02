@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- The Russian entry point: the same application as the root document,
+         behind a Russian head, so a query like «трекер рунных слов» has a
+         Russian document to match — the root shell is English and the locale
+         switch happens only after React mounts, which a crawler never waits
+         for. `lang="ru"` above is also what the application reads to default a
+         first visit here to Russian; a stored language preference still wins,
+         and nothing redirects.
+
+         Asset hrefs step up one directory (`../src/…`) because this document
+         lives in `ru/`; the module script keeps the root-absolute form Vite
+         rewrites for both entries alike. Everything else mirrors the root
+         document — same hreflang trio, same og-image, same JSON-LD shape —
+         and `scripts/crawl-files.test.ts` holds the copies together. -->
+
+    <title>Трекер рунных слов Diablo II (D2R)</title>
+
+    <meta
+      name="description"
+      content="Отмечайте, какие рунные слова Diablo II: Resurrected (D2R) вы уже собрали, и смотрите, какие руны и базы ещё нужны остальным. Все 99, прямо в браузере."
+    />
+    <link
+      rel="canonical"
+      href="https://jekman87.github.io/diablo2-runeword-tracker/ru/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://jekman87.github.io/diablo2-runeword-tracker/"
+    />
+    <link
+      rel="alternate"
+      hreflang="ru"
+      href="https://jekman87.github.io/diablo2-runeword-tracker/ru/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://jekman87.github.io/diablo2-runeword-tracker/"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Трекер рунных слов Diablo II (D2R)" />
+    <meta
+      property="og:description"
+      content="Отмечайте, какие рунные слова Diablo II: Resurrected (D2R) вы уже собрали, и смотрите, какие руны и базы ещё нужны остальным. Все 99, прямо в браузере."
+    />
+    <meta
+      property="og:url"
+      content="https://jekman87.github.io/diablo2-runeword-tracker/ru/"
+    />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <meta
+      property="og:image"
+      content="https://jekman87.github.io/diablo2-runeword-tracker/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Diablo II Runeword Tracker",
+        "url": "https://jekman87.github.io/diablo2-runeword-tracker/",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "inLanguage": ["ru", "en"]
+      }
+    </script>
+
+    <link
+      rel="icon"
+      type="image/png"
+      href="../src/assets/images/jah-rune.png"
+    />
+
+    <link
+      rel="preload"
+      href="../src/assets/fonts/bellefair-latin-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- The Russian counterpart of the root document's fallback: same sentence
+         as the meta description above, for the same reason the Open Graph pair
+         repeats it. -->
+    <noscript>
+      <p>
+        Трекер рунных слов Diablo II — отмечайте, какие рунные слова Diablo II:
+        Resurrected вы уже собрали, и смотрите, какие руны и базы ещё нужны
+        остальным. Все 99, прямо в браузере. Странице нужен JavaScript.
+      </p>
+    </noscript>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
