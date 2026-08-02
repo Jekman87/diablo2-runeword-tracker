@@ -136,6 +136,95 @@ describe("Russian translations are merged in full", () => {
   });
 });
 
+describe("advice entries are merged and policed", () => {
+  const entry = {
+    usefulness: "meta",
+    advice: {
+      paragraphs: ["Craft it."],
+      ru: ["Крафти."],
+      sources: [{ label: "Guide", url: "https://example.com/guide" }],
+    },
+    source: "test",
+  };
+
+  it("merges usefulness, advice and the Russian paragraphs into the record", () => {
+    const vendor = vendorWith("+10 To Strength");
+    const built = buildDataset(
+      vendor,
+      translationsFor(
+        vendor,
+        {
+          "Test Word": {
+            name: "Тест",
+            propertyGroups: [{ properties: ["+10 к силе"] }],
+            source: "test",
+          },
+        },
+        { "Test Word": entry },
+      ),
+    );
+
+    expect(built.runewords[0].usefulness).toBe("meta");
+    expect(built.runewords[0].advice).toEqual({
+      paragraphs: ["Craft it."],
+      sources: [{ label: "Guide", url: "https://example.com/guide" }],
+    });
+    expect(built.runewords[0].ru?.advice).toEqual({
+      paragraphs: ["Крафти."],
+    });
+  });
+
+  it("fails naming an advice key the vendor snapshot does not define", () => {
+    const vendor = vendorWith("+10 To Strength");
+    const translations = translationsFor(vendor, {}, { "Tset Word": entry });
+
+    expect(() => buildDataset(vendor, translations)).toThrow(/Tset Word/);
+    expect(() => buildDataset(vendor, translations)).toThrow(/data\/advice/);
+  });
+
+  it("fails when the Russian paragraphs do not mirror the English", () => {
+    const vendor = vendorWith("+10 To Strength");
+    const translations = translationsFor(
+      vendor,
+      {},
+      {
+        "Test Word": {
+          ...entry,
+          advice: { paragraphs: ["One.", "Two."], ru: ["Один."] },
+        },
+      },
+    );
+
+    expect(() => buildDataset(vendor, translations)).toThrow(/count-for-count/);
+  });
+
+  it("fails when advice prose has no Russian variant to live in", () => {
+    // Usefulness alone is fine without a translation — it is a value, not
+    // prose — but Russian paragraphs ship inside the variant.
+    const vendor = vendorWith("+10 To Strength");
+    const translations = translationsFor(vendor, {}, { "Test Word": entry });
+
+    expect(() => buildDataset(vendor, translations)).toThrow(
+      /no Russian translation/,
+    );
+  });
+
+  it("keeps advice source notes out of the emitted data", () => {
+    const vendor = vendorWith("+10 To Strength");
+    const built = buildDataset(
+      vendor,
+      translationsFor(
+        vendor,
+        {},
+        { "Test Word": { usefulness: "chronicle", source: "tier list" } },
+      ),
+    );
+
+    expect(built.runewords[0].usefulness).toBe("chronicle");
+    expect(JSON.stringify(built)).not.toContain("tier list");
+  });
+});
+
 describe("property sub-headings become group labels", () => {
   it("splits a headed block into labelled groups, mapping the singular heading", () => {
     const built = buildFake(
@@ -246,6 +335,7 @@ function vendorWith(
 function translationsFor(
   vendor: VendorData,
   runewords: Record<string, unknown> = {},
+  advice: Record<string, unknown> = {},
 ): Translations {
   return {
     runewords,
@@ -261,5 +351,6 @@ function translationsFor(
         { ru: name, source: "test" },
       ]),
     ),
+    advice,
   };
 }
