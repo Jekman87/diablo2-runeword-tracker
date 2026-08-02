@@ -95,7 +95,7 @@ describe("asking to mark", () => {
   it("applies the change only when that action is taken", async () => {
     const { user, onConfirm } = renderConfirm({ crafted: false });
 
-    await opened(en.crafted.confirmCancel);
+    await opened(en.crafted.confirmMarkAction);
     await user.click(
       within(dialog()).getByRole("button", {
         name: en.crafted.confirmMarkAction,
@@ -113,6 +113,21 @@ describe("asking to mark", () => {
         name: en.crafted.confirmMarkAction,
       }).className,
     ).toContain("bg-confirm-action");
+  });
+
+  it("gives every action the shared minimum width", async () => {
+    renderConfirm({ crafted: false });
+
+    // The English "Add" is three letters where the Russian label is eight;
+    // without a shared floor the affirmative action renders as a sliver.
+    const buttons = within(await screen.findByRole("dialog")).getAllByRole(
+      "button",
+    );
+
+    expect(buttons.length).toBeGreaterThan(0);
+    for (const button of buttons) {
+      expect(button.className).toContain("min-w-24");
+    }
   });
 });
 
@@ -146,7 +161,7 @@ describe("leaving without answering", () => {
   it("cancels on the cancelling action", async () => {
     const { user, onCancel, onConfirm } = renderConfirm();
 
-    await opened(en.crafted.confirmCancel);
+    await opened(en.crafted.confirmMarkAction);
     await user.click(
       within(dialog()).getByRole("button", {
         name: en.crafted.confirmCancel,
@@ -160,7 +175,7 @@ describe("leaving without answering", () => {
   it("cancels on Escape", async () => {
     const { user, onCancel, onConfirm } = renderConfirm();
 
-    await opened(en.crafted.confirmCancel);
+    await opened(en.crafted.confirmMarkAction);
     await user.keyboard("{Escape}");
 
     expect(onCancel).toHaveBeenCalled();
@@ -170,7 +185,7 @@ describe("leaving without answering", () => {
   it("cancels on a press outside it", async () => {
     const { user, onCancel, onConfirm } = renderConfirm();
 
-    await opened(en.crafted.confirmCancel);
+    await opened(en.crafted.confirmMarkAction);
     await user.click(document.body);
 
     expect(onCancel).toHaveBeenCalled();
@@ -179,19 +194,34 @@ describe("leaving without answering", () => {
 });
 
 describe("focus", () => {
-  it("puts the reflex keypress on the safe answer", async () => {
-    renderConfirm();
+  // The two directions disagree about which answer the reflex Enter should
+  // land on. Marking loses nothing if it was a misclick, so Enter records the
+  // craft the player just asked for; unmarking would erase progress, so Enter
+  // preserves it.
 
-    // A dialog that changes the player's progress on the default keypress is a
-    // dialog that changes it by accident, which is the thing this exists to
-    // prevent.
+  it("marks on the reflex Enter", async () => {
+    const { user, onConfirm } = renderConfirm({ crafted: false });
+
+    await opened(en.crafted.confirmMarkAction);
+    await user.keyboard("{Enter}");
+
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
+  it("preserves progress on the reflex Enter when removing", async () => {
+    const { user, onCancel, onConfirm } = renderConfirm({ crafted: true });
+
     await opened(en.crafted.confirmCancel);
+    await user.keyboard("{Enter}");
+
+    expect(onCancel).toHaveBeenCalled();
+    expect(onConfirm).not.toHaveBeenCalled();
   });
 
   it("returns to the control that raised it", async () => {
     const { user, control, rerender } = renderConfirm();
 
-    await opened(en.crafted.confirmCancel);
+    await opened(en.crafted.confirmMarkAction);
 
     await user.keyboard("{Escape}");
     rerender(
