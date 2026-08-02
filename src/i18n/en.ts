@@ -78,7 +78,12 @@ export const en = {
       "Tick the box in the Crafted column to record a runeword you have made — clicking anywhere on its row does the same. Either way the page asks you to confirm first, so a stray click costs nothing, and the bar at the top counts what you have made out of all 99.",
       "The search field matches a runeword's name, its base items and any class or item restriction. The two groups of buttons beside it narrow the list by crafted state and by equipment slot, and every column heading sorts the table.",
       "Remaining Runes and Remaining Bases add up everything the runewords you have not made yet still need — the shopping list for the rest of them, not for the whole game.",
-      "Rest the pointer on a runeword's name to see the properties it grants, its runes in order, the sockets it needs and the level it requires.",
+      "Rest the pointer on a runeword's name — or tap it on a phone — to see the properties it grants, its runes in order, the sockets it needs and the level it requires.",
+      // The advice surfaces, with the caveat the change that added them owes:
+      // the season and collection date are stated so a reader a year later can
+      // tell how stale the judgements are, and "approximate" is the word doing
+      // the work — the page makes claims about worth nowhere else.
+      "The small line under a runeword's name says how useful it is — meta, situational, or Chronicle only — and pointing at (or tapping) its base items opens crafting advice: which base and affixes to look for, who uses it, and whether it sells. Both are approximate editorial estimates, drawn from community tier lists and trade history during the Reign of the Warlock season (August 2026); the game's economy moves, so read them as a guide, not a price list.",
       // Amended when import and export shipped. It used to end "nothing is
       // shared between devices", which the file below now makes false — the
       // point is that nothing leaves the browser *by itself*, not that nothing
