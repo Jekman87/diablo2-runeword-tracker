@@ -1,7 +1,39 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
+import type { Connect } from "vite";
 import { defineConfig } from "vitest/config";
+
+/**
+ * `/ru` → `/ru/`, in dev and preview, because GitHub Pages already does this
+ * in production and the local servers must not disagree with it: without the
+ * slash Vite's SPA fallback quietly serves the *English* root document, which
+ * looks exactly like the Russian entry being broken. One redirect keeps the
+ * three environments telling the same story.
+ */
+function ruEntryRedirect() {
+  const from = "/diablo2-runeword-tracker/ru";
+  const middleware: Connect.NextHandleFunction = (req, res, next) => {
+    if (req.url === from || req.url?.startsWith(`${from}?`)) {
+      res.statusCode = 301;
+      // "" or "?query" — either way the slash lands before it.
+      res.setHeader("Location", `${from}/${req.url.slice(from.length)}`);
+      res.end();
+      return;
+    }
+    next();
+  };
+
+  return {
+    name: "ru-entry-redirect",
+    configureServer(server: { middlewares: Connect.Server }) {
+      server.middlewares.use(middleware);
+    },
+    configurePreviewServer(server: { middlewares: Connect.Server }) {
+      server.middlewares.use(middleware);
+    },
+  };
+}
 
 export default defineConfig({
   // Hardcoded, not read from the environment: the project deploys to the
@@ -9,7 +41,7 @@ export default defineConfig({
   // and keeping this a committed constant makes `pnpm preview` a faithful
   // rehearsal of production asset resolution.
   base: "/diablo2-runeword-tracker/",
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), ruEntryRedirect()],
   build: {
     rollupOptions: {
       // Two entry documents, one bundle: `ru/index.html` is the Russian front

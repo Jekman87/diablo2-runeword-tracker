@@ -109,12 +109,18 @@ export function RunewordAdvice({
     <>
       {/* `text-left` because a button centres its content by default and this
           one wraps a cell's worth of left-aligned text. The accessible name
-          says what opens; the visible text stays the categories themselves. */}
+          says what opens; the visible text stays the categories themselves.
+
+          The `before:` overlay is the stretched hit area: it fills the cell
+          (the `<td>` is `relative` for exactly this), so hover and tap work
+          anywhere in the cell rather than only on the lines of text — a cell
+          is the pointer target the column reads as. The panel still anchors to
+          the button, whose box is the cell's content. */}
       <button
         ref={setReference}
         type="button"
         aria-label={strings.advice.label(projected.name)}
-        className="block w-full cursor-pointer text-left"
+        className="block w-full cursor-pointer text-left before:absolute before:inset-0"
         {...interactions.getReferenceProps()}
       >
         <ItemTypes runeword={runeword} />
@@ -141,7 +147,7 @@ export function RunewordAdvice({
 
               <div className="grid gap-2">
                 {advice.paragraphs.map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
+                  <p key={index}>{withRollRanges(paragraph)}</p>
                 ))}
               </div>
 
@@ -171,6 +177,40 @@ export function RunewordAdvice({
     </>
   );
 }
+
+/**
+ * A paragraph with its roll ranges picked out — `+1..+6`, `25-35%`,
+ * `+2-198` — in emphasis and one step brighter than the prose around them.
+ * What varies on the finished item is the part a crafter has to pay attention
+ * to, and the ranges are recognisable by shape: two numbers joined by a dash
+ * or `..`, nothing else in these texts looks like that (`4-socket` joins a
+ * number to a word, `patch 2.6` has no dash). Detected at render time rather
+ * than marked up in the dataset, so the advice stays plain strings.
+ */
+function withRollRanges(text: string): React.ReactNode {
+  const nodes: React.ReactNode[] = [];
+  let last = 0;
+
+  for (const match of text.matchAll(ROLL_RANGE)) {
+    if (match.index > last) nodes.push(text.slice(last, match.index));
+    nodes.push(
+      <em key={match.index} className="text-gold-light">
+        {match[0]}
+      </em>,
+    );
+    last = match.index + match[0].length;
+  }
+
+  if (nodes.length === 0) return text;
+  if (last < text.length) nodes.push(text.slice(last));
+
+  return nodes;
+}
+
+// Two numbers joined by `..` or a dash, with optional sign and percent —
+// the shape of a variable roll and of nothing else in the advice prose.
+const ROLL_RANGE =
+  /[+±]?\d+(?:[.,]\d+)?\s?(?:\.\.|[-–—])\s?\+?\d+(?:[.,]\d+)?%?/g;
 
 type Trigger = "hover" | "focused" | "activated";
 

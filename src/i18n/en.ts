@@ -75,7 +75,9 @@ export const en = {
     helpIntro:
       "Every runeword in the game, with the runes it takes and the base items it can go into. The patch above says which version of the list this is.",
     helpPoints: [
-      "Tick the box in the Crafted column to record a runeword you have made — clicking anywhere on its row does the same. Either way the page asks you to confirm first, so a stray click costs nothing, and the bar at the top counts what you have made out of all 99.",
+      // No count here on purpose: the number of runewords is the dataset's to
+      // state, and a sentence pinning it goes stale the day a patch adds one.
+      "Tick the box in the Crafted column to record a runeword you have made — clicking anywhere on its row does the same. Either way the page asks you to confirm first, so a stray click costs nothing, and the bar at the top counts what you have made out of the full list.",
       "The search field matches a runeword's name, its base items and any class or item restriction. The two groups of buttons beside it narrow the list by crafted state and by equipment slot, and every column heading sorts the table.",
       "Remaining Runes and Remaining Bases add up everything the runewords you have not made yet still need — the shopping list for the rest of them, not for the whole game.",
       "Rest the pointer on a runeword's name — or tap it on a phone — to see the properties it grants, its runes in order, the sockets it needs and the level it requires.",
@@ -271,10 +273,13 @@ export const en = {
   // prose itself is dataset text and stays out of this file — only its frame
   // (the trigger's accessible name, the heading, the sources line) is copy.
   advice: {
+    // One word each, deliberately: the value renders as a coloured badge under
+    // the name, and a badge is a glance, not a sentence. The full explanation
+    // of the three lives in Help.
     usefulness: {
-      meta: "Meta — always in demand",
-      situational: "Situational — for specific builds",
-      chronicle: "Chronicle only",
+      meta: "Meta",
+      situational: "Situational",
+      chronicle: "Chronicle",
     },
 
     // The trigger is the item-types cell's own text; the name says what opens
