@@ -499,5 +499,14 @@ function ruVariantFor(record: ReturnType<typeof validRecord>) {
     propertyGroups: record.propertyGroups.map((group) => ({
       properties: group.properties.map((_, index) => `строка ${index + 1}`),
     })),
+    // Present exactly when the record carries advice — the parity the schema
+    // enforces — mirroring the paragraphs count-for-count.
+    ...(record.advice !== undefined && {
+      advice: {
+        paragraphs: record.advice.paragraphs.map(
+          (_, index) => `абзац ${index + 1}`,
+        ),
+      },
+    }),
   };
 }

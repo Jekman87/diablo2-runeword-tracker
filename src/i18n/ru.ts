@@ -246,6 +246,19 @@ export const ru: Strings = {
     restriction: (restriction: string) => `(${restriction})`,
   },
 
+  advice: {
+    usefulness: {
+      meta: "Мета — всегда в спросе",
+      situational: "Ситуативное — для отдельных билдов",
+      chronicle: "Только для хроники",
+    },
+
+    label: (name: string) => `Совет по крафту: ${name}`,
+    heading: "Совет по крафту",
+    sources: "Источники:",
+    sourceName: (label: string) => `${label} — откроется в новой вкладке`,
+  },
+
   availability: {
     // **Corrected on review: the marker is now Cyrillic «Л».** It was Latin
     // `L` on the reasoning that a Cyrillic letter would abbreviate a word the

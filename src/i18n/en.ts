@@ -260,6 +260,28 @@ export const en = {
     restriction: (restriction: string) => `(${restriction})`,
   },
 
+  // The two advice surfaces. The three usefulness *values* are dataset
+  // identifiers (`meta`, `situational`, `chronicle`); the words below are what
+  // a reader sees for them, exactly as the slot names work. The advice panel's
+  // prose itself is dataset text and stays out of this file — only its frame
+  // (the trigger's accessible name, the heading, the sources line) is copy.
+  advice: {
+    usefulness: {
+      meta: "Meta — always in demand",
+      situational: "Situational — for specific builds",
+      chronicle: "Chronicle only",
+    },
+
+    // The trigger is the item-types cell's own text; the name says what opens
+    // so a reader who cannot see the panel appear is told what it was.
+    label: (name: string) => `Crafting advice for ${name}`,
+    heading: "Crafting advice",
+    sources: "Sources:",
+    // Every source link leaves the site in a new tab, and the accessible name
+    // says so — the same rule the header's links follow.
+    sourceName: (label: string) => `${label}, opens in a new tab`,
+  },
+
   availability: {
     // What the badge draws, and what it means. The marker is short enough to
     // sit beside a name; the meaning is what assistive technology and a

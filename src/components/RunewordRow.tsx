@@ -1,23 +1,32 @@
-import { memo, useRef } from "react";
+import { memo, useCallback, useRef } from "react";
 
+import type { OpenChangeReason } from "@floating-ui/react";
 import clsx from "clsx";
 
 import { AvailabilityBadges } from "@/components/AvailabilityBadges";
 import { CraftedToggle } from "@/components/CraftedToggle";
-import { ItemTypes } from "@/components/ItemTypes";
 import { RuneSequence } from "@/components/RuneSequence";
-import {
-  RunewordDetails,
-  type RunewordDetailsProps,
-} from "@/components/RunewordDetails";
+import { RunewordAdvice } from "@/components/RunewordAdvice";
+import { RunewordDetails } from "@/components/RunewordDetails";
 import type { Runeword } from "@/data";
+import { useStrings } from "@/i18n";
 
 export interface RunewordRowProps {
   runeword: Runeword;
   crafted: boolean;
   /** Whether this row's detail panel is the open one. Passed straight through. */
   detailsOpen: boolean;
-  onDetailsOpenChange: RunewordDetailsProps["onOpenChange"];
+  /** Whether this row's advice panel is the open one. Same ownership. */
+  adviceOpen: boolean;
+  /**
+   * Reports a panel opening or closing under its `kind:name` key. One callback
+   * for both kinds, because the table holds one open-panel value for both.
+   */
+  onPanelOpenChange: (
+    key: string,
+    open: boolean,
+    reason: OpenChangeReason | undefined,
+  ) => void;
   /**
    * Asks to mark or unmark the runeword, which opens the confirmation rather
    * than changing anything. The control is handed over so that the dialog can
@@ -59,14 +68,29 @@ export const RunewordRow = memo(function RunewordRow({
   runeword,
   crafted,
   detailsOpen,
-  onDetailsOpenChange,
+  adviceOpen,
+  onPanelOpenChange,
   onToggle,
 }: RunewordRowProps) {
+  const strings = useStrings();
   const control = useRef<HTMLButtonElement>(null);
 
   // Both paths hand over the same node, so a row click and a press on the
   // socket raise the same question and come back to the same control.
   const toggle = () => onToggle(runeword.name, control.current);
+
+  // The two panels report under their `kind:name` keys. Stable as long as the
+  // table's callback is, which the memo above this row depends on.
+  const handleDetailsOpenChange = useCallback(
+    (name: string, open: boolean, reason: OpenChangeReason | undefined) =>
+      onPanelOpenChange(`details:${name}`, open, reason),
+    [onPanelOpenChange],
+  );
+  const handleAdviceOpenChange = useCallback(
+    (name: string, open: boolean, reason: OpenChangeReason | undefined) =>
+      onPanelOpenChange(`advice:${name}`, open, reason),
+    [onPanelOpenChange],
+  );
 
   return (
     <tr
@@ -100,11 +124,21 @@ export const RunewordRow = memo(function RunewordRow({
           <RunewordDetails
             runeword={runeword}
             open={detailsOpen}
-            onOpenChange={onDetailsOpenChange}
+            onOpenChange={handleDetailsOpenChange}
           />
 
           <AvailabilityBadges runeword={runeword} />
         </span>
+
+        {/* The usefulness line, under the name and visibly subordinate to it —
+            the words from the copy layer, the value from the dataset. No
+            element at all where the record carries none, so an unlabelled row
+            does not gain an empty line. */}
+        {runeword.usefulness === undefined ? null : (
+          <span className="block text-[12px] text-muted">
+            {strings.advice.usefulness[runeword.usefulness]}
+          </span>
+        )}
 
         {/* The rune sequence, a second time.
 
@@ -131,7 +165,11 @@ export const RunewordRow = memo(function RunewordRow({
       </td>
 
       <td className="p-2 align-top">
-        <ItemTypes runeword={runeword} />
+        <RunewordAdvice
+          runeword={runeword}
+          open={adviceOpen}
+          onOpenChange={handleAdviceOpenChange}
+        />
       </td>
 
       <td className="p-2 text-right align-top tabular-nums">
