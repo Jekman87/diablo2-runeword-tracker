@@ -1,9 +1,18 @@
+import clsx from "clsx";
+
 import type { Runeword } from "@/data";
 import { useLocale, useStrings } from "@/i18n";
 import { displayRuneword } from "@/runewords/display";
 
 export interface ItemTypesProps {
   runeword: Runeword;
+  /**
+   * Draws a dotted rule under the categories, marking the cell as one that has
+   * an explanation behind it. Set by the crafting-advice trigger and nowhere
+   * else — the same text renders bare in the detail panel, which is not a
+   * thing to hover.
+   */
+  underlined?: boolean;
 }
 
 /**
@@ -33,7 +42,7 @@ export interface ItemTypesProps {
  * exclusion, not a character class — and a borrowed name that misdescribes its
  * own subject is not worth copying.
  */
-export function ItemTypes({ runeword }: ItemTypesProps) {
+export function ItemTypes({ runeword, underlined }: ItemTypesProps) {
   const strings = useStrings();
   const projected = displayRuneword(runeword, useLocale());
 
@@ -51,8 +60,29 @@ export function ItemTypes({ runeword }: ItemTypesProps) {
        base items competing with the runeword's own name. The ratio is the
        reference's and does the work — the restriction follows to 12.6px. */
     <span className="block text-[14px]">
+      {/* **A border on an *inline* element, which is the one form that both
+          wraps and clears the glyphs.** Three shapes were tried here and the
+          first two are worth naming, because each fails for a different
+          reason. A border on the block draws a single rule along the bottom of
+          the column, under the empty space beside a short second line. A
+          `text-decoration` wraps correctly but is positioned against the
+          baseline, and Cyrillic `Д` descends below it: at the offsets that
+          look right for Latin the rule runs through the letter's two legs, and
+          the reader sees the line doubling rather than an underline.
+
+          An inline box broken across lines carries its bottom border on every
+          fragment, and the border sits at the bottom of the *content* box —
+          below the descenders — so `Д` cannot touch it. `align-bottom` keeps
+          the box from being lifted off the text. */}
       <span className="block text-muted">
-        {projected.itemTypes.join(strings.itemTypes.separator)}
+        <span
+          className={clsx(
+            underlined &&
+              "border-b border-dotted border-muted align-bottom group-hover:border-gold-light",
+          )}
+        >
+          {projected.itemTypes.join(strings.itemTypes.separator)}
+        </span>
       </span>
 
       {/* No element at all where there is no restriction — not an empty pair of

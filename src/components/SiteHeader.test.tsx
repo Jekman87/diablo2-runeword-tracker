@@ -161,7 +161,6 @@ describe("the help disclosure", () => {
     expect(screen.getByText(en.header.helpBadgesIntro)).toBeVisible();
     expect(screen.getByText(en.header.helpBadgeLadder)).toBeVisible();
     expect(screen.getByText(en.header.helpBadgeNote)).toBeVisible();
-    expect(screen.getByText(en.header.helpRuneTiers)).toBeVisible();
 
     for (const patch of ["1.10", "2.4", "2.6", "3.0"] as const) {
       expect(screen.getByText(en.header.helpBadgePatch(patch))).toBeVisible();

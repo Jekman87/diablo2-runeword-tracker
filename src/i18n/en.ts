@@ -75,16 +75,23 @@ export const en = {
     helpIntro:
       "Every runeword in the game, with the runes it takes and the base items it can go into. The patch above says which version of the list this is.",
     helpPoints: [
-      "Tick the box in the Crafted column to record a runeword you have made — clicking anywhere on its row does the same. Either way the page asks you to confirm first, so a stray click costs nothing, and the bar at the top counts what you have made out of all 99.",
+      // No count here on purpose: the number of runewords is the dataset's to
+      // state, and a sentence pinning it goes stale the day a patch adds one.
+      "Tick the box in the Crafted column to record a runeword you have made — clicking anywhere on its row does the same. Either way the page asks you to confirm first, so a stray click costs nothing, and the bar at the top counts what you have made out of the full list.",
       "The search field matches a runeword's name, its base items and any class or item restriction. The two groups of buttons beside it narrow the list by crafted state and by equipment slot, and every column heading sorts the table.",
       "Remaining Runes and Remaining Bases add up everything the runewords you have not made yet still need — the shopping list for the rest of them, not for the whole game.",
-      "Rest the pointer on a runeword's name to see the properties it grants, its runes in order, the sockets it needs and the level it requires.",
+      "Rest the pointer on a runeword's name — or tap it on a phone — to see the properties it grants, its runes in order, the sockets it needs and the level it requires.",
+      // The advice surfaces, with the caveat the change that added them owes:
+      // the season and collection date are stated so a reader a year later can
+      // tell how stale the judgements are, and "approximate" is the word doing
+      // the work — the page makes claims about worth nowhere else.
+      "The small line under a runeword's name says how useful it is — meta, situational, or Chronicle only — and pointing at (or tapping) its base items opens crafting advice: which base and affixes to look for, who uses it, and whether it sells. Both are approximate editorial estimates, drawn from community tier lists and trade history during the Reign of the Warlock season (August 2026); the game's economy moves, so read them as a guide, not a price list.",
       // Amended when import and export shipped. It used to end "nothing is
       // shared between devices", which the file below now makes false — the
       // point is that nothing leaves the browser *by itself*, not that nothing
       // can leave it at all.
       "Your progress is kept in this browser and nowhere else. Nothing is uploaded and nothing travels between devices on its own, and clearing this site's data clears it.",
-      "Export progress saves your ticked runewords to a small CSV file, and Import progress reads one back — that is how you carry a list to another browser or keep a backup. Importing replaces everything you have ticked rather than adding to it, so it asks first and tells you how many runewords the file will tick; there is no undo once it is done. A spreadsheet works too, as long as it is saved as CSV with the names in the first column.",
+      "Export progress saves your ticked runewords to a small CSV file, and Import progress reads one back — that is how you carry a list to another browser or keep a backup. The file may name runewords in either language: Russian labels are matched as readily as the English names. Importing replaces everything you have ticked rather than adding to it, so it asks first and tells you how many runewords the file will tick; there is no undo once it is done. That is also how you start over — import an empty file and every mark is cleared. A spreadsheet works too, as long as it is saved as CSV with the names in the first column.",
     ],
 
     // Badge legend: each sample is rendered by the table's own Badge component;
@@ -100,8 +107,11 @@ export const en = {
     helpBadgeLadder: "Ladder only — available in ladder seasons",
     helpBadgeNote:
       "Note! — the runeword carries a caveat; open its details to read it",
-    helpRuneTiers:
-      "Remaining Runes groups runes into three tiers from common to rare, following the Horadric Cube's upgrade ratios (for example, three Tal make one Ral). That is why the rarest runes carry the smallest counts.",
+    // There was a paragraph here explaining that the rune tiers follow the
+    // Horadric Cube's upgrade ratios. It came out: a player who has reached
+    // the point of farming runes already knows the cube, and the panel's
+    // three bands read as common-to-rare without being told. Help is where a
+    // reader goes when lost, and a paragraph nobody was lost about is noise.
   },
 
   footer: {
@@ -258,6 +268,31 @@ export const en = {
     // The words inside are dataset content — `Not Orbs/Wands`, `Assassin` — and
     // stay out of this file. Only the punctuation around them is copy.
     restriction: (restriction: string) => `(${restriction})`,
+  },
+
+  // The two advice surfaces. The three usefulness *values* are dataset
+  // identifiers (`meta`, `situational`, `chronicle`); the words below are what
+  // a reader sees for them, exactly as the slot names work. The advice panel's
+  // prose itself is dataset text and stays out of this file — only its frame
+  // (the trigger's accessible name, the heading, the sources line) is copy.
+  advice: {
+    // One word each, deliberately: the value renders as a coloured badge under
+    // the name, and a badge is a glance, not a sentence. The full explanation
+    // of the three lives in Help.
+    usefulness: {
+      meta: "Meta",
+      situational: "Situational",
+      chronicle: "Chronicle",
+    },
+
+    // The trigger is the item-types cell's own text; the name says what opens
+    // so a reader who cannot see the panel appear is told what it was.
+    label: (name: string) => `Crafting advice for ${name}`,
+    heading: "Crafting advice",
+    sources: "Sources:",
+    // Every source link leaves the site in a new tab, and the accessible name
+    // says so — the same rule the header's links follow.
+    sourceName: (label: string) => `${label}, opens in a new tab`,
   },
 
   availability: {

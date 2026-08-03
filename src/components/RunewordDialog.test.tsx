@@ -427,6 +427,13 @@ describe("focus, and how the panel was opened", () => {
 
     await user.click(enigma);
 
+    // The manager moves focus into the panel asynchronously. Waiting for it is
+    // not cosmetic: a Tab dispatched while focus is still on the name lands on
+    // the row's advice trigger instead, whose focus opens the advice panel and
+    // releases the trap under test — a jsdom-only race, since a browser's trap
+    // machinery never lets Tab reach that trigger while the panel is modal.
+    await waitFor(() => expect(screen.getByRole("dialog")).toHaveFocus());
+
     // Advanced well past the panel's last focusable element, which is its only
     // one. Focus visits the name, the panel's close button and the manager's
     // own boundary guards, and never a row.

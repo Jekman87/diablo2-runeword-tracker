@@ -582,6 +582,39 @@ describe("moving progress in and out as a file", () => {
     ).toEqual(["Leaf", "Malice", "Steel"]);
   });
 
+  it("clears every mark when the file is empty", async () => {
+    render(<App />);
+
+    await mark("Steel");
+    await importFile("");
+
+    // The help panel offers this as the way to start over, so it is a promise
+    // the page makes rather than a side effect of replacement.
+    expect(socketFor("Steel")).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuetext",
+      en.progress.count(0, 99),
+    );
+    expect(
+      JSON.parse(window.localStorage.getItem(CRAFTED_STORAGE_KEY) ?? "[]"),
+    ).toEqual([]);
+  });
+
+  it("takes Russian labels in an imported file", async () => {
+    render(<App />);
+
+    // «Лист» is Leaf's Russian label. A Russian reader's hand-written list is
+    // Russian, and the help panel now says both languages are accepted.
+    await importFile("Лист\nСталь");
+
+    expect(socketFor("Leaf")).toHaveAttribute("aria-pressed", "true");
+    expect(socketFor("Steel")).toHaveAttribute("aria-pressed", "true");
+    // Storage keeps the canonical English names whichever language the file used.
+    expect(
+      JSON.parse(window.localStorage.getItem(CRAFTED_STORAGE_KEY) ?? "[]"),
+    ).toEqual(["Leaf", "Steel"]);
+  });
+
   it("changes nothing when the confirmation is cancelled", async () => {
     render(<App />);
 

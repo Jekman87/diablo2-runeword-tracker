@@ -242,7 +242,6 @@ export function SiteHeader() {
                 <span>{strings.header.helpBadgeNote}</span>
               </li>
             </ul>
-            <p>{strings.header.helpRuneTiers}</p>
           </div>
         </div>
       </div>

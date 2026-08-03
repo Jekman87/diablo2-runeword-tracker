@@ -62,6 +62,33 @@ describe("the default locale", () => {
     expect(setItem).not.toHaveBeenCalled();
     expect(window.localStorage.length).toBe(0);
   });
+
+  it("is Russian when the entry document declares Russian", () => {
+    // The `/ru/` entry ships `lang="ru"` in its static HTML — the publisher's
+    // declaration, unlike the browser language the test above proves ignored.
+    document.documentElement.lang = "ru";
+
+    const { result } = renderHook(useStrings);
+
+    expect(result.current).toBe(ru);
+  });
+
+  it("treats an unrecognised document language as no declaration", () => {
+    document.documentElement.lang = "de";
+
+    const { result } = renderHook(useStrings);
+
+    expect(result.current).toBe(en);
+  });
+
+  it("still writes nothing when the entry set the language", () => {
+    document.documentElement.lang = "ru";
+    const setItem = vi.spyOn(Storage.prototype, "setItem");
+
+    renderHook(useStrings);
+
+    expect(setItem).not.toHaveBeenCalled();
+  });
 });
 
 describe("a stored preference", () => {
@@ -72,6 +99,17 @@ describe("a stored preference", () => {
 
     expect(result.current).toBe(ru);
     expect(document.documentElement.lang).toBe("ru");
+  });
+
+  it("outranks the entry document's own language", () => {
+    // A player with English stored opening the /ru/ link a friend sent: the
+    // explicit choice wins over the door it came through.
+    document.documentElement.lang = "ru";
+    window.localStorage.setItem(LOCALE_STORAGE_KEY, '"en"');
+
+    const { result } = renderHook(useStrings);
+
+    expect(result.current).toBe(en);
   });
 
   it("falls back to English when it is unusable, and is left in place", () => {
