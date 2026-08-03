@@ -5,13 +5,16 @@ import ts from "typescript";
 import { z } from "zod";
 
 import { runewordAdvice } from "../data/advice/runewords.ts";
+import { adviceTerms as authoredTerms } from "../data/advice/terms.ts";
 import { itemTypeTranslations } from "../data/ru/item-types.ts";
 import { runeTranslations } from "../data/ru/runes.ts";
 import { runewordTranslations } from "../data/ru/runewords.ts";
 import {
+  type AdviceTerms,
   type ItemType,
   type Rune,
   type Runeword,
+  adviceTermsSchema,
   itemTypesSchema,
   runesSchema,
   runewordsSchema,
@@ -48,6 +51,7 @@ export interface Dataset {
   runewords: Runeword[];
   runes: Rune[];
   itemTypes: ItemType[];
+  adviceTerms: AdviceTerms;
 }
 
 /**
@@ -120,15 +124,59 @@ export function buildDataset(
     ...requiredRu(itemType[name], name, "item category"),
   }));
 
+  const parsedRunewords = runewordsSchema.parse(runewords);
+
   return {
+    adviceTerms: buildAdviceTerms(parsedRunewords),
     // Vendor array order is preserved throughout: the records stay in
     // patch-grouped chronological order, and the runes stay in the canonical
     // in-game progression. Neither is depended on, but both keep a diff after
     // a vendor refresh readable.
-    runewords: runewordsSchema.parse(runewords),
+    runewords: parsedRunewords,
     runes: runesSchema.parse(runes),
     itemTypes: itemTypesSchema.parse(itemTypes),
   };
+}
+
+/**
+ * The highlighter's term lists, filtered to the names that actually occur in a
+ * shipped paragraph.
+ *
+ * The filter is the point: the lists are derived from a trade site's item
+ * spellings and the localisation's skill names, both of which know names this
+ * project never mentions. Shipping those would grow the bundle with words
+ * nothing can highlight, and — worse — would let the lists rot silently as the
+ * advice is rewritten. A term that stops being used stops being shipped.
+ */
+function buildAdviceTerms(records: Runeword[]): AdviceTerms {
+  const english = records
+    .flatMap((record) => record.advice?.paragraphs ?? [])
+    .join(" ");
+  const russian = records
+    .flatMap((record) => record.ru?.advice?.paragraphs ?? [])
+    .join(" ");
+
+  // A Russian skill is matched by stem at render time, so it earns its place
+  // by its stem rather than by the nominative form the localisation quotes.
+  const stem = (term: string) =>
+    term.split(" ")[0].replace(/[а-яё]{0,2}$/iu, "");
+
+  return adviceTermsSchema.parse({
+    bases: {
+      en: authoredTerms.bases.en.filter((term) =>
+        `${english} ${russian}`.includes(term),
+      ),
+      ru: authoredTerms.bases.ru.filter((term) => russian.includes(term)),
+    },
+    skills: {
+      en: authoredTerms.skills.en.filter((term) =>
+        `${english} ${russian}`.includes(term),
+      ),
+      ru: authoredTerms.skills.ru.filter((term) =>
+        russian.includes(stem(term)),
+      ),
+    },
+  });
 }
 
 /**
@@ -715,6 +763,7 @@ async function main(): Promise<void> {
   await writeJson("runewords.json", dataset.runewords);
   await writeJson("runes.json", dataset.runes);
   await writeJson("item-types.json", dataset.itemTypes);
+  await writeJson("advice-terms.json", dataset.adviceTerms);
 
   console.log(
     `Wrote ${dataset.runewords.length} runewords, ${dataset.runes.length} runes ` +

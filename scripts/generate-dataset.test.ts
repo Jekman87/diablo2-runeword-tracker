@@ -226,6 +226,35 @@ describe("advice entries are merged and policed", () => {
     ).toHaveLength(99);
   });
 
+  it("ships a term list the advice actually uses", () => {
+    // Generated from a trade site's item spellings and the localisation's
+    // skill names, then filtered to what the prose mentions — so the useful
+    // assertion is that the filter left a real list rather than everything or
+    // nothing.
+    const prose = generated.runewords
+      .flatMap((record) => [
+        ...(record.advice?.paragraphs ?? []),
+        ...(record.ru?.advice?.paragraphs ?? []),
+      ])
+      .join(" ");
+
+    const { bases, skills } = generated.adviceTerms;
+
+    expect(bases.en.length).toBeGreaterThan(50);
+    expect(bases.ru.length).toBeGreaterThan(20);
+    expect(skills.en.length).toBeGreaterThan(20);
+    expect(skills.ru.length).toBeGreaterThan(20);
+
+    // Base names are matched literally, so each must appear as written.
+    for (const term of [...bases.en, ...bases.ru, ...skills.en]) {
+      expect(prose).toContain(term);
+    }
+    // Russian skills are matched by stem, because they inflect in the prose.
+    for (const term of skills.ru) {
+      expect(prose).toContain(term.split(" ")[0].replace(/[а-яё]{0,2}$/iu, ""));
+    }
+  });
+
   it("keeps advice source notes out of the emitted data", () => {
     const vendor = vendorWith("+10 To Strength");
     const built = buildDataset(

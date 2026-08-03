@@ -91,7 +91,7 @@ export const en = {
       // point is that nothing leaves the browser *by itself*, not that nothing
       // can leave it at all.
       "Your progress is kept in this browser and nowhere else. Nothing is uploaded and nothing travels between devices on its own, and clearing this site's data clears it.",
-      "Export progress saves your ticked runewords to a small CSV file, and Import progress reads one back — that is how you carry a list to another browser or keep a backup. Importing replaces everything you have ticked rather than adding to it, so it asks first and tells you how many runewords the file will tick; there is no undo once it is done. A spreadsheet works too, as long as it is saved as CSV with the names in the first column.",
+      "Export progress saves your ticked runewords to a small CSV file, and Import progress reads one back — that is how you carry a list to another browser or keep a backup. The file may name runewords in either language: Russian labels are matched as readily as the English names. Importing replaces everything you have ticked rather than adding to it, so it asks first and tells you how many runewords the file will tick; there is no undo once it is done. That is also how you start over — import an empty file and every mark is cleared. A spreadsheet works too, as long as it is saved as CSV with the names in the first column.",
     ],
 
     // Badge legend: each sample is rendered by the table's own Badge component;
@@ -107,8 +107,11 @@ export const en = {
     helpBadgeLadder: "Ladder only — available in ladder seasons",
     helpBadgeNote:
       "Note! — the runeword carries a caveat; open its details to read it",
-    helpRuneTiers:
-      "Remaining Runes groups runes into three tiers from common to rare, following the Horadric Cube's upgrade ratios (for example, three Tal make one Ral). That is why the rarest runes carry the smallest counts.",
+    // There was a paragraph here explaining that the rune tiers follow the
+    // Horadric Cube's upgrade ratios. It came out: a player who has reached
+    // the point of farming runes already knows the cube, and the panel's
+    // three bands read as common-to-rare without being told. Help is where a
+    // reader goes when lost, and a paragraph nobody was lost about is noise.
   },
 
   footer: {

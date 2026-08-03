@@ -1,6 +1,14 @@
+import clsx from "clsx";
+
 export interface PropertyLineProps {
   /** One granted-property line, exactly as the dataset holds it. */
   line: string;
+  /**
+   * Whether this property rolls — see `src/runewords/varies.ts`. A rolling
+   * line is drawn in one brighter colour end to end instead of being split
+   * into words and values.
+   */
+  varies?: boolean;
   className?: string;
 }
 
@@ -25,7 +33,19 @@ export interface PropertyLineProps {
  *
  * The line is data, not display copy, so it does not go through the i18n layer.
  */
-export function PropertyLine({ line, className }: PropertyLineProps) {
+export function PropertyLine({ line, varies, className }: PropertyLineProps) {
+  // A rolling line is one colour end to end. The two-tone treatment exists to
+  // pick a settled number out of settled words; on a line whose every number
+  // is "whatever this copy happened to roll", the thing worth marking is the
+  // line, and the split would argue the number is the only part that varies.
+  // Emitted as the same single text node the input was, so the round-trip
+  // guarantee below holds for both branches.
+  if (varies) {
+    return (
+      <span className={clsx("text-property-varies", className)}>{line}</span>
+    );
+  }
+
   return (
     <span className={className}>
       {line.split(VALUE).map((fragment, index) =>

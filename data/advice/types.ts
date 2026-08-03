@@ -22,3 +22,13 @@ export interface RunewordAdviceEntry {
   };
   source: string;
 }
+
+/**
+ * The game names the advice highlighter marks, by kind. Each kind is drawn in
+ * the colour the rest of the page already uses for that kind of thing, so a
+ * base item reads as a base item wherever it appears.
+ */
+export interface AdviceTermsSource {
+  bases: { en: string[]; ru: string[] };
+  skills: { en: string[]; ru: string[] };
+}

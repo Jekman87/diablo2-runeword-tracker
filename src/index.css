@@ -166,6 +166,21 @@
   --color-property: #7f7fff;
   --color-property-value: #b0b0ff;
 
+  /* A property that **rolls** — a range that differs from one crafted copy to
+     the next, or a value that scales with the reader's character level. The
+     whole line takes this one colour, numbers included, rather than the
+     two-tone treatment a fixed line gets: what matters about a rolling line is
+     that the reader must look at the item, and splitting it into word-blue and
+     number-blue says the opposite — that the number is the interesting part of
+     an otherwise settled fact.
+
+     Cyan-leaning and brighter than both, so it reads as the same family one
+     step up rather than as a fifth colour on the page. It is also the only
+     property colour that has to survive being the whole line's foreground,
+     which is why it clears the panel ground by more than `--color-property`
+     does. */
+  --color-property-varies: #7fd4ff;
+
   /* Badges: the ladder marker's band and its label, the note marker's band and
      its label, and one band per era of patch.
 
