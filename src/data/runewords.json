@@ -5,6 +5,19 @@
     "requiredLevel": 21,
     "itemTypes": ["Shields", "Grimoire"],
     "ladderOnly": false,
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Qual-Kehk's Act 5 quest reward hands you exactly these runes (Ral Ort Tal), so drop them into any 3-socket shield with decent block the moment you reach Nightmare. The extra value hides in the base: a paladin shield adds an all-resistances roll of its own on top of the runeword (elite paladin shields go up to +45), and a warlock can use a 3-socket grimoire that rolled + to Warlock skills. The runes are free, so spend the effort on finding a base that brings something of its own rather than a blank shield.",
+        "It is purely a levelling stopgap until Spirit or a class shield takes over. Nobody trades it — craft your own and move on."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -30,7 +43,13 @@
             "+10% к урону, приходящемуся на ману"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Награда за квест Квал-Кека в 5-м акте — ровно эти руны (Рал Орт Тал), так что вставляйте их в любой щит с 3 гнёздами и нормальным блоком, как только добрались до Кошмара. Вся дополнительная ценность прячется в базе: паладинский щит катает собственный бонус ко всем сопротивлениям поверх рунного слова (на элитных базах до +45), а варлоку подойдёт гримуар с 3 гнёздами, на котором выпало + к навыкам варлока. Руны бесплатные, поэтому силы стоит тратить именно на поиск базы, которая добавляет что-то от себя, а не на пустой щит.",
+          "Это чисто временный щит на прокачку, пока не появится Дух или классовый щит. Им никто не торгует — соберите свой и идите дальше."
+        ]
+      }
     }
   },
   {
@@ -39,6 +58,23 @@
     "requiredLevel": 35,
     "itemTypes": ["Clubs", "Hammers", "Maces"],
     "ladderOnly": false,
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Make it in a 3-socket Flail — fast base, low requirements, and it is what most completed trades name. The draw is 40% Crushing Blow plus Knockback for three cheap runes.",
+        "Classic budget boss-killer for a weapon swap: switch to it against act bosses to melt their health bar with Crushing Blow. Demand is thin — trades trickle through slowly — so craft your own rather than counting on selling one."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -70,7 +106,13 @@
             "\"Взрыв трупа\" 4-го уровня (12/12 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Собирайте в цепе (Flail) с 3 гнёздами — быстрая база с низкими требованиями, и именно её называют большинство завершённых сделок. Главное здесь — 40% сокрушающего удара (Crushing Blow) и отбрасывание за три дешёвые руны.",
+          "Классическое бюджетное оружие для добивания боссов на свопе: переключаетесь на него против боссов актов, и Crushing Blow быстро съедает их полоску жизни. Спрос вялый — сделки проходят редко, — так что проще собрать своё, чем рассчитывать на продажу."
+        ]
+      }
     }
   },
   {
@@ -79,6 +121,23 @@
     "requiredLevel": 65,
     "itemTypes": ["Melee Weapons"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Once a niche attack-speed option for werewolf druids, but Grief-era it is thoroughly obsolete, and it eats a Jah rune — awful value for a D-tier word. Trades that do happen mostly name Phase Blade or Berserker Axe.",
+        "For the Chronicle, use the cheapest 3-socket melee base you have and accept that the Jah is the real cost — leave this one for last, then vendor the result."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -112,7 +171,13 @@
             "+5 к умению \"Берсерк\" (только для варваров)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Когда-то нишевый вариант на скорость атаки для друида-оборотня, но в эпоху Печали оно безнадёжно устарело, а требует руну Джа — ужасная цена за слово D-уровня. Те сделки, что случаются, чаще всего называют Фазовый клинок или Секиру берсерка.",
+          "Для Истории берите самую дешёвую базу ближнего боя с 3 гнёздами и смиритесь, что настоящая цена — это Джа. Оставьте это слово напоследок, а результат сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -121,6 +186,22 @@
     "requiredLevel": 21,
     "itemTypes": ["Scepters"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A relic levelling scepter for a Holy Shock paladin in Normal, nothing more. There is one base trick worth knowing: a War Scepter whose staffmods rolled +3 to Holy Shock stacks with the runeword's own +3, and nearly every sold copy indeed reads +6. For the Chronicle, though, the cheapest 4-socket War Scepter you find is enough (that is what almost all trades name) — craft it, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -154,7 +235,12 @@
             "\"Цепная молния\" 7-го уровня (60/60 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Реликтовый скипетр для прокачки паладина на Holy Shock в Нормале, не более того. Одна хитрость с базой всё же есть: боевой скипетр (War Scepter) со стаффмодом +3 к Holy Shock складывается с собственным +3 рунного слова — и почти все проданные экземпляры показывают именно +6. Но для Истории хватит самого дешёвого War Scepter с 4 гнёздами (его называют почти все сделки): соберите и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -163,6 +249,22 @@
     "requiredLevel": 27,
     "itemTypes": ["Melee Weapons"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "+1 to all skills on a melee weapon sounds nice at level 27, but the five cheap runes buy you a weapon you will replace within an act. Craft it in any cheap 5-socket melee base (trades mostly name a Zweihander) to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -198,7 +300,12 @@
             "+2 к мане при убийстве"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "+1 ко всем навыкам на оружии ближнего боя звучит неплохо на 27-м уровне, но пять дешёвых рун покупают оружие, которое вы смените в течение акта. Соберите в любой дешёвой базе ближнего боя с 5 гнёздами (в сделках чаще всего Цвайхандер), чтобы закрыть Историю, и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -207,6 +314,18 @@
     "requiredLevel": 25,
     "itemTypes": ["Swords", "Scepters"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "An early-game sword/scepter with demon and undead damage that no build actually wants. Craft it in the cheapest 3-socket sword or scepter you have (a plain Crystal Sword works) just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -238,7 +357,12 @@
             "Похищает 7% здоровья за удар"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Меч или скипетр раннего этапа с уроном по демонам и нежити, который на деле не нужен ни одному билду. Соберите в самом дешёвом мече или скипетре с 3 гнёздами (подойдёт обычный Кристальный меч), чтобы закрыть Историю, и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -248,6 +372,23 @@
     "itemTypes": ["Staves"],
     "itemTypeRestriction": "Not Orbs/Wands",
     "ladderOnly": false,
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Tir Ral in a 2-socket staff — the best levelling weapon a fire sorceress can hold at level 19. The base is what separates a good Leaf from filler: hunt a staff whose staffmods rolled +3 to Fire Ball (about a fifth of sold copies have it) or a second +3 to Fire Bolt, Inferno or Warmth on top of what the runeword already grants. Akara's shop in Normal restocks such staves constantly, and one of them carries you deep into Nightmare.",
+        "The runes cost nothing, so almost everyone self-crafts. Trades exist but the bases in them are mostly plain low staves; the Leaf that actually sells to fresh sorceresses is the one on a base with real staffmods."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -278,7 +419,13 @@
             "+33% к сопротивлению льду"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Тир Рал в посохе с 2 гнёздами — лучшее оружие для прокачки огненной волшебницы на 19-м уровне. Хороший Лист от проходного отличает именно база: ищите посох, на котором выпал стаффмод +3 к Fire Ball (он есть примерно у пятой части проданных экземпляров) или второй +3 к Fire Bolt, Inferno либо Warmth поверх того, что и так даёт рунное слово. В Нормале такие посохи постоянно завозит Акара, и один такой тащит вас до глубин Кошмара.",
+          "Руны стоят копейки, так что почти все собирают сами. Сделки есть, но базы в них в основном простые низкие посохи; свежим волшебницам продаётся именно Лист в базе с настоящими стаффмодами."
+        ]
+      }
     }
   },
   {
@@ -287,6 +434,23 @@
     "requiredLevel": 41,
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A big pile of attributes, life and resistances in a 3-socket body armor — a genuinely decent budget melee chest in its day, and most completed trades name Mage Plate for its low strength requirement. But Smoke fixes resistances cheaper and Duress or Treachery outfight it, so nowadays it mostly gathers dust.",
+        "For the Chronicle, craft it in any cheap 3-socket armor and vendor it; keep one only if a fresh melee character happens to need the stats right now."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -316,7 +480,13 @@
             "+30 к сопротивлению всем видам урона"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Большая куча характеристик, жизни и сопротивлений в броне с 3 гнёздами — в своё время вполне приличный бюджетный нагрудник для ближнего боя, и большинство завершённых сделок называют Латы мага (Mage Plate) из-за низкого требования к силе. Но Дым закрывает резисты дешевле, а Принуждение и Вероломство сильнее в бою, так что сейчас оно в основном пылится.",
+          "Для Истории соберите в любой дешёвой броне с 3 гнёздами и сдайте торговцу; оставить стоит только если свежему бойцу ближнего боя статы нужны прямо сейчас."
+        ]
+      }
     }
   },
   {
@@ -325,6 +495,23 @@
     "requiredLevel": 27,
     "itemTypes": ["Helms"],
     "ladderOnly": false,
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Ort Sol in any 2-socket helm — the base barely matters, and trades confirm it (Bone Helm, Crown, Full Helm, whatever is at hand). +1 to all skills plus lightning resistance for two runes you find by Act 5 Normal.",
+        "Every levelling caster wears one, plenty of budget hell builds keep it until a Shako drops, and it is fine on a mercenary too. In constant demand at season start; it crafts in seconds and sells steadily despite the trivial rune cost."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -350,7 +537,13 @@
             "+2 к радиусу обзора"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Орт Сол в любом шлеме с 2 гнёздами — база почти не важна, и сделки это подтверждают (Костяной шлем, Корона, Полный шлем — что под руку попалось). +1 ко всем навыкам плюс сопротивление молнии за две руны, которые находятся ещё в Нормале.",
+          "Его носит каждый кастер на прокачке, многие бюджетные билды ходят в нём по Аду, пока не выпадет Шако, да и наёмнику он подходит. В начале сезона спрос постоянный: собирается за секунды и стабильно продаётся, несмотря на копеечные руны."
+        ]
+      }
     }
   },
   {
@@ -359,6 +552,18 @@
     "requiredLevel": 15,
     "itemTypes": ["Melee Weapons"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A level 15 weapon whose only tricks are Prevent Monster Heal and guaranteed Open Wounds — nothing any build wants past the first acts. Craft it in the cheapest 3-socket melee weapon you have (trades mostly show Flails and Crystal Swords) to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -388,7 +593,12 @@
             "Похищает -5 здоровья"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Оружие 15-го уровня, всё умение которого — запрет лечения монстров и гарантированные открытые раны; ни одному билду оно не нужно уже после первых актов. Соберите в самом дешёвом оружии ближнего боя с 3 гнёздами (в сделках в основном цепы и Кристальные мечи), чтобы закрыть Историю, и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -397,6 +607,23 @@
     "requiredLevel": 39,
     "itemTypes": ["Missile Weapons"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "+3 to bow skills with Knockback — on paper a levelling bow for amazons, and elite amazon bows (Grand Matron, Matriarchal) lead completed trades for a reason: nearly all of them read +6 to Bow and Crossbow Skills, meaning the base rolled +3 amazon bow skills of its own on top of the runeword's +3. In practice bow builds jump to better options fast and demand is nearly dead.",
+        "If you only need the Chronicle entry, the cheapest 3-socket missile weapon does the job — craft it and vendor it. Chasing a +3 bow-skill amazon base is worth it only if you genuinely intend to level on the thing."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -428,7 +655,13 @@
             "Отбрасывает врагов"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "+3 к навыкам лука с отбрасыванием — на бумаге лук для прокачки амазонки, и элитные луки амазонки (Grand Matron, Matriarchal) лидируют в сделках не просто так: почти все они показывают +6 к навыкам лука и арбалета, то есть база сама выкатила +3 к навыкам лука поверх +3 от рунного слова. На практике лучные билды быстро перескакивают на варианты получше, и спрос почти мёртв.",
+          "Если нужно просто закрыть Историю, хватит самого дешёвого лука или арбалета с 3 гнёздами: собрали и сдали торговцу. Гоняться за амазонской базой с +3 к навыкам лука стоит, только если вы правда собираетесь на ней качаться."
+        ]
+      }
     }
   },
   {
@@ -438,6 +671,23 @@
     "itemTypes": ["Staves"],
     "itemTypeRestriction": "Not Orbs/Wands",
     "ladderOnly": false,
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Lum Io Sol Eth in a 4-socket staff: +3 sorceress skills, 33% faster cast rate and a mountain of mana. The classic switch-staff for Energy Shield sorceresses — prebuff Energy Shield from the switch slot — and a solid levelling weapon too. The base sets the price: most sold copies read +6 to Energy Shield, i.e. a staff that added +3 of its own to the runeword's +3; +3 is the ceiling for one skill roll, but a staff that also rolls +1-3 to sorceress skills goes higher still.",
+        "Trades move at a decent clip across all staff bases (Gnarled, Battle, War, Archon Staff), so a Memory on a +3 Energy Shield base finds sorceress buyers quickly, while a blank staff mostly sits."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -474,7 +724,13 @@
             "+50% к защите"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Лум Ио Сол Эт в посохе с 4 гнёздами: +3 к навыкам волшебницы, 33% скорости чтения заклинаний и гора маны. Классический посох на свопе для волшебниц с Энергетическим щитом — пребафф ES со второго слота, — да и для прокачки он хорош. Цену задаёт база: у большинства проданных экземпляров стоит +6 к Energy Shield, то есть посох добавил свои +3 к +3 от рунного слова; больше +3 на один навык база не даёт, но посох с +1-3 к навыкам волшебницы поднимает итог ещё выше.",
+          "Сделки идут довольно бодро по всем базам посохов (Gnarled, Battle, War, Archon Staff), так что Память на базе с +3 к Energy Shield быстро находит покупателей среди волшебниц, а пустая база в основном висит."
+        ]
+      }
     }
   },
   {
@@ -483,6 +739,18 @@
     "requiredLevel": 13,
     "itemTypes": ["Helms"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A level 13 helm whose selling point is Cloak of Shadows charges — a curiosity, not equipment. Craft it in the cheapest 2-socket helm you have (Skull Cap, Cap, anything) to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -512,7 +780,12 @@
             "-3 к радиусу обзора"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Шлем 13-го уровня, чья единственная фишка — заряды Cloak of Shadows; это диковинка, а не экипировка. Соберите в самом дешёвом шлеме с 2 гнёздами (Skull Cap, обычная шапка — что угодно), чтобы закрыть Историю, и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -521,6 +794,22 @@
     "requiredLevel": 27,
     "itemTypes": ["Helms"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Light radius and a little energy on a 3-socket helm — one of the weakest runewords in the game, and the trade data agrees (barely any completed trades). Craft it in the cheapest 3-socket helm you find just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -552,7 +841,12 @@
             "+5 к радиусу обзора"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Радиус света и немного энергии на шлеме с 3 гнёздами — одно из слабейших рунных слов в игре, и данные торговли это подтверждают (завершённых сделок почти нет). Соберите в самом дешёвом шлеме с 3 гнёздами, чтобы закрыть Историю, и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -561,6 +855,23 @@
     "requiredLevel": 29,
     "itemTypes": ["Shields", "Grimoire"],
     "ladderOnly": false,
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Shael Eth in a 2-socket shield: Cannot Be Frozen, +25 all-resistances — the cheapest CBF in the game. Any low-strength shield works (trades show Bone Shields, Kite Shields, Grim Shields), but the base can nearly triple the resistances: a paladin shield brings +40-45 all-resistances of its own, and the best completed trades read around +70 all-res in total. Necromancers instead roll it in a 2-socket shrunken head for the +skills.",
+        "Great on every levelling character and on budget hell builds until Spirit; melee characters without CBF elsewhere keep it longer than you would think. Runes are free, so most self-craft; sells occasionally in nice bases."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -588,7 +899,13 @@
             "+25% к вероятности найти магический предмет"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Шаэль Эт в щите с 2 гнёздами: невозможность заморозки (Cannot Be Frozen), +25 ко всем сопротивлениям — самый дешёвый CBF в игре. Подойдёт любой щит с низким требованием к силе (в сделках Костяные щиты, Кайт-щиты, Мрачные щиты), но база способна поднять резисты почти втрое: паладинский щит приносит свои +40-45 ко всем сопротивлениям, и лучшие завершённые сделки показывают около +70 суммарно. Некромант же собирает его в голове с 2 гнёздами — ради бонуса к навыкам.",
+          "Отличен на любом персонаже на прокачке и в бюджетных билдах в Аду до появления Духа; бойцы ближнего боя без CBF из других источников носят его дольше, чем кажется. Руны бесплатные, так что почти все собирают сами; в хороших базах изредка продаётся."
+        ]
+      }
     }
   },
   {
@@ -597,6 +914,23 @@
     "requiredLevel": 55,
     "itemTypes": ["Weapons"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Six runes including Vex and Ist for a D-tier weapon make this the most expensive Chronicle filler in the early book. It needs a 6-socket weapon; trades mostly name Phase Blade, but any cheap 6-socket base (a plain Crystal Sword or polearm) does the job just as well.",
+        "Craft it last, when the Vex and Ist no longer hurt, then vendor it — no current build wants it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -636,7 +970,13 @@
             "+30% к вероятности найти магический предмет"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Шесть рун, включая Векс и Ист, за оружие D-уровня — самый дорогой «наполнитель Истории» в этой части списка. Нужно оружие с 6 гнёздами; в сделках чаще всего Фазовый клинок, но любая дешёвая база с 6 гнёздами (обычный Кристальный меч или древковое) справится не хуже.",
+          "Собирайте его последним, когда Векс и Ист уже не жалко, и сдайте торговцу — ни одному актуальному билду оно не нужно."
+        ]
+      }
     }
   },
   {
@@ -645,6 +985,23 @@
     "requiredLevel": 37,
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Nef Lum in a 2-socket body armor for a flat +50 to all resistances — the single cheapest way to fix hell resistances for yourself or your mercenary. If you are wearing it, pick a light base like Mage Plate or Dusk Shroud; if it is for the mercenary, make it ethereal — about a third of completed trades are, and the extra defense costs him nothing since ethereal gear does not wear down on a merc. Trades show all sorts of bases (Balrog Skin leads), which just proves people roll it in whatever drops.",
+        "Every hardcore player and half the softcore ladder crafts one at some point. Runes are cheap, so it sells only occasionally — mostly to people too lazy to find a Lum."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -672,7 +1029,13 @@
             "-1 к радиусу обзора"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Неф Лум в броне с 2 гнёздами даёт ровно +50 ко всем сопротивлениям — самый дешёвый способ закрыть резисты в Аду себе или наёмнику. Если носите сами, берите лёгкую базу вроде Магической кирасы (Mage Plate) или Сумеречного савана (Dusk Shroud); если броня идёт наёмнику — берите эфирную базу: примерно треть завершённых сделок эфирные, а лишняя защита достаётся даром, ведь на наёмнике эфирные вещи не изнашиваются. В сделках базы самые разные (чаще всего Шкура балрога) — люди просто собирают его в том, что выпало.",
+          "Каждый хардкорщик и половина софткорного ладдера рано или поздно собирают себе такой. Руны дешёвые, поэтому продаётся лишь изредка — в основном тем, кому лень искать Лум."
+        ]
+      }
     }
   },
   {
@@ -681,6 +1044,23 @@
     "requiredLevel": 17,
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Tal Eth in any 2-socket body armor — trades mostly show Breast Plates and Chain Mails, i.e. whatever light base was lying around. Faster cast rate, faster hit recovery and faster run/walk in one dirt-cheap package at level 17.",
+        "The definitive levelling armor: every fresh caster (sorceress, necromancer, hammerdin-to-be) crafts one within the first hours of a season, and melee characters like it too. In constant demand at league start; the runes cost nothing, so what sells is the convenience of a ready 2-socket base."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -710,7 +1090,13 @@
             "+25% к ускоренному восстановлению от удара"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Тал Эт в любой броне с 2 гнёздами — в сделках в основном Кирасы (Breast Plate) и Кольчуги, то есть любая лёгкая база, что была под рукой. Скорость чтения заклинаний, скорость восстановления после удара и скорость бега в одном копеечном пакете на 17-м уровне.",
+          "Эталонная броня для прокачки: каждый свежий кастер (волшебница, некромант, будущий хаммердин) собирает её в первые часы сезона, да и бойцам ближнего боя она нравится. В начале ладдера спрос постоянный; руны бесплатные, так что продаётся по сути удобство готовой базы с 2 гнёздами."
+        ]
+      }
     }
   },
   {
@@ -719,6 +1105,18 @@
     "requiredLevel": 13,
     "itemTypes": ["Swords", "Axes", "Maces"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A level 13 starter weapon with a bit of attack speed and Open Wounds — outgrown within a couple of acts. Craft it in the cheapest 2-socket sword, axe or mace you have (trades show Flails and Scimitars) to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -748,7 +1146,12 @@
             "+1 к радиусу обзора"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Стартовое оружие 13-го уровня с чуточкой скорости атаки и Open Wounds — перерастаете его за пару актов. Соберите в самом дешёвом мече, топоре или булаве с 2 гнёздами (в сделках Цеп (Flail) и Скимитар (Scimitar)), чтобы закрыть Историю, и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -757,6 +1160,18 @@
     "requiredLevel": 25,
     "itemTypes": ["Melee Weapons"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Two cheap runes for 25% Crushing Blow at level 25 — a passable stopgap for a very fresh melee character or an early mercenary polearm, but nothing anyone keeps. Craft it in the cheapest 2-socket melee base you have to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -782,7 +1197,12 @@
             "+10 к живучести"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Две дешёвые руны за 25% сокрушающего удара на 25-м уровне — сойдёт как затычка для совсем свежего бойца ближнего боя или как раннее древковое оружие для наёмника 2-го акта, но никто его не оставляет. Соберите в самой дешёвой базе ближнего боя с 2 гнёздами, чтобы закрыть Историю, и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -791,6 +1211,18 @@
     "requiredLevel": 49,
     "itemTypes": ["Weapons"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A poison-damage weapon that no build actually wants: the poison is slow and every serious character does more with Grief or an elemental runeword. Craft it in the cheapest 3-socket weapon you can find just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -818,7 +1250,12 @@
             "+273 урона от яда за 6 сек."
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Оружие с ядовитым уроном, которое на деле не нужно ни одному билду: яд тикает медленно, и любой серьёзный персонаж получит больше от Печали или стихийного рунворда. Соберите его в самом дешёвом оружии с 3 гнёздами, чтобы закрыть Историю, и продайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -827,6 +1264,23 @@
     "requiredLevel": 43,
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "A dedicated gold-find and magic-find farming armor. Craft it in a 3-socket Mage Plate — that is what most completed trades name — because its low strength requirement lets any farming character slip it on without wasting stat points.",
+        "Cheap runes (Lem Ko Tir) and a clear niche: swap it on for boss runs or gold farming for gambling. Magic-find enthusiasts still want it, so it sells occasionally."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -848,7 +1302,13 @@
             "+10 к ловкости"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Специализированная броня для фарма золота и магических вещей. Собирайте её в Латах мага (Mage Plate) с 3 гнёздами — именно эту базу называют в большинстве завершённых сделок: низкое требование к силе позволяет любому фарм-персонажу надеть её без лишних статов.",
+          "Руны дешёвые (Лем Ко Тир), а ниша понятная: надевайте на боссранах или при фарме золота под гэмблинг. Любители мэджик-файнда её по-прежнему берут, так что изредка продаётся."
+        ]
+      }
     }
   },
   {
@@ -858,6 +1318,23 @@
     "itemTypes": ["Wands"],
     "itemTypeRestriction": "Necromancer",
     "ladderOnly": false,
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Necromancer-only wand and one of the cheapest strong caster weapons in the game (just Dol Io). The runes are trivial — the value is in the base: a blank 2-socket Bone or Grim Wand already reads +5 Bone Spear from the runeword alone, so what you hunt is a wand whose own staffmods rolled +3 Bone Spear (taking it to +8) or +3 Bone Spirit. Most sold copies are blank bases, which is exactly why a staffmod one stands out.",
+        "The go-to main hand for Bone Spear necromancers until an elite rare or a Heart of the Oak class setup, and good enough that many keep it into Hell. Trades move at a steady clip, and the +8 Bone Spear wands are the ones buyers actually chase."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -890,7 +1367,13 @@
             "+13 к мане"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Жезл только для некроманта и одно из самых дешёвых сильных кастерских оружий в игре (всего Дол Ио). Руны копеечные — вся ценность в базе: на пустом Костяном (Bone Wand) или Мрачном жезле (Grim Wand) с 2 гнёздами и так стоит +5 к Bone Spear от самого рунного слова, поэтому охотиться нужно за жезлом, у которого свои стаффмоды дали +3 к Bone Spear (это уже +8) или +3 к Bone Spirit. Большинство проданных экземпляров — пустые базы, потому жезл со стаффмодами и выделяется.",
+          "Основное оружие копейного некроманта до элитного рара или сборки под Сердце дуба; многим его хватает и в Аду. Торгуется довольно бойко, и покупатели гоняются именно за жезлами на +8 к Bone Spear."
+        ]
+      }
     }
   },
   {
@@ -899,6 +1382,18 @@
     "requiredLevel": 21,
     "itemTypes": ["Missile Weapons"],
     "ladderOnly": false,
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A low-level levelling bow that even levelling characters skip nowadays. Craft it in any cheap 2-socket bow just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -928,7 +1423,12 @@
             "Вероятность 7% применить умение \"Смерч\" 1-го уровня при получении урона"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Лук для прокачки на низких уровнях, который сейчас пропускают даже при прокачке. Соберите в любом дешёвом луке с 2 гнёздами, чтобы закрыть Историю, и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -938,6 +1438,23 @@
     "itemTypes": ["Axes", "Scepters", "Hammers"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Craft it in a 5-socket Berserker Axe — the overwhelming favorite in completed trades — for the fast attack speed. Its level 9 Fanaticism aura is the whole point: it supercharges physical builds around you.",
+        "Classic homes: summoner necromancers and druids who want Fanaticism for their army, melee characters stacking auras, and anyone who fancies fighting as a Werebear via the oskill. Expensive runes (Ber), but demand is brisk and a well-based Beast sells reliably."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -975,7 +1492,13 @@
             "\"Гризли\" 13-го уровня (5/5 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Собирайте в Секире берсерка (Berserker Axe) с 5 гнёздами — в завершённых сделках эта база с большим отрывом лидирует: быстрая скорость атаки. Весь смысл — в ауре Фанатизма 9 уровня, которая разгоняет физические билды вокруг вас.",
+          "Классические хозяева: некроманты и друиды-призыватели, дающие Фанатизм своей армии, милишники, стакающие ауры, и любители побегать Обликом медведя через оскилл. Руны дорогие (Бер), но спрос живой, и Зверь в хорошей базе продаётся стабильно."
+        ]
+      }
     }
   },
   {
@@ -985,6 +1508,23 @@
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "The poison-damage armor: its +25-50% poison skill damage is why Rabies druids and Poison Nova necromancers build around it. Craft it in a 4-socket Archon Plate (the most traded base) or a Dusk Shroud if you want a lighter strength requirement.",
+        "Expensive runes (Ohm and Sur), and the Thorns aura is mostly flavor. Demand comes almost entirely from poison specialists, so it sells to a narrow but real audience."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1020,7 +1560,13 @@
             "\"Терновый дух\" 13-го уровня (33/33 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Броня под ядовитый урон: +25-50% к урону ядом — ради этого её собирают друиды с Бешенством (Rabies) и некроманты с Ядовитой новой. База — Архонтские латы (Archon Plate) с 4 гнёздами, самая ходовая в сделках, либо Сумеречный саван (Dusk Shroud), если хочется меньших требований к силе.",
+          "Руны дорогие (Ом и Сур), а аура Шипов — скорее для антуража. Спрос почти целиком от ядовитых спецов, так что покупатель узкий, но реальный."
+        ]
+      }
     }
   },
   {
@@ -1030,6 +1576,23 @@
     "itemTypes": ["Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "The classic 6-socket endgame melee weapon. The Zod rune makes it indestructible, so an ethereal elite base is strictly correct: ethereal Thunder Maul dominates completed trades, with Berserker Axe, Colossus Blade and War Pike behind it. An ethereal 6-socket War Pike or Giant Thresher version is a monster weapon for an act 2 mercenary.",
+        "Whirlwind barbarians, Fury druids and other physical attackers all want it, and the huge Enhanced Damage roll plus dual leech keeps it relevant deep into endgame. In constant demand — crafts and sells well despite the very expensive rune bill (Vex and Zod)."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1071,7 +1634,13 @@
             "Требования -20%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Классическое эндгеймовое оружие ближнего боя на 6 гнёзд. Руна Зод делает его неразрушимым, поэтому эфирная элитная база — строго правильный выбор: в завершённых сделках доминирует эфирный Громовой молот (Thunder Maul), за ним Секира берсерка, Клинок колосса и Боевая пика. Эфирная Боевая пика или Гигантская молотилка на 6 гнёзд — чудовищное оружие для наёмника 2 акта.",
+          "Его хотят варвары-вихри, друиды с Fury и прочие физические атакеры: огромный ролл усиленного урона и двойной лич актуальны до самого позднего эндгейма. Стабильный спрос — собирается и продаётся отлично, несмотря на очень дорогие руны (Векс и Зод)."
+        ]
+      }
     }
   },
   {
@@ -1081,6 +1650,23 @@
     "itemTypes": ["Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "The universal weapon-swap item: every character of every class wants Battle Orders and Battle Command from the switch slot. Because it only ever sits on swap, the base's stats are irrelevant — a plain 5-socket Crystal Sword or Flail is standard, and those two dominate completed trades.",
+        "Rolls matter (+1 to +6 Battle Orders), so high rolls carry a premium. This is one of the fastest-moving runewords on the market — in constant demand, crafts and sells extremely well."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1116,7 +1702,13 @@
             "+30% к вероятности найти магический предмет"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Универсальная вещь для второго слота оружия: Боевой приказ и Боевую команду со свапа хочет каждый персонаж любого класса. Поскольку оно лежит только на свапе, статы базы не важны — стандарт это обычный Кристальный меч (Crystal Sword) или Цеп (Flail) с 5 гнёздами, и именно они доминируют в завершённых сделках.",
+          "Важен ролл (+1..+6 к Боевому приказу), поэтому высокие роллы идут с наценкой. Один из самых быстрых рунвордов на рынке — постоянный спрос, собирается и продаётся отлично."
+        ]
+      }
     }
   },
   {
@@ -1127,6 +1719,23 @@
     "itemTypeRestriction": "Assassin",
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Assassin-only claw whose selling point is the Whirlwind oskill — the backbone of the Whirlwind assassin. Craft it in a 3-socket Runic Talons or Suwayyah (the two bases nearly all completed trades name); it is usually paired with a Fury claw in the off hand for speed.",
+        "Do not settle for a blank claw. Every claw base can roll +1-3 to an assassin skill, and about half of the sold copies carry +3 to Lightning Sentry, with +3 Dragon Flight and +2-3 Blade Shield close behind — those base skills are what buyers pay extra for, since Whirlwind itself comes from the runeword. The build is a fan favorite rather than top meta, and the Ohm rune makes it a mid-expensive craft; it sells occasionally to Whirlwind assassin enthusiasts."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1159,7 +1768,13 @@
             "+15 к здоровью при убийстве демона"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Коготь только для ассасина, весь смысл которого — оскилл «Вихрь» (Whirlwind), основа билда ассасинки-вихря. Собирайте в Рунических когтях (Runic Talons) или Сувайе (Suwayyah) с 3 гнёздами — почти все завершённые сделки называют именно эти базы; обычно в пару берут коготь Fury во вторую руку ради скорости.",
+          "Пустую базу брать не стоит. Любой коготь может нароллить +1-3 к навыку ассасина, и примерно половина проданных экземпляров идёт с +3 к Молниевой турели (Lightning Sentry), следом — +3 к Полёту дракона (Dragon Flight) и +2-3 к Щиту клинков (Blade Shield). Именно эти +скиллы на базе и добавляют цену, ведь сам Вихрь даёт рунворд. Билд скорее любимец фанатов, чем топ-мета, а руна Ом делает сборку недешёвой; изредка продаётся ценителям Вихря на ассасине."
+        ]
+      }
     }
   },
   {
@@ -1169,6 +1784,23 @@
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "The premier defensive endgame armor: +2 all skills and a massive +65 all resistances plus damage reduction. Craft it in a 4-socket Archon Plate — by far the most traded base — or Dusk Shroud for a low strength requirement; Sacred Armor if you chase maximum defense. Just over half of completed trades are ethereal: that is free defense on a mercenary, who never wears an ethereal item down, while for your own character a repairable non-ethereal base is the safer buy.",
+        "Standard on Uber-killing Smiters, summon necromancers and most melee characters that don't need Enigma's Teleport. In constant demand — it crafts and sells well all season."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1202,7 +1834,13 @@
             "+25% к вероятности найти магический предмет"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Главная защитная броня эндгейма: +2 ко всем навыкам и огромные +65 ко всем сопротивлениям плюс снижение урона. Собирайте в Архонтских латах (Archon Plate) с 4 гнёздами — это самая ходовая база с большим отрывом — или в Сумеречном саване ради низкой силы; Священные латы (Sacred Armor) — если гонитесь за максимальной защитой. Больше половины завершённых сделок — эфирные: на наёмнике это бесплатная защита, эфирные вещи у него не изнашиваются, а себе спокойнее взять обычную базу, которую можно чинить.",
+          "Стандарт для смайтеров под убер-Тристрам, некромантов-призывателей и большинства милишников, которым не нужен Телепорт из Тайны. Постоянный спрос — собирается и продаётся весь сезон."
+        ]
+      }
     }
   },
   {
@@ -1212,6 +1850,23 @@
     "itemTypes": ["Axes", "Swords", "Polearms"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "The lightning-melee enabler: -35% enemy lightning resistance plus Static Field procs. Craft it in a 3-socket Phase Blade (no repairs, fastest swings — the base most completed trades name) or a cheap Crystal Sword while levelling into it.",
+        "Core weapon for Dream/Holy Shock 'Tesladin' paladins and other lightning-damage melee builds, and a serviceable budget stand-in where Infinity is out of reach. Sells at a steady pace to those builds."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1245,7 +1900,13 @@
             "\"Призрачный волк\" 18-го уровня (30/30 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Оружие для молниевого ближнего боя: -35% к сопротивлению врагов молнии плюс прок Статического поля. Собирайте в Фазовом клинке (Phase Blade) с 3 гнёздами — не ломается, машет быстрее всех, и именно его чаще всего называют в сделках; на разгоне сойдёт и дешёвый Кристальный меч.",
+          "Ключевое оружие паладинов-«тесладинов» на Мечте/Святом шоке и других милишных молниевых билдов, а также рабочая бюджетная замена там, где Бесконечность не по карману. Продаётся стабильно под эти билды."
+        ]
+      }
     }
   },
   {
@@ -1255,6 +1916,23 @@
     "itemTypes": ["Helms"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "A crowd-control helm: +2 all skills with constant Confuse and Mind Blast procs that turn packs against each other (and occasionally morph you into a bone fetish, which is half the charm). Any 3-socket helm works, and trades show a spread of Demonhead and Bone Visage.",
+        "The real value hides in the base. A barbarian helm that rolls +3 to Warcries puts extra Battle Orders on top of the runeword's +2 all skills, and a solid share of sold copies is exactly that — Slayer Guard, Avenger Guard and Carnage Helm all show up in completed trades. A druid pelt with +3 to a druid skill tab does the same job for a summoner. Buyers are summon necromancers and hardcore players who value chaos-as-defense; a fun, genuinely useful oddity that sells occasionally."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1288,7 +1966,13 @@
             "\"Привлечение\" 17-го уровня (60/60 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Шлем контроля толпы: +2 ко всем навыкам и постоянные проки Замешательства и Ментального удара, которые стравливают паки между собой (а иногда превращают вас в костяного фетиша — в этом половина обаяния). Подойдёт любой шлем с 3 гнёздами; в сделках мелькают Голова демона (Demonhead) и Костяной лик (Bone Visage).",
+          "Настоящая ценность прячется в базе. Варварский шлем с роллом +3 к Боевым кличам (Warcries) кладёт лишние уровни Боевого приказа поверх +2 ко всем навыкам от рунворда, и заметная часть проданных экземпляров именно такая — в сделках попадаются Стража убийцы (Slayer Guard), Стража мстителя (Avenger Guard) и Шлем бойни (Carnage Helm). Друидская шкура с +3 к ветке навыков друида делает то же самое для призывателя. Покупатели — некроманты-призыватели и хардкорщики, ценящие хаос как защиту. Забавная и реально полезная диковинка, изредка продаётся."
+        ]
+      }
     }
   },
   {
@@ -1298,6 +1982,23 @@
     "itemTypes": ["Axes", "Polearms", "Hammers"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "The Holy Freeze weapon: its level 12 aura chills everything around you, which elemental melee builds love. Completed trades are almost unanimous — a 5-socket Berserker Axe is the base. An ethereal polearm version on an act 2 mercenary also works as a walking slow aura, though the axe for self-use is what the market actually trades.",
+        "Fury druids, Frenzy barbarians and cold-themed melee builds are the audience. Very expensive runes (Cham, Lo, Ohm), but demand is brisk, so a well-rolled Doom finds a buyer."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1333,7 +2034,13 @@
             "Требования -20%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Оружие с аурой \"Священный холод\": аура 12 уровня замораживает всё вокруг, что обожают стихийные милишники. Завершённые сделки почти единодушны — база — Секира берсерка (Berserker Axe) с 5 гнёздами. Вариант в эфирном древковом на наёмнике 2 акта тоже работает как ходячая аура замедления, но рынок реально торгует именно секирой под себя.",
+          "Аудитория — друиды с Fury, варвары с Яростью (Frenzy) и «холодные» милишные билды. Руны очень дорогие (Чам, Ло, Ом), но спрос живой, и Гибель с хорошим роллом находит покупателя."
+        ]
+      }
     }
   },
   {
@@ -1343,6 +2050,23 @@
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "The best mid-budget melee armor: Crushing Blow, Open Wounds, cold damage and solid resistances from three cheap-ish runes (Shael Um Thul). Craft it in a 3-socket armor — trades split between Archon Plate, Ornate Plate, Wire Fleece and Boneweave, so pick whatever fits your strength.",
+        "A common stop for melee characters saving toward Fortitude or Chains of Honor, and a fine mercenary armor too. Sells occasionally to budget melee builds."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1378,7 +2102,13 @@
             "+15% к сопротивлению яду"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Лучшая среднебюджетная броня для ближнего боя: Сокрушающий удар, Открытые раны, урон холодом и приличные сопротивления за сравнительно дешёвые руны (Шаэль Ум Тул). Собирайте в броне с 3 гнёздами — сделки делятся между Архонтскими латами, Парадными латами (Ornate Plate), Проволочным руном (Wire Fleece) и Костяным плетением (Boneweave), берите под свою силу.",
+          "Частая промежуточная остановка для милишников, копящих на Силу духа или Цепи чести, и неплохая броня для наёмника. Изредка продаётся бюджетным милишным билдам."
+        ]
+      }
     }
   },
   {
@@ -1388,6 +2118,23 @@
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "The most famous armor in the game: it gives every class Teleport, plus +2 skills, huge strength and magic find. Craft it in a 3-socket Mage Plate — the most traded base by far, since the low strength requirement suits casters and Enigma's own +strength covers gear — or an Archon Plate / Dusk Shroud when you want more defense on the same light frame.",
+        "Hammerdins, summon necromancers, sorceresses who want the stats, and frankly almost every endgame character build around it. In constant demand all season — it crafts and sells as reliably as anything in the game, expensive Jah and Ber notwithstanding."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1421,7 +2168,13 @@
             "+1%*ур к вероятности найти магический предмет (зависит от уровня персонажа)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Самая знаменитая броня в игре: даёт Телепорт любому классу, плюс +2 к навыкам, кучу силы и мэджик-файнд. Собирайте в Латах мага (Mage Plate) с 3 гнёздами — это безоговорочно самая ходовая база: низкое требование к силе идеально кастерам, а собственная +сила Тайна закрывает остальную экипировку; Архонтские латы или Сумеречный саван — если хочется больше защиты в такой же лёгкой броне.",
+          "Хаммердины, некроманты-призыватели, волшебницы ради статов — по сути, почти каждый эндгеймовый персонаж строится вокруг неё. Постоянный спрос весь сезон: собирается и продаётся надёжнее всего в игре, несмотря на дорогие Джа и Бер."
+        ]
+      }
     }
   },
   {
@@ -1431,6 +2184,18 @@
     "itemTypes": ["Melee Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Very expensive runes (Ber, Sur) for a weapon nothing wants — its Replenish Life and Revive charges never justified the cost. Craft it in the cheapest valid 5-socket melee weapon just to fill the Chronicle, then vendor it; do not burn a good Phase Blade or Berserker Axe on it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1468,7 +2233,12 @@
             "\"Оживление\" 8-го уровня (88/88 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Очень дорогие руны (Бер, Сур) ради оружия, которое никому не нужно — восполнение жизни и заряды Воскрешения никогда не окупали цену. Соберите в самом дешёвом подходящем оружии ближнего боя с 5 гнёздами, чтобы закрыть Историю, и сдайте торговцу; хороший Фазовый клинок или Секиру берсерка на это не тратьте."
+        ]
+      }
     }
   },
   {
@@ -1479,6 +2249,23 @@
     "itemTypeRestriction": "Paladin",
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "The paladin's Uber shield: a Life Tap proc on striking, Defiance aura and self-repair. Craft it in a 4-socket elite paladin shield and make the base earn its keep — a paladin shield rolls its own all-resistances, and most sold copies sit at +40-45 all res on top of everything the runeword gives; a blank base on runes this expensive is money thrown away. Sacred Targe, Vortex Shield and Sacred Rondache lead the completed trades. Ethereal is genuinely desirable here — nearly four in five completed trades are — because self-repair keeps it from breaking while the eth bonus plus Defiance produces enormous defense.",
+        "The signature shield of Smiters running Uber Tristram, where Life Tap keeps them standing. Jah-free but still pricey (Vex, Ohm); it trades briskly for a class-locked item and a well-based one sells."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1515,7 +2302,13 @@
             "Восполняет 1 ед. прочности каждые 4 сек."
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Паладинский щит для уберов: прок Похищения жизни при ударе, аура Непокорности и самопочинка. Собирайте в элитном паладинском щите с 4 гнёздами — и база должна отрабатывать: паладинский щит роллит собственное сопротивление всему, и у большинства проданных экземпляров это +40-45 ко всем сопротивлениям сверх того, что даёт рунворд; пустая база на таких дорогих рунах — выброшенные деньги. В завершённых сделках лидируют Священный тарж (Sacred Targe), Щит вихря (Vortex Shield) и Священный рондаш (Sacred Rondache). Эфирная база здесь реально желанна — почти четыре сделки из пяти эфирные: самопочинка не даёт щиту сломаться, а эфирный бонус вместе с Непокорностью выдаёт огромную защиту.",
+          "Фирменный щит смайтеров в убер-Тристраме, где Похищение жизни держит их на ногах. Без Джа, но всё равно недёшево (Векс, Ом); для классовой вещи торгуется бойко, и щит в хорошей базе продаётся."
+        ]
+      }
     }
   },
   {
@@ -1525,6 +2318,18 @@
     "itemTypes": ["Axes", "Hammers"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A pile of random elemental damage on very expensive runes (Jah, Ohm) that Grief and Breath of the Dying outclass completely. Craft it in the cheapest 4-socket axe or hammer you can find just to fill the Chronicle, then vendor it — save your Berserker Axes for real runewords."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1558,7 +2363,12 @@
             "+10 к силе"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Куча случайного стихийного урона на очень дорогих рунах (Джа, Ом), которую Печаль и Вздох умирающего перекрывают полностью. Соберите в самом дешёвом топоре или молоте с 4 гнёздами, чтобы закрыть Историю, и сдайте торговцу — Секиры берсерка приберегите для настоящих рунвордов."
+        ]
+      }
     }
   },
   {
@@ -1568,6 +2378,18 @@
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Resistances and a Dim Vision proc on an armor nobody equips — Duress does the budget job better and Chains of Honor the endgame one. Craft it in the cheapest 3-socket body armor just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1597,7 +2419,12 @@
             "-3 к радиусу обзора"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Сопротивления и прок Затуманивания зрения на броне, которую никто не носит — бюджетную роль лучше играет Принуждение, эндгеймовую — Цепи чести. Соберите в самой дешёвой броне с 3 гнёздами, чтобы закрыть Историю, и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -1607,6 +2434,23 @@
     "itemTypes": ["Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "The fire twin of the aura weapons: level 16 Holy Fire plus a big -20% enemy fire resistance. Completed trades are nearly unanimous on the base — a 4-socket Phase Blade for its speed and zero durability worries.",
+        "The heart of the Dragon/Hand of Justice 'Auradin' paladin and of fire-flavored zealots. Very expensive runes (Sur, Cham, Lo), but the build has a loyal following and the demand pace is brisk, so it sells to Auradin builders."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1642,7 +2486,13 @@
             "Замораживает цель +3"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Огненный близнец аурных оружий: аура \"Священный огонь\" 16 уровня плюс солидные -20% к сопротивлению врагов огню. Завершённые сделки почти единодушны в базе — Фазовый клинок (Phase Blade) с 4 гнёздами за скорость и отсутствие проблем с прочностью.",
+          "Сердце паладина-«аурадина» на связке Дракон + Длань Правосудия и огненных зилотов. Руны очень дорогие (Сур, Чам, Ло), но у билда преданная аудитория, спрос живой — аурадинам продаётся."
+        ]
+      }
     }
   },
   {
@@ -1652,6 +2502,19 @@
     "itemTypes": ["Staves", "Maces"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Make it in a plain 4-socket Flail — the runeword provides all the stats itself, so the cheapest, fastest base with low requirements is the correct one. Do not waste a mace or staff on it.",
+        "+3 to all skills, 30-40 all resistances and fast cast make it the default endgame caster weapon: Wind druids, Hammerdins, many sorceresses and trap assassins all reach for it. In constant demand — it crafts and sells well every season."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1689,7 +2552,13 @@
             "\"Ворон\" 14-го уровня (60/60 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Делайте его в обычном цепе (Flail) на 4 гнезда — все характеристики даёт сам рунворд, поэтому правильная база — самая дешёвая и быстрая, с минимальными требованиями. Не тратьте на него булаву или посох.",
+          "+3 ко всем навыкам, 30-40 ко всем сопротивлениям и быстрый каст делают его стандартным оружием кастера для эндгейма: друиды ветра, хаммердины, многие волшебницы и ассасины-трапперы берут именно его. Стабильный спрос — крафтится и продаётся каждый сезон."
+        ]
+      }
     }
   },
   {
@@ -1699,6 +2568,23 @@
     "itemTypes": ["Swords", "Axes"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Most completed trades name a Phase Blade — indestructible, fast, and low strength requirement, exactly what a niche melee weapon wants. It needs a 4-socket base.",
+        "Crushing Blow, Open Wounds and the Vengeance oskill make it a boss-killer or PvP-switch piece rather than a main weapon; Grief and Death outclass it for general play. Sells occasionally to collectors and off-meta melee builds."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1732,7 +2618,13 @@
             "+40% к золоту за убийство монстров"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "В большинстве завершённых сделок фигурирует Фазовый клинок — неразрушимый, быстрый и с низким требованием к силе, ровно то, что нужно нишевому оружию ближнего боя. База нужна с 4 гнёздами.",
+          "Сокрушающий удар, открытые раны и оскилл \"Возмездие\" делают его оружием для добивания боссов или PvP-свитча, а не основным: Печаль и Смерть его перекрывают в обычной игре. Продаётся изредка — коллекционерам и нестандартным милишникам."
+        ]
+      }
     }
   },
   {
@@ -1742,6 +2634,18 @@
     "itemTypes": ["Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Its party trick is granting Zeal and Berserk to any class, which fuels meme builds and nothing more — trades are nearly dead. Craft it in the cheapest 4-socket weapon you find just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1779,7 +2683,12 @@
             "\"Сердце росомахи\" 3-го уровня (12/12 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Его единственный фокус — давать умение \"Истовость\" (Zeal) и Берсерка любому классу, что годится лишь для мем-билдов; торговля по нему почти мертва. Соберите в самом дешёвом оружии с 4 гнёздами ради галочки в Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -1789,6 +2698,18 @@
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A two-rune armor with modest resistances and defense that every other mid-game armor outclasses. Craft it in the cheapest 2-socket body armor just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1818,7 +2739,12 @@
             "Восполняет 1 ед. прочности раз в 4 сек."
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Броня из двух рун со скромными сопротивлениями и защитой, которую перекрывает любая другая броня середины игры. Соберите в самой дешёвой броне с 2 гнёздами ради Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -1828,6 +2754,23 @@
     "itemTypes": ["Shields", "Grimoire"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Most completed trades name a Monarch (needs 156 strength) — take a 3-socket one; casters can pick a lighter 3-socket shield since the defense is not the point.",
+        "Huge all resistances plus magic damage reduction make it the max-resist shield for non-paladins who want defense rather than Spirit's caster stats — handy against gloams and in Hell untwinked. Sells occasionally."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1859,7 +2802,13 @@
             "\"Замедление снарядов\" 12-го уровня (60/60 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "В большинстве завершённых сделок — Монарх (нужно 156 силы), берите с 3 гнёздами; кастерам подойдёт и более лёгкий щит с 3 гнёздами, защита тут не главное.",
+          "Большие сопротивления плюс снижение магического урона делают его щитом «на максимум резистов» для не-паладинов, которым нужна защита, а не кастерские статы Духа — выручает против гломов и в Аду без твинков. Продаётся изредка."
+        ]
+      }
     }
   },
   {
@@ -1869,6 +2818,18 @@
     "itemTypes": ["Shields", "Grimoire"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "+1 skills and a little cast speed on a shield sounds fine until Rhyme and Spirit exist. Craft it in the cheapest 2-socket shield (necromancers can use a grimoire) just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1900,7 +2861,12 @@
             "+3 к радиусу обзора"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "+1 к навыкам и немного скорости каста на щите звучит неплохо — пока существуют Рифма и Дух. Соберите в самом дешёвом щите с 2 гнёздами (некроманту подойдёт гримуар) ради Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -1910,6 +2876,23 @@
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Most completed trades name a Wyrmhide — a light elite armor with a low strength requirement, so the massive defense bonus comes without gearing your whole character around it. It needs a 4-socket base, and nearly nine out of ten sold copies are ethereal: that is where the eye-watering defense totals come from, and it costs a mercenary nothing since ethereal gear never wears down on him. Only skip ethereal if the armor is for you and you want to be able to repair it.",
+        "Big defense, stats, resistances and Clay Golem charges make it a budget defensive armor for melee characters and mercenaries who cannot afford Fortitude. Sells at a steady trickle."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1941,7 +2924,13 @@
             "\"Глиняный голем\" 16-го уровня (16/16 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "В большинстве завершённых сделок — Шкура вирма (Wyrmhide): лёгкая элитная броня с низким требованием к силе, так что огромный бонус защиты достаётся без перестройки персонажа. База нужна с 4 гнёздами, и почти девять из десяти проданных экземпляров — эфирные: именно отсюда берутся заоблачные цифры защиты, а наёмнику это ничего не стоит, эфирные вещи у него не изнашиваются. Обычную базу берите только если броня для вас и хочется иметь возможность её чинить.",
+          "Большая защита, статы, сопротивления и заряды Глиняного голема делают её бюджетной защитной бронёй для милишников и наёмников, которым не по карману Сила духа. Продаётся понемногу, но стабильно."
+        ]
+      }
     }
   },
   {
@@ -1951,6 +2940,18 @@
     "itemTypes": ["Melee Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Twister charges and a Tornado proc on a melee weapon are a curiosity, not a build — the trade market for it is essentially dead. Craft it in the cheapest 2-socket melee weapon just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -1984,7 +2985,12 @@
             "\"Смерч\" 13-го уровня (127/127 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Заряды Смерча и прок Торнадо на оружии ближнего боя — курьёз, а не билд; рынок по нему фактически мёртв. Соберите в самом дешёвом оружии ближнего боя с 2 гнёздами ради Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -1994,6 +3000,23 @@
     "itemTypes": ["Missile Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Completed trades split almost evenly between Matriarchal Bow and Grand Matron Bow — 4-socket amazon-only bows, for the amazon herself. Take one that already rolls +3 to Bow and Crossbow Skills: about half the sold copies carry that +3, and on runes this expensive a blank bow leaves value on the table. An act 1 rogue mercenary cannot equip an amazon-only bow at all, so for her you need a regular 4-socket bow instead, ethereal for the free damage.",
+        "Explosive arrows plus the Bone Spear proc give it real screen-clearing flair, but the Jah and Lo runes cost Faith money, and Faith is simply better. A fun off-meta bowazon or merc weapon that sells occasionally."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2027,7 +3050,13 @@
             "Взрывные стрелы или болты (15-го уровня)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Завершённые сделки почти поровну делятся между Луком матриарха (Matriarchal Bow) и Луком великой матроны (Grand Matron Bow) — это луки только для амазонки. Берите базу, которая уже роллит +3 к навыкам лука и арбалета: примерно половина проданных экземпляров идёт именно с +3, а на таких дорогих рунах пустая база — потерянная ценность. Наёмница-лучница 1-го акта амазонский лук надеть вообще не может, ей нужен обычный лук на 4 гнезда, лучше эфирный ради бесплатного урона.",
+          "Разрывные стрелы и прок Костяного копья действительно зачищают экран, но руны Джа и Ло стоят как Вера, а Вера попросту сильнее. Забавный офф-мета лук для амазонки или наёмницы, продаётся изредка."
+        ]
+      }
     }
   },
   {
@@ -2037,6 +3066,23 @@
     "itemTypes": ["Swords", "Axes"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Most completed trades name a Berserker Axe; the runeword itself is Indestructible, so an ethereal 5-socket base is strictly better and loses nothing. Ethereal Berserker Axe or Colossus Blade are the targets.",
+        "up to ~50% Deadly Strike at high level plus Crushing Blow makes it a genuine Grief alternative for whirlwind barbarians and other physical melee — noticeably cheaper to assemble. Demand is hot right now; it crafts and sells well."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2076,7 +3122,13 @@
             "Требования -20%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "В большинстве завершённых сделок — Секира берсерка; сам рунворд неразрушимый, поэтому эфирная база на 5 гнёзд строго лучше и ничего не теряет. Цель — эфирный Секира берсерка или Меч колосса.",
+          "до ~50% смертельного удара на высоком уровне плюс сокрушающий удар делают его реальной альтернативой Печали для варваров-вихрей и прочего физического ближнего боя — и собирается заметно дешевле. Спрос сейчас горячий: крафтится и продаётся отлично."
+        ]
+      }
     }
   },
   {
@@ -2086,6 +3138,22 @@
     "itemTypes": ["Polearms", "Swords"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "The procs look dramatic and the weapon still loses to Grief and Breath of the Dying — nobody builds around it, and the Vex-Lo-Ber-Jah rune bill is brutal for a Chronicle checkbox. Leave it for last and craft it in the cheapest 5-socket polearm or sword you can find; most trades name Phase Blade, but for a checkbox any valid base does."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2123,7 +3191,12 @@
             "+10 к ловкости"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Проки выглядят эффектно, но оружие всё равно проигрывает Печали и Вздоху умирающего — под него никто не строится, а счёт из рун Векс-Ло-Бер-Джа за галочку в Истории жесток. Оставьте его напоследок и соберите в самом дешёвом древковом или мече на 5 гнёзд; в сделках чаще фигурирует Фазовый клинок, но для галочки сойдёт любая база."
+        ]
+      }
     }
   },
   {
@@ -2133,6 +3206,23 @@
     "itemTypes": ["Body Armors", "Shields", "Grimoire"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "For the armor slot most completed trades name Mage Plate or Archon Plate with 3 sockets, and a plain high-defense chest is fine there. The paladin shield version is where the base earns its keep: an elite paladin shield (Sacred Targe, Sacred Rondache) can spawn with +40-45 to all resistances of its own, and that is exactly what the sold shield copies show. On a Sur-Lo-Sol word a blank base is not worth socketing — buyers expect the resistances to come with the shield.",
+        "Its level 14 Holy Fire aura is one third of the classic auradin package alongside Dream and Hand of Justice. Auradin builders keep it moving briskly on the market — it sells to a specific but reliable crowd."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2168,7 +3258,13 @@
             "-7 к урону"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Для слота брони в большинстве завершённых сделок — Латы мага (Mage Plate) или Архонтские латы на 3 гнезда, и там достаточно обычной базы с высокой защитой. А вот в паладинском щите база решает: элитный паладинский щит (Священный тарж, Sacred Rondache) сам по себе может выбить +40-45 ко всем сопротивлениям — именно это и стоит в проданных щитовых копиях. Под руны Сур-Ло-Сол пустую базу вставлять не стоит: покупатель ждёт, что резисты придут вместе со щитом.",
+          "Его аура \"Священный огонь\" 14-го уровня — треть классического набора аурадина вместе с Мечтой и Дланью Правосудия. Сборщики аурадинов обеспечивают ему бодрый оборот: покупатель специфический, но надёжный."
+        ]
+      }
     }
   },
   {
@@ -2177,6 +3273,23 @@
     "requiredLevel": 65,
     "itemTypes": ["Helms", "Shields", "Grimoire"],
     "ladderOnly": false,
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "It needs a 3-socket helm or shield; most completed trades name Bone Visage, with Sacred Targe, Monarch and Diadem behind it. For the paladin shield version hunt a Sacred Targe that already carries +40-45 to all resistances of its own — the word's own +5-20 all resistances lands straight on top of that, and it is what separates a Jah-priced Dream from a plain one. Helm bases add nothing here, so Diadem is simply the low-requirement pick and cheapest is best.",
+        "The level 15 Holy Shock aura is the whole point: double-Dream Tesladins and Dream zeal sorceresses stack two copies for enormous lightning damage. Steady demand from those builds — it sells reliably if not instantly."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2212,7 +3325,13 @@
             "+(12-25)% к вероятности найти магический предмет"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Нужен шлем или щит с 3 гнёздами; в большинстве завершённых сделок — Костяной лик (Bone Visage), за ним Священный тарж, Монарх и Диадема. Для паладинского щита ищите Священный тарж, который сам выбил +40-45 ко всем сопротивлениям: собственные +5-20 от слова ложатся ровно сверху, и именно это отличает Мечта за Джа от пустышки. Шлемы своего ничего не добавляют, так что Диадема — просто вариант с минимальными требованиями, и чем дешевле база, тем лучше.",
+          "Аура Святого разряда 15-го уровня — весь смысл предмета: тесладины с двумя Мечта и Мечта-волшебницы с Рвением (Zeal) складывают две копии ради огромного урона молнией. Стабильный спрос от этих билдов — продаётся надёжно, пусть и не мгновенно."
+        ]
+      }
     }
   },
   {
@@ -2222,6 +3341,23 @@
     "itemTypes": ["Missile Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Three cheap runes in any 3-socket bow — trades show throwaway bases like Edge Bow and Short Bow, and that is correct; the base does not matter.",
+        "The reduced vendor prices mod is the real product: keep it on weapon switch and save a fortune gambling and shopping. The level 15 Thorns aura also props up summoner builds early on. Cheap to make, and it sells occasionally to gamblers and summoners."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2255,7 +3391,13 @@
             "Снижает цены у торговцев на 15%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Три дешёвые руны в любой лук с 3 гнёздами — в сделках мелькают проходные базы вроде Edge Bow и Короткого лука, и это правильно: база не важна.",
+          "Настоящий товар здесь — снижение цен у торговцев: держите его на свитче и экономьте состояние на гэмбле и закупках. Аура Шипов 15-го уровня заодно поддерживает саммонеров на старте. Дешёвый в сборке, изредка продаётся гэмблерам и саммонерам."
+        ]
+      }
     }
   },
   {
@@ -2265,6 +3407,23 @@
     "itemTypes": ["Missile Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Most completed trades name a Grand Matron Bow, with Matriarchal Bow second — 4-socket amazon-only bows, for the amazons themselves. The base is half the item: most sold copies sit on a bow that rolled +3 to Bow and Crossbow Skills (Amazon Only), and that stacks with the word's own +1-2 to all skills. On four runes including Jah and Ohm a blank base is a waste — buyers check that roll first. For an act 1 rogue mercenary the amazon roll does nothing, so use a regular 4-socket bow there — ethereal is strictly better on her.",
+        "The level 12-15 Fanaticism aura defines it: Faith bowazons wear it themselves, and physical builds park it on the rogue merc to buff the whole party. Expensive runes (Jah and Ohm), but demand is hot — it moves fast when listed."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2300,7 +3459,13 @@
             "+75% к золоту за убийство монстров"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "В большинстве завершённых сделок — Лук великой матроны, следом Лук матриарха; это луки только для амазонки. База здесь — половина предмета: в большинстве проданных копий стоит лук, выбивший +3 к навыкам луков и арбалетов (только амазонка), и это складывается с собственными +1-2 ко всем навыкам от слова. За четыре руны с Джа и Ом пустая база — расточительство: покупатель первым делом смотрит именно на этот ролл. Наёмнице-лучнице 1-го акта амазонский оскилл бесполезен, ей собирайте в обычном луке на 4 гнезда — там эфирная база строго лучше.",
+          "Всё решает аура Фанатизма 12–15 уровня: Вера-амазонки носят его сами, а физические билды вешают его на наёмницу, чтобы бафать всю группу. Руны дорогие (Джа и Ом), но спрос горячий — уходит быстро."
+        ]
+      }
     }
   },
   {
@@ -2310,6 +3475,23 @@
     "itemTypes": ["Weapons", "Body Armors"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Make it in an ethereal 4-socket elite armor for your mercenary — trades show Archon Plate and Sacred Armor leading, and about half of all completed trades are ethereal. The base number that matters is raw defense, because the word multiplies it by +200%: the sold ethereal merc copies land around 2400-2600 total defense, which a light chest never approaches. Characters wearing it themselves take a non-ethereal Archon Plate for the low strength requirement.",
+        "300% enhanced damage plus resistances is the endgame body armor for nearly every physical build and every act 2 mercenary. In constant demand — it crafts and sells well all season long."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "itemTypes": ["Weapons"],
@@ -2381,7 +3563,13 @@
             "+1 к радиусу обзора"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Делайте его в эфирной элитной броне на 4 гнезда для наёмника — в сделках лидируют Архонтские латы и Священная броня, и примерно половина завершённых сделок эфирные. Значимая цифра базы здесь — чистая защита: слово умножает её на +200%, поэтому проданные эфирные наёмничьи копии выходят на 2400-2600 защиты, а лёгкий нагрудник столько не даст никогда. Для себя берут неэфирные Архонтские латы из-за низкого требования к силе.",
+          "300% усиленного урона плюс сопротивления — это эндгейм-броня почти для любого физического билда и каждого наёмника 2-го акта. Стабильный спрос — крафтится и продаётся весь сезон."
+        ]
+      }
     }
   },
   {
@@ -2391,6 +3579,23 @@
     "itemTypes": ["Swords", "Axes"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Phase Blade is the base in the overwhelming majority of completed trades — indestructible (never needs repairs), the fastest swing, and only 25 strength; it must roll 5 sockets. Berserker Axe is the alternative when you want ethereal or more base damage.",
+        "The hidden +340-400 flat damage makes it the single best melee weapon in the game: smiters, zealots, whirlwind barbarians and kicksins all want one. The hottest mover in the entire trade sample — crafts and sells instantly."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2428,7 +3633,13 @@
             "+(10-15) к здоровью при убийстве"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Фазовый клинок — база в подавляющем большинстве завершённых сделок: неразрушимый (не требует ремонта), самый быстрый и всего 25 силы; нужен ролл на 5 гнёзд. Секира берсерка — альтернатива, если хочется эфир или больше базового урона.",
+          "Скрытые +340–400 чистого урона делают его лучшим оружием ближнего боя в игре: смайтеры, зилоты, варвары-вихри и киксины — все хотят себе такой. Самый ходовой предмет во всей выборке — крафтится и продаётся мгновенно."
+        ]
+      }
     }
   },
   {
@@ -2438,6 +3649,23 @@
     "itemTypes": ["Missile Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Any 4-socket bow works if you only want the aura on weapon switch — Vigor does not care what it sits in. If an amazon is going to actually shoot with it, the base matters: a good share of completed trades are Matriarchal and Grand Matron Bows that rolled +3 to Bow and Crossbow Skills (Amazon Only), which is free damage the word itself does not provide.",
+        "The level 10 Vigor aura is the point: keep it on weapon switch and every character without teleport runs the map like a paladin. the Valkyrie oskill is a bonus. Cheap-ish to make; sells occasionally to runners and untwinked players."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2477,7 +3705,13 @@
             "\"Оживление\" 20-го уровня (25/25 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Если нужна только аура на свитче — подойдёт любой лук с 4 гнёздами: ауре Энергии (Vigor) всё равно, в чём она сидит. Но если из лука будет стрелять амазонка, база важна: заметная часть завершённых сделок — Луки матриарха и великой матроны, выбившие +3 к навыкам луков и арбалетов (только амазонка), а этого само слово не даёт.",
+          "Смысл — в ауре Энергии (Vigor) 10-го уровня: держите лук на свитче, и любой персонаж без телепорта бегает по карте как паладин. Оскилл Валькирии — приятный бонус. Собирается недорого; изредка продаётся раннерам и игрокам без твинков."
+        ]
+      }
     }
   },
   {
@@ -2487,6 +3721,23 @@
     "itemTypes": ["Missile Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Matriarchal Bow dominates completed trades, with Grand Matron Bow second — 4-socket amazon-only bows, for the amazon herself. Nearly every sold copy sits on a base that rolled +3 to Bow and Crossbow Skills (Amazon Only); with Jah and Lo in the word, a bow without that roll finds no buyer. A rogue mercenary cannot use the amazon roll at all, so for her take a regular bow, ethereal at that.",
+        "The Holy Freeze aura plus massive cold skill damage builds the dedicated cold bowazon and keeps everything on the screen slowed. Jah and Lo make it expensive, but the niche is real — it sells steadily to Iceazon builders."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2522,7 +3773,13 @@
             "+3.125*ур к золоту за убийство монстров (зависит от уровня персонажа)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "В завершённых сделках доминирует Лук матриарха, следом Лук великой матроны — это луки только для амазонки. Практически в каждой проданной копии база выбила +3 к навыкам луков и арбалетов (только амазонка): с рунами Джа и Ло в слове лук без этого ролла покупателя не найдёт. Наёмнице-лучнице амазонский оскилл бесполезен — ей нужен обычный лук, и лучше эфирный.",
+          "Аура \"Священный холод\" плюс огромный бонус к урону холодом собирают полноценную ледяную амазонку-лучницу и держат весь экран замедленным. Руны Джа и Ло делают его дорогим, но ниша реальна — стабильно продаётся сборщикам Iceazon."
+        ]
+      }
     }
   },
   {
@@ -2532,6 +3789,23 @@
     "itemTypes": ["Polearms", "Spears"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Make it ethereal for your act 2 mercenary — merc gear takes no durability loss, so ethereal is strictly better. It needs a 4-socket base: the classic picks are ethereal Thresher, Giant Thresher and Cryptic Axe, and since patch 2.4 also allowed spear-class bases, cheap low-requirement Scythes and Mancatchers lead the completed trades.",
+        "The Conviction aura strips enemy resistances and breaks immunities, which is why every elemental build — Lightning sorceresses and javazons above all — wants it on their mercenary. In constant demand; it crafts and sells well every single season."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2565,7 +3839,13 @@
             "\"Ураганный доспех\" 21-го уровня (30/30 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Делайте его эфирным для наёмника 2-го акта — снаряжение наёмников не теряет прочность, поэтому эфир строго лучше. Нужна база с 4 гнёздами: классика — эфирные Молотилка (Thresher), Гигантская молотилка и Загадочный топор (Cryptic Axe), а с патча 2.4 слово можно собирать и в копьях, поэтому в завершённых сделках лидируют дешёвые и нетребовательные Коса (Scythe) и Ловец (Mancatcher).",
+          "Аура Осуждения (Conviction) срезает сопротивления врагов и ломает иммунитеты — поэтому каждый элементальный билд, прежде всего молниевые волшебницы и джавазонки, хочет его на своём наёмнике. Стабильный спрос: крафтится и продаётся каждый сезон."
+        ]
+      }
     }
   },
   {
@@ -2575,6 +3855,23 @@
     "itemTypes": ["Missile Weapons", "Polearms", "Staves"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Craft it in a 4-socket ethereal elite polearm for your act 2 mercenary — most completed trades name Colossus Voulge and Thresher, with Giant Thresher and Great Poleaxe close behind, and more than half of all sold copies are ethereal because the mercenary never loses durability. Polearm bases add nothing of their own, so the cheapest one that rolls 4 sockets is the right one. The Archon Staff version is different: the sorceress holds it herself, so look for a staff that also rolled +3 to a sorceress skill she actually uses — those come from the base, not from the word.",
+        "The Meditation aura solves mana for every caster in the game — Blizzard/Orb sorceresses, Hammerdins, Javazons, summon necromancers all run it on the merc. Runes are cheap (Ral Tir Tal Sol), demand never stops: it crafts and sells well all season long."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2610,7 +3907,13 @@
             "+23% к вероятности найти магический предмет"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Делайте в эфирном элитном древковом с 4 гнёздами для наёмника 2-го акта — в завершённых сделках чаще всего фигурируют Colossus Voulge и Thresher, следом Giant Thresher и Great Poleaxe, и больше половины проданных копий эфирные: у наёмника прочность не тратится. Древковые базы сами по себе ничего не добавляют, так что берите самую дешёвую с 4 гнёздами. С Archon Staff иначе: посох волшебница держит сама, поэтому ищите базу, которая вдобавок выбила +3 к нужному ей навыку — такие оскиллы даёт база, а не слово.",
+          "Аура Медитации закрывает вопрос маны для любого кастера — Blizzard/Orb-волшебницы, хаммердины, джавазонки, некроманты-саммонеры держат её на наёмнике. Руны копеечные (Рал Тир Тал Сол), спрос не иссякает: крафтится и продаётся стабильно весь сезон."
+        ]
+      }
     }
   },
   {
@@ -2620,6 +3923,23 @@
     "itemTypes": ["Swords", "Hammers", "Axes"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Almost every completed trade names a 6-socket Phase Blade — indestructible and fast, so ethereal does not matter; a 6-socket Berserker Axe is the rare alternative. The base must roll exactly six sockets.",
+        "Level 17 Might aura, Fade on struck and huge crushing blow make it the signature weapon for uber-killing smiters and kick assassins, and a luxury choice for other melee. Six runes including three Jah make it one of the most expensive words in the game, yet it still moves steadily — a prestige craft that sells well."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2653,7 +3973,13 @@
             "+0.5%*ур к вероятности найти магический предмет (зависит от уровня персонажа)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Практически все завершённые сделки — Фазовый клинок с 6 гнёздами: он неразрушимый и быстрый, так что эфирность не важна; редкая альтернатива — Berserker Axe на 6 гнёзд. База должна выбить ровно шесть гнёзд.",
+          "Аура Мощи 17-го уровня, Fade при получении удара и огромный crushing blow делают его фирменным оружием смайтеров и кик-ассасинок для убийства уберов, а заодно люксовым выбором для прочего милишного контента. Шесть рун, включая три Джа, — одно из самых дорогих слов в игре, но расходится стабильно: престижный крафт, который хорошо продаётся."
+        ]
+      }
     }
   },
   {
@@ -2663,6 +3989,23 @@
     "itemTypes": ["Swords", "Hammers", "Scepters"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Most completed trades put it in a Phase Blade (indestructible, fast); a Crystal Sword works as a cheap 3-socket alternative, and scepter versions exist for paladins. Runes are mid-cheap: Amn Lem Ko.",
+        "The level 16-18 Sanctuary aura ignores undead physical resistance and the Decrepify proc breaks physical immunes, so it shines as an act 5 mercenary sword or a swap weapon in undead-heavy areas like the Chaos Sanctuary. Demand is slow but real — it sells occasionally to melee players who hit physical immunes."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2696,7 +4039,13 @@
             "+75% к золоту за убийство монстров"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "В большинстве завершённых сделок — Фазовый клинок (неразрушимый, быстрый); дешёвая альтернатива — Crystal Sword на 3 гнезда, для паладинов встречаются версии в скипетрах. Руны недорогие: Амн Лем Ко.",
+          "Аура Святилища 16-18-го уровня игнорирует физическое сопротивление нежити, а прок Decrepify пробивает физических иммунных, поэтому меч отлично идёт наёмнику 5-го акта или на свап в местах с нежитью вроде Санктуария Хаоса. Спрос вялый, но живой — изредка покупают милишники, упирающиеся в физиммунных."
+        ]
+      }
     }
   },
   {
@@ -2706,6 +4055,23 @@
     "itemTypes": ["Swords", "Axes", "Maces"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "The word grants Indestructible, so an ethereal 4-socket base costs you nothing and gains huge damage — most completed trades name ethereal Balrog Blade, with Colossus Blade, Highland Blade and Cryptic Sword as alternatives.",
+        "Around 300% enhanced damage plus 50% increased attack speed for four mid runes (Shael Pul Mal Lum) makes it the classic budget melee weapon: Frenzy barbarians, fury druids and early-ladder zealots use it before Grief. Sells occasionally to fresh melee characters, especially early in the season."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2741,7 +4107,13 @@
             "\"Железный голем\" 17-го уровня (14/14 зарядов)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Слово даёт Неразрушимость, поэтому эфирная база на 4 гнезда ничего не теряет и получает огромный урон — в завершённых сделках чаще всего эфирный Balrog Blade, альтернативы — Colossus Blade, Highland Blade и Cryptic Sword.",
+          "Около 300% усиленного урона плюс 50% скорости атаки за четыре средние руны (Шаэль Пул Мал Лум) — классическое бюджетное милишное оружие: Frenzy-варвары, друиды-оборотни и зилоты начала сезона берут его до Печали. Изредка продаётся свежим милишным персонажам, особенно на старте ладдера."
+        ]
+      }
     }
   },
   {
@@ -2751,6 +4123,23 @@
     "itemTypes": ["Polearms", "Spears"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Craft it in a 5-socket ethereal elite polearm for your act 2 mercenary — completed trades split between Thresher and Giant Thresher, with Mancatcher and Cryptic Axe behind them. Ethereal is strictly better on a merc weapon.",
+        "370% enhanced damage, 40% crushing blow and resistances from five cheap runes (Hel Ko Thul Eth Fal) make it the best budget merc weapon in the game — the raw kill-speed pick when the mercenary does not need Insight's mana aura or when you want raw kill speed early. Sells occasionally, mostly at season start."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2788,7 +4177,13 @@
             "Требования -20%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Собирайте в эфирном элитном древковом на 5 гнёзд для наёмника 2-го акта — завершённые сделки делятся между Thresher и Giant Thresher, следом идут Mancatcher и Cryptic Axe. Эфирная база для оружия наёмника строго лучше.",
+          "370% усиленного урона, 40% crushing blow и резисты за пять дешёвых рун (Хел Ко Тул Эт Фал) — лучшее бюджетное оружие наёмника в игре: выбор ради чистой скорости убийства, когда наёмнику не нужна мана-аура Прозрение или выбор ради чистой скорости убийства в начале сезона. Продаётся изредка, в основном на старте ладдера."
+        ]
+      }
     }
   },
   {
@@ -2798,6 +4193,23 @@
     "itemTypes": ["Weapons", "Shields"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Two shield homes dominate the completed trades: 4-socket Monarch (needs 156 strength) for sorceresses, and Sacred Targe or Sacred Rondache for paladins. On the paladin shields the base does real work — almost every sold copy rolled +40-45 to all resistances on the shield itself, resistance the word does not provide at all, so a blank Targe under Vex Vex Lo Jah is money thrown away. Weapon versions exist but almost never trade.",
+        "The Redemption aura plus roughly -28% enemy fire resistance make the Monarch a staple for Fireball/Fire Wall sorceresses, while the paladin shield version powers uber smiters who lean on Redemption for sustain. Vex Vex Lo Jah is an expensive stack, but the word stays in constant demand and sells well."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "itemTypes": ["Weapons"],
@@ -2861,7 +4273,13 @@
             "+(15-21) к поглощению огня"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "В завершённых сделках доминируют два щита: Монарх на 4 гнезда (нужно 156 силы) для волшебниц и Sacred Targe / Sacred Rondache для паладинов. На паладинских щитах база делает настоящую работу: почти каждая проданная копия выбила +40-45 ко всем сопротивлениям на самом щите, а таких резистов слово не даёт вовсе — пустой тарж под Векс Векс Ло Джа равен выброшенным деньгам. Версии в оружии существуют, но почти не торгуются.",
+          "Аура Искупления плюс примерно -28% к огненному сопротивлению врагов делают Монарх обязательным для Fireball/Fire Wall-волшебниц, а паладинский вариант носят убер-смайтеры ради отхила через Искупление. Векс Векс Ло Джа — дорогой набор, но спрос постоянный: слово стабильно продаётся."
+        ]
+      }
     }
   },
   {
@@ -2871,6 +4289,23 @@
     "itemTypes": ["Polearms", "Spears"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "A 4-socket ethereal polearm for the act 2 mercenary — completed trades favor Mancatcher (fast, and the merc never breaks it), then Giant Thresher and Colossus Voulge. The merc is not the killer here, so the base matters less than usual.",
+        "Its level 16-20 Concentration aura buffs your own damage: Blessed Hammer paladins, bowazons and other physical builds take it once their damage, not mana, is the bottleneck. Expensive runes (Cham, Sur, Lo) for an aura stick, but trades move at a decent clip — it sells to endgame physical builds."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2906,7 +4341,13 @@
             "+1.875%*ур к золоту за убийство монстров (зависит от уровня персонажа)"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Эфирное древковое на 4 гнезда для наёмника 2-го акта — в завершённых сделках лидирует Mancatcher (быстрый, а у наёмника прочность не тратится), дальше Giant Thresher и Colossus Voulge. Наёмник тут не убийца, так что база менее критична, чем обычно.",
+          "Аура \"Сосредоточенность\" 16-20-го уровня усиливает ваш собственный урон: хаммердины, лучницы-амазонки и другие физические билды берут её, когда упираются в урон, а не в ману. Руны дорогие (Чам, Сур, Ло) ради «палки с аурой», но сделки идут бодро — покупают эндгейм-билды на физическом уроне."
+        ]
+      }
     }
   },
   {
@@ -2916,6 +4357,23 @@
     "itemTypes": ["Polearms", "Scepters"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Interestingly, most completed trades name paladin scepters — War Scepter above all, plus Divine Scepter and Caduceus — with ethereal Thresher and Cryptic Axe versions for the act 2 mercenary behind them. Runes are mid-tier: Hel Ko Lem Gul. If you take the scepter route and the paladin will actually swing it, look for a base that rolled +1-3 to a paladin skill: scepters get those from the base, the word adds none.",
+        "It deals fire and magic damage per hit (Tornado and Frozen Orb procs on top), so its job is breaking physically immune packs — either on a merc polearm or as a paladin swap weapon. Trades are very slow; it sells rarely, to players who specifically need the immune coverage."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -2951,7 +4409,13 @@
             "Требования -20%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Любопытно, что большинство завершённых сделок — паладинские скипетры: прежде всего War Scepter, плюс Divine Scepter и Caduceus; следом идут эфирные Thresher и Cryptic Axe для наёмника 2-го акта. Руны средние: Хел Ко Лем Гул. Если берёте скипетр и паладин будет им бить, ищите базу, выбившую +1-3 к паладинскому навыку: скипетры получают эти оскиллы от базы, слово их не даёт.",
+          "Оружие бьёт огнём и магией с каждым ударом (сверху проки Tornado и Frozen Orb), поэтому его работа — разбирать физически иммунных: либо на древке наёмника, либо как свап-оружие паладина. Сделки идут очень медленно; покупают редко и только те, кому нужно именно покрытие иммунных."
+        ]
+      }
     }
   },
   {
@@ -2961,6 +4425,23 @@
     "itemTypes": ["Swords", "Shields"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "Monarch for non-paladins (needs 156 strength, the lightest 4-socket non-class shield) — the base adds nothing there, so cheapest is best. Paladins should instead hunt a 4-socket elite paladin shield that rolled +40-45 to all resistances of its own: Spirit only covers cold, lightning and poison, and the base plugs the fire gap for free. The Crystal Sword version is the levelling and swap classic — most completed trades are Monarchs, with Crystal Swords a distant second.",
+        "+2 skills, 25-35% faster cast rate and a fat mana pool from four cheap runes: every caster wears one — sorceresses, Hammerdins, necromancers, trap assassins — and many keep a sword copy on swap. It is the fastest-moving runeword in the data: in constant demand, crafts and sells well all season, with high-FCR rolls commanding a premium."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "itemTypes": ["Swords"],
@@ -3028,7 +4509,13 @@
             "Атакующий получает 14 урона"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Монарх для всех, кроме паладинов (нужно 156 силы — самый нетребовательный обычный щит на 4 гнезда): база там ничего не добавляет, так что чем дешевле, тем лучше. Паладинам стоит поискать элитный паладинский щит на 4 гнезда, который сам выбил +40-45 ко всем сопротивлениям: Дух закрывает только холод, молнию и яд, а база бесплатно затыкает дыру по огню. Версия в Crystal Sword — классика для прокачки и свапа; в завершённых сделках Монархи с большим отрывом, Crystal Sword — далёкое второе место.",
+          "+2 к навыкам, 25-35% скорости каста и жирный запас маны за четыре дешёвые руны: его носит каждый кастер — волшебницы, хаммердины, некроманты, трап-ассасинки, — а многие держат и меч на свапе. Самое ходовое слово во всей выборке: постоянный спрос, крафтится и продаётся весь сезон, роллы с высоким FCR уходят с наценкой."
+        ]
+      }
     }
   },
   {
@@ -3038,6 +4525,18 @@
     "itemTypes": ["Swords", "Maces"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A cold-damage sword with -24% enemy cold resistance that no serious build wants — craft it in the cheapest 4-socket base you find (a plain Crystal Sword is fine) just to fill the Chronicle, then vendor it. Its only faint niche is a very budget cold-proc levelling sword, and even completed trades are spread over months."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3075,7 +4574,12 @@
             "+1 к радиусу обзора"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Меч с холодным уроном и -24% к сопротивлению холоду у врагов, который не нужен ни одному серьёзному билду — соберите в самой дешёвой базе на 4 гнезда (обычный Crystal Sword сгодится) просто ради галочки в Истории и сдайте торговцу. Единственная слабая ниша — совсем бюджетный меч на прокачку, да и завершённые сделки размазаны по месяцам."
+        ]
+      }
     }
   },
   {
@@ -3085,6 +4589,18 @@
     "itemTypes": ["Missile Weapons"],
     "ladderOnly": false,
     "patch": "1.10",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Craft it in the cheapest 4-socket bow you have just to fill the Chronicle, then vendor it. Its one redeeming niche: on an act 1 rogue mercenary the magic damage and Decrepify proc handle physically immune monsters, and a plain bow is all she needs. Worth knowing that the copies which do sell are overwhelmingly amazon-only Matriarchal and Grand Matron Bows whose base rolled +3 to Bow and Crossbow Skills (Amazon Only) — a roll the mercenary cannot use — but demand is glacial and the Ber rune is wasted here either way."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3120,7 +4636,12 @@
             "Нельзя заморозить"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Соберите в самом дешёвом луке на 4 гнезда ради галочки в Истории и сдайте торговцу. Единственная ниша: на наёмнице-лучнице 1-го акта магический урон и прок Decrepify закрывают физически иммунных, и ей хватит обычного лука. Стоит знать, что реально продаются почти исключительно амазонские Matriarchal Bow и Grand Matron Bow, база которых выбила +3 к навыкам луков и арбалетов (только амазонка) — наёмнице этот ролл бесполезен, — но спрос ледяной, а руну Бер на такое откровенно жалко."
+        ]
+      }
     }
   },
   {
@@ -3131,6 +4652,18 @@
     "itemTypeRestriction": "Necromancer",
     "ladderOnly": false,
     "patch": "1.11",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Necromancer-only armor with +2 necromancer skills and Bone Armor and Bone Spear procs that loses to every real endgame chest — craft it in the cheapest 3-socket armor you find (Mage Plate is the usual low-strength pick in trades) just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3157,7 +4690,12 @@
             "-7 к урону"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Броня только для некроманта с +2 к навыкам и проками Костяной брони и Костяного копья, проигрывающая любому настоящему эндгейм-нагруднику — соберите в самой дешёвой броне на 3 гнезда (в сделках обычно берут Mage Plate из-за низкого требования к силе) ради галочки в Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -3168,6 +4706,18 @@
     "itemTypeRestriction": "Sorceress",
     "ladderOnly": false,
     "patch": "1.11",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Sorceress-only armor with +2 sorceress skills and fire procs that nobody equips past levelling — craft it in the cheapest 3-socket armor available (Dusk Shroud or Mage Plate for low strength) just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3196,7 +4746,12 @@
             "-7 к урону"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Броня только для волшебницы с +2 к навыкам и огненными проками, которую никто не носит дальше прокачки — соберите в самой дешёвой броне на 3 гнезда (Dusk Shroud или Mage Plate из-за низкой силы) ради галочки в Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -3207,6 +4762,18 @@
     "itemTypeRestriction": "Barbarian",
     "ladderOnly": false,
     "patch": "1.11",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Barbarian-only armor with +2 barbarian skills and a Taunt proc — a passable twink levelling chest at level 25, nothing more. Craft it in the cheapest 3-socket armor you find just to fill the Chronicle, then vendor it; its trades are the slowest in this whole group."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3235,7 +4802,12 @@
             "Требования -15%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Броня только для варвара с +2 к навыкам и проком Taunt — сносный твинк-нагрудник на 25-м уровне, не больше. Соберите в самой дешёвой броне на 3 гнезда ради галочки в Истории и сдайте торговцу; сделки по нему — одни из самых медленных во всей группе."
+        ]
+      }
     }
   },
   {
@@ -3246,6 +4818,23 @@
     "itemTypeRestriction": "Amazon",
     "ladderOnly": false,
     "patch": "1.11",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Amazon-only armor from three cheap runes (Shael Thul Amn); completed trades favor low-strength 3-socket bases — Mage Plate and Breast Plate above all.",
+        "+2 amazon skills, Critical Strike and a chance to summon a level 15 Valkyrie on striking make it a solid budget chest for bowazons and javazons before Chains of Honor or Fortitude. Sells occasionally, mostly early in the season to fresh amazons."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3274,7 +4863,13 @@
             "Атакующий получает 14 урона"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Броня только для амазонки из трёх дешёвых рун (Шаэль Тул Амн); в завершённых сделках предпочитают лёгкие базы на 3 гнезда — прежде всего Mage Plate и Breast Plate.",
+          "+2 к навыкам амазонки, Critical Strike и шанс призвать Валькирию 15-го уровня при ударе — крепкий бюджетный нагрудник для лучниц и джавазонок до Цепей чести или Силы духа. Продаётся изредка, в основном свежим амазонкам в начале сезона."
+        ]
+      }
     }
   },
   {
@@ -3285,6 +4880,18 @@
     "itemTypeRestriction": "Paladin",
     "ladderOnly": false,
     "patch": "1.11",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Paladin-only armor with +2 paladin skills and a Holy Bolt proc that no build actually wants — craft it in the cheapest 3-socket armor you find just to fill the Chronicle, then vendor it. Trades in the data are effectively dead."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3309,7 +4916,12 @@
             "+30% к сопротивлению огню"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Броня только для паладина с +2 к навыкам и проком Holy Bolt, которая не нужна ни одному билду — соберите в самой дешёвой броне на 3 гнезда ради галочки в Истории и сдайте торговцу. Сделки по ней в данных практически мертвы."
+        ]
+      }
     }
   },
   {
@@ -3320,6 +4932,18 @@
     "itemTypeRestriction": "Druid",
     "ladderOnly": false,
     "patch": "1.11",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "Druid-only armor with +2 druid skills, a Cyclone Armor proc on struck and Twister on striking — a curiosity, not an endgame piece. Craft it in the cheapest 3-socket armor you find (Mage Plate leads the trades) just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3348,7 +4972,12 @@
             "+15% к урону, приходящемуся на ману"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Броня только для друида с +2 к навыкам, проком Cyclone Armor при получении удара и Twister при ударе — диковинка, а не эндгейм-вещь. Соберите в самой дешёвой броне на 3 гнезда (в сделках лидирует Mage Plate) ради галочки в Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -3359,6 +4988,23 @@
     "itemTypeRestriction": "Assassin",
     "ladderOnly": false,
     "patch": "1.11",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "The +2 assassin skills are the least of it — its real home is your act 2 mercenary, in an ethereal elite armor: completed trades split across Sacred Armor, Archon Plate, Boneweave and Dusk Shroud, all 3-socket. Ethereal is strictly better since the merc pays no durability.",
+        "45% increased attack speed plus the Fade proc (60 to all resistances and damage reduction once it triggers) makes the merc nearly unkillable for three cheap runes (Shael Thul Lem). Assassins also wear it themselves for the same package. In constant demand — crafts and sells well every season."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3387,7 +5033,13 @@
             "+50% к золоту за убийство монстров"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "+2 к навыкам ассасина — далеко не главное: настоящий дом этого слова — наёмник 2-го акта в эфирной элитной броне; завершённые сделки делятся между Sacred Armor, Archon Plate, Boneweave и Dusk Shroud, все на 3 гнезда. Эфирная база строго лучше — наёмник не тратит прочность.",
+          "45% скорости атаки плюс прок Fade (60 ко всем сопротивлениям и снижение урона после срабатывания) делают наёмника почти бессмертным за три дешёвые руны (Шаэль Тул Лем). Ассасинки носят её и сами ради того же набора. Постоянный спрос — крафтится и продаётся каждый сезон."
+        ]
+      }
     }
   },
   {
@@ -3397,6 +5049,23 @@
     "itemTypes": ["Swords", "Claws", "Daggers"],
     "ladderOnly": false,
     "patch": "2.4",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "Completed trades favor 3-socket elite swords — Mythical Sword and Cryptic Sword above all, with Phase Blade and assassin claws behind them. Half of the sold copies are ethereal: those are the sword versions destined for a mercenary, who never wears the base out. For your own hands take a non-ethereal base, or a Phase Blade, which is indestructible by nature and can never roll ethereal. The Cham rune makes it a pricey craft either way.",
+        "If you build it in an assassin claw, do not settle for a blank one: white claws roll their own +1-3 to an assassin skill tree and up to +3 to a single skill, and that stacks on top of the word's +1-2 all skills. The Cleansing aura and the Lower Resist proc when struck make it a support weapon that strips enemy resistances for elemental builds — popular as a claw or a party-play offhand. Sells occasionally to players building around the proc."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3430,7 +5099,13 @@
             "Замораживает цель +3"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "В завершённых сделках предпочитают элитные мечи на 3 гнезда — прежде всего Mythical Sword и Cryptic Sword, следом Фазовый клинок и ассасинские когти. Половина проданных копий эфирные: это мечи под наёмника, который прочность не тратит. Себе в руки берите неэфирную базу — или Фазовый клинок: он неразрушим по своей природе и эфирным не бывает. Из-за руны Чам крафт в любом случае недешёвый.",
+          "Если собираете в когте ассасина, не берите пустую базу: белые когти сами катают +1-3 к ветке навыков ассасина и до +3 к отдельному навыку, и это складывается с +1-2 ко всем навыкам от самого слова. Аура Очищения и прок Lower Resist при получении удара делают его оружием поддержки, снимающим сопротивления врагов для стихийных билдов — популярно как коготь или оффхенд для игры в группе. Изредка покупают те, кто строит билд вокруг прока."
+        ]
+      }
     }
   },
   {
@@ -3441,6 +5116,18 @@
     "itemTypeRestriction": "Assassin",
     "ladderOnly": false,
     "patch": "2.4",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A levelling claw for low-level assassins (level 23) and nothing beyond that — craft it in the cheapest 3-socket claw you find just to fill the Chronicle, then vendor it. Even the trade sample could not reach 50 completed trades, and the ones recorded span years."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3475,7 +5162,12 @@
             "+15 к сопротивлению всем видам урона"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Коготь для прокачки ассасинки на низких уровнях (23-й) и ничего сверх того — соберите в самом дешёвом когте на 3 гнезда ради галочки в Истории и сдайте торговцу. Выборка сделок даже не набрала 50 завершённых, а имеющиеся растянуты на годы."
+        ]
+      }
     }
   },
   {
@@ -3485,6 +5177,23 @@
     "itemTypes": ["Swords"],
     "ladderOnly": false,
     "patch": "2.4",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "A 6-socket sword word, so the base must roll exactly six sockets. Most completed trades name Phase Blade — indestructible, very fast, and only 25 strength (it does want 136 dexterity) for a self-wield melee character — while a 6-socket ethereal Colossus Blade makes a solid budget weapon for an act 5 barbarian mercenary — ethereal is strictly better there, since gear on a mercenary never loses durability.",
+        "It plays like a poor man's Grief for Frenzy or Zeal melee builds: big enhanced damage, life leech, and Prevent Monster Heal and other utility mods from cheap mid runes. Sells occasionally — worth crafting for your own melee character rather than for trade."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3528,7 +5237,13 @@
             "Требования -20%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Рунное слово на 6 гнёзд, так что база должна выпасть ровно с шестью сокетами. Чаще всего в завершённых сделках фигурирует Фазовый клинок — неразрушимый, очень быстрый и всего 25 силы (правда, нужно 136 ловкости) для собственного мили-персонажа; а эфирный Клинок колосса (Colossus Blade) на 6 гнёзд — неплохой бюджетный вариант для наёмника 5 акта: эфирка там строго лучше, ведь снаряжение на наёмнике прочность не теряет.",
+          "По ощущениям это «Печаль для бедных» под Frenzy- или Zeal-билды: высокий усиленный урон, кража жизни и запрет лечения монстров и другие полезные мелочи за дешёвые средние руны. Продаётся изредка — крафтить стоит скорее под своего мили-персонажа, чем на продажу."
+        ]
+      }
     }
   },
   {
@@ -3538,6 +5253,23 @@
     "itemTypes": ["Helms"],
     "ladderOnly": false,
     "patch": "2.4",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "A 3-socket helm word aimed at bow amazons: 33% piercing attack plus mana leech lets a Strafe or Multishot zon free up the belt slot Razortail would occupy. Craft it in a 3-socket circlet base (Tiara or Diadem, low strength requirement) for yourself; trades also show plenty of Demonhead and Bone Visage, which work fine if you have the strength.",
+        "Only pierce-hungry ranged builds want it, and completed trades trickle in slowly — craft on demand for your own bowazon rather than stocking up."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3569,7 +5301,13 @@
             "+15% к урону, приходящемуся на ману"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Рунное слово для шлема на 3 гнезда, заточенное под амазонку с луком: 33% пронзающей атаки плюс кража маны позволяют Strafe- или Multishot-амазонке освободить пояс от Razortail. Для себя лучше собирать в диадеме или тиаре на 3 гнезда (низкое требование к силе); в сделках также часто мелькают Голова демона (Demonhead) и Костяной лик (Bone Visage) — тоже годятся, если хватает силы.",
+          "Нужно оно только дальнобойным билдам, которым не хватает пирса, и продаётся очень медленно — крафтите под конкретную амазонку, а не про запас."
+        ]
+      }
     }
   },
   {
@@ -3579,6 +5317,23 @@
     "itemTypes": ["Staves"],
     "ladderOnly": false,
     "patch": "2.4",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "A 6-socket staff word — most completed trades name Archon Staff, with War Staff as the cheaper alternative. Since the recipe already contains Zod, an ethereal base is perfectly fine and never breaks, and roughly a third of sold copies are ethereal. What you should not do is sink six runes including Zod and Ist into a blank stick: white staves roll their own skill bonuses, so hold out for a base with +3 to the sorceress skill you actually cast (Fire Ball, Blizzard, Chain Lightning) or +1-3 to that whole tree — those levels come free on top of the word's +4 to all skills.",
+        "It is an all-in-one two-handed caster stick: +4 to all skills, 65% faster cast rate, big life and mana, and all resistances. Sorceresses who give up the shield slot get near-endgame stats from one item; warlocks give up nothing at all, since Levitation Mastery lets them keep a Grimoire in the off-hand — pair the staff with a rare grimoire that rolls + to Warlock Skills. Zod and Ist make it a pricey craft, but demand is brisk this season: a listed staff goes quickly."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3618,7 +5373,13 @@
             "+30% к вероятности найти магический предмет"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Рунное слово для элитного посоха на 6 гнёзд — в большинстве завершённых сделок это Архонтский посох (Archon Staff), подешевле — Боевой посох (War Staff). В рецепте уже есть Зод, так что эфирная база полностью безопасна (посох не ломается), и примерно треть проданных копий эфирные. А вот вкладывать шесть рун с Зодом и Истом в пустую палку не стоит: белые посохи сами катают бонусы к навыкам, так что ищите базу с +3 к тому навыку волшебницы, которым реально кастуете (Fire Ball, Blizzard, Chain Lightning), или +1-3 ко всей ветке — эти уровни идут бесплатно сверх +4 ко всем навыкам от слова.",
+          "Это кастерская «двуручка всё-в-одном»: +4 ко всем навыкам, 65% скорости каста, много жизни и маны, все сопротивления. Волшебницы, отказавшиеся от щита, получают почти эндгеймовые статы одним предметом; чернокнижники же не теряют ничего — Levitation Mastery позволяет держать в другой руке гримуар, так что посох дополняют редким гримуаром с + к навыкам чернокнижника. Зод и Ист делают крафт недешёвым, но спрос в этом сезоне бодрый: выставленный посох уходит быстро."
+        ]
+      }
     }
   },
   {
@@ -3628,6 +5389,23 @@
     "itemTypes": ["Helms"],
     "ladderOnly": false,
     "patch": "2.4",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "A 3-socket helm word and the fire-build helm: +3 fire skills, a Resist Fire aura, and minus enemy fire resistance that stacks with other pierce sources. Completed trades favor Bone Visage (high defense, light weight) and circlet bases — Diadem or Tiara — when you want low strength requirements; an ethereal Bone Visage is a fine pick for a mercenary carrying the aura for you.",
+        "A druid taking this helm should build it in a white druid pelt instead: pelts roll their own +1-3 to the Elemental tree, or up to +3 to a single druid skill, and that stacks with the word's +3 fire skills — a Fissure or Armageddon druid on a plain base is throwing away real damage. Fire sorceresses and any fire build that struggles with resistant monsters want one. In constant demand — it crafts and sells well, so a good Vex is rarely wasted here."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3659,7 +5437,13 @@
             "Сокращает время действия яда на 50%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Рунное слово для шлема на 3 гнезда и главный шлем огненных билдов: +3 к навыкам огня, аура Resist Fire и снижение огненного сопротивления врагов, которое складывается с другими источниками пробития. В сделках чаще всего Костяной лик (Bone Visage) — высокая защита при малом весе — и «обручи» (Диадема, Тиара), если хочется минимальных требований к силе; эфирный Bone Visage хорош на наёмнике, который носит ауру за вас.",
+          "А вот друиду такой шлем лучше собирать в белом друидском тотеме: тотемы сами катают +1-3 к ветке Стихий или до +3 к отдельному навыку друида, и это складывается с +3 к навыкам огня от слова — друид с Fissure или Armageddon на пустой базе теряет реальный урон. Огненные волшебницы и вообще любой огненный билд, страдающий от резистентных монстров, хотят такой шлем. Спрос постоянный — крафтится и продаётся отлично, так что хороший Векс тут точно не пропадёт."
+        ]
+      }
     }
   },
   {
@@ -3669,6 +5453,23 @@
     "itemTypes": ["Missile Weapons"],
     "ladderOnly": false,
     "patch": "2.4",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "A 5-socket bow/crossbow word carrying a built-in Concentration aura (level 8-12), +3 to all skills, and huge enhanced damage. Completed trades are dominated by amazon bows — Grand Matron Bow and Matriarchal Bow — and that is not only about base damage: a white amazon bow rolls its own +1-3 to Bow and Crossbow Skills, which is why most sold copies advertise +6 skill levels in total instead of the +3 the word grants. On a Cham/Gul craft, a base without +3 to Bow and Crossbow Skills is money thrown away.",
+        "A bowazon wielding Mist herself gets the aura, the pierce and the skills from one weapon, usually pairing it with a Faith or Pride source elsewhere. Cham and Gul make it expensive and Faith often wins the slot, so it sells occasionally to well-funded bowazons rather than constantly."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3704,7 +5505,13 @@
             "+40 к сопротивлению всем видам урона"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Рунное слово для лука или арбалета на 5 гнёзд с встроенной аурой \"Сосредоточенность\" (8-12 уровня), +3 ко всем навыкам и огромным усиленным уроном. В сделках почти сплошь амазонские луки — Лук великой матроны (Grand Matron Bow) и Лук матриарха (Matriarchal Bow), и дело не только в уроне базы: белый амазонский лук сам катает +1-3 к навыкам луков и арбалетов, поэтому в большинстве проданных копий заявлено +6 к навыкам, а не +3 от самого слова. В крафте на Чам и Гул база без +3 к навыкам луков и арбалетов — выброшенные деньги.",
+          "Амазонка с Туманом в руках получает и ауру, и пирс, и скиллы одним предметом, обычно дополняя его Верой или Гордостью на других слотах. Чам и Гул делают крафт дорогим, а слот часто выигрывает Вера, поэтому продаётся оно лишь время от времени — богатым амазонкам-лучницам."
+        ]
+      }
     }
   },
   {
@@ -3714,6 +5521,23 @@
     "itemTypes": ["Helms"],
     "ladderOnly": true,
     "patch": "2.6",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "A cheap 3-socket helm word (ladder-only, so you need a ladder character this season): life leech, physical damage taken reduced, +vitality, and life replenish from three low runes. Completed trades name Demonhead and Grand Crown most, but for a levelling or hardcore melee character any solid 3-socket helm you find on the way is fine — the mods, not the base, do the work. One exception: a barbarian should look for a white barbarian helm, since those roll their own +1-3 to a barbarian skill on top for free.",
+        "Great value while levelling and a comfortable hardcore pick, but it gets replaced by endgame helms, so it sells only occasionally."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3743,7 +5567,13 @@
             "Физический урон уменьшен на (10-15)%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Дешёвое рунное слово для шлема на 3 гнезда (только для ладдера — в этом сезоне нужен ладдерный персонаж): кража жизни, снижение физического урона, +к живучести и реген жизни за три младшие руны. В сделках чаще всего Голова демона (Demonhead) и Большая корона (Grand Crown), но для прокачки или хардкорного мили-персонажа сгодится любой приличный шлем с 3 гнёздами, найденный по пути — работают моды, а не база. Одно исключение: варвару стоит поискать белый варварский шлем — такие сами катают +1-3 к навыку варвара сверху и бесплатно.",
+          "Отличная вещь на прокачке и уютный выбор для хардкора, но в эндгейме его вытесняют другие шлемы, так что продаётся лишь изредка."
+        ]
+      }
     }
   },
   {
@@ -3753,6 +5583,23 @@
     "itemTypes": ["Helms"],
     "ladderOnly": true,
     "patch": "2.6",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "A 3-socket helm word (ladder-only this season) built around a Cleansing aura and shortened poison duration — the go-to mercenary helm wherever poison is the killer. Craft it in an ethereal elite helm for your merc: completed trades are led by Spired Helm and Bone Visage, with Corona and Demonhead close behind; ethereal versions get extra defense and the merc never breaks them.",
+        "Hardcore players and anyone farming poison-heavy zones keep buying these three cheap runes' worth of insurance. In constant demand — it crafts and sells well."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3780,7 +5627,13 @@
             "Сокращает время действия яда на 50%"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Рунное слово для шлема на 3 гнезда (в этом сезоне — только ладдер) вокруг ауры Cleansing и сокращения длительности яда — дежурный шлем наёмника везде, где убивает яд. Собирайте в эфирном элитном шлеме для наёмника: в сделках лидируют Островерхий шлем (Spired Helm) и Костяной лик (Bone Visage), следом Корона (Corona) и Голова демона; эфирка даёт больше защиты, а наёмник её не ломает.",
+          "Хардкорщики и все, кто фармит ядовитые зоны, стабильно скупают эту «страховку» ценой в три дешёвые руны. Спрос постоянный — крафтится и продаётся отлично."
+        ]
+      }
     }
   },
   {
@@ -3790,6 +5643,18 @@
     "itemTypes": ["Helms"],
     "ladderOnly": true,
     "patch": "2.6",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A ladder-only 3-socket helm with lightning resistance and lightning absorb. In theory it is a swap helm against Burning Souls and other lightning-heavy packs, but almost nobody trades it — craft it in the cheapest 3-socket helm you have lying around just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3815,7 +5680,12 @@
             "+(10-15)% к поглощению молнии"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Ладдерный шлем на 3 гнезда с сопротивлением молнии и поглощением молнии. В теории это свап-шлем против Горящих душ и прочих молниевых паков, но им почти никто не торгует — соберите в самом дешёвом шлеме с 3 гнёздами ради галочки в Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -3825,6 +5695,18 @@
     "itemTypes": ["Helms"],
     "ladderOnly": true,
     "patch": "2.6",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A ladder-only 3-socket helm with cold resistance, cold absorb, and Cannot be Frozen. The freeze immunity is its one redeeming niche as a cheap swap piece, but the market is dead — craft it in the cheapest valid 3-socket helm just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3852,7 +5734,12 @@
             "Нельзя заморозить"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Ладдерный шлем на 3 гнезда с сопротивлением холоду, поглощением холода и «не может быть заморожен». Иммунитет к заморозке — его единственная полезная ниша как дешёвого свапа, но рынок мёртв: соберите в самом дешёвом шлеме с 3 гнёздами ради Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -3862,6 +5749,18 @@
     "itemTypes": ["Helms"],
     "ladderOnly": true,
     "patch": "2.6",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A ladder-only 3-socket helm with fire resistance and fire absorb — a theoretical swap piece for fire-heavy fights that virtually nobody trades. Craft it in the cheapest valid 3-socket helm just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3887,7 +5786,12 @@
             "+(10-15)% к поглощению огня"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Ладдерный шлем на 3 гнезда с сопротивлением огню и поглощением огня — теоретический свап для боёв с сильным огнём, которым практически никто не торгует. Соберите в самом дешёвом шлеме с 3 гнёздами ради Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -3899,6 +5803,23 @@
     "ladderOnly": false,
     "patch": "2.6",
     "note": "Disabled on ladder! Can be crafted offline non-ladder.",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "The Martial Arts assassin claw: its 50% chance not to consume charges keeps Phoenix Strike and the other charge-up skills rolling, and the classic setup is one Mosaic in each hand. The base does half the work here — nearly every completed trade is a 3-socket Greater Talons or Runic Talons that already rolls +3 to Phoenix Strike, and the better ones add +1-3 to Claws of Thunder or Blades of Ice on top. The same three runes in a blank claw are worth a fraction of the same runes in a +3 base.",
+        "Important this season: Mosaic is disabled on ladder and can only be crafted offline or non-ladder. Within non-ladder it still trades briskly, and good +MA bases keep their value, so it sells well where it is legal."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3934,7 +5855,13 @@
             "Запрещает монстрам лечиться"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Главные когти ассасина боевых искусств: 50% шанс не тратить заряды позволяет Phoenix Strike и другим зарядным навыкам работать без пауз, а классическая сборка — по Мозаике в каждой руке. Половину работы тут делает база: почти в каждой завершённой сделке это Большие когти (Greater Talons) или Рунические когти (Runic Talons) на 3 гнезда, у которых уже есть +3 к Phoenix Strike, а у лучших сверху ещё +1-3 к Claws of Thunder или Blades of Ice. Те же три руны в пустом когте стоят долю от того, что дадут они же в базе с +3.",
+          "Важно в этом сезоне: Мозаика отключён в ладдере — собрать его можно только офлайн или в нон-ладдере. Там он по-прежнему бодро торгуется, а хорошие базы с +MA держат цену, так что продаётся отлично — где разрешён."
+        ]
+      }
     }
   },
   {
@@ -3945,6 +5872,23 @@
     "itemTypeRestriction": "Druid",
     "ladderOnly": true,
     "patch": "2.6",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "The shapeshifter druid's pelt (druid-only, ladder-only this season): Mark of the Wolf and Mark of the Bear buffs plus crushing blow turn Fury and Rabies werewolves into much smoother killers. The base matters as much as the runes — more than half of completed trades are 3-socket pelts that already roll +3 to Fury on top of the word's +5 shapeshifting skills. Antlers leads by a wide margin, with the elite Earth Spirit and the cheaper Totemic Mask behind it; find a base with +3 to the skill you actually spam before you spend the Cham.",
+        "Only shapeshift druids want it, but for them it is a build-defining helm, so it sells steadily to that crowd."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -3977,7 +5921,13 @@
             "Нельзя заморозить"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Тотемный шлем друида-оборотня (только друид, в этом сезоне — только ладдер): баффы Метка волка и Метка медведя плюс сокрушающий удар делают вервольфа с Fury или Rabies заметно бодрее. База тут значит не меньше рун: больше половины завершённых сделок — тотемы на 3 гнезда, у которых сверх +5 к оборотничеству от слова есть ещё и +3 к Fury. С большим отрывом лидируют Рога (Antlers), за ними элитный Дух земли (Earth Spirit) и подешевле Тотемная маска; ищите базу с +3 к тому навыку, которым реально бьёте, прежде чем тратить Чам.",
+          "Нужен он только друидам-оборотням, но для них это билдообразующий шлем, так что своей аудитории продаётся стабильно."
+        ]
+      }
     }
   },
   {
@@ -3987,6 +5937,23 @@
     "itemTypes": ["Body Armors"],
     "ladderOnly": false,
     "patch": "3.0",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "A newer 3-socket body armor word from cheap runes (Hel Shael Ral), sitting in the levelling/budget bracket at level 29. Completed trades mostly show light caster bases — Dusk Shroud and Mage Plate — so people treat it as an inexpensive armor to wear until the real endgame chest arrives.",
+        "Trades come through only occasionally; craft it for your own fresh character rather than for the market."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -4014,7 +5981,13 @@
             "+30% к сопротивлению огню"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Новое рунное слово для брони на 3 гнезда из дешёвых рун (Хел Шаэль Рал), бюджетный вариант 29 уровня на прокачку. В сделках в основном лёгкие кастерские базы — Сумеречный саван (Dusk Shroud) и Латы мага (Mage Plate): его носят, пока не появится настоящая эндгеймовая броня.",
+          "Сделки проходят редко — крафтите под собственного свежего персонажа, а не на продажу."
+        ]
+      }
     }
   },
   {
@@ -4024,6 +5997,23 @@
     "itemTypes": ["Helms"],
     "ladderOnly": false,
     "patch": "3.0",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "A newer 3-socket helm word (Ist Ral Io) that Maxroll rates highly. Completed trades favor caster-friendly bases — Diadem, Bone Visage, Demonhead, Tiara — so the usual advice applies: a 3-socket circlet base for low strength requirements, or Bone Visage for defense.",
+        "The market moves at a modest pace; it finds buyers among casters and summon-flavored builds, so it sells occasionally rather than constantly."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -4053,7 +6043,13 @@
             "+10 к живучести"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Новое рунное слово для шлема на 3 гнезда (Ист, Рал, Ио), которое Maxroll оценивает высоко. В сделках преобладают кастерские базы — Диадема, Костяной лик (Bone Visage), Голова демона, Тиара, — так что совет стандартный: «обруч» на 3 гнезда ради низких требований к силе или Bone Visage ради защиты.",
+          "Рынок неторопливый: покупатели находятся среди кастеров и саммонерских билдов, так что продаётся время от времени, а не постоянно."
+        ]
+      }
     }
   },
   {
@@ -4063,6 +6059,23 @@
     "itemTypes": ["Daggers"],
     "ladderOnly": false,
     "patch": "3.0",
+    "usefulness": "meta",
+    "advice": {
+      "paragraphs": [
+        "A 3-socket dagger word (Thul Zod Ist) and one of the hottest items on the market this season — the newest completed trades span barely two days. Kris and Blade lead the bases, but it is the base that decides what a copy is worth: the word itself gives +2 to all skills and +1-3 to Abyss, and a dagger can roll +3 to Abyss of its own — +3 is the ceiling for any single skill roll — which is exactly how sold copies reach the +6-8 they advertise. A blank Kris is the budget version, not the one buyers queue for.",
+        "Abyss is Warlock-only and the Abyss warlock is one of the season's top builds, which is exactly what drives the demand: those buyers want a white dagger that already rolls + to Abyss, ideally with Miasma Bolt or Miasma Chain alongside it. Zod makes the finished dagger indestructible, so even an ethereal base is safe — though completed trades are non-ethereal almost without exception. In constant demand — it crafts and sells well."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -4094,7 +6107,13 @@
             "+30% к вероятности найти магический предмет"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Рунное слово для кинжала на 3 гнезда (Тул, Зод, Ист) — один из самых горячих товаров сезона: последние завершённые сделки укладываются буквально в пару суток. По базам лидируют Крис (Kris) и Клинок (Blade), но цену копии решает именно база: само слово даёт +2 ко всем навыкам и +1-3 к Бездне (Abyss), а кинжал может выкатить свои +3 к Бездне — больше +3 на один навык база не даёт — из чего и складываются заявленные в сделках +6-8. Пустой Крис — это бюджетный вариант, а не тот, за которым стоит очередь.",
+          "Бездна доступна только чернокнижнику, а Abyss-чернокнижник — один из топовых билдов сезона: именно он и создаёт спрос. Таким покупателям нужен белый кинжал, у которого уже есть + к Бездне, а в идеале ещё Miasma Bolt или Miasma Chain. Зод делает готовый кинжал неразрушимым, так что даже эфирная база безопасна — хотя в завершённых сделках эфирки практически не встречаются. Спрос постоянный — крафтится и продаётся на ура."
+        ]
+      }
     }
   },
   {
@@ -4104,6 +6123,18 @@
     "itemTypes": ["Shields", "Paladin Shields", "Grimoire", "Voodoo Heads"],
     "ladderOnly": false,
     "patch": "3.0",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A 2-socket shield word from two mid runes that almost nobody trades — the handful of completed listings are scattered across Monarchs, paladin shields, and even a Tome. Craft it in the cheapest valid 2-socket shield (or grimoire/voodoo head) you have just to fill the Chronicle, then vendor it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -4135,7 +6166,12 @@
             "+5% к максимальному сопротивлению яду"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Рунное слово для щита на 2 гнезда из двух средних рун, которым почти никто не торгует — редкие сделки размазаны по Монархам, паладинским щитам и даже гримуарам. Соберите в самом дешёвом подходящем щите (или гримуаре/голове вуду) на 2 гнезда ради галочки в Истории и сдайте торговцу."
+        ]
+      }
     }
   },
   {
@@ -4145,6 +6181,18 @@
     "itemTypes": ["Daggers"],
     "ladderOnly": false,
     "patch": "3.0",
+    "usefulness": "chronicle",
+    "advice": {
+      "paragraphs": [
+        "A 3-socket dagger word rated at the bottom of Maxroll's list, and the market agrees — trades are rare. The catch is that Ohm is not a throwaway rune, so this Chronicle checkmark costs a real Ohm: craft it in the cheapest 3-socket dagger (a plain Kris works; most listings happen to use Fanged Knife) only when you can spare the Ohm, then vendor or shelve it."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -4174,7 +6222,12 @@
             "Похищает 7% здоровья за удар"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Рунное слово для кинжала на 3 гнезда с самого дна тир-листа Maxroll, и рынок с этим согласен — сделки редки. Подвох в том, что Ом — не мусорная руна, так что эта галочка в Истории обойдётся в целый Ом: собирайте в самом дешёвом кинжале с 3 гнёздами (обычный Крис сойдёт; в объявлениях чаще Клыкастый нож), только когда Ом не жалко, и потом сдавайте торговцу или в сундук."
+        ]
+      }
     }
   },
   {
@@ -4184,6 +6237,23 @@
     "itemTypes": ["Weapons"],
     "ladderOnly": true,
     "patch": "3.0",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "A newer ladder-only 3-socket weapon word from cheap runes (Shael Ko Eld) at level 39, so you need a ladder character this season. Completed trades split between Phase Blade for melee self-wield and amazon bows like Matriarchal Bow — and for a bowazon the base is worth picking carefully, because a white amazon bow rolls its own +1-3 to Bow and Crossbow Skills, and Mania grants no skills at all by itself.",
+        "Maxroll rates it well for its bracket, but it is a stepping stone — it sells occasionally to levelling characters."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -4211,7 +6281,13 @@
             "+10 к ловкости"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Новое ладдерное рунное слово для оружия на 3 гнезда из дешёвых рун (Шаэль Ко Элд) 39 уровня — в этом сезоне нужен ладдерный персонаж. Сделки делятся между Фазовым клинком для мили-персонажей и амазонскими луками вроде Лука матриарха — и для амазонки базу стоит выбирать вдумчиво: белый амазонский лук сам катает +1-3 к навыкам луков и арбалетов, а само слово скиллов не даёт вовсе.",
+          "Maxroll оценивает его высоко для своей ниши, но это промежуточная ступень — продаётся изредка, качающимся персонажам."
+        ]
+      }
     }
   },
   {
@@ -4221,6 +6297,23 @@
     "itemTypes": ["Body Armors"],
     "ladderOnly": true,
     "patch": "3.0",
+    "usefulness": "situational",
+    "advice": {
+      "paragraphs": [
+        "The body-armor sibling of Mania (same Shael Ko Eld runes, ladder-only this season) — a cheap 3-socket chest for the level-39 bracket. Completed trades show light caster bases like Mage Plate and Dusk Shroud alongside Archon Plate, and not one sold copy was ethereal. Plain body armor has no affixes of its own to hold out for, so take the lightest 3-socket chest whose strength requirement you already meet and spend nothing extra on the base.",
+        "A decent stopgap until Fortitude or an endgame armor arrives; it sells occasionally to levelling characters."
+      ],
+      "sources": [
+        {
+          "label": "Maxroll tier list",
+          "url": "https://maxroll.gg/d2/tierlists/runeword-tier-list"
+        },
+        {
+          "label": "Traderie trade data",
+          "url": "https://traderie.com/diablo2resurrected"
+        }
+      ]
+    },
     "propertyGroups": [
       {
         "properties": [
@@ -4248,7 +6341,13 @@
             "+10 к сопротивлению всем видам урона"
           ]
         }
-      ]
+      ],
+      "advice": {
+        "paragraphs": [
+          "Броневой близнец Мании (те же руны Шаэль Ко Элд, в этом сезоне — только ладдер) — дешёвая броня на 3 гнезда для уровня 39. В сделках лёгкие кастерские базы вроде Лат мага (Mage Plate) и Сумеречного савана рядом с Архонтскими латами, и ни одна проданная копия не была эфирной. Обычной броне нечего катать самой по себе, так что берите самый лёгкий нагрудник на 3 гнезда, требования которого уже вытягиваете, и не тратьтесь на базу.",
+          "Нормальная затычка, пока не появится Сила духа или другая эндгеймовая броня; продаётся изредка — качающимся персонажам."
+        ]
+      }
     }
   }
 ]

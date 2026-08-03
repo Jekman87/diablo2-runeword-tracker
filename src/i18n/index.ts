@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react";
 
 import { en } from "./en";
 import { ru } from "./ru";
-import { type Locale, loadLocale, saveLocale } from "./storage";
+import { type Locale, loadLocale, locales, saveLocale } from "./storage";
 
 export type { Locale };
 export { locales } from "./storage";
@@ -27,14 +27,16 @@ export type Strings = typeof en;
  * hook; and a switch re-renders every consumer because every consumer is
  * subscribed, not because any of them was edited.
  *
- * **Initialisation is lazy and resolves to the stored preference, else
- * English.** Lazy, so the first paint is already in the restored language — an
- * effect would render English and then correct it, a visible frame of a
- * language the player left. English, with `navigator.language` deliberately
- * not consulted: the site's canonical language is English, so a first visit is
- * the same in every environment and Russian is always the reader's explicit
- * choice, one click away in the header. Loading never writes — the first
- * switch is the first write.
+ * **Initialisation is lazy and resolves to the stored preference, else the
+ * entry document's own language, else English.** Lazy, so the first paint is
+ * already in the restored language — an effect would render English and then
+ * correct it, a visible frame of a language the player left. The document's
+ * `lang` is the publisher's declaration, not a guess about the reader: the
+ * root entry ships `lang="en"` and `/ru/` ships `lang="ru"`, so each front
+ * door opens in its own language while `navigator.language` stays deliberately
+ * unconsulted — a first visit to a given entry is the same in every
+ * environment, and the stored choice outranks whichever door it came through.
+ * Loading never writes — the first switch is the first write.
  *
  * `document.documentElement.lang` follows the active locale, set on
  * initialisation as well as on every switch, so a restored Russian session
@@ -82,13 +84,25 @@ export function setLocale(locale: Locale): void {
 
 function currentLocale(): Locale {
   if (activeLocale === null) {
-    activeLocale = loadLocale() ?? "en";
+    activeLocale = loadLocale() ?? documentLocale() ?? "en";
     // Stated on first read as well as on switch, so a restored `ru` is
     // declared before anything is painted in it.
     document.documentElement.lang = activeLocale;
   }
 
   return activeLocale;
+}
+
+/**
+ * The entry document's declared language, when it names a locale this version
+ * offers. Read from the static `lang` attribute rather than the address, so
+ * the app never parses URLs and a rehosted document keeps working; anything
+ * unrecognised is no declaration at all rather than an error.
+ */
+function documentLocale(): Locale | undefined {
+  const lang = document.documentElement.lang;
+
+  return locales.find((locale) => locale === lang);
 }
 
 function subscribe(notify: () => void): () => void {

@@ -1,12 +1,15 @@
 import { foldLabel } from "@/runewords/fold";
 
+import adviceTermsData from "./advice-terms.json";
 import itemTypesData from "./item-types.json";
 import runesData from "./runes.json";
 import runewordsData from "./runewords.json";
 import {
+  type AdviceTerms,
   type ItemType,
   type Rune,
   type Runeword,
+  adviceTermsSchema,
   itemTypesSchema,
   runesSchema,
   runewordsSchema,
@@ -27,6 +30,14 @@ export const runes: Rune[] = runesSchema.parse(runesData);
 
 /** The 20 base item categories a runeword can be socketed into. */
 export const itemTypes: ItemType[] = itemTypesSchema.parse(itemTypesData);
+
+/**
+ * Game names the advice highlighter marks, per language. Generated from the
+ * trade site's base-item spellings and the official skill names — see
+ * `data/advice/terms.ts`.
+ */
+export const adviceTerms: AdviceTerms =
+  adviceTermsSchema.parse(adviceTermsData);
 
 // Built once at load rather than scanned per use. The table alone resolves 343
 // rune references.

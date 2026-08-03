@@ -4,16 +4,21 @@ import { format, resolveConfig } from "prettier";
 import ts from "typescript";
 import { z } from "zod";
 
+import { runewordAdvice } from "../data/advice/runewords.ts";
+import { adviceTerms as authoredTerms } from "../data/advice/terms.ts";
 import { itemTypeTranslations } from "../data/ru/item-types.ts";
 import { runeTranslations } from "../data/ru/runes.ts";
 import { runewordTranslations } from "../data/ru/runewords.ts";
 import {
+  type AdviceTerms,
   type ItemType,
   type Rune,
   type Runeword,
+  adviceTermsSchema,
   itemTypesSchema,
   runesSchema,
   runewordsSchema,
+  usefulnessValues,
 } from "../src/data/schema.ts";
 
 // Generates `src/data/*.json` from the read-only vendor snapshot. Run it with
@@ -46,6 +51,7 @@ export interface Dataset {
   runewords: Runeword[];
   runes: Rune[];
   itemTypes: ItemType[];
+  adviceTerms: AdviceTerms;
 }
 
 /**
@@ -66,23 +72,35 @@ export function buildDataset(
 
   assertDescriptionKeysAgree(vendor);
 
-  const runeword = validatedTranslations(
+  const titles = vendor.runewords.map((record) => record.title);
+
+  const runeword = validatedAuthored(
     runewordTranslationsSchema,
     translations.runewords,
-    vendor.runewords.map((record) => record.title),
+    titles,
     "runeword",
+    "data/ru/",
   );
-  const rune = validatedTranslations(
+  const rune = validatedAuthored(
     nameTranslationsSchema,
     translations.runes,
     vendor.runes.map((entry) => entry.name),
     "rune",
+    "data/ru/",
   );
-  const itemType = validatedTranslations(
+  const itemType = validatedAuthored(
     nameTranslationsSchema,
     translations.itemTypes,
     Object.keys(vendor.itemTypes),
     "item category",
+    "data/ru/",
+  );
+  const advice = validatedAuthored(
+    adviceEntriesSchema,
+    translations.advice,
+    titles,
+    "advice",
+    "data/advice/",
   );
 
   const runewords = vendor.runewords.map((record) =>
@@ -90,6 +108,7 @@ export function buildDataset(
       record,
       vendor.descriptions[record.title] ?? "",
       runeword[record.title],
+      advice[record.title],
     ),
   );
 
@@ -105,15 +124,59 @@ export function buildDataset(
     ...requiredRu(itemType[name], name, "item category"),
   }));
 
+  const parsedRunewords = runewordsSchema.parse(runewords);
+
   return {
+    adviceTerms: buildAdviceTerms(parsedRunewords),
     // Vendor array order is preserved throughout: the records stay in
     // patch-grouped chronological order, and the runes stay in the canonical
     // in-game progression. Neither is depended on, but both keep a diff after
     // a vendor refresh readable.
-    runewords: runewordsSchema.parse(runewords),
+    runewords: parsedRunewords,
     runes: runesSchema.parse(runes),
     itemTypes: itemTypesSchema.parse(itemTypes),
   };
+}
+
+/**
+ * The highlighter's term lists, filtered to the names that actually occur in a
+ * shipped paragraph.
+ *
+ * The filter is the point: the lists are derived from a trade site's item
+ * spellings and the localisation's skill names, both of which know names this
+ * project never mentions. Shipping those would grow the bundle with words
+ * nothing can highlight, and — worse — would let the lists rot silently as the
+ * advice is rewritten. A term that stops being used stops being shipped.
+ */
+function buildAdviceTerms(records: Runeword[]): AdviceTerms {
+  const english = records
+    .flatMap((record) => record.advice?.paragraphs ?? [])
+    .join(" ");
+  const russian = records
+    .flatMap((record) => record.ru?.advice?.paragraphs ?? [])
+    .join(" ");
+
+  // A Russian skill is matched by stem at render time, so it earns its place
+  // by its stem rather than by the nominative form the localisation quotes.
+  const stem = (term: string) =>
+    term.split(" ")[0].replace(/[а-яё]{0,2}$/iu, "");
+
+  return adviceTermsSchema.parse({
+    bases: {
+      en: authoredTerms.bases.en.filter((term) =>
+        `${english} ${russian}`.includes(term),
+      ),
+      ru: authoredTerms.bases.ru.filter((term) => russian.includes(term)),
+    },
+    skills: {
+      en: authoredTerms.skills.en.filter((term) =>
+        `${english} ${russian}`.includes(term),
+      ),
+      ru: authoredTerms.skills.ru.filter((term) =>
+        russian.includes(stem(term)),
+      ),
+    },
+  });
 }
 
 /**
@@ -173,34 +236,74 @@ const nameTranslationsSchema = z.record(
   z.strictObject({ ru: z.string().min(1), source: z.string().min(1) }),
 );
 
+// The advice module, held to the translations' posture: strict objects, a
+// required `source` note on every entry, and Russian paragraphs mirroring the
+// English count-for-count — checked here so a broken entry fails the build
+// naming its runeword rather than failing dataset validation later.
+const adviceEntrySchema = z
+  .strictObject({
+    usefulness: z.enum(usefulnessValues),
+    advice: z
+      .strictObject({
+        paragraphs: z.array(z.string().min(1)).min(1),
+        ru: z.array(z.string().min(1)).min(1),
+        sources: z
+          .array(
+            z.strictObject({
+              label: z.string().min(1),
+              url: z.url().startsWith("https://"),
+            }),
+          )
+          .min(1)
+          .optional(),
+      })
+      .optional(),
+    source: z.string().min(1),
+  })
+  .refine(
+    (entry) =>
+      entry.advice === undefined ||
+      entry.advice.ru.length === entry.advice.paragraphs.length,
+    {
+      message:
+        "Russian advice must mirror the English paragraphs count-for-count — " +
+        "rendering pairs them by position.",
+    },
+  );
+
+const adviceEntriesSchema = z.record(z.string().min(1), adviceEntrySchema);
+
 export interface Translations {
   runewords: unknown;
   runes: unknown;
   itemTypes: unknown;
+  advice: unknown;
 }
 
-/** The repository's own authored translations — the default input. */
+/** The repository's own authored translations and advice — the default input. */
 const REPO_TRANSLATIONS: Translations = {
   runewords: runewordTranslations,
   runes: runeTranslations,
   itemTypes: itemTypeTranslations,
+  advice: runewordAdvice,
 };
 
 /**
- * Validates a translation record and asserts every key names something the
- * vendored data defines.
+ * Validates an authored record — translations or advice — and asserts every
+ * key names something the vendored data defines.
  *
  * The unknown-key check is the half that cannot be a schema: zod can say a
  * value is a string, but only the snapshot knows whether `"Ancients Pledge"` is
  * a runeword. Without it a mistyped key would validate perfectly and leave the
- * record it meant to translate rendering in English — a silent hole in a
- * dataset the coverage test says is complete.
+ * record it meant to enrich untouched — a silent hole in a dataset the
+ * coverage tests say is complete.
  */
-function validatedTranslations<T>(
+function validatedAuthored<T>(
   schema: z.ZodType<Record<string, T>>,
   source: unknown,
   knownKeys: string[],
   subject: string,
+  authoredDir: string,
 ): Record<string, T> {
   const parsed = schema.parse(source);
   const known = new Set(knownKeys);
@@ -208,9 +311,9 @@ function validatedTranslations<T>(
 
   if (unknown.length > 0) {
     throw new Error(
-      `Russian translations name ${subject} keys the vendor snapshot does ` +
-        `not define: ${unknown.join(", ")}. Fix the key in data/ru/ — a typo ` +
-        `here would leave the intended record untranslated.`,
+      `Authored ${subject} entries name keys the vendor snapshot does ` +
+        `not define: ${unknown.join(", ")}. Fix the key in ${authoredDir} — ` +
+        `a typo here would leave the intended record untouched.`,
     );
   }
 
@@ -381,6 +484,7 @@ function buildRuneword(
   record: VendorRuneword,
   description: string,
   translation: z.infer<typeof runewordTranslationSchema> | undefined,
+  advice: z.infer<typeof adviceEntrySchema> | undefined,
 ): Runeword {
   // A project-owned override wins over the vendor's editorial note: the
   // snapshot pins a season number that goes stale, and `vendor/` is
@@ -388,6 +492,17 @@ function buildRuneword(
   // one would be corrected the same way.
   const note = NOTE_OVERRIDES[record.title] ?? record.note;
   const ladderOnly = LADDER_OVERRIDES[record.title] ?? record.ladder === true;
+
+  // Russian advice rides inside the Russian variant, so the whole-record
+  // fallback covers it — which is also why advice prose cannot ship for a
+  // record that has no translation to carry it.
+  if (advice?.advice !== undefined && translation === undefined) {
+    throw new Error(
+      `"${record.title}" carries advice but no Russian translation, so the ` +
+        `Russian paragraphs have no variant to live in. Translate the record ` +
+        `in data/ru/ first.`,
+    );
+  }
 
   return {
     name: record.title,
@@ -402,6 +517,15 @@ function buildRuneword(
     ladderOnly,
     ...(record.version !== undefined && { patch: record.version }),
     ...(note !== undefined && { note }),
+    ...(advice !== undefined && { usefulness: advice.usefulness }),
+    ...(advice?.advice !== undefined && {
+      advice: {
+        paragraphs: advice.advice.paragraphs,
+        ...(advice.advice.sources !== undefined && {
+          sources: advice.advice.sources,
+        }),
+      },
+    }),
     propertyGroups: splitPropertyGroups(
       description,
       record.title,
@@ -411,7 +535,9 @@ function buildRuneword(
     // the community page a wording came from, which is review material, and
     // this JSON is shipped in the bundle. The schema then checks the variant
     // mirrors the record it has just been merged into.
-    ...(translation !== undefined && { ru: withoutSource(translation) }),
+    ...(translation !== undefined && {
+      ru: withoutSource(translation, advice?.advice?.ru),
+    }),
   };
 }
 
@@ -420,9 +546,14 @@ function buildRuneword(
  * the `source` note. Built field by field rather than by spreading and deleting,
  * so a field added to the translation shape has to be added here on purpose —
  * the alternative silently ships whatever `data/ru/` starts carrying.
+ *
+ * The Russian advice paragraphs arrive from the advice module rather than the
+ * translation one — advice is authored in one place, both languages together —
+ * but they ship inside the variant, so the whole-record fallback covers them.
  */
 function withoutSource(
   translation: z.infer<typeof runewordTranslationSchema>,
+  adviceRu?: string[],
 ): NonNullable<Runeword["ru"]> {
   return {
     name: translation.name,
@@ -433,6 +564,7 @@ function withoutSource(
     propertyGroups: translation.propertyGroups.map((group) => ({
       properties: group.properties,
     })),
+    ...(adviceRu !== undefined && { advice: { paragraphs: adviceRu } }),
   };
 }
 
@@ -631,6 +763,7 @@ async function main(): Promise<void> {
   await writeJson("runewords.json", dataset.runewords);
   await writeJson("runes.json", dataset.runes);
   await writeJson("item-types.json", dataset.itemTypes);
+  await writeJson("advice-terms.json", dataset.adviceTerms);
 
   console.log(
     `Wrote ${dataset.runewords.length} runewords, ${dataset.runes.length} runes ` +

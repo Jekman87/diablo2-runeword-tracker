@@ -141,9 +141,15 @@ explanation opened over the top of the page rather than as more header.
 The disclosure SHALL describe every feature the page offers, and a feature that
 ships SHALL be added to it. That obligation is not only additive: where a new
 feature makes an existing sentence untrue, that sentence SHALL be corrected in
-the same change. Moving progress in and out as a file is described there for both
-reasons — it is a feature, and it ends the claim that progress never travels
-between devices.
+the same change. It is also not unbounded — an explanation of something the
+player already knows from the game itself is noise in the one place a reader
+goes when lost, and SHALL be dropped. Moving progress in and out as a file is
+described for both reasons: it is a feature, and it ends the claim that
+progress never travels between devices.
+
+Where help describes importing, it SHALL state the two things a reader cannot
+discover without risking their progress: that a file may name runewords in
+either language, and that importing an empty file is how every mark is cleared.
 
 #### Scenario: The help disclosure loads closed
 
@@ -170,8 +176,8 @@ between devices.
 - **THEN** it states what the list is and how the page is used — marking a
   runeword as crafted (with confirmation before the mark or unmark is applied),
   the progress it counts, the search, filters and sorting, the two remaining
-  panels, where a runeword's granted properties are, where the reader's progress
-  is kept, and how it is carried to another browser as a file
+  panels, where a runeword's granted properties are, where the reader's
+  progress is kept, and how it is carried to another browser as a file
 - **AND** it does not describe a transient undo notice for marking
 
 #### Scenario: The panel opens beneath the divider
@@ -187,6 +193,17 @@ between devices.
 - **THEN** it names the export and import controls, states that importing
   replaces what is already marked rather than adding to it, and states that the
   replacement cannot be undone
+
+#### Scenario: Both languages are accepted in a file
+
+- **WHEN** the help disclosure's import description is read
+- **THEN** it states that a file may name runewords in Russian as well as in
+  English
+
+#### Scenario: Starting over is documented
+
+- **WHEN** the help disclosure's import description is read
+- **THEN** it states that importing an empty file clears every mark
 
 #### Scenario: A claim a new feature invalidates is corrected
 
@@ -302,13 +319,13 @@ introduces it.
 - **THEN** it resolves to the repository's Discussions page rather than an
   error page
 
-### Requirement: The help panel explains the badges and the rune tiers
+### Requirement: The help panel explains the badges
 
 The help panel SHALL explain what the availability badges mean, in a legend that
-shows each badge as the table draws it beside the words for what it is. Until now
-nothing on the page has said that a badge's colour carries meaning at all: there is
-one colour per era of the game, fewer colours than there are patch values because
-two patches are treated as one era, and no reader can infer that mapping from the
+shows each badge as the table draws it beside the words for what it is. Nothing
+else on the page says that a badge's colour carries meaning at all: there is one
+colour per era of the game, fewer colours than there are patch values because two
+patches are treated as one era, and no reader can infer that mapping from the
 table.
 
 The legend SHALL cover every distinct colour a patch badge can take, including the
@@ -325,12 +342,6 @@ what it is; in the legend the words beside it say exactly that, and announcing b
 reads the same fact twice. This is the one place the panel's "every word resolves
 through the display-copy layer" rule needs qualifying: the words are copy, the
 samples are components, and no meaning SHALL exist only as a sample.
-
-The panel SHALL also say what the three rune tiers in the remaining-runes panel are
-— that they run from common to rare and follow the Horadric Cube's upgrade ratios —
-so that a reader can tell why the rarest runes carry the smallest counts. This is
-the reference site's own explanation of its rune ordering, which our grouping shares
-and has never explained.
 
 All of it SHALL resolve through the display-copy layer in both locales, and the
 Russian wording for anything the game names SHALL come from the same official source
@@ -365,14 +376,14 @@ the existing terms do.
 - **WHEN** the legend is read with images or colours unavailable
 - **THEN** every meaning it conveys is still present as words
 
-#### Scenario: The rune tiers are explained
+#### Scenario: The rune tiers are not explained
 
 - **WHEN** the help panel is read
-- **THEN** it states what the three tiers of the remaining-runes panel are and that
-  their order follows the Horadric Cube's upgrade ratios
+- **THEN** it contains no paragraph about the rune tiers or the Horadric Cube's
+  upgrade ratios
 
-#### Scenario: The explanation exists in both languages
+#### Scenario: The legend exists in both languages
 
 - **WHEN** the locale is switched with the panel open
-- **THEN** every word of the legend and the tier explanation changes with it, and no
-  string is a component literal
+- **THEN** every word of the legend changes with it, and no string is a component
+  literal

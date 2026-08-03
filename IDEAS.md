@@ -77,7 +77,66 @@ site still deployable.
 | 15  | `csv-import-export`      | done   |
 | 16  | `search-indexing`        | done   |
 | 17  | `tracker-ux-batch`       | done   |
+| 18  | `crafting-advice-batch`  | done   |
 | —   | `chronicle-styling`      | partly |
+
+`crafting-advice-batch` is the second batch under that grouping rule, and the
+largest: two advice surfaces the owner asked for, the click-through defect they
+depend on, two confirm-dialog refinements, a Help revision and an SEO batch —
+all named in one request. What is worth carrying forward is not the features but
+five things the work taught.
+
+**The market is a data source, and not the one anyone expected.** Traderie has
+an open JSON API, and a completed listing advertises the finished item's whole
+property set. Subtract what the runeword grants and the remainder is the
+**base's** contribution — which is how the advice can say that 44 of 50 sold
+Mosaics were built on a claw already rolling +3 Phoenix Strike, or that Void's
+advertised +6-8 Abyss is the word's +2 skills and +1-3 Abyss plus a +3 dagger.
+Trade velocity — the span of the newest 50 completed trades — ran from Call to
+Arms at 8 hours to Radiance at four years, and matched the owner's own sense of
+what is worth crafting closely enough to use as the second signal behind the
+Maxroll tiers. It is a **one-time offline research input**, never a runtime
+integration: the page still makes no third-party request.
+
+**A dataset field that carries an opinion still has to be decoration.** The
+usefulness label and the advice prose are `runeword-dataset`'s newest fields and
+sit on exactly the terms `ladderOnly`, `patch` and `note` already set: no filter
+reads them, no counter subtracts by them, progress is still out of the whole
+list. That is what let two editorial surfaces ship without touching a single
+piece of progress logic.
+
+**The authored-module pattern generalised.** `data/advice/` is `data/ru/`'s shape
+applied to a second kind of content that has no vendor source — keyed by
+canonical name, validated against the vendored records, merged by the generator,
+with per-entry `source` notes the emitted JSON never carries. `data/advice/terms.ts`
+then does it a third time for the highlighter's vocabulary. The module is
+**generated from JSON rather than hand-edited**, which is what made five rounds
+of review survivable: a correction is a data edit and a re-emit, not a hunt
+through 99 records for a string to replace.
+
+**Highlighting prose is where the subtle bugs were.** Colouring game names in the
+advice took five passes, and each failure is worth remembering. A word boundary is defined over
+ASCII word characters, so the rune `Ист` matched inside «Историю» and left the word
+half-coloured — Unicode boundaries are `(?<![\p{L}\d])` with the `u` flag. A
+regex alternation takes the **first** branch that matches, not the longest, so a
+one-word name beat the phrase containing it (`Bone` inside `Bone Spirit`); the
+fix is to try multi-word names, then the generic phrase, then single words. And
+a mechanical name swap into Russian produces the right word in the wrong case —
+«с Туман» where the sentence needs «с Туманом» — so the swap is followed by a
+proofreading layer rather than trusted.
+
+**The official Russian names live in the dataset, and reading them caught six
+errors.** `data/ru/runewords.ts` quotes every skill and aura the client names
+(`+3 к умению "Тепло"`, `ауру "Шипы"`). Grepping that before writing Russian
+prose settled Zeal as «Истовость», Vengeance as «Возмездие», Werebear as «Облик
+медведя», Holy Freeze as «Священный холод» and Concentration as
+«Сосредоточенность» — and the in-game Chronicle log as **«История»**, which is
+also, confusingly, the runeword Lore's own name. Warlock is «чернокнижник».
+
+Two things it deliberately did not do. **No filter on usefulness**, though it is
+the obvious next ask — a control reading these fields is its own proposal. And
+**the narrow-viewport table is still deferred**: the 390px overflow was
+re-measured at 230px, unchanged by this batch.
 
 `detail-view-hover` is numbered `6a` because it is not a step in the sequence:
 it corrects four defects in what `runeword-table` shipped, found by comparing the

@@ -463,7 +463,9 @@ describe("what a row carries", () => {
     // `itemTypesLabel` had to stop being a function returning `string`.
     expect(categories).not.toContainElement(restriction);
     expect(restriction).toHaveClass("text-item-restriction");
-    expect(categories).toHaveClass("text-muted");
+    // The colour is on the block around the categories: the words themselves
+    // sit in an inner span so the advice underline can wrap with them.
+    expect(categories.closest(".text-muted")).not.toBeNull();
   });
 
   it("renders no parentheses and no extra line where there is no restriction", () => {
@@ -570,6 +572,21 @@ describe("marking a runeword crafted", () => {
     // The detail view opened and nothing was marked. This is the collision
     // `runeword-table` recorded when it made the name a button.
     expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(onToggle).not.toHaveBeenCalled();
+  });
+
+  it("does not toggle when plain text inside the open detail panel is clicked", async () => {
+    const { onToggle } = renderTable();
+
+    await userEvent.click(nameButtonIn(rowFor("Leaf")));
+    const panel = screen.getByRole("dialog");
+
+    // The panel is a portal: its DOM is outside the row, but its events still
+    // bubble through the component tree into the row's click handler. A reader
+    // clicking the panel's own text — mid-selection, or just resting the
+    // pointer — must not be asked whether to mark the runeword underneath.
+    await userEvent.click(within(panel).getByRole("heading", { name: "Leaf" }));
+
     expect(onToggle).not.toHaveBeenCalled();
   });
 

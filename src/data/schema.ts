@@ -26,6 +26,42 @@ const runewordRuSchema = z.object({
       }),
     )
     .min(1),
+  // Present exactly when the record carries advice, mirroring its paragraphs
+  // count-for-count — enforced on the record, like the property parity. The
+  // sources are not here: links are shared across locales, not translated.
+  advice: z
+    .object({
+      paragraphs: z.array(z.string().min(1)).min(1),
+    })
+    .optional(),
+});
+
+/**
+ * The three usefulness judgements, a closed set. Values are locale-independent
+ * dataset content; the words shown for them live in the display-copy layer.
+ * Closed because a free-text label would drift into prose that belongs in
+ * `advice`.
+ */
+export const usefulnessValues = ["meta", "situational", "chronicle"] as const;
+
+/**
+ * A runeword's crafting advice: editorial prose (recommended bases with the
+ * affixes that matter, socket counts, ethereal notes, builds, verdicts) plus
+ * the links it was drawn from. Paragraphs are plain strings — no inline
+ * markup — and the sources render as their own line, so nothing here needs
+ * parsing.
+ */
+const adviceSchema = z.object({
+  paragraphs: z.array(z.string().min(1)).min(1),
+  sources: z
+    .array(
+      z.object({
+        label: z.string().min(1),
+        url: z.url().startsWith("https://"),
+      }),
+    )
+    .min(1)
+    .optional(),
 });
 
 /**
@@ -60,6 +96,11 @@ export const runewordSchema = z
     ladderOnly: z.boolean(),
     patch: z.string().min(1).optional(),
     note: z.string().min(1).optional(),
+    // Decoration on the availability-markers terms: no filter reads these two,
+    // no counter subtracts by them, no logic branches on them. Both are
+    // authored editorial content merged in by the generator, not vendor data.
+    usefulness: z.enum(usefulnessValues).optional(),
+    advice: adviceSchema.optional(),
     // The granted properties, as ordered groups. One uniform shape for all 99
     // records: a runeword whose properties do not vary by base carries a
     // single group, and the three that vary carry one group per base type.
@@ -100,6 +141,30 @@ export const runewordSchema = z
               `never partial.`,
           });
         }
+      }
+
+      if ((ru.advice === undefined) !== (record.advice === undefined)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["ru", "advice"],
+          message:
+            `"${name}": the Russian variant must carry advice exactly when ` +
+            `the record does — a variant is complete or absent, never partial.`,
+        });
+      } else if (
+        ru.advice !== undefined &&
+        record.advice !== undefined &&
+        ru.advice.paragraphs.length !== record.advice.paragraphs.length
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["ru", "advice", "paragraphs"],
+          message:
+            `"${name}": Russian advice carries ` +
+            `${ru.advice.paragraphs.length} paragraphs where the record ` +
+            `carries ${record.advice.paragraphs.length} — rendering pairs ` +
+            `them by position.`,
+        });
       }
 
       if (ru.propertyGroups.length !== propertyGroups.length) {
@@ -199,6 +264,10 @@ export type Runeword = z.infer<typeof runewordSchema>;
 
 export type RunewordRu = z.infer<typeof runewordRuSchema>;
 
+export type Usefulness = (typeof usefulnessValues)[number];
+
+export type RunewordAdvice = z.infer<typeof adviceSchema>;
+
 /**
  * One rune. Tier is a named value rather than the source's `1 | 2 | 3`, because
  * `tier === "rare"` cannot be misread the way `tier === 3` can. The numeric
@@ -229,6 +298,28 @@ export const itemTypeSchema = z.object({
 });
 
 export type ItemType = z.infer<typeof itemTypeSchema>;
+
+/**
+ * The game names the crafting-advice panel highlights. Authored beside the
+ * advice itself and validated here for the reason every other list is: a
+ * hand-edit that empties it should fail loudly rather than quietly stop
+ * highlighting.
+ */
+const termListSchema = z.object({
+  en: z.array(z.string().min(3)),
+  ru: z.array(z.string().min(3)),
+});
+
+export const adviceTermsSchema = z.object({
+  // Empty is legitimate rather than broken: the lists are filtered to the
+  // names a shipped paragraph actually uses, so a dataset carrying no advice
+  // carries no terms either. That the *shipped* lists are full is a coverage
+  // assertion over the real dataset, not a shape one.
+  bases: termListSchema,
+  skills: termListSchema,
+});
+
+export type AdviceTerms = z.infer<typeof adviceTermsSchema>;
 
 export const runewordsSchema = z.array(runewordSchema).min(1);
 export const runesSchema = z.array(runeSchema).min(1);

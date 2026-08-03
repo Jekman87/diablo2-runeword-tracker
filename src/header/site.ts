@@ -42,6 +42,23 @@ export const SITE_NAME = "Diablo II Runeword Tracker";
 export const SITE_URL = "https://jekman87.github.io/diablo2-runeword-tracker/";
 
 /**
+ * The Russian entry point — the second static document, same bundle, Russian
+ * metadata and default locale. Derived rather than written out so the two can
+ * never disagree about the host or the sub-path. Both entries appear in the
+ * sitemap and name each other through `hreflang`; the crawl-files test holds
+ * every copy of both together.
+ */
+export const SITE_URL_RU = `${SITE_URL}ru/`;
+
+/**
+ * The social card `og:image` both documents point at: a 1200×630 PNG committed
+ * to `public/`, so the URL is stable and unhashed — a crawler reads it out of
+ * static HTML that Vite does not rewrite, which is why the file cannot live in
+ * `src/` the way the favicon does.
+ */
+export const OG_IMAGE_URL = `${SITE_URL}og-image.png`;
+
+/**
  * The game patch the tracked runeword list reflects.
  *
  * Moves together with `UPDATE_NOTES_URL` below — they are on adjacent lines for

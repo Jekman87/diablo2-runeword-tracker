@@ -72,10 +72,15 @@ export function CraftedConfirm({
   const locale = useLocale();
   const titleId = useId();
 
-  // The reflex keypress must be the safe one, and cancel is the second button
-  // in the dialog — a tabbable index is not a thing to encode as a number where
-  // getting it wrong changes the player's progress.
+  // The reflex Enter lands on the safe-and-expected action, and the two
+  // directions disagree about which that is. Marking focuses the confirm
+  // action: the player just asked to record a craft, and confirming a misclick
+  // loses nothing that one more click cannot undo. Unmarking focuses Cancel:
+  // there Enter would erase progress, so the reflex preserves it. Refs rather
+  // than tabbable indexes — a number is not a thing to encode where getting it
+  // wrong changes the player's progress.
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const confirmRef = useRef<HTMLButtonElement>(null);
 
   const {
     refs: { setFloating },
@@ -139,7 +144,11 @@ export function CraftedConfirm({
           every centred thing on it jumps sideways at the moment the player's
           attention is being pulled to a question. */}
       <FloatingOverlay className="z-20 grid place-items-center bg-backdrop p-4">
-        <FloatingFocusManager context={context} modal initialFocus={cancelRef}>
+        <FloatingFocusManager
+          context={context}
+          modal
+          initialFocus={pending.crafted ? cancelRef : confirmRef}
+        >
           <div
             ref={setFloating}
             {...interactions.getFloatingProps()}
@@ -173,7 +182,12 @@ export function CraftedConfirm({
                   direction. The first is the label, which names the action
                   rather than saying "OK", so the colour is never the only thing
                   telling the two dialogs apart. */}
-              <button type="button" onClick={onConfirm} className={actionClass}>
+              <button
+                ref={confirmRef}
+                type="button"
+                onClick={onConfirm}
+                className={actionClass}
+              >
                 {action}
               </button>
             </div>
@@ -189,11 +203,17 @@ export function CraftedConfirm({
 // class constant would make one of them the owner of the other's styling, and
 // the string is the same three decisions the whole interface makes about a
 // pressable chip.
+//
+// `min-w-24` with centred content on all three: the labels differ wildly in
+// length between the locales — the English "Add" is three letters where the
+// Russian is eight — and without a floor the affirmative action renders as a
+// sliver beside its Cancel. One floor shared by every button in the dialog, so
+// no action is ever the visibly smaller target.
 const ACTION =
-  "inline-flex h-9 cursor-pointer items-center rounded-xs bg-muted-dark px-3 text-[14px] text-body hover:text-gold-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-light";
+  "inline-flex h-9 min-w-24 cursor-pointer items-center justify-center rounded-xs bg-muted-dark px-3 text-[14px] text-body hover:text-gold-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-light";
 
 const CONFIRM =
-  "inline-flex h-9 cursor-pointer items-center rounded-xs bg-confirm-action px-3 text-[14px] text-gold-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-light";
+  "inline-flex h-9 min-w-24 cursor-pointer items-center justify-center rounded-xs bg-confirm-action px-3 text-[14px] text-gold-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-light";
 
 const REMOVE =
-  "inline-flex h-9 cursor-pointer items-center rounded-xs bg-remove-action px-3 text-[14px] text-gold-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-light";
+  "inline-flex h-9 min-w-24 cursor-pointer items-center justify-center rounded-xs bg-remove-action px-3 text-[14px] text-gold-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-light";

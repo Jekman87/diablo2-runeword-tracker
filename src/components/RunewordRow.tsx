@@ -1,23 +1,32 @@
-import { memo, useRef } from "react";
+import { memo, useCallback, useRef } from "react";
 
+import type { OpenChangeReason } from "@floating-ui/react";
 import clsx from "clsx";
 
 import { AvailabilityBadges } from "@/components/AvailabilityBadges";
 import { CraftedToggle } from "@/components/CraftedToggle";
-import { ItemTypes } from "@/components/ItemTypes";
 import { RuneSequence } from "@/components/RuneSequence";
-import {
-  RunewordDetails,
-  type RunewordDetailsProps,
-} from "@/components/RunewordDetails";
+import { RunewordAdvice } from "@/components/RunewordAdvice";
+import { RunewordDetails } from "@/components/RunewordDetails";
 import type { Runeword } from "@/data";
+import { useStrings } from "@/i18n";
 
 export interface RunewordRowProps {
   runeword: Runeword;
   crafted: boolean;
   /** Whether this row's detail panel is the open one. Passed straight through. */
   detailsOpen: boolean;
-  onDetailsOpenChange: RunewordDetailsProps["onOpenChange"];
+  /** Whether this row's advice panel is the open one. Same ownership. */
+  adviceOpen: boolean;
+  /**
+   * Reports a panel opening or closing under its `kind:name` key. One callback
+   * for both kinds, because the table holds one open-panel value for both.
+   */
+  onPanelOpenChange: (
+    key: string,
+    open: boolean,
+    reason: OpenChangeReason | undefined,
+  ) => void;
   /**
    * Asks to mark or unmark the runeword, which opens the confirmation rather
    * than changing anything. The control is handed over so that the dialog can
@@ -59,14 +68,29 @@ export const RunewordRow = memo(function RunewordRow({
   runeword,
   crafted,
   detailsOpen,
-  onDetailsOpenChange,
+  adviceOpen,
+  onPanelOpenChange,
   onToggle,
 }: RunewordRowProps) {
+  const strings = useStrings();
   const control = useRef<HTMLButtonElement>(null);
 
   // Both paths hand over the same node, so a row click and a press on the
   // socket raise the same question and come back to the same control.
   const toggle = () => onToggle(runeword.name, control.current);
+
+  // The two panels report under their `kind:name` keys. Stable as long as the
+  // table's callback is, which the memo above this row depends on.
+  const handleDetailsOpenChange = useCallback(
+    (name: string, open: boolean, reason: OpenChangeReason | undefined) =>
+      onPanelOpenChange(`details:${name}`, open, reason),
+    [onPanelOpenChange],
+  );
+  const handleAdviceOpenChange = useCallback(
+    (name: string, open: boolean, reason: OpenChangeReason | undefined) =>
+      onPanelOpenChange(`advice:${name}`, open, reason),
+    [onPanelOpenChange],
+  );
 
   return (
     <tr
@@ -100,11 +124,29 @@ export const RunewordRow = memo(function RunewordRow({
           <RunewordDetails
             runeword={runeword}
             open={detailsOpen}
-            onOpenChange={onDetailsOpenChange}
+            onOpenChange={handleDetailsOpenChange}
           />
 
           <AvailabilityBadges runeword={runeword} />
         </span>
+
+        {/* The usefulness badge, under the name and visibly subordinate to it —
+            the word from the copy layer, the value from the dataset, the colour
+            from that value's own token so good and junk tell apart at a glance.
+            An outline chip rather than the availability badges' filled form,
+            because it is a different kind of information and should not read as
+            a fourth patch badge. No element at all where the record carries
+            none, so an unlabelled row does not gain an empty line. */}
+        {runeword.usefulness === undefined ? null : (
+          <span
+            className={clsx(
+              "mt-0.5 inline-block rounded-xs border px-1 text-[11px] leading-4",
+              USEFULNESS_BADGE[runeword.usefulness],
+            )}
+          >
+            {strings.advice.usefulness[runeword.usefulness]}
+          </span>
+        )}
 
         {/* The rune sequence, a second time.
 
@@ -130,8 +172,15 @@ export const RunewordRow = memo(function RunewordRow({
         <RuneSequence runeword={runeword} className="flex" />
       </td>
 
-      <td className="p-2 align-top">
-        <ItemTypes runeword={runeword} />
+      {/* `relative`, because the advice trigger inside stretches its hit area
+          over the whole cell — the pointer target is the cell, not the lines
+          of text that happen to be in it. */}
+      <td className="relative p-2 align-top">
+        <RunewordAdvice
+          runeword={runeword}
+          open={adviceOpen}
+          onOpenChange={handleAdviceOpenChange}
+        />
       </td>
 
       <td className="p-2 text-right align-top tabular-nums">
@@ -144,23 +193,42 @@ export const RunewordRow = memo(function RunewordRow({
 /**
  * Whether this click was already somebody else's, and so is not a toggle.
  *
- * Two exclusions, and the first is the one that matters. Without it, clicking a
- * runeword's name would open the detail view **and** raise the crafted
- * confirmation over it — the collision `runeword-table` recorded when it made
- * the name a button. It is
- * written as a selector matched with `closest()` rather than as a comparison
- * against the two controls that exist today, so a control added inside a row
+ * Three exclusions. The first is containment, and it exists because of portals:
+ * the row's floating panels render at the end of the document through
+ * `FloatingPortal`, but a React portal's events still bubble through the
+ * *component* tree — so a click on plain text inside an open panel arrives
+ * here, with a target the row does not contain in the DOM. That click belongs
+ * to the panel, whatever the reader was doing in it (following a link,
+ * selecting a base name to copy), and must not raise the crafted confirmation
+ * underneath. Containment rather than naming the panels, so a panel added
  * later is excluded without this function being revisited.
  *
- * The second: a drag that ends inside the row has selected text, and finishing
+ * The second matters inside the row itself. Without it, clicking a runeword's
+ * name would open the detail view **and** raise the crafted confirmation over
+ * it — the collision `runeword-table` recorded when it made the name a button.
+ * It is written as a selector matched with `closest()` rather than as a
+ * comparison against the controls that exist today, for the same reason as
+ * above.
+ *
+ * The third: a drag that ends inside the row has selected text, and finishing
  * a selection is not a request to mark anything.
  */
 function handledElsewhere(event: React.MouseEvent<HTMLTableRowElement>) {
-  if (event.target instanceof Element && event.target.closest(INTERACTIVE)) {
-    return true;
+  if (event.target instanceof Element) {
+    if (!event.currentTarget.contains(event.target)) return true;
+
+    if (event.target.closest(INTERACTIVE)) return true;
   }
 
   return window.getSelection()?.isCollapsed === false;
 }
 
 const INTERACTIVE = "button, a, input, select, textarea, [role='button']";
+
+// Text and border together, from the judgement's own token: an outline chip is
+// its colour twice, and the two must not be able to disagree.
+const USEFULNESS_BADGE: Record<NonNullable<Runeword["usefulness"]>, string> = {
+  meta: "border-usefulness-meta text-usefulness-meta",
+  situational: "border-usefulness-situational text-usefulness-situational",
+  chronicle: "border-usefulness-chronicle text-usefulness-chronicle",
+};
