@@ -75,7 +75,7 @@ project: `/diablo2-runeword-tracker/robots.txt` and
 - **THEN** it does not disallow the site's content for `*`
 - **AND** it includes a `Sitemap:` line with the absolute sitemap URL
 
-#### Scenario: sitemap.xml lists both entry URLs
+#### Scenario: sitemap.xml lists the entry URL
 
 - **WHEN** `sitemap.xml` is fetched from the deployed site
 - **THEN** it contains the root Pages URL and the `/ru/` URL as `<loc>` entries
