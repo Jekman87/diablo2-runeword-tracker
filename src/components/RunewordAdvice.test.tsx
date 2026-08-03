@@ -98,7 +98,7 @@ describe("the advice panel", () => {
     }
   });
 
-  it("picks the roll ranges out of the prose", async () => {
+  it("colours numbers and game terms the way the detail panel does", async () => {
     const user = userEvent.setup();
     renderTable([record("Spirit")]);
 
@@ -107,13 +107,19 @@ describe("the advice panel", () => {
     );
     const panel = await screen.findByRole("dialog");
 
-    // Spirit's advice names its faster-cast-rate roll; the range is what a
-    // crafter has to pay attention to, so it renders emphasised.
-    const emphasised = [...panel.querySelectorAll("em")].map(
-      (em) => em.textContent,
-    );
+    const textOf = (selector: string) =>
+      [...panel.querySelectorAll(selector)].map((node) => node.textContent);
 
-    expect(emphasised).toContain("25-35%");
+    // Each kind takes the colour the rest of the page uses for it: a number
+    // and a skill in the detail panel's two blues, a base item in the grey the
+    // base column uses, a rune in the table's gold.
+    expect(textOf(".text-property-value")).toContain("25-35%");
+    expect(textOf(".text-muted")).toContain("Monarch");
+    // Runes and runeword names share the table's gold, and Spirit's advice
+    // names itself before it names a rune.
+    expect(textOf(".text-gold-mid")).toContain("Spirit");
+    // The mark is colour, not italic — the terms are too long to slant.
+    expect(panel.querySelectorAll("em")).toHaveLength(0);
   });
 
   it("renders the sources as real links that leave in a new tab", async () => {

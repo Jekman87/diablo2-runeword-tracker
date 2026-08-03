@@ -463,7 +463,9 @@ describe("what a row carries", () => {
     // `itemTypesLabel` had to stop being a function returning `string`.
     expect(categories).not.toContainElement(restriction);
     expect(restriction).toHaveClass("text-item-restriction");
-    expect(categories).toHaveClass("text-muted");
+    // The colour is on the block around the categories: the words themselves
+    // sit in an inner span so the advice underline can wrap with them.
+    expect(categories.closest(".text-muted")).not.toBeNull();
   });
 
   it("renders no parentheses and no extra line where there is no restriction", () => {

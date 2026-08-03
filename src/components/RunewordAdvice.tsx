@@ -21,6 +21,7 @@ import {
 import { ItemTypes } from "@/components/ItemTypes";
 import type { Runeword } from "@/data";
 import { useLocale, useStrings } from "@/i18n";
+import { type AdviceKind, markUpAdvice } from "@/runewords/advice-markup";
 import { displayRuneword } from "@/runewords/display";
 
 export interface RunewordAdviceProps {
@@ -115,15 +116,28 @@ export function RunewordAdvice({
           (the `<td>` is `relative` for exactly this), so hover and tap work
           anywhere in the cell rather than only on the lines of text — a cell
           is the pointer target the column reads as. The panel still anchors to
-          the button, whose box is the cell's content. */}
+          the button, whose box is the cell's content.
+
+          **The dotted underline is the whole discoverability answer**, and it
+          is deliberately the web's oldest one rather than something invented
+          here. A reader who has never used this page cannot be expected to
+          hover a table cell on the chance that something appears; a dotted
+          rule under the text is the one mark that has meant "there is an
+          explanation behind this" since long before tooltips had a name, and
+          it costs no room in a column that has none to give. A glyph was the
+          alternative and was worse on both counts: an `ⓘ` in this cell would
+          sit a few pixels from the `Note!` badge and read as a second badge,
+          and 99 of them would be the loudest thing in the table. Under the
+          pointer the rule brightens to gold with the text, so the cell answers
+          the hover before the panel has finished opening. */}
       <button
         ref={setReference}
         type="button"
         aria-label={strings.advice.label(projected.name)}
-        className="block w-full cursor-pointer text-left before:absolute before:inset-0"
+        className="group block w-full cursor-pointer text-left before:absolute before:inset-0"
         {...interactions.getReferenceProps()}
       >
-        <ItemTypes runeword={runeword} />
+        <ItemTypes runeword={runeword} underlined />
       </button>
 
       {open ? (
@@ -147,7 +161,7 @@ export function RunewordAdvice({
 
               <div className="grid gap-2">
                 {advice.paragraphs.map((paragraph, index) => (
-                  <p key={index}>{withRollRanges(paragraph)}</p>
+                  <p key={index}>{withMarkup(paragraph)}</p>
                 ))}
               </div>
 
@@ -179,38 +193,59 @@ export function RunewordAdvice({
 }
 
 /**
- * A paragraph with its roll ranges picked out — `+1..+6`, `25-35%`,
- * `+2-198` — in emphasis and one step brighter than the prose around them.
- * What varies on the finished item is the part a crafter has to pay attention
- * to, and the ranges are recognisable by shape: two numbers joined by a dash
- * or `..`, nothing else in these texts looks like that (`4-socket` joins a
- * number to a word, `patch 2.6` has no dash). Detected at render time rather
- * than marked up in the dataset, so the advice stays plain strings.
+ * A paragraph with its game terms and its numbers coloured, in the two blues
+ * the detail panel already uses for a runeword's own properties: the words in
+ * `--color-property`, the numbers one step brighter in
+ * `--color-property-value`.
+ *
+ * **Borrowed rather than invented, because the two panels say the same kind of
+ * thing.** The detail panel lists what an item *has*; this one lists what to
+ * look for on the base that carries it. A reader who has learned that blue is
+ * an item's properties reads `+3 to Phoenix Strike` here as a property too,
+ * which it is — one the base has to bring. An emphasis of its own would have
+ * made it a third vocabulary to learn.
+ *
+ * No italic: it was there while only numbers were marked and the mark had to
+ * carry without colour. Colour carries now, and italic on a term as long as
+ * `Лук великой матроны (Grand Matron Bow)` reads as a quotation.
+ *
+ * The splitting is `markUpAdvice`'s, which is where the recognition rules and
+ * their round-trip guarantee live.
  */
-function withRollRanges(text: string): React.ReactNode {
-  const nodes: React.ReactNode[] = [];
-  let last = 0;
+function withMarkup(text: string): React.ReactNode {
+  const segments = markUpAdvice(text);
 
-  for (const match of text.matchAll(ROLL_RANGE)) {
-    if (match.index > last) nodes.push(text.slice(last, match.index));
-    nodes.push(
-      <em key={match.index} className="text-gold-light">
-        {match[0]}
-      </em>,
-    );
-    last = match.index + match[0].length;
-  }
+  if (segments.every((segment) => segment.kind === "text")) return text;
 
-  if (nodes.length === 0) return text;
-  if (last < text.length) nodes.push(text.slice(last));
-
-  return nodes;
+  return segments.map((segment, index) =>
+    segment.kind === "text" ? (
+      segment.text
+    ) : (
+      <span key={index} className={KIND_COLOUR[segment.kind]}>
+        {segment.text}
+      </span>
+    ),
+  );
 }
 
-// Two numbers joined by `..` or a dash, with optional sign and percent —
-// the shape of a variable roll and of nothing else in the advice prose.
-const ROLL_RANGE =
-  /[+±]?\d+(?:[.,]\d+)?\s?(?:\.\.|[-–—])\s?\+?\d+(?:[.,]\d+)?%?/g;
+/**
+ * One colour per kind of thing, each borrowed from wherever the page already
+ * draws that kind.
+ *
+ * A rune is gold because the table labels its rune icons in gold, and a
+ * runeword's name is gold in the column beside them. A base item is muted
+ * because that is how the base column renders one — the same grey the cell
+ * this panel opens from is using at that moment. A skill, a stat and their
+ * numbers are the detail panel's two property blues, because a skill on a base
+ * *is* a property; the numbers take the brighter of the two, exactly as a
+ * property line's values do.
+ */
+const KIND_COLOUR: Record<Exclude<AdviceKind, "text">, string> = {
+  value: "text-property-value",
+  skill: "text-property",
+  base: "text-muted",
+  rune: "text-gold-mid",
+};
 
 type Trigger = "hover" | "focused" | "activated";
 

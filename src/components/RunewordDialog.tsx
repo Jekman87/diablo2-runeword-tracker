@@ -4,6 +4,7 @@ import { RuneSequence } from "@/components/RuneSequence";
 import type { Runeword } from "@/data";
 import { useLocale, useStrings } from "@/i18n";
 import { displayItemType, displayRuneword } from "@/runewords/display";
+import { varyingProperties } from "@/runewords/varies";
 
 export interface RunewordDialogProps {
   /** The runeword being shown. The panel is only rendered while open. */
@@ -38,6 +39,7 @@ export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
   const strings = useStrings();
   const locale = useLocale();
   const projected = displayRuneword(runeword, locale);
+  const varies = varyingProperties(runeword);
 
   return (
     <div className="grid gap-3">
@@ -145,11 +147,18 @@ export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
                 .join(strings.itemTypes.separator)}
             </h4>
           ) : null}
+          {/* Whether a line rolls is a fact about the record, read off the
+              Russian variant whichever language is on screen — see
+              `varyingProperties`. The projected line is what renders; the flag
+              beside it only decides its colour. */}
           <ul className="grid gap-0.5 text-property">
             {projected.propertyGroups[groupIndex].properties.map(
               (line, index) => (
                 <li key={index}>
-                  <PropertyLine line={line} />
+                  <PropertyLine
+                    line={line}
+                    varies={varies[groupIndex][index]}
+                  />
                 </li>
               ),
             )}

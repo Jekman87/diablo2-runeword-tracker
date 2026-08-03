@@ -22,7 +22,11 @@ describe("ItemTypes", () => {
   it("gives the restriction its own colour and its own line", () => {
     render(<ItemTypes runeword={named("Leaf")} />);
 
-    expect(screen.getByText("Staves")).toHaveClass("block", "text-muted");
+    // The categories sit in an inner span so the underline can wrap with them,
+    // so the colour is on the block around the text rather than on it.
+    expect(screen.getByText("Staves").closest(".text-muted")).toHaveClass(
+      "block",
+    );
     expect(screen.getByText("(Not Orbs/Wands)")).toHaveClass(
       "block",
       "text-item-restriction",

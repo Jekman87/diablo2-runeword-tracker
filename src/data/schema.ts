@@ -299,6 +299,28 @@ export const itemTypeSchema = z.object({
 
 export type ItemType = z.infer<typeof itemTypeSchema>;
 
+/**
+ * The game names the crafting-advice panel highlights. Authored beside the
+ * advice itself and validated here for the reason every other list is: a
+ * hand-edit that empties it should fail loudly rather than quietly stop
+ * highlighting.
+ */
+const termListSchema = z.object({
+  en: z.array(z.string().min(3)),
+  ru: z.array(z.string().min(3)),
+});
+
+export const adviceTermsSchema = z.object({
+  // Empty is legitimate rather than broken: the lists are filtered to the
+  // names a shipped paragraph actually uses, so a dataset carrying no advice
+  // carries no terms either. That the *shipped* lists are full is a coverage
+  // assertion over the real dataset, not a shape one.
+  bases: termListSchema,
+  skills: termListSchema,
+});
+
+export type AdviceTerms = z.infer<typeof adviceTermsSchema>;
+
 export const runewordsSchema = z.array(runewordSchema).min(1);
 export const runesSchema = z.array(runeSchema).min(1);
 export const itemTypesSchema = z.array(itemTypeSchema).min(1);
