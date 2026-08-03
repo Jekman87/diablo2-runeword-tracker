@@ -13,7 +13,7 @@ entry is the same in every environment. A first visit SHALL NOT write a
 preference, and entering through `/ru/` SHALL NOT redirect or rewrite the
 address: the two entries are two front doors to one page, not two pages.
 
-#### Scenario: A first visit at the root opens in English
+#### Scenario: A first visit opens in English
 
 - **WHEN** the application loads at the root entry with no stored preference
 - **THEN** the interface renders in English, regardless of the browser's

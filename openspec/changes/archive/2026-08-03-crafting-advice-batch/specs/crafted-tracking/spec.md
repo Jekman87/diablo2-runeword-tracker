@@ -80,6 +80,14 @@ canonical English name.
 - **THEN** focus is on the crafted-state control of the runeword that was asked
   about
 
+#### Scenario: The reflex keypress is the safe one
+
+- **WHEN** the confirmation opens
+- **THEN** the focused control is the one that cannot cost the player anything:
+  the confirm action when marking, because a mark confirmed by accident is one
+  click from being undone, and Cancel when unmarking, because a removal
+  confirmed by accident is progress gone
+
 #### Scenario: Enter in the mark dialog marks
 
 - **WHEN** the mark confirmation opens and Enter is pressed with nothing else

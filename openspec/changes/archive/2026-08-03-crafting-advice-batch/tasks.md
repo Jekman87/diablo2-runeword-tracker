@@ -23,7 +23,7 @@
       every runeword with something worth saying, EN and RU
 - [x] 2.5 Run `pnpm data:build`; extend `generate-dataset.test.ts` and the
       dataset tests for the new fields
-- [ ] 2.6 Present the full usefulness/advice table to the owner for review
+- [x] 2.6 Present the full usefulness/advice table to the owner for review
 
 ## 3. Advice surfaces
 
