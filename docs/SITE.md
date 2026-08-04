@@ -56,7 +56,12 @@ screenshot; regenerating it is a manual step, not part of the build.
 Each document head carries a title and one-sentence description in its own
 language (repeated as Open Graph), the canonical link, an `og:locale` pair, and
 one JSON-LD `WebApplication` block — inert data, not a script. "D2R" appears in
-both titles because it is the term players search. A `<noscript>` paragraph
+both titles because it is the term players search, and both descriptions name
+the **Chronicle** («История (Хроники)» in Russian) because that is the in-game
+log the tracker fills and the word a player looking for exactly this tool would
+type. Only three fields are indexable static text — the title, the description
+and the `<noscript>` paragraph — so anything search should match has to be in
+one of them; everything else waits on Google rendering the bundle. A `<noscript>` paragraph
 says the same thing in each body, so a fetch without JavaScript is not an empty
 `#root`. Meta tags and static files only — no analytics and no verification
 script, per the own-origin rule.
@@ -65,6 +70,14 @@ script, per the own-origin rule.
 `https://jekman87.github.io/robots.txt`, which belongs to the user account, not
 to this repository; ours is served one level down and states intent and names
 the sitemap. The sitemap therefore has to be submitted directly.
+
+**`sitemap.xml` holds two `<loc>` entries and nothing else** — no `<lastmod>`,
+because a date written by hand stops being true on the next deploy, and no XML
+comments, because the file's only reader is a third-party parser reporting a
+pass/fail we cannot debug from here. Its two URLs are the two front doors to the
+one page, pinned in `src/header/site.ts` and compared against this file by
+`scripts/crawl-files.test.ts`. Keep the explanations here rather than in the
+served bytes.
 
 After a deploy that includes these files, the owner does this once, by hand:
 
@@ -76,12 +89,18 @@ After a deploy that includes these files, the owner does this once, by hand:
    `<meta name="google-site-verification" …>` line; add it to `index.html`,
    merge, wait for the Pages deploy, then press Verify. The tag is inert markup,
    not a third-party script, so it is allowed here.
-3. Under **Sitemaps**, submit `sitemap.xml` (the path is relative to the
-   property, so the field takes `sitemap.xml`). The sitemap now lists both
-   entries, so no second submission is needed for `/ru/`.
+3. Under **Sitemaps**, submit `sitemap.xml`. The field is prefixed with the
+   property URL, so it takes the bare `sitemap.xml` — **not** a leading slash
+   and not the full URL. The submitted row must read
+   `…/diablo2-runeword-tracker/sitemap.xml`; a row reading `/sitemap.xml`
+   resolves to the account root, which is a 404 and reports «Couldn't fetch»
+   forever. The sitemap lists both entries, so `/ru/` needs no second
+   submission.
 4. Optionally use **URL Inspection → Request indexing** on the page itself to
    skip the wait for the first crawl — worth doing once for `/ru/` too, since
-   it is a new URL.
+   it is a new URL. Inspect the URL **with its trailing slash**: `/ru` is a 301
+   to `/ru/`, and Search Console will not index a redirect, reporting it as a
+   redirect error instead.
 
 Yandex Webmaster is optional and works the same way: add the site, verify with
 its meta tag, submit the same sitemap URL. With the Russian entry live it is
