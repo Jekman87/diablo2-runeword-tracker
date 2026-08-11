@@ -109,7 +109,7 @@ export const runewordTranslations: Record<string, RunewordTranslation> = {
       "https://www.noob-club.ru/index.php?topic=70236.0 — verified against the official localisation; transcribed from https://diablo2-resurrected.ru/runnie-slova-runi.htm#43 — site's Fury entry writes «к рейтингу защиты» for this line — a transcription error; «к рейтингу атаки» per its other entries; site alternates «за удар»/«при ударе»; the dominant «за удар» chosen; site's runewords page names this skill «Берсерк», contradicting its own skill pages where Frenzy is «Ярость» and Berserk is «Берсерк»; the skill pages win; 1 of 10 property lines are not quoted from the official-localisation guide (it predates this record); those follow its conventions, transcribed from diablo2-resurrected.ru",
   },
   "Holy Thunder": {
-    name: "Буря Света",
+    name: "Божественный гром",
     propertyGroups: [
       {
         properties: [
@@ -127,7 +127,7 @@ export const runewordTranslations: Record<string, RunewordTranslation> = {
       },
     ],
     source:
-      "https://www.noob-club.ru/index.php?topic=70236.0 — verified against the official localisation; transcribed from https://diablo2-resurrected.ru/runnie-slova-runi.htm#5 — charge-skill line absent from the primary source's entry; phrased after its conventions, skill names verified against the primary source's own class skill pages (diablo2-resurrected.ru/Skills/)",
+      "https://www.noob-club.ru/index.php?topic=70236.0 — verified against the official localisation; transcribed from https://diablo2-resurrected.ru/runnie-slova-runi.htm#5 — charge-skill line absent from the primary source's entry; phrased after its conventions, skill names verified against the primary source's own class skill pages (diablo2-resurrected.ru/Skills/); name corrected by the project owner from the sources' «Буря Света» to the official «Божественный гром»",
   },
   Honor: {
     name: "Честь",
