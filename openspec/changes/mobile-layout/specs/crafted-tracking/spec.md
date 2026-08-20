@@ -70,3 +70,44 @@ while it is not focused.
 
 - **WHEN** an uncrafted runeword is confirmed marked and then confirmed unmarked
 - **THEN** the runeword is back in the state it started in
+
+## ADDED Requirements
+
+### Requirement: A dialog that dims the page absorbs the press that dismisses it
+
+A dialog that dims the page behind it SHALL be dismissed by an outside press only
+once that press completes, so that the dim is still in place when the release is
+hit-tested and the page beneath never receives the press, its release, or the
+click they produce.
+
+Dismissing on the press itself takes the dim away between the press and the
+release. The browser then hit-tests the release against whatever the dim was
+covering and delivers it there — so one tap both closes the dialog and acts on the
+page behind it. Observed on a phone-sized viewport: a tap on the dim closed the
+mark confirmation and opened the advice panel of the row underneath, and a few
+pixels away it raised the same question again for a different runeword.
+
+This holds for every dialog on the page that dims what is behind it, because a dim
+exists to absorb the press and one that does not is worse than none: it looks like
+a shield and behaves like glass.
+
+#### Scenario: The press alone does not dismiss
+
+- **WHEN** a press begins on the dim behind an open dialog
+- **THEN** the dialog is still open
+
+#### Scenario: The completed press dismisses
+
+- **WHEN** that press is released on the dim
+- **THEN** the dialog closes, cancelling rather than confirming
+
+#### Scenario: Nothing behind the dim is acted on
+
+- **WHEN** a tap on the dim lands over a runeword's row
+- **THEN** no runeword is marked or unmarked, no panel opens, and no second
+  confirmation is raised
+
+#### Scenario: The other routes out are unaffected
+
+- **WHEN** the dialog is dismissed by Escape or by its own cancelling control
+- **THEN** it closes as it did before

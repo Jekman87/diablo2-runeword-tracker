@@ -81,6 +81,20 @@
 - [x] 7.5 Check the built stylesheet has not grown a class nothing renders — the
       scan is scoped to `src/` and prose in the new comments is read for candidates
 
+## 9. Found in the owner's review of the mobile view
+
+- [x] 9.1 Move the back-to-top control into the corner below `md` — `bottom-40`
+      was measured against a crafted toggle that a narrow row no longer presents,
+      so it was holding the button over the rows for a reason that had gone; the
+      desktop inset is unchanged
+- [x] 9.2 Fix the tap that goes through a dialog's dim: dismiss on the completed
+      press rather than on the press, in all three dialogs that dim the page —
+      the confirmation, the import confirmation and the donation dialog
+- [x] 9.3 Cover it with a test that fails without the fix: the press alone leaves
+      the dialog open, the release closes it
+- [x] 9.4 Re-verify in the browser at 390px with touch, and re-measure both
+      viewports so neither fix moved the layout
+
 ## 8. Records and hand-off
 
 - [x] 8.1 Move the narrow-viewport entry in `IDEAS.md` out of **Not this phase**

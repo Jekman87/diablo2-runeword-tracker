@@ -1253,6 +1253,26 @@ The reference, for calibration, is 390px wide and 6 130px tall with 51px rows at
 the same viewport. It carries no crafted column and no usefulness badge, which is
 most of the remaining difference.
 
+### Found in review, and fixed here
+
+Two defects the owner hit reading the mobile view. Both are in the change.
+
+- **The back-to-top control sat in the middle of the reading area.** `bottom-40`
+  was chosen so it would clear the last row's crafted toggle at 390px — and a
+  narrow row has no toggle to clear any more, so the number was holding the button
+  over the rows for a reason that had gone. In the corner below `md`
+  (`bottom-8 right-4`), unchanged above it.
+- **A tap on a dialog's dim went through to the page.** `useDismiss` closes on
+  `pointerdown` by default, which unmounts the dim between the press and the
+  release; the browser then hit-tests the release against whatever the dim was
+  covering. Traced at 390px with touch: `pointerdown → div.z-20`, then
+  `mousedown / mouseup / click → button [in row]` — one tap closed the
+  confirmation and opened that row's advice panel, or a few pixels over raised the
+  crafted question again for a different runeword. Fixed by dismissing on the
+  completed press (`outsidePressEvent: "click"`) in all three dialogs that dim the
+  page. **It was never a narrow-viewport defect** — it needs a touch device, not a
+  narrow one — but a phone is where it is met.
+
 ### Settled while building
 
 - 390px is the **stated minimum supported width**. Below it the page degrades and
