@@ -44,6 +44,17 @@ bases they still need.
   with attribution: the serif font, the black theme, the custom cursor, the
   rune sprite, and the property-list styling. Everything else — table layout,
   panels, controls — is ours, as long as it still reads as Diablo II.
+- **The third-party rule, as narrowed in the Season 15 round.** It read "the page
+  makes no third-party request" until a page-view counter shipped, and a rule
+  that a document keeps asserting while the code contradicts it is worse than one
+  that admits its exception. What holds now: **no cookies, no consent dialog,
+  nothing that reads or transmits the reader's progress, and no third-party
+  script beyond one cookieless counter.** That still refuses a tag manager, an
+  advertising script, a session recorder, a hosted donation widget and a
+  verification script — the last because verification is available as inert
+  markup. Assets stay self-hosted: no font service, no CDN, no remote image.
+  The counter is Cloudflare Web Analytics; see
+  [`docs/SITE.md`](docs/SITE.md) for what its numbers are and are not worth.
 
 ---
 
@@ -96,7 +107,8 @@ Trade velocity — the span of the newest 50 completed trades — ran from Call 
 Arms at 8 hours to Radiance at four years, and matched the owner's own sense of
 what is worth crafting closely enough to use as the second signal behind the
 Maxroll tiers. It is a **one-time offline research input**, never a runtime
-integration: the page still makes no third-party request.
+integration: the page asks Maxroll and Traderie for nothing at run time, and the
+reader's browser never contacts them.
 
 **A dataset field that carries an opinion still has to be decoration.** The
 usefulness label and the advice prose are `runeword-dataset`'s newest fields and
@@ -326,7 +338,7 @@ nobody owns it.
   use site, so no 33-rule stylesheet and no stored sprite index exist to drift
   (this also closes the question `runeword-dataset` left open). And the font is
   **self-hosted**, not loaded from Google Fonts as the reference does, so the
-  page makes no third-party request. Bellefair has no Cyrillic subset, so Phase
+  page requests no third-party font. Bellefair has no Cyrillic subset, so Phase
   2's Russian text inherits a font question — see `docs/REFERENCE.md`.
 
 - **`runeword-table`** — the table: columns, badges with tooltips, the
@@ -1213,8 +1225,8 @@ idea anyone owns, so this ships with a texture of our own — generated, or a CS
 gradient-and-noise ground with no image at all — and diablo2.io is named as the
 inspiration, not as a source. Whoever proposes this decides which, and the
 no-image version is worth costing first: `d2-theme`'s self-hosting rule exists so
-the page makes no third-party request, and a ground that is pure CSS also makes no
-request of its own.
+the page fetches no asset from anyone else, and a ground that is pure CSS also
+makes no request of its own.
 
 **It reopens `detail-panel-tooltip`, and the reason inverts cleanly.** That change
 moved the panel's ground from `#200000` to an opaque `#17171a` because "a
@@ -1523,35 +1535,48 @@ Deliberately not borrowed: monorepo, Turborepo, Next.js, tRPC.
 **The progress bar always shows all 99.** No toggle, no shifting denominator.
 The Chronicle goal is 99, so that is the number.
 
-Availability is **presentation only**. The three fields below exist to render
-a badge with a tooltip and nothing else — no filter reads them, no counter
-subtracts them, no logic branches on them. They are optional, and a row with
-none of them set simply shows no badges.
+Availability is **presentation only**. The fields below exist to render a badge
+with a tooltip and nothing else — no filter reads them, no counter subtracts
+them, no logic branches on them. They are optional, and a row with none of them
+set simply shows no badges.
 
-| Field        | Meaning                                          |
-| ------------ | ------------------------------------------------ |
-| `ladderOnly` | craftable on ladder only — 9 runewords           |
-| `patch`      | version that introduced it, e.g. `2.6`, `3.0`    |
-| `note`       | free-form caveat, for season-specific exceptions |
+| Field   | Meaning                                          |
+| ------- | ------------------------------------------------ |
+| `patch` | version that introduced it, e.g. `2.6`, `3.0`    |
+| `note`  | free-form caveat, for season-specific exceptions |
 
-The eight ladder-only ones: Bulwark, Cure, Ground, Hearth, Temper,
-Metamorphosis, Mania, Hysteria. (Mosaic is no longer flagged: its note says
-it is disabled on ladder.)
+**`ladderOnly` was the third, and patch 3.3 ended it** (Season 15, August 2026).
+The eight it applied to — Bulwark, Cure, Ground, Hearth, Temper, Metamorphosis,
+Mania, Hysteria — were released into Non-Ladder, and the restriction that
+outlived the patch is a Lord of Destruction one, which is not the mode this
+tracker mirrors. The field, the badge, its copy and its palette tokens all went;
+the vendor snapshot keeps its own flag for the day a patch needs one again. See
+[`docs/DATA-SOURCES.md`](docs/DATA-SOURCES.md).
+
+The removal is worth reading as a vindication rather than a loss. Because
+availability was decoration from the first proposal, a patch that invalidated a
+third of it cost a data regeneration, a badge and twenty-four sentences of prose
+— and touched no filter, no counter and no denominator. Had any of it been logic,
+this would have been a bug hunt instead of an edit.
 
 ### Why `note` has to be a data field and not hardcoded logic
 
-**Mosaic** is the case that proves it. The vendor marks it ladder-only and
-patch 2.6, then adds a note that it is disabled on ladder and craftable only
-offline / non-ladder. Showing an `L` badge next to that note would contradict
-the caveat, so the shipped dataset clears the ladder flag and keeps the note.
+**Mosaic** is the case that proves it. The vendor marks it patch 2.6 and adds a
+note that it is disabled on ladder and craftable only offline / non-ladder — a
+restriction that has now outlasted three seasons and the removal of the ladder
+flag itself. It survives because it is prose in a data field: the one place a
+season-shaped fact can live without turning into a rule.
 
 Availability flips between seasons, so it is information for the player to
 read, not a rule for the app to enforce. Keeping it purely decorative is what
 makes it safe: edit the data when a badge goes stale; do not encode season
-rules in application logic that would silently miscount progress.
+rules in application logic that would silently miscount progress. The same rule
+now covers the advice prose, which stated ladder availability in two languages
+and went stale exactly as a badge would have: prose may restate a restriction
+only where the record's own note carries it.
 
-Badges carry a tooltip with the full text, exactly as the reference does —
-`L` with "Ladder Only", the patch number, and `Note!` with the caveat.
+Badges carry a tooltip with the full text, as the reference does — the patch
+number, and `Note!` with the caveat.
 
 ## Open questions
 
@@ -1565,3 +1590,23 @@ somewhere around change 7.
 **About the interface, they are inside [Phase 5](#phase-5--the-current-phase)** —
 each group names the questions its proposal has to answer, and the footer's wording
 and the donation instrument are settled while they are built rather than here.
+
+### Parked, deliberately
+
+Neither is a defect, and both were investigated far enough to stop. Recorded so
+the next round does not rediscover them from scratch.
+
+**An account-root repository (`jekman87.github.io`).** `https://jekman87.github.io/`
+serves nothing — GitHub returns "Site not found" — which is why Google shows no
+favicon for a result on this sub-path, and why a Search Console property where
+`/sitemap.xml` means what the submit field implies cannot exist. One small
+repository with a `favicon.ico`, a `robots.txt` and perhaps a card page would
+close both. Costed and parked by the owner on 2026-08-20; the favicon is
+cosmetic and the sitemap status is ignorable, so neither justifies a second
+repository yet.
+
+**The Search Console sitemap status.** «Couldn't fetch», against a sitemap
+verified sound from outside — 200, `application/xml`, well-formed, nothing
+disallowed, both entry URLs indexed. There is nothing in this repository to fix,
+and the fix that exists is the root repository above. The verification and what
+not to do about it are in [`docs/SITE.md`](docs/SITE.md).
