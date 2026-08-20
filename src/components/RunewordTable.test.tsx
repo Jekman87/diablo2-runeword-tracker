@@ -282,9 +282,9 @@ describe("sorting from the header row", () => {
 
     // Auto layout sizes a column by the widest thing in it, so the columns were a
     // function of whichever rows a filter left behind. From `md` up the widths come
-    // from the header row and the body is ignored; below it the runes collapse into
-    // the name cell and no percentage survives six 40px icons, so that width keeps
-    // the layout it always had.
+    // from the header row and the body is ignored; below it the table has four
+    // columns in 390px and lets the content decide, which is the layout it always
+    // had there.
     expect(container.querySelector("table")).toHaveClass(
       "table-auto",
       "md:table-fixed",
@@ -302,6 +302,68 @@ describe("sorting from the header row", () => {
       "md:w-[24%]",
       "md:w-[18%]",
     ]);
+  });
+
+  it("withdraws the crafted column below the breakpoint", () => {
+    renderTable();
+
+    const [crafted] = screen.getAllByRole("columnheader");
+
+    // Withdrawn by width and by hiding its control, not by hiding the cell —
+    // the cell has to stay so the header row and the body rows keep declaring
+    // the same number of columns. A `<th>` fewer than the rows beneath it
+    // misaligns every column after the difference.
+    expect(crafted).toHaveClass("w-0", "md:w-[9%]");
+    expect(crafted).toHaveClass("[&>button]:hidden", "md:[&>button]:flex");
+  });
+
+  it("keeps every row's crafted control whatever the column does", () => {
+    renderTable();
+
+    // The column is a presentation; the button is the only way to mark a
+    // runeword without a pointer, and a narrow viewport is a desktop window
+    // dragged under 768px as readily as it is a phone. `src/index.css` clips
+    // the box there rather than hiding it, so it stays in the tab order.
+    const controls = screen.getAllByRole("button", { pressed: false });
+
+    expect(controls).toHaveLength(orderedRunewords.length);
+    expect(
+      controls.every((control) => control.classList.contains("crafted-toggle")),
+    ).toBe(true);
+  });
+
+  it("gives the band's left corner to whichever column is first on screen", () => {
+    renderTable();
+
+    const [crafted, name] = screen.getAllByRole("columnheader");
+
+    // The corner belongs to the band's edge, and both cells can be the edge:
+    // the crafted column from `md` up, the name column below it.
+    expect(crafted).toHaveClass("rounded-tl-xs");
+    expect(name).toHaveClass("rounded-tl-xs", "md:rounded-tl-none");
+  });
+
+  it("gives a short heading only to the column that needs one", () => {
+    renderTable();
+
+    const headers = screen.getAllByRole("columnheader");
+    const shortForms = headers.map(
+      (header) =>
+        within(header).getByRole("button").querySelector("[class~='md:hidden']")
+          ?.textContent,
+    );
+
+    // Only `Required Level` sets its own column's width — it is
+    // `whitespace-nowrap` — and only it does not fit. A short form for a heading
+    // that fits would be a second name for the same column.
+    expect(shortForms).toEqual([
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      en.table.columnRequiredLevelShort,
+    ]);
+    expect(headingOf(headers[4])).toBe(en.table.columnRequiredLevel);
   });
 
   it("holds the header band at the top of the viewport", () => {
@@ -389,14 +451,14 @@ describe("what a row carries", () => {
   it("keeps rune order and repeats — `Infinity` is Ber Mal Ber Ist", () => {
     renderTable();
 
-    // Twice over, because the runes are rendered for both breakpoints. Reading
-    // one cell rather than the row is what isolates a single sequence.
-    const sequences = runeSequencesIn(rowFor("Infinity"));
+    // Twice over, because the runes are rendered for both breakpoints — and in
+    // two forms, because the narrow copy draws the names alone. Both have to
+    // carry the same recipe or the phone and the desktop disagree about what a
+    // runeword takes.
+    const row = rowFor("Infinity");
 
-    expect(sequences).toEqual([
-      ["Ber", "Mal", "Ber", "Ist"],
-      ["Ber", "Mal", "Ber", "Ist"],
-    ]);
+    expect(runeSequencesIn(row)).toEqual([["Ber", "Mal", "Ber", "Ist"]]);
+    expect(runeNamesIn(row)).toEqual(["Ber", "Mal", "Ber", "Ist"]);
   });
 
   it("draws every rune's name beside its icon", () => {
@@ -423,7 +485,9 @@ describe("what a row carries", () => {
     // word, so its meaning has nowhere else to live.
     const icons = [...rowFor("Infinity").querySelectorAll(".rune-icon")];
 
-    expect(icons).toHaveLength(8);
+    // Four rather than eight: only the wide copy draws icons now, because the
+    // narrow one is the names alone.
+    expect(icons).toHaveLength(4);
     expect(icons.every((icon) => icon.hasAttribute("aria-hidden"))).toBe(true);
     expect(icons.filter((icon) => icon.hasAttribute("aria-label"))).toEqual([]);
     expect(icons.filter((icon) => icon.getAttribute("role") === "img")).toEqual(
@@ -672,7 +736,19 @@ function named(name: string) {
  * of the label inside it.
  */
 function headingOf(header: HTMLElement) {
-  return within(header).getByRole("button").firstChild?.textContent;
+  const button = within(header).getByRole("button");
+
+  // A column with a short form renders both, one hidden on each side of `md`.
+  // jsdom applies no media query, so both are in the document; the full form is
+  // the one the wide layout presents and the one the accessible name is built
+  // from, so it is the heading this reads. Matched by the class that reveals it
+  // above the breakpoint rather than by position, so reordering the two forms
+  // cannot silently change what this returns.
+  // `:not([aria-hidden])` because the arrow the header reserves is also
+  // revealed at `md` and would otherwise be the first match.
+  const full = button.querySelector("[class~='md:block']:not([aria-hidden])");
+
+  return full === null ? button.firstChild?.textContent : full.textContent;
 }
 
 /** The rendered rows' names, in the order they appear. */
@@ -742,6 +818,27 @@ function rowsByName() {
  * icons are decoration now, and reading the visible name is what proves the
  * sequence is legible to somebody who does not know the runes by silhouette.
  */
+/**
+ * The rune names in the row's narrow-viewport copy — the sequence that has no
+ * icons, drawn inside the name cell.
+ *
+ * Found by the absence of icons rather than by cell position, so a column added
+ * before it does not silently make this read something else.
+ */
+function runeNamesIn(row: Element) {
+  const cell = [...row.querySelectorAll("td")].find(
+    (candidate) =>
+      candidate.querySelector(".rune-icon") === null &&
+      candidate.querySelector("[class~='md:hidden']") !== null,
+  );
+
+  const sequence = cell?.querySelector("[class~='md:hidden']");
+
+  return sequence === null || sequence === undefined
+    ? []
+    : [...sequence.children].map((item) => item.textContent);
+}
+
 function runeSequencesIn(row: Element) {
   return [...row.querySelectorAll("td")]
     .map((cell) =>
