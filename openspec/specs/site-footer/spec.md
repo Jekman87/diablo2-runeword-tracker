@@ -73,8 +73,11 @@ alone is ambiguous between networks, and a reader who sends on the wrong one los
 the money.
 
 No third-party script, widget, iframe or image loaded from another origin SHALL be
-used for this. The page makes no third-party requests by an existing requirement,
-and a donation button is not a reason to start.
+used for this. That prohibition SHALL stand on its own terms rather than resting on
+a claim about the whole page: the page now carries one cookieless counter, and a
+donation control is a different proposition entirely — it would load an identified
+third party's interface into the page, on the one surface where a reader is about
+to move money and has to be able to see who is asking.
 
 The value committed SHALL be a receive address and SHALL NOT be any form of secret.
 
@@ -93,7 +96,8 @@ The value committed SHALL be a receive address and SHALL NOT be any form of secr
 #### Scenario: Nothing is loaded from another origin
 
 - **WHEN** the network requests the page makes are inspected
-- **THEN** the footer has added none
+- **THEN** the footer has added none, and the only cross-origin request the page
+  makes at all is the page-view counter declared elsewhere
 
 #### Scenario: The committed value is not a secret
 

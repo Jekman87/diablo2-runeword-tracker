@@ -160,6 +160,13 @@ copy against the constant and rejects a value that is not a real token. The
 token is public by nature: it ships in the page, it names a dashboard rather than
 opening one.
 
+**One owner action, once, after the first deploy that carries the beacon:** open
+the Web Analytics dashboard and confirm it is receiving anything at all — a load
+from a browser with no blocker should appear within a few minutes, under
+`/diablo2-runeword-tracker/`. Nothing in the repository can check this, and a
+counter that silently reports nowhere looks exactly like a counter with no
+visitors.
+
 **What the numbers are worth.** Cloudflare keys on hostname, so the dashboard
 shows `/diablo2-runeword-tracker/` and `/diablo2-runeword-tracker/ru/` as
 separate paths — which is how the English/Russian split is read. Anything else

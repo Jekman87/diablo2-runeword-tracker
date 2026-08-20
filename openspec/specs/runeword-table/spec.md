@@ -214,8 +214,12 @@ restriction SHALL render no parentheses, no empty ones and no empty line.
 ### Requirement: Availability badges
 
 A row SHALL render a badge for each availability field the runeword carries: the
-patch that introduced it, a ladder-only marker, and a note marker where a caveat
-exists. A runeword carrying none SHALL render no badges rather than placeholders.
+patch that introduced it, and a note marker where a caveat exists. A runeword
+carrying none SHALL render no badges rather than placeholders.
+
+No ladder-only marker SHALL be rendered. The dataset no longer carries the flag
+one would read, and a legend entry for a marker the page cannot show is worse
+than no entry at all.
 
 A patch badge SHALL be coloured according to the patch it names, so that the era a
 runeword comes from is readable without reading the number. Patches belonging to
@@ -229,27 +233,32 @@ field — which colour a patch badge takes — is not such logic, and is permitt
 what is forbidden is any behaviour that changes what the application counts,
 orders, filters or reports.
 
-#### Scenario: Patch and note render together without a ladder marker
+#### Scenario: Patch and note render together
 
 - **WHEN** the row for `Mosaic` is read
-- **THEN** it shows the patch `2.6` and a note marker, and no ladder-only marker
+- **THEN** it shows the patch `2.6` and a note marker, and nothing else
 
 #### Scenario: A runeword with no availability fields shows no badges
 
-- **WHEN** the row for a runeword that predates patch tracking and is not
-  ladder-only is read
+- **WHEN** the row for a runeword that predates patch tracking is read
 - **THEN** it renders no badge and no empty badge slot
+
+#### Scenario: No row carries a ladder marker
+
+- **WHEN** every rendered row is inspected
+- **THEN** none carries a ladder-only marker, and the badge component offers no
+  variant that would draw one
 
 #### Scenario: The badge count matches the data
 
-- **WHEN** the rendered rows carrying a ladder-only marker are counted
-- **THEN** there are exactly 8, matching the dataset
+- **WHEN** the rendered rows carrying a note marker are counted
+- **THEN** there is exactly 1, matching the dataset
 
 #### Scenario: No logic reads an availability field
 
 - **WHEN** the row ordering, and any counting, filtering or progress calculation
   in the application, are inspected
-- **THEN** none reads the ladder-only flag, the patch or the note
+- **THEN** none reads the patch or the note
 
 #### Scenario: Patches from different eras are told apart
 
@@ -260,28 +269,14 @@ orders, filters or reports.
 
 - **WHEN** a `1.10` badge and a `1.11` badge are compared
 - **THEN** they render in the same colour, because the project treats them as one
-  era
-
-#### Scenario: An unrecognised patch renders plainly
-
-- **WHEN** a runeword carries a patch value the project has chosen no colour for
-- **THEN** its badge renders with no colour applied, rather than borrowing another
-  patch's colour or silently losing its styling
-
-#### Scenario: The colour is not assembled from the patch value
-
-- **WHEN** the mapping from patch value to colour is inspected
-- **THEN** it is an explicit enumeration of the values the project has decided on,
-  not a class name built from the patch string, because a name built at runtime is
-  invisible to the stylesheet's build-time scan and would be stripped
 
 ### Requirement: Availability information is reachable without a pointer
 
 Every fact a badge encodes SHALL be available to a reader who cannot hover: the
 badge SHALL expose its full meaning to assistive technology rather than only as a
-pointer tooltip, and the runeword's detail view SHALL restate the patch, the
-ladder status and the note in full. A one-letter marker whose only explanation is
-a hover tooltip SHALL NOT be the sole presentation of a fact.
+pointer tooltip, and the runeword's detail view SHALL restate the patch and the
+note in full. A short marker whose only explanation is a hover tooltip SHALL NOT
+be the sole presentation of a fact.
 
 On a pointer, a table-row badge SHALL also show that same meaning in a Floating UI
 tooltip whose surface matches the detail panel (theme tokens, not the browser's
@@ -291,8 +286,8 @@ already states the meaning — SHALL NOT open a tooltip.
 
 #### Scenario: A badge states its meaning to assistive technology
 
-- **WHEN** the ladder-only marker is inspected by its accessible name
-- **THEN** the name is the full meaning, not the single letter drawn on screen
+- **WHEN** a patch badge is inspected by its accessible name
+- **THEN** the name is the full meaning, not the bare version drawn on screen
 
 #### Scenario: A pointer tip matches the detail panel, not the OS
 
