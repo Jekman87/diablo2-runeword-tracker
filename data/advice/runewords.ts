@@ -2117,11 +2117,11 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
     advice: {
       paragraphs: [
         "The Martial Arts assassin claw: its 50% chance not to consume charges keeps Phoenix Strike and the other charge-up skills rolling, and the classic setup is one Mosaic in each hand. The base does half the work here — nearly every completed trade is a 3-socket Greater Talons or Runic Talons that already rolls +3 to Phoenix Strike, and the better ones add +1-3 to Claws of Thunder or Blades of Ice on top. The same three runes in a blank claw are worth a fraction of the same runes in a +3 base.",
-        "Important this season: Mosaic is disabled on ladder and can only be crafted offline or non-ladder. Within non-ladder it still trades briskly, and good +MA bases keep their value, so it sells well where it is legal.",
+        "Important this season: Mosaic is disabled on ladder. Both other places still work — non-ladder online and offline — so it is not an offline-only word. Within non-ladder it trades briskly, and good +MA bases keep their value, so it sells well where it is legal.",
       ],
       ru: [
         "Главные когти ассасина боевых искусств: 50% шанс не тратить заряды позволяет Phoenix Strike и другим зарядным навыкам работать без пауз, а классическая сборка — по Мозаике в каждой руке. Половину работы тут делает база: почти в каждой завершённой сделке это Большие когти (Greater Talons) или Рунические когти (Runic Talons) на 3 гнезда, у которых уже есть +3 к Phoenix Strike, а у лучших сверху ещё +1-3 к Claws of Thunder или Blades of Ice. Те же три руны в пустом когте стоят долю от того, что дадут они же в базе с +3.",
-        "Важно в этом сезоне: Мозаика отключён в ладдере — собрать его можно только офлайн или в нон-ладдере. Там он по-прежнему бодро торгуется, а хорошие базы с +MA держат цену, так что продаётся отлично — где разрешён.",
+        "Важно в этом сезоне: Мозаика отключён в ладдере. Оба остальных варианта работают — нон-ладдер онлайн и одиночная игра, — так что это не «только офлайн». В нон-ладдере он бодро торгуется, а хорошие базы с +MA держат цену, так что продаётся отлично — где разрешён.",
       ],
       sources: [
         {
@@ -2135,7 +2135,7 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
       ],
     },
     source:
-      "No Maxroll tier (disabled on ladder per note); 50 trades in ~124h (hot); top bases Greater Talons 21, Runic Talons 20; judgement: dual-wield MA sin claw, non-ladder/offline only; base-affix pass: 44/50 completed listings advertise +3 to Phoenix Strike (Assassin Only), which the runeword does not grant — it is a claw staffmod; secondary Claws of Thunder / Blades of Ice rolls confirm it",
+      "No Maxroll tier (disabled on ladder per note); 50 trades in ~124h (hot); top bases Greater Talons 21, Runic Talons 20; judgement: dual-wield MA sin claw, playable anywhere but ladder — non-ladder online and offline both allowed; base-affix pass: 44/50 completed listings advertise +3 to Phoenix Strike (Assassin Only), which the runeword does not grant — it is a claw staffmod; secondary Claws of Thunder / Blades of Ice rolls confirm it",
   },
   Metamorphosis: {
     usefulness: "situational",

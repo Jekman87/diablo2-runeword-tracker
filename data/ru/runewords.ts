@@ -1966,7 +1966,13 @@ export const runewordTranslations: Record<string, RunewordTranslation> = {
     // Project-authored: the vendor note named Season 13, which went stale when
     // the disable continued. "В сезоне" matches the English "on ladder" without
     // pinning a number that will age out again.
-    note: "Отключено в сезоне! Можно создать в одиночной игре вне ладдера.",
+    //
+    // Corrected on review with the English note. This read «Можно создать в
+    // одиночной игре вне ладдера» — one place, offline, qualified by "outside
+    // ladder" — where two are allowed: non-ladder online and single-player
+    // offline. The Russian was the worse of the two, because it named only the
+    // offline case explicitly.
+    note: "Отключено в сезоне! Вне сезона и в одиночной игре собрать можно.",
     propertyGroups: [
       {
         properties: [

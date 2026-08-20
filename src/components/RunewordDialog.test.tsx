@@ -219,7 +219,9 @@ describe("what the panel presents", () => {
     // The note is where a ladder restriction lives now, as the dataset's own
     // text rather than as a second sentence the strings layer supplies.
     expect(
-      panel.getByText("Disabled on ladder! Can be crafted offline non-ladder."),
+      panel.getByText(
+        "Disabled on ladder! Can be crafted in non-ladder or offline.",
+      ),
     ).toBeInTheDocument();
   });
 
