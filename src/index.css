@@ -557,6 +557,25 @@
      half; this is the half that owns the colour. */
   border-start-start-radius: var(--radius-xs);
   border-start-end-radius: var(--radius-xs);
+
+  /* And four pixels of band to the left of the band, because a crafted row's
+     accent showed beside it while scrolling.
+
+     The accent is `border-l-4` on the `<tr>`. Under `border-collapse: collapse`
+     half of a collapsed border is painted outside the table's box — measured at
+     1280px, the table's box starts at 80.5 and the `<thead>` at 82.5 — so the
+     accent occupies a 4px strip that the band's background never covered. Worse,
+     collapsed borders do not travel with a sticky row group, so the strip belongs
+     to whichever row happens to be under the header: a gold line ran the full
+     height of the band, and only while scrolling.
+
+     Giving the header row its own left border does not fix it — both borders live
+     in the table's collapsed-border layer and the header's does not move with the
+     header. A shadow does, because it is painted with this element and this
+     element has a stacking context of its own. No blur and no spread: it is the
+     band's own colour, extended by exactly the width the accent is, and it follows
+     the corner radius above it. */
+  box-shadow: -4px 0 0 var(--color-blood);
 }
 
 /* The search field.
