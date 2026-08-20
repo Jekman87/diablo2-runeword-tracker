@@ -193,7 +193,7 @@ export function RunewordTable({
             label={strings.table.columnCrafted}
             direction={directionOf("crafted", sortKey, sortDirection)}
             onSort={onSort}
-            className="w-0 rounded-tl-xs md:w-[9%] [&>button]:hidden md:[&>button]:flex"
+            className="w-0 rounded-tl-xs md:w-[13%] lg:w-[9%] [&>button]:hidden md:[&>button]:flex"
           />
           {/* The band's left corner belongs to whichever column is first on
               screen, so below `md` it is this one and from `md` up it is the
@@ -205,7 +205,7 @@ export function RunewordTable({
             label={strings.table.columnName}
             direction={directionOf("name", sortKey, sortDirection)}
             onSort={onSort}
-            className="rounded-tl-xs md:w-[20%] md:rounded-tl-none"
+            className="rounded-tl-xs md:w-[19%] md:rounded-tl-none lg:w-[20%]"
           />
           {/* Collapses with the cells it heads. Sorts on socket count, which is
               this column's readable magnitude — sorting the sequence as text
@@ -215,20 +215,21 @@ export function RunewordTable({
             label={strings.table.columnRunes}
             direction={directionOf("runes", sortKey, sortDirection)}
             onSort={onSort}
-            className="hidden md:table-cell md:w-[29%]"
+            className="hidden md:table-cell md:w-[37%] lg:w-[29%]"
           />
           <SortableHeader
             sortKey="itemTypes"
             label={strings.table.columnItemTypes}
             direction={directionOf("itemTypes", sortKey, sortDirection)}
             onSort={onSort}
-            className="md:w-[24%]"
+            className="md:w-[22%] lg:w-[24%]"
           />
-          {/* `whitespace-nowrap` rather than a width: "Required Level" broke
-              across two lines and made the header row taller than any of the
-              cells needed. Letting the text set the column's width keeps it one
-              line in every locale, where a fixed width would be measured against
-              English and then wrap again in Russian. */}
+          {/* `whitespace-nowrap` so the heading never breaks across two lines and
+              makes the header row taller than any of the cells needs. That was
+              written when the table was auto-laid-out and the text could widen its
+              own column; under `table-fixed` it cannot, so the same declaration now
+              means the heading paints over its neighbour instead. Which is why the
+              short form runs to `lg` here rather than to `md` — see below. */}
           <SortableHeader
             sortKey="requiredLevel"
             label={strings.table.columnRequiredLevel}
@@ -236,7 +237,7 @@ export function RunewordTable({
             direction={directionOf("requiredLevel", sortKey, sortDirection)}
             onSort={onSort}
             align="end"
-            className="rounded-tr-xs whitespace-nowrap md:w-[18%]"
+            className="rounded-tr-xs whitespace-nowrap md:w-[9%] lg:w-[18%]"
           />
         </tr>
       </thead>

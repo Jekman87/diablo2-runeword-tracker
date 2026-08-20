@@ -285,23 +285,48 @@ describe("sorting from the header row", () => {
     // from the header row and the body is ignored; below it the table has four
     // columns in 390px and lets the content decide, which is the layout it always
     // had there.
+    //
+    // **Two sets of percentages, and the second one is not a refinement of the
+    // first.** Between `md` and `lg` the table has about 705px to hold a heading
+    // that needs 86, a name that needs 133, six 40px runes that need 268, a
+    // category list that needs 149 and a level heading — it fits, but only just,
+    // and only with the level column at its short heading. From `lg` the same five
+    // columns have 960px and the wide proportions are the right ones. One set for
+    // both was what painted headings over their neighbours.
     expect(container.querySelector("table")).toHaveClass(
       "table-auto",
       "md:table-fixed",
     );
-    expect(
+    const widths = (prefix: string) =>
       screen
         .getAllByRole("columnheader")
         .map((header) =>
-          [...header.classList].find((name) => name.startsWith("md:w-[")),
-        ),
-    ).toEqual([
+          [...header.classList].find((name) => name.startsWith(prefix)),
+        );
+
+    expect(widths("md:w-[")).toEqual([
+      "md:w-[13%]",
+      "md:w-[19%]",
+      "md:w-[37%]",
+      "md:w-[22%]",
       "md:w-[9%]",
-      "md:w-[20%]",
-      "md:w-[29%]",
-      "md:w-[24%]",
-      "md:w-[18%]",
     ]);
+    expect(widths("lg:w-[")).toEqual([
+      "lg:w-[9%]",
+      "lg:w-[20%]",
+      "lg:w-[29%]",
+      "lg:w-[24%]",
+      "lg:w-[18%]",
+    ]);
+
+    // Both sets have to add up, or the last column is pushed out of the table.
+    for (const prefix of ["md:w-[", "lg:w-["]) {
+      const total = widths(prefix)
+        .map((name) => Number(name?.replace(/\D/g, "")))
+        .reduce((sum, part) => sum + part, 0);
+
+      expect(total).toBe(100);
+    }
   });
 
   it("withdraws the crafted column below the breakpoint", () => {
@@ -313,7 +338,7 @@ describe("sorting from the header row", () => {
     // the cell has to stay so the header row and the body rows keep declaring
     // the same number of columns. A `<th>` fewer than the rows beneath it
     // misaligns every column after the difference.
-    expect(crafted).toHaveClass("w-0", "md:w-[9%]");
+    expect(crafted).toHaveClass("w-0", "md:w-[13%]", "lg:w-[9%]");
     expect(crafted).toHaveClass("[&>button]:hidden", "md:[&>button]:flex");
   });
 
@@ -349,7 +374,7 @@ describe("sorting from the header row", () => {
     const headers = screen.getAllByRole("columnheader");
     const shortForms = headers.map(
       (header) =>
-        within(header).getByRole("button").querySelector("[class~='md:hidden']")
+        within(header).getByRole("button").querySelector("[class~='lg:hidden']")
           ?.textContent,
     );
 
@@ -746,7 +771,7 @@ function headingOf(header: HTMLElement) {
   // cannot silently change what this returns.
   // `:not([aria-hidden])` because the arrow the header reserves is also
   // revealed at `md` and would otherwise be the first match.
-  const full = button.querySelector("[class~='md:block']:not([aria-hidden])");
+  const full = button.querySelector("[class~='lg:block']:not([aria-hidden])");
 
   return full === null ? button.firstChild?.textContent : full.textContent;
 }

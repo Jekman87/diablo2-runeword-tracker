@@ -99,11 +99,23 @@ export function SortableHeader({
         className={trigger({ align })}
       >
         {/* One heading where there is only one, and both forms where there are
-            two — each `hidden` on the other side of `md`, so the stylesheet makes
-            the choice and exactly one of them is in the accessibility tree. The
-            same mechanism the rune sequence collapses by, and for the same
-            reason: a heading chosen in script depends on script having run and
-            paints the wrong one first.
+            two — each `hidden` on the other side of the breakpoint, so the
+            stylesheet makes the choice and exactly one of them is in the
+            accessibility tree. The same mechanism the rune sequence collapses by,
+            and for the same reason: a heading chosen in script depends on script
+            having run and paints the wrong one first.
+
+            **The breakpoint is `lg`, not `md`, and that is measured rather than
+            symmetrical.** The point of the short form is the width at which the
+            full one stops fitting, and that is not the width at which the layout
+            changes: from `md` the table is `table-fixed`, so a heading too wide
+            for its percentage cannot widen its column and paints over the
+            neighbour instead. Measured in Russian, where the headings are longest:
+            `Требуемый уровень` needs 164px and its 18% column gives it 127px at
+            768 and 161px at 960 — it only fits from about 1000px, which is `lg`.
+            English fits from `md`, and follows the same rule rather than a rule of
+            its own; one breakpoint for a column is what keeps the two locales from
+            being two layouts.
 
             The accessible name is built from the full heading either way. A
             screen reader hears "required level, sorted ascending" at every width
@@ -112,8 +124,8 @@ export function SortableHeader({
           label
         ) : (
           <>
-            <span className="md:hidden">{shortLabel}</span>
-            <span className="hidden md:block">{label}</span>
+            <span className="lg:hidden">{shortLabel}</span>
+            <span className="hidden lg:block">{label}</span>
           </>
         )}
 

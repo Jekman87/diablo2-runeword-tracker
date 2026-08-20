@@ -186,8 +186,15 @@ export const RunewordRow = memo(function RunewordRow({
         />
       </td>
 
+      {/* `flex-wrap`, and it is a fix rather than a flourish. Six 40px icons and
+          their names need 268px; under `table-fixed` this column is a percentage,
+          which gives it 204px at a 768px viewport — so the longest recipes painted
+          64px over the base-items column beside them. Wrapping costs a second line
+          of icons on the few five- and six-rune rows at those widths and nothing at
+          all from about 1000px up, where 268px fits inside the percentage and no
+          row wraps. */}
       <td className="hidden p-2 align-top md:table-cell">
-        <RuneSequence runeword={runeword} className="flex" />
+        <RuneSequence runeword={runeword} className="flex flex-wrap" />
       </td>
 
       {/* `relative`, because the advice trigger inside stretches its hit area

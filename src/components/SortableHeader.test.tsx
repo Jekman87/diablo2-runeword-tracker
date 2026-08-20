@@ -184,15 +184,15 @@ describe("its heading", () => {
     const button = screen.getByRole("button");
 
     expect(button.textContent).toContain(en.table.columnName);
-    expect(button.querySelector("[class~='md:hidden']")).toBeNull();
+    expect(button.querySelector("[class~='lg:hidden']")).toBeNull();
   });
 
-  it("draws both forms where there are two, one hidden on each side of `md`", () => {
+  it("draws both forms where there are two, one hidden on each side of `lg`", () => {
     renderHeader({ shortLabel: en.table.columnRequiredLevelShort });
 
     const button = screen.getByRole("button");
-    const short = button.querySelector("[class~='md:hidden']");
-    const full = button.querySelector("[class~='md:block']:not([aria-hidden])");
+    const short = button.querySelector("[class~='lg:hidden']");
+    const full = button.querySelector("[class~='lg:block']:not([aria-hidden])");
 
     // The stylesheet chooses, so exactly one is in the accessibility tree at any
     // width and nothing depends on script having run.
