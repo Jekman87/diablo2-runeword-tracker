@@ -95,6 +95,20 @@
 - [x] 9.4 Re-verify in the browser at 390px with touch, and re-measure both
       viewports so neither fix moved the layout
 
+## 10. The band between `md` and `lg`, found in the same review
+
+- [x] 10.1 Measure every header and body cell against its column from 768 to 1280
+      in both locales — three overflows, all of them pre-existing and all of them
+      hidden by measuring only 390 / 768 / 1280
+- [x] 10.2 Declare a second set of column proportions for the `md`-to-`lg` band,
+      measured against Russian, each set totalling 100 %
+- [x] 10.3 Run the short heading to `lg` rather than to `md` — the width where the
+      full form stops fitting is not the width where the layout changes
+- [x] 10.4 Let the wide rune sequence wrap, so a proportion changed later degrades
+      into a taller row rather than into overlapping text
+- [x] 10.5 Re-measure: nothing overflows at any width in either locale, and 1280 is
+      still identical to the baseline
+
 ## 8. Records and hand-off
 
 - [x] 8.1 Move the narrow-viewport entry in `IDEAS.md` out of **Not this phase**

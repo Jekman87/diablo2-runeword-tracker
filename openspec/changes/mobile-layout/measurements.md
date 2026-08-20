@@ -105,3 +105,39 @@ removed: (none)
 20 383 B → 20 843 B. The check matters here because the scanner reads comments as
 class candidates — `src/index.css` records what a single word in a sentence has
 cost before.
+
+## The band between `md` and `lg`
+
+Found by the owner reviewing an 860px window. Measured per cell against the column
+holding it, from 768 to 1280, in both locales. Three overflows, all of them
+pre-existing, all of them invisible to a probe that samples 390, 768 and 1280:
+
+| what                                              | worst                      | gone by           |
+| ------------------------------------------------- | -------------------------- | ----------------- |
+| `Создано` / `Crafted` heading                     | +23px at 768 ru, +13px en  | ~1024 ru, ~900 en |
+| `Требуемый уровень` heading (`whitespace-nowrap`) | +46px at 768 ru            | ~1024             |
+| the runes column, six-rune recipes                | +64px at 768, both locales | ~1000             |
+
+The cause is one set of column proportions serving every width from `md` up. The
+same five columns have about 705px at 768 and 960px at 1280, and the content's
+minimum does not shrink with the viewport: at 768 in Russian the heading needs
+86px, the longest name 133px, six 40px runes 268px, the longest category list
+149px — 636px before the level column has any.
+
+Fixed by declaring a second set for the `md`-to-`lg` band, measured against
+Russian, and by running the short level heading to `lg` rather than to `md`:
+
+| band        | crafted | name | runes | items | level |
+| ----------- | ------- | ---- | ----- | ----- | ----- |
+| `md` – `lg` | 13 %    | 19 % | 37 %  | 22 %  | 9 %   |
+| `lg` and up | 9 %     | 20 % | 29 %  | 24 %  | 18 %  |
+
+Both total 100 %, and the `lg` set is the one that shipped before this change, so
+1280 is untouched. The wide rune sequence also gained `flex-wrap` — not because it
+wraps at these proportions, but so that a proportion changed later degrades into a
+taller row rather than into text over the column beside it. It costs 291px of
+document at 768, where the five six-rune recipes take a second line.
+
+After: no cell overflows at 768, 800, 860, 900, 960, 1024, 1100, 1200 or 1280, in
+either locale. 1265 measures `[99, 220, 320, 264, 198]`, docH 8 106, median row
+75px — identical to the baseline at the top of this file.

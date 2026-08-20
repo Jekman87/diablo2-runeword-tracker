@@ -1273,6 +1273,18 @@ Two defects the owner hit reading the mobile view. Both are in the change.
   page. **It was never a narrow-viewport defect** — it needs a touch device, not a
   narrow one — but a phone is where it is met.
 
+- **Headings painted over their neighbours between `md` and `lg`.** Reported at
+  860px, worst in Russian. One set of column percentages served every width from
+  `md` up, and at 768 the five columns have 705px against a content minimum of
+  more than that — so `Создано` ran +23px into `Рунное слово`, `Требуемый уровень`
+  +46px over `Предметные базы`, and a six-rune recipe +64px over the bases beside
+  it. All three predate this change and all three were invisible to a probe that
+  sampled 390, 768 and 1280 only. Fixed with a second set of percentages for the
+  `md`-to-`lg` band (13/19/37/22/9 against 9/20/29/24/18), by running the short
+  level heading to `lg`, and by letting the wide rune sequence wrap so the next
+  person to change a percentage gets a taller row rather than overlapping text.
+  1280 is byte-for-byte what it was.
+
 ### Settled while building
 
 - 390px is the **stated minimum supported width**. Below it the page degrades and
