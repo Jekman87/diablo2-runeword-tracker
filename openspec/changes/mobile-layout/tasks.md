@@ -54,36 +54,44 @@
 
 ## 6. Tests
 
-- [ ] 6.1 Update `RuneSequence.test.tsx` for the two forms: the icon form draws
+- [x] 6.1 Update `RuneSequence.test.tsx` for the two forms: the icon form draws
       icons, the names form draws names and no icon, and both keep order and repeats
-- [ ] 6.2 Update `RunewordTable.test.tsx` — the `md:table-fixed` and five
+- [x] 6.2 Update `RunewordTable.test.tsx` — the `md:table-fixed` and five
       `md:w-[…]` assertions stay, and the crafted column gains the same
       `hidden md:table-cell` assertion the runes column has
-- [ ] 6.3 Add a test that the crafted-state button is present and pressed-state
+- [x] 6.3 Add a test that the crafted-state button is present and pressed-state
       bearing on every row regardless of the column's own classes
-- [ ] 6.4 Add a test that a heading with a short form renders both forms with one
+- [x] 6.4 Add a test that a heading with a short form renders both forms with one
       hidden on each side of `md`
-- [ ] 6.5 `pnpm typecheck && pnpm lint && pnpm format:check && pnpm test`
+- [x] 6.5 `pnpm typecheck && pnpm lint && pnpm format:check && pnpm test`
 
 ## 7. Verification against the baseline
 
-- [ ] 7.1 Re-run the probe at every width in both locales
-- [ ] 7.2 Assert the budget: no sideways scroll at 390 and above, with the
+- [x] 7.1 Re-run the probe at every width in both locales
+- [x] 7.2 Assert the budget: no sideways scroll at 390 and above, with the
       remaining panel open, with the help panel open, and with a query that
       matches nothing
-- [ ] 7.3 Assert the non-regression: table width, all five column widths, median
+- [x] 7.3 Assert the non-regression: table width, all five column widths, median
       row height and document height at 768 and 1280 are identical to the baseline
-- [ ] 7.4 Record the before/after table in the change folder, and screenshot
-      390px in both locales
-- [ ] 7.5 Check the built stylesheet has not grown a class nothing renders — the
+- [x] 7.4 Record the before/after table in the change folder, and screenshot
+      390px in both locales — the tables are in `measurements.md`; the screenshots
+      were taken as a visual check and are not committed, because the repository
+      carries no screenshots and two PNGs of one state are worth less than the
+      figures beside them
+- [x] 7.5 Check the built stylesheet has not grown a class nothing renders — the
       scan is scoped to `src/` and prose in the new comments is read for candidates
 
 ## 8. Records and hand-off
 
-- [ ] 8.1 Move the narrow-viewport entry in `IDEAS.md` out of **Not this phase**
+- [x] 8.1 Move the narrow-viewport entry in `IDEAS.md` out of **Not this phase**
       and into the shipped record, with the measured before/after
-- [ ] 8.2 Note in `docs/REFERENCE.md` what was taken from the reference here — the
+- [x] 8.2 Note in `docs/REFERENCE.md` what was taken from the reference here — the
       runes as text below `md` — and what was not
-- [ ] 8.3 Leave the open questions from `design.md` that the owner has not settled
-      visible in the change rather than closing them silently
-- [ ] 8.4 Stop before committing: the owner reviews the round first
+- [x] 8.3 Leave the open questions from `design.md` that the owner has not settled
+      visible in the change rather than closing them silently — all three are still
+      open: the Russian short form went in as project copy and wants the owner's
+      eye, the Label-in-Name trade-off stands as taken, and the usefulness badge's
+      own line is untouched
+- [x] 8.4 Commit on a branch of its own — the owner asked for one mid-round, so
+      the change is committed rather than left in the working tree, and the review
+      happens on the branch

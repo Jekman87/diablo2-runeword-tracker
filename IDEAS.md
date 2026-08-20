@@ -1175,8 +1175,95 @@ cycle).
 
 ### Not this phase (unchanged)
 
-Narrow-viewport table overflow remains **deferred**. Items dropped on 2026-07-31
-stay dropped — see [Not this phase](#not-this-phase).
+Narrow-viewport table overflow was **deferred** here and is shipped in
+[Phase 6](#phase-6--the-narrow-viewport-layout-shipped) below. Items dropped on
+2026-07-31 stay dropped — see [Not this phase](#not-this-phase).
+
+---
+
+## Phase 6 — the narrow-viewport layout (shipped)
+
+**Shipped** as one OpenSpec change, `mobile-layout`. It is the entry Phase 5
+deferred, and the reason it got a change of its own rather than a corner of a
+mixed one: it was a layout decision, not a bug with one fix.
+
+### The defect, measured rather than described
+
+At a 390px viewport the **whole page** scrolled sideways, not only the table: the
+document was 620px wide in English and 701px in Russian, so the title, the
+progress band, the controls and the footer all ran off the screen with it. The
+document stood at 13 406px against 8 366px at 768px, because a row below `md` was
+127px instead of 75px.
+
+Only one block was responsible. Minimum content width per child of `<main>` at
+390px: progress band 22px, remaining panel 124px, control bar 102px — and the
+table 596px, which set the page's. Inside it: `Crafted 84 | Runeword 276 |
+Base Items 98 | Required Level 135`.
+
+**Russian was the harder case by 81px**, and worth recording because the English
+figures hid it: its table bottomed out at 677px and it still overflowed at 625px,
+one step below the breakpoint. So this was never only a phone defect — a desktop
+window at 640px scrolled sideways in Russian.
+
+### What landed
+
+- **The runes render as their names below `md`**, not as icons. That is the
+  reference's own answer and the single largest win: the name column falls from
+  276px to 126px and the row from 127px to 65px. Nothing leaves the accessibility
+  tree with the icons — they were already `decorative` and the names were already
+  the announced text.
+- **The crafted column is withdrawn below `md`.** The accent border and the row
+  tint already state the crafted state without colour, and a click anywhere on the
+  row already opens the confirmation, so a third statement of it was not worth
+  84px. **Both cells stay in the table** and collapse instead: a `<thead>` row
+  declaring fewer cells than the rows beneath it slides every header one column
+  off its data.
+- **The control does not go with the column.** It is the only way to mark a
+  runeword without a pointer, so below `md` it is clipped rather than hidden —
+  still in the tab order, still carrying `aria-pressed` — and un-clips when it
+  takes keyboard focus. `crafted-toggle` in `src/index.css` holds all three
+  states.
+- **A short form of the required-level heading**, in both locales. It is
+  `whitespace-nowrap` and so sets its own column: 135px in English, 180px in
+  Russian. The other four headings fit and did not get one.
+- **The sort arrow is withdrawn below `md`** — by width, never by state. Phase 5
+  named that constraint and it held.
+- **A wrapped runeword name is left-aligned.** A `<button>` centres its text, which
+  only showed once the name column reached 140px and Russian names began to wrap.
+
+### The result
+
+|                                    | before          | after         |
+| ---------------------------------- | --------------- | ------------- |
+| Document width at 390px (en / ru)  | 620 / 701       | **390 / 390** |
+| Overflow at 320px (en / ru)        | +300 / +381     | **0 / 0**     |
+| Document height at 390px (en / ru) | 13 406 / 13 426 | 9 700 / 9 884 |
+| Median row below `md`              | 127px           | 85px          |
+
+Checked in every state the reader can reach — remaining panel open, help panel
+open, a query that matches nothing — in both locales, at 390px and at 320px.
+
+**The desktop layout did not move**, and that was checked by measurement rather
+than by reading the diff: table width, all five column widths, median row height
+and document height at 768px and 1280px are identical to the figures taken before
+the change. The built stylesheet gained exactly the seven classes the change
+renders and nothing else.
+
+The reference, for calibration, is 390px wide and 6 130px tall with 51px rows at
+the same viewport. It carries no crafted column and no usefulness badge, which is
+most of the remaining difference.
+
+### Settled while building
+
+- 390px is the **stated minimum supported width**. Below it the page degrades and
+  no requirement covers it — though as it turns out nothing overflows at 320px
+  either.
+- The page gutter was **not** reclaimed. The arithmetic did not need it, and
+  `<main>`, the header wrapper and the footer wrapper carry the same width classes
+  and would all have had to move together.
+- Smaller rune icons were the other candidate and buy a third of what dropping
+  them buys, at the cost of showing the sprite at 60 % of the size it was drawn
+  for.
 
 ---
 
@@ -1408,37 +1495,6 @@ One tidying change, taken together because each is a few lines.
 ---
 
 ## Not this phase
-
-### Deferred — the narrow-viewport layout
-
-**The one real defect on the list, and deliberately held for a later phase** so it
-gets a change of its own rather than a corner of a mixed one. The table scrolls
-sideways below about 542px. Nobody owns it, no requirement covers it, and three
-archived changes each made it worse while measuring it — it is the only entry that
-accumulates, which is also why it should not be squeezed in.
-
-The measurements, from the records above. `detail-view-hover` took the overflow at a
-390px viewport from 74px to 198px — 152px of that from the runes collapsing into the
-name cell, which takes it from 170px to 276px. `search-sort-filter` added about
-32px of permanently reserved space for the sort arrow across five headers, putting
-the document at 620px against a 390px viewport. `chronicle-styling` then stopped the
-fixed column percentages at `md`, because below it they clipped the `Crafted`
-heading by 37px and spilled name cells over their neighbours — six 40px rune icons
-do not fit in about 124px.
-
-**The open question is what the phone layout should be**, and it is a layout
-decision rather than a bug with one fix: a smaller rune size, a horizontally
-scrolling table by intent, or fewer columns. Two constraints for whoever answers
-it. Reclaiming the arrows means hiding the indicator below `md`, not making it
-conditional again — conditional is what made the sorted column 12px wider than the
-others and shifted every row beside it. And rows below `md` are taller than any
-design figure covers, 103px against 69px, which puts `tbody` at 10197px against
-7103px.
-
-Note that Phase 5 has business here: a back-to-top button and a transparent tooltip
-both have to answer for themselves at 390px, and the ground texture is a page-wide
-change. None of that fixes the table, and none of it should make it worse — the
-overflow figure above is the number to re-measure.
 
 ### Dropped on 2026-07-31
 
