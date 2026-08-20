@@ -92,25 +92,25 @@
 
 ## 7. Bring the documents back in line with the code
 
-- [ ] 7.1 `docs/DATA-SOURCES.md`: replace the "Ladder-only runewords shipped: 8
+- [x] 7.1 `docs/DATA-SOURCES.md`: replace the "Ladder-only runewords shipped: 8
       of 99" table and the `ladder:` occurrence count with what is true now, and
       record where the vendor flag still lives so the field can be re-derived if
       a future patch needs it
-- [ ] 7.2 `docs/DATA-SOURCES.md`: record that the reference site's `Hustle` is
+- [x] 7.2 `docs/DATA-SOURCES.md`: record that the reference site's `Hustle` is
       the Lord of Destruction name for what patch 3.0 split into Mania and
       Hysteria, so the next reader does not read it as a missing runeword
-- [ ] 7.3 `docs/SITE.md`: restate the analytics and third-party rule as the
+- [x] 7.3 `docs/SITE.md`: restate the analytics and third-party rule as the
       narrower one that now holds, document the counter and what its numbers are
       worth, and record the verified sitemap findings — 200, `application/xml`,
       well-formed, nothing disallowed, both URLs indexed — with the Search
       Console status named as a known condition to ignore
-- [ ] 7.4 `docs/SITE.md`: add the owner's Search Console tidy-up — a junk
+- [x] 7.4 `docs/SITE.md`: add the owner's Search Console tidy-up — a junk
       sitemap row is removed by opening the row, then the three-dot menu on its
       details page, then Remove sitemap; note that Google's own documentation
       says removal clears the report but does not make Google forget the sitemap
       or its URLs, so the rows are cosmetic either way and leaving them costs
       nothing
-- [ ] 7.5 `IDEAS.md`: restate the "no third-party request" claims where they
+- [x] 7.5 `IDEAS.md`: restate the "no third-party request" claims where they
       appear, and record the two parked items — the account-root repository and
       the sitemap status — so the next round does not rediscover them
 

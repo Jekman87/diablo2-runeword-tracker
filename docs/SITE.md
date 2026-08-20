@@ -55,7 +55,9 @@ screenshot; regenerating it is a manual step, not part of the build.
 
 Each document head carries a title and one-sentence description in its own
 language (repeated as Open Graph), the canonical link, an `og:locale` pair, and
-one JSON-LD `WebApplication` block — inert data, not a script. "D2R" appears in
+one JSON-LD `WebApplication` block — inert data, not a script.
+
+"D2R" appears in
 both titles because it is the term players search, and both descriptions name
 the **Chronicle** («История (Хроники)» in Russian) because that is the in-game
 log the tracker fills and the word a player looking for exactly this tool would
@@ -63,8 +65,11 @@ type. Only three fields are indexable static text — the title, the description
 and the `<noscript>` paragraph — so anything search should match has to be in
 one of them; everything else waits on Google rendering the bundle. A `<noscript>` paragraph
 says the same thing in each body, so a fetch without JavaScript is not an empty
-`#root`. Meta tags and static files only — no analytics and no verification
-script, per the own-origin rule.
+`#root`. Meta tags and static files only — **no verification script and no tag
+manager**, per the own-origin rule as it now stands: verification is available
+as inert markup, and the one third-party script this page loads is the page-view
+counter under **Counting visits** below. That counter narrows the rule; it does
+not repeal it.
 
 **`robots.txt` on a project page is advisory.** Crawlers read
 `https://jekman87.github.io/robots.txt`, which belongs to the user account, not
@@ -110,6 +115,69 @@ Russian-language queries mostly come from.
 None of this is a CI gate. The build publishes the files; indexing is an account
 action outside the repository.
 
+### The sitemap that «Couldn't fetch» — verified sound, ignore it
+
+Search Console reported «Не получено» against the sitemap for weeks. Verified
+from outside on 2026-08-20, and **nothing in this repository is wrong**:
+
+| Checked                                  | Result                                 |
+| ---------------------------------------- | -------------------------------------- |
+| `…/diablo2-runeword-tracker/sitemap.xml` | `200`, `Content-Type: application/xml` |
+| Its contents                             | well-formed XML, both `<loc>` entries  |
+| `https://jekman87.github.io/robots.txt`  | `404` — the host disallows nothing     |
+| Both entry URLs in Search Console        | indexed                                |
+
+So the status is a condition to ignore, not a defect to chase. A sitemap exists
+to help a crawler find pages it would otherwise miss; this site has two and both
+are already indexed. **Do not change these files in response to that status.**
+
+Two things worth knowing if it comes up again. Junk rows accumulate easily,
+because the submit field silently accepts a path outside the property — a row
+reading `/sitemap.xml` resolves to the account root and fails forever. A row is
+removed by clicking it, then the three-dot menu on its details page, then
+**Remove sitemap**; Google's own documentation notes that removal clears the
+report but does not make Google forget the sitemap or the URLs in it, so the rows
+are cosmetic either way. And `/ru` without its trailing slash reports as a
+redirect error, which is correct and harmless: it is a 301 to `/ru/`, and `/ru/`
+is the indexed URL.
+
+The one real fix is out of scope and parked: an account-root repository
+(`jekman87.github.io`) would give the host a real `robots.txt`, a host-level
+favicon for search results, and a Search Console property where `/sitemap.xml`
+means what the field implies.
+
+## Counting visits
+
+The page carries **Cloudflare Web Analytics** — one deferred beacon at the end of
+the body of each entry document, in Cloudflare's own `type="module"` snippet
+form. It sets no cookie, writes no persistent identifier, reads nothing the
+reader has stored, and therefore needs no consent dialog; the page has none and
+must not acquire one. If the provider ever requires a cookie or a dialog to keep
+working, remove the counter rather than add the dialog.
+
+The token lives beside the other constants as `ANALYTICS_TOKEN` in
+`src/header/site.ts` and is stated in both documents, which cannot import it —
+the same arrangement as the URLs, and `scripts/crawl-files.test.ts` holds every
+copy against the constant and rejects a value that is not a real token. The
+token is public by nature: it ships in the page, it names a dashboard rather than
+opening one.
+
+**What the numbers are worth.** Cloudflare keys on hostname, so the dashboard
+shows `/diablo2-runeword-tracker/` and `/diablo2-runeword-tracker/ru/` as
+separate paths — which is how the English/Russian split is read. Anything else
+ever published under `jekman87.github.io` would appear in the same dashboard.
+And ad blockers commonly block `cloudflareinsights.com`, while GitHub Pages
+serves no logs to measure the shortfall against, so the figures are a trend and
+an order of magnitude, never a census. A low number is not evidence of a traffic
+collapse.
+
+Chosen over Google Analytics 4, which would have brought cookies, a consent
+banner for EU readers, ~50 KB of `gtag.js` and data landing in an advertising
+ecosystem — a steep price for a visit count. GoatCounter's no-JavaScript pixel
+was the closest fit to the stricter rule but records no referrer, and referrer is
+half of what the counter is for, since Search Console already covers Google
+search and nothing else.
+
 ## Donation
 
 The footer offers **USDT on TON** (a Jetton receive address). That instrument was
@@ -121,3 +189,9 @@ The address is a **receive address only** — public and permanent by nature. No
 key or seed belongs in this repository. Coin and network are stated beside it in
 the donation dialog, because an address alone is ambiguous between chains and a
 sender who picks the wrong one loses the money.
+
+No hosted donation widget, iframe or third-party image is used for this, and the
+page-view counter is not a precedent for one. A counter reports a number; a
+donation widget would load an identified third party's interface onto the one
+surface where a reader is about to move money and has to be able to see who is
+asking.
