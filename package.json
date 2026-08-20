@@ -14,7 +14,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "prepare": "simple-git-hooks",
-    "build": "pnpm typecheck && vite build",
+    "build": "pnpm typecheck && vite build && pnpm prerender",
+    "prerender": "vite build --ssr src/prerender/entry.tsx --outDir .prerender --emptyOutDir && node scripts/prerender.ts",
     "preview": "vite preview"
   },
   "simple-git-hooks": {

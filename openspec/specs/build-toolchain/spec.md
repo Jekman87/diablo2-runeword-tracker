@@ -52,6 +52,16 @@ The bundle SHALL be built for deployment under the repository sub-path
 be a committed constant rather than an environment-dependent value, so that
 `pnpm preview` reproduces production asset resolution exactly.
 
+**The build SHALL also render the application into both entry documents.** That
+render is part of `pnpm build` rather than a separate command someone must
+remember: a deploy that shipped an unprerendered document would be a silent loss
+of everything a crawler is given, and the only reliable guard is that there is no
+way to build without it.
+
+The render pass SHALL fail the build when it fails, rather than emitting a
+document with an empty root. A missing prerender breaks nothing a reader would
+notice, which is exactly why it must break the build.
+
 #### Scenario: Build succeeds
 
 - **WHEN** a developer runs `pnpm build`
@@ -79,6 +89,18 @@ be a committed constant rather than an environment-dependent value, so that
 - **WHEN** the configured base path does not match the deployment sub-path
 - **THEN** the continuous integration run fails and reports the mismatch,
   rather than producing a bundle that only breaks once deployed
+
+#### Scenario: Both built documents carry rendered content
+
+- **WHEN** `pnpm build` completes
+- **THEN** `dist/index.html` and `dist/ru/index.html` each contain the rendered
+  list rather than an empty root element
+
+#### Scenario: A failing render fails the build
+
+- **WHEN** the render pass throws — a browser API reached during render, say
+- **THEN** `pnpm build` exits non-zero naming the failure, and emits no document
+  with an empty root
 
 ### Requirement: TypeScript strict mode
 

@@ -35,7 +35,7 @@ function ruEntryRedirect() {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   // Hardcoded, not read from the environment: the project deploys to the
   // GitHub Pages sub-path https://jekman87.github.io/diablo2-runeword-tracker/,
   // and keeping this a committed constant makes `pnpm preview` a faithful
@@ -43,6 +43,12 @@ export default defineConfig({
   base: "/diablo2-runeword-tracker/",
   plugins: [react(), tailwindcss(), ruEntryRedirect()],
   build: {
+    // The prerender pass is an SSR build of `src/prerender/entry.tsx`, and its
+    // output is a module Node imports and throws away — it has no use for the
+    // sitemap, the robots file or the social card. Copying `public/` into it
+    // put a second sitemap.xml on disk, which is exactly the kind of duplicate
+    // that gets opened by mistake and believed.
+    copyPublicDir: !isSsrBuild,
     rollupOptions: {
       // Two entry documents, one bundle: `ru/index.html` is the Russian front
       // door — Russian title, description and default locale for a first
@@ -75,4 +81,4 @@ export default defineConfig({
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
   },
-});
+}));

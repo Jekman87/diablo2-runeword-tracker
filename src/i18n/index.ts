@@ -44,6 +44,16 @@ export type Strings = typeof en;
  * pronunciation rules. The static `lang="en"` in `index.html` remains the
  * pre-script truth.
  *
+ * **The store also runs where there is no browser.** `pnpm build` renders both
+ * entry documents to HTML strings in Node, with no `document` and no storage —
+ * so every document access here is guarded, and the build states the locale
+ * outright through `seedLocale` instead of the store inferring it. Detection
+ * stays the browser's path; at build time the language is an input, decided by
+ * which file is being written, and there is no document yet to declare anything.
+ *
+ * None of that involves a server: the site is static files on GitHub Pages, and
+ * nothing runs when one is requested.
+ *
  * Still no third-party internationalisation dependency: two records, one
  * variable and a `Set` are the whole mechanism, and grammar a locale needs
  * lives inside that locale's own value functions.
@@ -56,14 +66,39 @@ const subscribers = new Set<() => void>();
 // import is erased at compile time — so this is not a runtime cycle.
 const records: Record<Locale, Strings> = { en, ru };
 
+// The third argument is React's `getServerSnapshot`, and it is not redundant:
+// without it `useSyncExternalStore` throws when the tree is rendered to a string
+// rather than into DOM nodes. That happens at build time here — `renderToString`
+// needs no server, and this project has none; the name is React's, inherited
+// from the days when rendering to a string only happened in one place.
+//
+// It is the same function as the client snapshot because the store is module
+// state that the build seeds before rendering, so both readers derive the value
+// the same way — which is exactly what the API is asking about.
+
 /** The active locale's display copy. Subscribes the caller to switches. */
 export function useStrings(): Strings {
-  return useSyncExternalStore(subscribe, () => records[currentLocale()]);
+  const snapshot = () => records[currentLocale()];
+
+  return useSyncExternalStore(subscribe, snapshot, snapshot);
 }
 
 /** The active locale itself, for the one control that renders which is on. */
 export function useLocale(): Locale {
-  return useSyncExternalStore(subscribe, currentLocale);
+  return useSyncExternalStore(subscribe, currentLocale, currentLocale);
+}
+
+/**
+ * States the locale for a render that cannot detect one: the build's prerender
+ * pass, which has no stored preference to read and no document to ask.
+ *
+ * Writes nothing and touches no document — it is not a language switch, it is
+ * the renderer saying which of the two documents it is producing. `setLocale`
+ * remains the only path that persists a choice, because persistence is the
+ * consequence of an interaction and a build is not one.
+ */
+export function seedLocale(locale: Locale): void {
+  activeLocale = locale;
 }
 
 /**
@@ -77,7 +112,7 @@ export function useLocale(): Locale {
 export function setLocale(locale: Locale): void {
   activeLocale = locale;
   saveLocale(locale);
-  document.documentElement.lang = locale;
+  declareLanguage(locale);
 
   for (const notify of subscribers) notify();
 }
@@ -87,7 +122,7 @@ function currentLocale(): Locale {
     activeLocale = loadLocale() ?? documentLocale() ?? "en";
     // Stated on first read as well as on switch, so a restored `ru` is
     // declared before anything is painted in it.
-    document.documentElement.lang = activeLocale;
+    declareLanguage(activeLocale);
   }
 
   return activeLocale;
@@ -98,11 +133,31 @@ function currentLocale(): Locale {
  * offers. Read from the static `lang` attribute rather than the address, so
  * the app never parses URLs and a rehosted document keeps working; anything
  * unrecognised is no declaration at all rather than an error.
+ *
+ * Absent where there is no document — the prerender pass — rather than throwing:
+ * a render that has no document has no declaration to read, which is not an
+ * error but the reason `seedLocale` exists.
  */
 function documentLocale(): Locale | undefined {
+  if (typeof document === "undefined") return undefined;
+
   const lang = document.documentElement.lang;
 
   return locales.find((locale) => locale === lang);
+}
+
+/**
+ * Restates the document's language, where there is a document to restate it on.
+ *
+ * Guarded for the same reason `documentLocale` is: the build renders these
+ * components in Node. Guarding here rather than at both call sites keeps the two
+ * paths — first read and explicit switch — saying the same thing about when the
+ * attribute is written.
+ */
+function declareLanguage(locale: Locale): void {
+  if (typeof document === "undefined") return;
+
+  document.documentElement.lang = locale;
 }
 
 function subscribe(notify: () => void): () => void {

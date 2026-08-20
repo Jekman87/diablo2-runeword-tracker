@@ -100,6 +100,27 @@ jobs:
           done <<< "$refs"
           exit $status
 
+      # `pnpm build` renders the list into both documents and asserts the result
+      # itself, so this is not that check twice: it guards the step existing at
+      # all. Drop `pnpm prerender` from the build script and every other check
+      # here still passes, while the deployed site quietly stops giving crawlers
+      # anything — the same failure mode the two steps above exist for.
+      - name: Assert both documents carry the rendered list
+        run: |
+          status=0
+          for file in dist/index.html dist/ru/index.html; do
+            if grep -q '<div id="root"></div>' "$file"; then
+              echo "::error file=$file::the root element is empty — the render pass did not run"
+              status=1
+            elif ! grep -q 'localStorage.getItem' "$file"; then
+              echo "::error file=$file::no decision script — a returning reader would be shown the snapshot"
+              status=1
+            else
+              echo "ok    $file"
+            fi
+          done
+          exit $status
+
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist

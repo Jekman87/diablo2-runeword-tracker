@@ -1681,6 +1681,16 @@ and the donation instrument are settled while they are built rather than here.
 
 ### Parked, deliberately
 
+**Whether prerendering moved anything in search.** The entries have carried the
+rendered list since the `prerendered-entries` round (August 2026), and the
+baseline to compare against is what Search Console reported before it: two
+indexed pages and impressions in the low tens. Indexing the content is a
+precondition for ranking on long-tail per-runeword queries, not a guarantee of
+it — for a fan tool, inbound links from communities remain the dominant factor.
+Worth a look once the deploy has been crawled for a few weeks, and worth
+comparing against that stated baseline rather than a memory. Not a gate on
+anything.
+
 Neither is a defect, and both were investigated far enough to stop. Recorded so
 the next round does not rediscover them from scratch.
 

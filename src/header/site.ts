@@ -128,6 +128,30 @@ export const FEEDBACK_URL =
 export const ANALYTICS_TOKEN = "1f854178248c4131a1f8744b9e4121d7";
 
 /**
+ * Yandex Webmaster's ownership proof for this site, as the `content` of a
+ * `yandex-verification` meta tag in the root document.
+ *
+ * **Why Yandex at all.** The `/ru/` entry exists so a Russian query has a
+ * Russian document to match, and Russian-language search mostly happens on
+ * Yandex — a Google-only property leaves the half of the audience the Russian
+ * entry was built for unmeasured.
+ *
+ * Inert markup, not a script, which is what keeps it inside the own-origin rule
+ * the same way the Google tag does. Public by nature and not a secret: it proves
+ * ownership by being where only the owner could have put it, and it is served to
+ * everyone who loads the page.
+ *
+ * **Leave the tag in place after verifying.** Yandex re-checks it and drops the
+ * property when the proof disappears, which is a silent failure — the site keeps
+ * working and the reports quietly stop. `scripts/crawl-files.test.ts` holds the
+ * document's copy against this constant so a deletion fails a test instead.
+ *
+ * One property covers both entries: verification is per site, and the sitemap
+ * lists both URLs, so `/ru/` needs no tag of its own.
+ */
+export const YANDEX_VERIFICATION = "fb2c212fd42a88fb";
+
+/**
  * USDT (Jetton) receive address on The Open Network.
  *
  * **USDT on TON**, chosen over USDT-TRC20 for fees and over on-chain BTC, where

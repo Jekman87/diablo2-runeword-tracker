@@ -13,6 +13,14 @@
       content="8KEB_ImW46lZ1uEgVTf1tSrpM0-7fUmtRUIeJD9inq8"
     />
 
+    <!-- The same thing for Yandex, which is where the Russian-language queries
+         the `/ru/` entry exists for mostly happen. Inert markup like the tag
+         above, so it stays inside the own-origin rule; kept in place after
+         verifying, because Yandex re-checks it and drops the property when the
+         proof disappears. One property covers both entries. `YANDEX_VERIFICATION`
+         in `src/header/site.ts` is where this value lives. -->
+    <meta name="yandex-verification" content="fb2c212fd42a88fb" />
+
     <title>Diablo II Runeword Tracker (D2R)</title>
 
     <!-- What a search result gets to say about the page. English, because this
@@ -143,20 +151,26 @@
   <body>
     <div id="root"></div>
 
-    <!-- The whole page is one React tree, so without scripting the body above
-         is an empty div. This says what the reader would have got. It is
-         deliberately unstyled: the stylesheet is imported by the bundle, so if
-         this paragraph is showing there is no CSS either, and a fallback that
-         depends on the thing that failed is not a fallback.
+    <!-- Corrected when the entries became prerendered. This used to say the page
+         "needs JavaScript to run", which was true while `#root` above was empty
+         and is not any more: the build renders the whole list into it, so a
+         reader without scripting can read every runeword, its runes, its bases
+         and its level. What they cannot do is tick one, search, sort, or carry
+         progress to another browser — so that is what this says instead.
 
-         Same sentence as the meta description, for the same reason the Open
-         Graph pair repeats it. -->
+         Still deliberately terse and unstyled. The stylesheet is a real `<link>`
+         in the built document, so the list above it is styled; this paragraph is
+         a statement about what is missing, not a fallback for a failed load.
+
+         The help panel is the fuller version of this and needs scripting to
+         open, which is exactly why one sentence of it lives out here. -->
     <noscript>
       <p>
-        Diablo II Runeword Tracker — track which Diablo II: Resurrected
-        runewords you have crafted for the Chronicle, and which runes and bases
-        the rest need. The full list, in your browser. This page needs
-        JavaScript to run.
+        Diablo II Runeword Tracker (D2R) — the list below is complete and
+        readable without JavaScript: every runeword, its runes in order, the
+        bases it can go in and the level it needs. Marking a runeword as crafted
+        for the Chronicle, searching, sorting and carrying your progress between
+        browsers all need JavaScript.
       </p>
     </noscript>
 
