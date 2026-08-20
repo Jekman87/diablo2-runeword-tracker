@@ -17,10 +17,12 @@ function renderHeader({
   direction,
   align,
   className,
+  shortLabel,
 }: {
   direction?: SortDirection;
   align?: "start" | "end";
   className?: string;
+  shortLabel?: string;
 } = {}) {
   const onSort = vi.fn();
 
@@ -33,6 +35,7 @@ function renderHeader({
             <SortableHeader
               sortKey="name"
               label={en.table.columnName}
+              shortLabel={shortLabel}
               direction={direction}
               onSort={onSort}
               align={align}
@@ -151,11 +154,63 @@ describe("what it says about the sort", () => {
     expect(arrow).toHaveClass("w-3");
   });
 
+  it("withdraws the arrow below the breakpoint rather than by state", () => {
+    renderHeader({ direction: "ascending" });
+
+    const arrow = screen
+      .getByRole("columnheader")
+      .querySelector("[aria-hidden='true']");
+
+    // Two different withdrawals, and only one of them is safe. By width, every
+    // header loses the space together and nothing moves relative to anything
+    // else. By state — drawing it only on the sorted column — the sorted column
+    // came out wider than its four neighbours and shifted every row beside it.
+    expect(arrow).toHaveClass("hidden", "md:block");
+  });
+
   it("keeps the arrow out of the accessible name", () => {
     renderHeader({ direction: "ascending" });
 
     expect(screen.getByRole("button").getAttribute("aria-label")).not.toContain(
       "↑",
+    );
+  });
+});
+
+describe("its heading", () => {
+  it("draws one form where there is only one", () => {
+    renderHeader();
+
+    const button = screen.getByRole("button");
+
+    expect(button.textContent).toContain(en.table.columnName);
+    expect(button.querySelector("[class~='md:hidden']")).toBeNull();
+  });
+
+  it("draws both forms where there are two, one hidden on each side of `md`", () => {
+    renderHeader({ shortLabel: en.table.columnRequiredLevelShort });
+
+    const button = screen.getByRole("button");
+    const short = button.querySelector("[class~='md:hidden']");
+    const full = button.querySelector("[class~='md:block']:not([aria-hidden])");
+
+    // The stylesheet chooses, so exactly one is in the accessibility tree at any
+    // width and nothing depends on script having run.
+    expect(short?.textContent).toBe(en.table.columnRequiredLevelShort);
+    expect(full?.textContent).toBe(en.table.columnName);
+    expect(full).toHaveClass("hidden");
+  });
+
+  it("names the control after the full heading at every width", () => {
+    renderHeader({
+      shortLabel: en.table.columnRequiredLevelShort,
+      direction: "ascending",
+    });
+
+    // A screen reader hears the column's real name on a phone, not its
+    // abbreviation. The short form is for the eye and the layout.
+    expect(screen.getByRole("button").getAttribute("aria-label")).toBe(
+      en.sort.ascending(en.table.columnName),
     );
   });
 });

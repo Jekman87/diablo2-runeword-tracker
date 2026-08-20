@@ -177,20 +177,35 @@ export function RunewordTable({
           {/* `rounded-tl-xs` here and `rounded-tr-xs` on the last column match the
               band's own corners in `table-header-band`. It only shows when one of
               these two is the sorted column — its lighter background would
-              otherwise paint a square corner over the rounded one. */}
+              otherwise paint a square corner over the rounded one.
+
+              **Below `md` this column is withdrawn, and the cell stays.** The
+              runes column above hides its `<th>` and its `<td>` together, which is
+              what a column may do; this one cannot, because its cells still hold
+              the only keyboard path to marking a runeword. So the header keeps its
+              place in the table's column count — a header row and a body row that
+              declare different numbers of cells misalign every column after the
+              difference — and gives up its width and its control instead. The
+              control goes because there is no crafted column to sort on screen;
+              `src/index.css` explains what happens to the box in the rows. */}
           <SortableHeader
             sortKey="crafted"
             label={strings.table.columnCrafted}
             direction={directionOf("crafted", sortKey, sortDirection)}
             onSort={onSort}
-            className="rounded-tl-xs md:w-[9%]"
+            className="w-0 rounded-tl-xs md:w-[9%] [&>button]:hidden md:[&>button]:flex"
           />
+          {/* The band's left corner belongs to whichever column is first on
+              screen, so below `md` it is this one and from `md` up it is the
+              crafted column above. Stated on both rather than moved, because the
+              corner is a property of the band's edge and both cells can be the
+              edge. */}
           <SortableHeader
             sortKey="name"
             label={strings.table.columnName}
             direction={directionOf("name", sortKey, sortDirection)}
             onSort={onSort}
-            className="md:w-[20%]"
+            className="rounded-tl-xs md:w-[20%] md:rounded-tl-none"
           />
           {/* Collapses with the cells it heads. Sorts on socket count, which is
               this column's readable magnitude — sorting the sequence as text
@@ -217,6 +232,7 @@ export function RunewordTable({
           <SortableHeader
             sortKey="requiredLevel"
             label={strings.table.columnRequiredLevel}
+            shortLabel={strings.table.columnRequiredLevelShort}
             direction={directionOf("requiredLevel", sortKey, sortDirection)}
             onSort={onSort}
             align="end"

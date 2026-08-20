@@ -10,6 +10,16 @@ export interface SortableHeaderProps {
   /** The column's own heading, from the copy layer. */
   label: string;
   /**
+   * The heading a narrow viewport presents instead, where the full one does not
+   * fit. From the copy layer too, and beside `label` rather than replacing it:
+   * the wide layout still shows the full form and the accessible name is still
+   * built from it at every width.
+   *
+   * Optional, because most headings fit and a short form nothing needs is a
+   * second name for the same column.
+   */
+  shortLabel?: string;
+  /**
    * The direction this column is sorted in, or `undefined` when it is not the
    * sorted one. One value rather than a boolean and a direction, so "sorted
    * ascending" and "not sorted" cannot both be true.
@@ -60,6 +70,7 @@ export interface SortableHeaderProps {
 export function SortableHeader({
   sortKey,
   label,
+  shortLabel,
   direction,
   onSort,
   align = "start",
@@ -87,7 +98,24 @@ export function SortableHeader({
         onClick={() => onSort(sortKey)}
         className={trigger({ align })}
       >
-        {label}
+        {/* One heading where there is only one, and both forms where there are
+            two — each `hidden` on the other side of `md`, so the stylesheet makes
+            the choice and exactly one of them is in the accessibility tree. The
+            same mechanism the rune sequence collapses by, and for the same
+            reason: a heading chosen in script depends on script having run and
+            paints the wrong one first.
+
+            The accessible name is built from the full heading either way. A
+            screen reader hears "required level, sorted ascending" at every width
+            rather than "ур., sorted ascending" on a phone. */}
+        {shortLabel === undefined ? (
+          label
+        ) : (
+          <>
+            <span className="md:hidden">{shortLabel}</span>
+            <span className="hidden md:block">{label}</span>
+          </>
+        )}
 
         {/* **Always rendered, glyph or no glyph, and that is the point.** Drawn only
             on the sorted column, the arrow made that column 12px wider than the other
@@ -103,7 +131,18 @@ export function SortableHeader({
 
             Decoration by construction — the accessible name and `aria-sort` already
             carry the direction in words, so this is hidden rather than announced. */}
-        <span aria-hidden="true" className="w-3 shrink-0 text-center">
+        {/* **Withdrawn below `md`, and not made conditional there.** Below the
+            breakpoint the table has 390px to hold four columns and the arrow is
+            the third carrier of something two others already carry: `aria-sort`
+            names the sorted column and the accessible name states the direction
+            in words. Withdrawing it by width keeps the reservation
+            unconditional wherever it is drawn, which is the property the
+            paragraph above is about — making it conditional on being the sorted
+            column is what shifted every row beside it. */}
+        <span
+          aria-hidden="true"
+          className="hidden w-3 shrink-0 text-center md:block"
+        >
           {direction === undefined ? NO_INDICATOR : INDICATOR[direction]}
         </span>
       </button>

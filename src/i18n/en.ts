@@ -161,6 +161,14 @@ export const en = {
     columnRunes: "Runes",
     columnItemTypes: "Base Items",
     columnRequiredLevel: "Required Level",
+    // The short form the narrow viewport presents, beside the full one rather
+    // than instead of it: the wide layout still shows the full heading, and the
+    // sort control is still named after it at every width.
+    //
+    // Only this column has one. `Required Level` is `whitespace-nowrap`, so it
+    // sets its own column's width — 135px in English, 180px in Russian, against a
+    // table with 390px of viewport to live in. `Runeword` and `Base Items` fit.
+    columnRequiredLevelShort: "Level",
   },
 
   // The browsing controls: the search field, the two filters, the count, the

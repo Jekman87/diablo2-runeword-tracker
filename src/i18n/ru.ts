@@ -158,6 +158,12 @@ export const ru: Strings = {
     // "Требуемый уровень" — the official localisation's own line, stated on
     // every item that has one and on every entry of its runeword guide.
     columnRequiredLevel: "Требуемый уровень",
+    // **Project copy, and it says so rather than claiming a source.** The client
+    // writes the line out in full on every item that has one; it has no table and
+    // therefore no abbreviated column heading to take. «Ур.» is the ordinary
+    // Russian contraction of «уровень» and is what this project chose — the same
+    // standing as «Создано» and «Предметные базы» above.
+    columnRequiredLevelShort: "Ур.",
   },
 
   controls: {
