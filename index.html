@@ -161,5 +161,19 @@
     </noscript>
 
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Cloudflare Web Analytics. Cloudflare's own snippet, unrewritten: a
+         `type="module"` script is deferred by definition, so it cannot delay
+         the tracker, and an equivalent they do not test buys nothing. Cookieless
+         and identifier-free, which is why the page carries no consent dialog.
+         The token is `ANALYTICS_TOKEN` in `src/header/site.ts`, and
+         `scripts/crawl-files.test.ts` holds this copy against it — see there for
+         why it is public rather than secret. Ad blockers commonly block this
+         host, so the numbers are a trend, not a census. -->
+    <script
+      type="module"
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "1f854178248c4131a1f8744b9e4121d7"}'
+    ></script>
   </body>
 </html>

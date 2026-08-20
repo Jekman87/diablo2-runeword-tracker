@@ -51,38 +51,38 @@
 
 ## 4. Amend the help panel
 
-- [ ] 4.1 Amend the advice caveat in `src/i18n/en.ts` so the one sentence states
+- [x] 4.1 Amend the advice caveat in `src/i18n/en.ts` so the one sentence states
       approximate, the collection date (August 2026), that prices move from
       season to season, that ladder and non-ladder differ, and that the auction
       sites linked in each card are where to check current prices
-- [ ] 4.2 Mirror that amendment in `src/i18n/ru.ts` as project prose
-- [ ] 4.3 Add the counter disclosure to the help points in both languages — the
+- [x] 4.2 Mirror that amendment in `src/i18n/ru.ts` as project prose
+- [x] 4.3 Add the counter disclosure to the help points in both languages — the
       page counts anonymous page views and sets no cookies — without editing the
       sentence about where progress is kept
-- [ ] 4.4 Add or update the help tests so the four caveat claims and the counter
+- [x] 4.4 Add or update the help tests so the four caveat claims and the counter
       disclosure are asserted rather than merely present
 
 ## 5. Move the site constants to patch 3.3
 
-- [ ] 5.1 Set `GAME_PATCH` to `3.3` and `UPDATE_NOTES_URL` to the Season 15
+- [x] 5.1 Set `GAME_PATCH` to `3.3` and `UPDATE_NOTES_URL` to the Season 15
       announcement in `src/header/site.ts`, and record in the file's comment
       that the previous `3.1.1` was read off the reference site's stale header on
       2026-07-28 while 3.2 was already live, so the value was wrong rather than
       merely old
-- [ ] 5.2 Confirm `SiteHeader.test.tsx` still passes unchanged — it reads the
+- [x] 5.2 Confirm `SiteHeader.test.tsx` still passes unchanged — it reads the
       constants, which is the arrangement working
 
 ## 6. Add the page-view counter
 
-- [ ] 6.1 Add the beacon token `1f854178248c4131a1f8744b9e4121d7` to
+- [x] 6.1 Add the beacon token `1f854178248c4131a1f8744b9e4121d7` to
       `src/header/site.ts` as a named constant beside the URLs, documented as
       public-by-nature and not a secret. The Cloudflare site is already
       registered by hostname `jekman87.github.io`
-- [ ] 6.2 Add Cloudflare's own snippet to `index.html` and `ru/index.html` at
+- [x] 6.2 Add Cloudflare's own snippet to `index.html` and `ru/index.html` at
       the end of the body, in the form the provider issues — a `type="module"`
       script with the token in `data-cf-beacon`, which is deferred by definition
       and needs no rewriting to `defer`
-- [ ] 6.3 Extend `scripts/crawl-files.test.ts` to compare the token in each
+- [x] 6.3 Extend `scripts/crawl-files.test.ts` to compare the token in each
       document against the constant, to fail when a document has no beacon, and
       to reject a constant that is not a token of the shape Cloudflare issues
       (32 hexadecimal characters), so a leftover placeholder cannot ship

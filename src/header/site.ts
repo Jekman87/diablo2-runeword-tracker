@@ -105,6 +105,29 @@ export const FEEDBACK_URL =
   "https://github.com/Jekman87/diablo2-runeword-tracker/discussions";
 
 /**
+ * The Cloudflare Web Analytics site token, which is how the page-view counter in
+ * both entry documents identifies which site it is reporting for.
+ *
+ * **Public by nature and not a secret.** It ships in the page, in plain sight, on
+ * every request — it names a dashboard, it does not open one. Moving it into
+ * build-time configuration would hide it from readers of this repository without
+ * hiding it from anybody else.
+ *
+ * Here for the reason `SITE_URL` is here: the two entry documents are static
+ * files that cannot import a module, so each states the token itself and
+ * `scripts/crawl-files.test.ts` compares every copy against this constant. A
+ * document that loses its beacon, or drifts from this value, fails a test rather
+ * than silently stopping counting — which is the failure that would otherwise go
+ * unnoticed for weeks, since nobody goes looking for a counter they believe is
+ * running.
+ *
+ * The Cloudflare site is registered by **hostname** (`jekman87.github.io`),
+ * which is the only scope Web Analytics offers. Our two documents are what carry
+ * the beacon, so they are what reports; the dashboard separates them by path.
+ */
+export const ANALYTICS_TOKEN = "1f854178248c4131a1f8744b9e4121d7";
+
+/**
  * USDT (Jetton) receive address on The Open Network.
  *
  * **USDT on TON**, chosen over USDT-TRC20 for fees and over on-chain BTC, where
