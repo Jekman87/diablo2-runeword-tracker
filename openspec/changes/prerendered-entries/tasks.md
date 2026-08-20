@@ -35,62 +35,89 @@
       something did, fix it at the site rather than by shimming a global, and
       record what it was — the audit expected only the locale store
 
-## 3. Make the build own the render, and fail without it
+## 3. Keep the snapshot away from readers who have their own state
 
-- [ ] 3.1 Wire the render pass into `pnpm build` so there is no way to produce
+- [ ] 3.1 Have the render step generate the inline decision script, interpolating
+      `CRAFTED_STORAGE_KEY`, `VIEW_STORAGE_KEY` and `LOCALE_STORAGE_KEY` from the
+      constants rather than writing the strings out again
+- [ ] 3.2 Place it between the prerendered markup and the module bundle, as a
+      classic `<script>` so it runs before first paint while the bundle stays
+      deferred. Hide with an inline `style.display = "none"`, not the `hidden`
+      attribute, and wrap the whole thing in `try/catch`
+- [ ] 3.3 Reveal the root once React has committed the reader's real state and
+      **before** a frame is painted — a layout effect or a synchronous flush,
+      never `useEffect`. Comment why at the site: the difference is invisible in
+      review and obvious on a slow connection
+- [ ] 3.4 Verify each audience by hand, with the network throttled hard enough
+      that the bundle takes a second or more to arrive:
+      a returning profile sees no intermediate content at all;
+      a fresh profile sees the list immediately;
+      scripting disabled leaves the list visible;
+      a private-browsing window still loads
+- [ ] 3.5 Test what can be tested automatically: that both built documents carry
+      the script, that it names the real key values, and that the reveal is not
+      wired to a post-paint effect
+- [ ] 3.6 **Gate.** Show the owner the throttled returning-reader case before
+      going further. They have reserved the right to withdraw the snapshot
+      mechanism, or prerendering altogether, if flicker is visible — so keep the
+      render pass and this group as separate commits and do not squash the branch
+
+## 4. Make the build own the render, and fail without it
+
+- [ ] 4.1 Wire the render pass into `pnpm build` so there is no way to produce
       `dist/` without it
-- [ ] 3.2 Make a failing render fail the build, emitting no document with an
+- [ ] 4.2 Make a failing render fail the build, emitting no document with an
       empty root
-- [ ] 3.3 Add the build-output check: both built documents carry runeword
+- [ ] 4.3 Add the build-output check: both built documents carry runeword
       content, each in its own language. Assert language, not just presence — a
       Russian document full of English content is the failure a presence check
       would pass
-- [ ] 3.4 Leave `scripts/crawl-files.test.ts` reading the source templates as it
+- [ ] 4.4 Leave `scripts/crawl-files.test.ts` reading the source templates as it
       does today; the head fields, the URLs and the beacon are still template
       facts. Note in its docblock that body content is checked elsewhere and why
-- [ ] 3.5 Check the quality gate still runs everything it did: the output check
+- [ ] 4.5 Check the quality gate still runs everything it did: the output check
       must not be a step CI can skip, and `pnpm build` must not have become
       optional to it
 
-## 4. Correct the scriptless fallback
+## 5. Correct the scriptless fallback
 
-- [ ] 4.1 Reword the `<noscript>` paragraph in both documents: the list is
+- [ ] 5.1 Reword the `<noscript>` paragraph in both documents: the list is
       readable without JavaScript; marking a runeword, searching, sorting and
       carrying progress as a file are what need it
-- [ ] 4.2 Keep it in project prose in each document's own language, and keep it
+- [ ] 5.2 Keep it in project prose in each document's own language, and keep it
       unstyled for the reason its comment already gives — the stylesheet arrives
       with the bundle it is standing in for
 
-## 5. Claim the Yandex property
+## 6. Claim the Yandex property
 
-- [x] 5.1 Owner action, outside the repository: add the site in Yandex Webmaster
+- [x] 6.1 Owner action, outside the repository: add the site in Yandex Webmaster
       and take the verification meta tag's value. Done — the tag reads
       `<meta name="yandex-verification" content="fb2c212fd42a88fb" />`
-- [ ] 5.2 Hold `fb2c212fd42a88fb` where the other site constants are, documented
+- [ ] 6.2 Hold `fb2c212fd42a88fb` where the other site constants are, documented
       as public-by-nature the way the analytics token is. Sixteen hexadecimal
-      characters, which is the shape the check in 5.4 should demand
-- [ ] 5.3 Add the tag to `index.html` beside the Google one, with a comment
+      characters, which is the shape the check in 6.4 should demand
+- [ ] 6.3 Add the tag to `index.html` beside the Google one, with a comment
       saying it is inert markup, why it stays after verification, and that
       Yandex re-checks it
-- [ ] 5.4 Extend `scripts/crawl-files.test.ts` to hold the document copy against
+- [ ] 6.4 Extend `scripts/crawl-files.test.ts` to hold the document copy against
       the constant, so a deleted tag fails a test
-- [ ] 5.5 `docs/SITE.md`: document the Yandex steps beside the Search Console
+- [ ] 6.5 `docs/SITE.md`: document the Yandex steps beside the Search Console
       ones — add the site, verify by meta tag, submit the same sitemap — as an
       account action, and note that the sitemap covers both entries so `/ru/`
       needs no second submission
 
-## 6. Verify the round
+## 7. Verify the round
 
-- [ ] 6.1 `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build` — all green
-- [ ] 6.2 `pnpm preview` and drive both entries in a real browser: the page still
+- [ ] 7.1 `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build` — all green
+- [ ] 7.2 `pnpm preview` and drive both entries in a real browser: the page still
       behaves as it did, stored progress still appears after mount, the language
       switch still works, and the console reports no hydration warning
-- [ ] 6.3 Measure what changed: the served size of each document before and
+- [ ] 7.3 Measure what changed: the served size of each document before and
       after, so the trade is recorded rather than assumed
-- [ ] 6.4 After deploy, fetch both public URLs without executing scripts and
+- [ ] 7.4 After deploy, fetch both public URLs without executing scripts and
       confirm each carries its own language's content
-- [ ] 6.5 Work on a branch, one commit per task group, and stop for the owner's
+- [ ] 7.5 Work on a branch, one commit per task group, and stop for the owner's
       review before anything reaches `main`
-- [ ] 6.6 After the deploy is indexed, worth a look but not a gate: whether
+- [ ] 7.6 After the deploy is indexed, worth a look but not a gate: whether
       Search Console's coverage and query reports change. Recorded so the next
       round can compare rather than guess

@@ -68,11 +68,6 @@ crafted progress and the view settings are read from storage the render pass
 cannot see, because a returning reader's first client render differs from the
 served markup by construction and every load would mismatch.
 
-Consequently the served markup is content for crawlers and a first paint for
-readers, not a live tree. A reader who has progress stored MAY see the default
-state for one frame before their own marks appear; that is accepted, and is the
-price of not making storage a hydration problem.
-
 #### Scenario: Stored progress still appears
 
 - **WHEN** a reader with stored progress loads either document
@@ -82,6 +77,75 @@ price of not making storage a hydration problem.
 
 - **WHEN** either document is loaded in a browser with the console open
 - **THEN** no hydration mismatch is reported, because hydration is not attempted
+
+### Requirement: A reader with saved state never sees the snapshot
+
+The prerendered markup SHALL NOT be presented to a client that holds saved state
+for this site. Each document SHALL decide this before its first paint, and hide
+the snapshot where any of the persisted keys is present, so that a returning
+reader sees what they see today — nothing, then their own state — rather than a
+list that is not theirs.
+
+This is not a refinement of the prerender; it is the condition on which the
+prerender is allowed at all. The project's stores load in lazy initialisers for
+one stated reason — an effect "would render the full table and then narrow it,
+which is a visible frame of a page the player did not leave behind" — and a
+snapshot shown to a reader who has progress is exactly that frame, widened to the
+length of a bundle download.
+
+The decision SHALL be taken by code that runs before the application bundle and
+before any paint, SHALL survive storage being unavailable, and SHALL NOT depend
+on identifying the client. The snapshot is withheld from clients that already
+hold this site's data; it is never withheld from a client because of who or what
+it appears to be. A crawler and a first-time reader therefore receive the same
+document and the same rendered content.
+
+The keys it tests SHALL be derived from the application's own storage-key
+constants rather than restated, because a restated key is a second
+representation of one fact whose failure is silent: renaming a key would leave
+the test matching nothing, and returning readers would begin seeing the snapshot
+with nothing to report it.
+
+The snapshot SHALL be revealed again only once the application has committed the
+reader's real state, and before a frame is painted. Revealing it after a painted
+frame reintroduces the flash this requirement exists to prevent.
+
+#### Scenario: A returning reader sees no snapshot
+
+- **WHEN** a reader whose browser holds saved progress loads either document on a
+  slow connection
+- **THEN** no version of the list is presented before their own state is, and no
+  intermediate content appears at any point
+
+#### Scenario: A first visit sees the list at once
+
+- **WHEN** a reader with no saved state for this site loads either document
+- **THEN** the prerendered list is presented immediately, without waiting for the
+  application bundle
+
+#### Scenario: A crawler is treated as a first visit
+
+- **WHEN** a client with no saved state fetches the document, whatever it
+  identifies itself as
+- **THEN** it receives the rendered list, and nothing about the response or the
+  presentation depends on that identification
+
+#### Scenario: Scripting disabled leaves the list visible
+
+- **WHEN** either document is loaded with scripting disabled
+- **THEN** the snapshot remains presented, because the code that would hide it
+  never runs
+
+#### Scenario: Unavailable storage does not break the page
+
+- **WHEN** the document is loaded in a mode where reading storage throws
+- **THEN** the page still loads and the application still mounts
+
+#### Scenario: The keys come from the constants
+
+- **WHEN** a storage key constant is renamed and the site is rebuilt
+- **THEN** the built documents test the new key, because the value was taken from
+  the constant rather than written out again
 
 ### Requirement: The scriptless fallback says what is actually true
 
