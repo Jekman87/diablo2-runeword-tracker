@@ -24,7 +24,13 @@ threshold behind.
 
 The control SHALL NOT obstruct any other control at any supported width. In
 particular it SHALL NOT cover a confirmation dialog while one is open, and it
-SHALL NOT cover a row's crafted toggle.
+SHALL NOT cover a row's crafted toggle where the row presents one.
+
+**Its distance from the corner is a property of the viewport, not a constant.**
+Below the narrow-viewport breakpoint the control SHALL sit in the corner, because
+the reading area is the whole width there and a control held away from the edge is
+a control held over the rows. Above it the control keeps the inset it has, which
+was measured against the crafted toggle a wide row presents.
 
 Where the reader has asked for reduced motion, the return SHALL be immediate rather
 than animated.
@@ -65,6 +71,18 @@ Its copy SHALL resolve through the display-copy layer in both locales.
   confirmation dialog also open
 - **THEN** neither covers the other
 - **AND** no row's crafted toggle is underneath it
+
+#### Scenario: It sits in the corner on a narrow viewport
+
+- **WHEN** the control is measured at the narrowest supported width
+- **THEN** it is nearer both the bottom and the trailing edge than it is above the
+  breakpoint
+
+#### Scenario: The wide layout keeps the larger inset
+
+- **WHEN** the control is measured at a desktop viewport
+- **THEN** it is further from both the bottom and the trailing edge than it is
+  below the breakpoint, clear of the crafted toggle a wide row presents
 
 #### Scenario: A reader who opened a panel keeps it in front
 

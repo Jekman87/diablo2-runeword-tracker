@@ -101,10 +101,26 @@ tracks no inventory, so a rune query has nothing to be relative to.
 
 ### Requirement: Every column header sorts its column
 
-Each of the table's five column headers SHALL be a control that sorts the table by
+Each column header the table presents SHALL be a control that sorts the table by
 that column. Each column SHALL sort on the value that column presents: crafted
 state, the runeword's name, the number of sockets its rune sequence fills, the
 first base item category it names, and the required character level.
+
+At or above the narrow-viewport breakpoint the table presents all five headers.
+Below it two columns are withdrawn — the runes column, by `runeword-table`, and
+the crafted column, by `crafted-tracking` — and neither presents a heading or a
+sort control there, so three sort controls are presented. A header cell that a
+withdrawn column keeps for the sake of the table's column count SHALL present
+neither. A withdrawn header SHALL NOT be replaced by a sort control somewhere
+else: sorting is a property of a column header, and a control detached from the
+column it orders is a second way to do the same thing.
+The crafted **filter** in the browsing controls is present at every width and is
+what answers "what have I made" on a narrow viewport.
+
+A sort order chosen at one width SHALL remain in effect at every other width. The
+setting is the player's, not the layout's, so narrowing the viewport SHALL NOT
+change which column the table is sorted by or in which direction — only which
+headers are there to press.
 
 Activating the header of a column that is not the sorted one SHALL sort by it.
 Activating the header of the sorted column SHALL reverse the direction. There
@@ -161,6 +177,18 @@ player sees rather than only the text within it.
 - **WHEN** the `Crafted` header is activated again
 - **THEN** the un-crafted runewords are presented first, which is that column
   ascending
+
+#### Scenario: A narrow viewport presents the headers of the columns it shows
+
+- **WHEN** the table's headers are inspected on a narrow viewport
+- **THEN** each presented column carries its own sort control, and the withdrawn
+  columns carry none anywhere else
+
+#### Scenario: A sort chosen wide survives a narrow viewport
+
+- **WHEN** the table is sorted by crafted state and the viewport is then narrowed
+  past the breakpoint
+- **THEN** the rows are still in that order, in that direction
 
 #### Scenario: A press anywhere in a header sorts it
 
@@ -570,3 +598,32 @@ no record carries reads as protection where there is nothing left to protect.
 - **WHEN** the presented count and its total are inspected
 - **THEN** neither is reduced by any availability field, and the total is the
   whole dataset
+
+### Requirement: The sort indicator is withdrawn on a narrow viewport
+
+The space each header reserves for its sort arrow SHALL be withdrawn below the
+narrow-viewport breakpoint, and SHALL be reserved unconditionally at or above it.
+It SHALL NOT be made conditional on a column being the sorted one at any width:
+drawing it only where it is used made the sorted column wider than its neighbours
+and shifted every row beside it.
+
+Nothing is lost by the withdrawal. The sorted column and its direction are already
+carried by `aria-sort` and by each header's accessible name, in words; the arrow
+was always the third carrier and never the only one.
+
+#### Scenario: The arrow is not drawn on a narrow viewport
+
+- **WHEN** the table's headers are inspected on a narrow viewport
+- **THEN** no header draws a sort arrow and none reserves space for one
+
+#### Scenario: The reservation is unconditional above the breakpoint
+
+- **WHEN** the table's headers are inspected at or above the breakpoint
+- **THEN** every header reserves the same space for the arrow, whether or not it
+  is the sorted column
+
+#### Scenario: The direction is still reported without the arrow
+
+- **WHEN** the sorted column is inspected on a narrow viewport
+- **THEN** it still carries `aria-sort` with its direction, and its header's
+  accessible name still states the direction in words
