@@ -68,10 +68,15 @@
 - [x] 3.5 Test what can be tested automatically: that both built documents carry
       the script, that it names the real key values, and that the reveal is not
       wired to a post-paint effect
-- [ ] 3.6 **Gate.** Show the owner the throttled returning-reader case before
-      going further. They have reserved the right to withdraw the snapshot
-      mechanism, or prerendering altogether, if flicker is visible — so keep the
-      render pass and this group as separate commits and do not squash the branch
+- [x] 3.6 **Gate.** Shown to the owner as measurements rather than an
+      impression: at 50 KB/s with the cache disabled, a returning reader had 239
+      blank frames and **0 frames showing content without their own marks**,
+      while a fresh profile had the full styled table painted from the first
+      frame. The owner reviewed those numbers and chose to continue. The
+      withdrawal option stands until merge — `feat(build): render both entry
+  documents to HTML` and `feat(prerender): hide the snapshot…` are separate
+      commits, so the snapshot mechanism can be reverted without losing the
+      prerender, and the branch must not be squashed
 
 ## 4. Make the build own the render, and fail without it
 
