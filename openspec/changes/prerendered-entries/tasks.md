@@ -63,10 +63,12 @@
 
 ## 5. Claim the Yandex property
 
-- [ ] 5.1 Owner action, outside the repository: add the site in Yandex Webmaster
-      and take the verification meta tag's value
-- [ ] 5.2 Hold that value where the other site constants are, documented as
-      public-by-nature the way the analytics token is
+- [x] 5.1 Owner action, outside the repository: add the site in Yandex Webmaster
+      and take the verification meta tag's value. Done — the tag reads
+      `<meta name="yandex-verification" content="fb2c212fd42a88fb" />`
+- [ ] 5.2 Hold `fb2c212fd42a88fb` where the other site constants are, documented
+      as public-by-nature the way the analytics token is. Sixteen hexadecimal
+      characters, which is the shape the check in 5.4 should demand
 - [ ] 5.3 Add the tag to `index.html` beside the Google one, with a comment
       saying it is inert markup, why it stays after verification, and that
       Yandex re-checks it

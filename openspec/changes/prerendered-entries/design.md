@@ -200,7 +200,7 @@ documents serve exactly as they do today.
   the build step itself that fails it. The last is closest to the requirement
   that a failing render fails the build; then the "check" and the "build" are one
   thing, and the separate test only guards against the check being removed.
-- **Whether the Yandex token is needed before this ships.** The tag can land with
-  the token once the owner adds the site. Unlike the analytics token there is no
-  partial state that looks finished: an unverified property simply is not
-  verified.
+- **Resolved: the Yandex token.** The owner registered the site and the tag is
+  `<meta name="yandex-verification" content="fb2c212fd42a88fb" />`. Sixteen
+  hexadecimal characters, so the check has a shape to demand, as the analytics
+  token's thirty-two do. Nothing in this change waits on it.
