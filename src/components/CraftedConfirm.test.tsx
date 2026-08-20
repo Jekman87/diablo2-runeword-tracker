@@ -1,4 +1,10 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import {
@@ -190,6 +196,23 @@ describe("leaving without answering", () => {
 
     expect(onCancel).toHaveBeenCalled();
     expect(onConfirm).not.toHaveBeenCalled();
+  });
+
+  it("survives the press and cancels on the release", async () => {
+    const { onCancel } = renderConfirm();
+
+    await opened(en.crafted.confirmMarkAction);
+
+    // The dim has to still be there when the release is hit-tested. Closing on
+    // the press unmounts it in between, and the browser then delivers
+    // `mousedown`, `mouseup` and `click` to whatever the dim was covering —
+    // traced on a phone-sized viewport as one tap that closed this dialog and
+    // opened a row's advice panel underneath it.
+    fireEvent.pointerDown(document.body);
+    expect(onCancel).not.toHaveBeenCalled();
+
+    fireEvent.click(document.body);
+    expect(onCancel).toHaveBeenCalled();
   });
 });
 
