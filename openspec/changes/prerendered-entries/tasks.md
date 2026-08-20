@@ -18,22 +18,25 @@
 
 ## 2. Render the application to HTML
 
-- [ ] 2.1 Decide how the SSR bundle is produced — a Vite SSR build of a small
+- [x] 2.1 Decide how the SSR bundle is produced — a Vite SSR build of a small
       render entry, or running the script through a loader that resolves the `@/`
       alias — choosing whichever keeps `pnpm build` one command and adds no
       dependency. Record the choice and the reason in the script's own comment
-- [ ] 2.2 Write the render script beside `scripts/generate-dataset.ts`: seed the
+- [x] 2.2 Write the render script beside `scripts/generate-dataset.ts`: seed the
       locale, render `App` with `renderToString`, and return the markup. Run it
       for both locales
-- [ ] 2.3 Inject each result into that document's `#root` in the built output —
+- [x] 2.3 Inject each result into that document's `#root` in the built output —
       English into `index.html`, Russian into `ru/index.html` — leaving every
       head field, the beacon and the JSON-LD block untouched
-- [ ] 2.4 Run it and read the output by eye: the English document contains
+- [x] 2.4 Run it and read the output by eye: the English document contains
       English rune and base names, the Russian one the Russian ones, both contain
       all 99 runeword names, and the progress band reports nothing crafted
-- [ ] 2.5 Confirm nothing else reached for the browser during render. If
-      something did, fix it at the site rather than by shimming a global, and
-      record what it was — the audit expected only the locale store
+- [x] 2.5 Confirm nothing else reached for the browser during render. Nothing
+      did — the audit was right that the locale store was the only offender.
+      Noted for whoever comes next: the pass renders the **default tree only**,
+      so closed panels, dialogs and Floating UI positioning are never exercised
+      by it, and a browser API added on one of those paths will not be caught by
+      the build
 
 ## 3. Keep the snapshot away from readers who have their own state
 

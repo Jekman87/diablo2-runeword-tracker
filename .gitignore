@@ -5,6 +5,9 @@ node_modules/
 # build output
 dist/
 dist-ssr/
+# The build's render pass compiles src/prerender/entry.tsx to here, so
+# scripts/prerender.ts can import it. A build product like dist/.
+.prerender/
 *.local
 
 # environment
