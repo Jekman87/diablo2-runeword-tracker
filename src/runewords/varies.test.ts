@@ -47,12 +47,35 @@ describe("what counts as a roll", () => {
     expect(fireDamage?.[1]).toBe(false);
   });
 
-  it("marks a per-level value", () => {
+  it("leaves a per-level value alone", () => {
+    // A value that grows with the character is the same on every copy of the
+    // runeword. The treatment marks what is settled once, at the moment of
+    // crafting, and cannot be crafted again for a better number; a per-level
+    // line is not that, and marking it said "this one is a gamble" about a line
+    // that is not.
     const perLevel = flagged("Leaf").find(([line]) =>
       line.includes("Per Character Level"),
     );
 
-    expect(perLevel?.[1]).toBe(true);
+    expect(perLevel?.[1]).toBe(false);
+  });
+
+  it("leaves every per-level line alone, not just this one", () => {
+    // The Russian variant is the sensor, and it ends every one of these lines
+    // `(зависит от уровня персонажа)`. Reading the whole dataset is what makes
+    // this a fact about the treatment rather than about `Leaf`.
+    const marked = runewords.flatMap((runeword) => {
+      const flags = varyingProperties(runeword);
+
+      return (runeword.ru?.propertyGroups ?? []).flatMap((group, groupIndex) =>
+        group.properties.filter(
+          (line, index) =>
+            line.includes("*ур") && flags[groupIndex][index] === true,
+        ),
+      );
+    });
+
+    expect(marked).toEqual([]);
   });
 
   it("leaves a flat value alone", () => {
@@ -86,13 +109,15 @@ describe("across the dataset", () => {
 
   it("marks about a sixth of the lines, not most and not none", () => {
     // A detector that fired on everything or nothing would pass every case
-    // above that asserts one direction. The shipped figure is 158 of 969.
+    // above that asserts one direction. The shipped figure is 143 of 969 — it
+    // was 158 while per-level formulas were counted as rolls, and the 15 that
+    // left are exactly those.
     const flags = runewords.flatMap((record) =>
       varyingProperties(record).flat(),
     );
 
     expect(flags).toHaveLength(969);
-    expect(flags.filter(Boolean)).toHaveLength(158);
+    expect(flags.filter(Boolean)).toHaveLength(143);
   });
 
   it("falls back to the English markers without a Russian variant", () => {
