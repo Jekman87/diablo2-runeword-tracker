@@ -101,9 +101,9 @@ export function comparatorFor(
  *
  * Each returns 0 where it cannot separate the two rows, which is the signal
  * `comparatorFor` reads to fall through to `byRequiredLevel`. None of them reads
- * `ladderOnly`, `patch` or `note`: availability changes between ladder seasons,
- * and where a stale badge is cosmetic a stale ordering would present the table by
- * something untrue.
+ * `patch` or `note`: availability changes between ladder seasons, and where a
+ * stale badge is cosmetic a stale ordering would present the table by something
+ * untrue.
  *
  * Two of the five are judgement calls.
  *

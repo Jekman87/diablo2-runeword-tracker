@@ -34,9 +34,9 @@ import { foldLabel } from "@/runewords/fold";
  * which is the name column doing its job rather than rune search creeping back
  * in.
  *
- * **Availability is not searched either.** `ladderOnly`, `patch` and `note` are
- * decoration by requirement, so typing `2.6` finds nothing on account of the
- * patch that introduced a runeword.
+ * **Availability is not searched either.** `patch` and `note` are decoration by
+ * requirement, so typing `2.6` finds nothing on account of the patch that
+ * introduced a runeword.
  *
  * **The collation question the docblock used to defer is answered here, and the
  * answer is that matching needs no collator.** Substring search compares code

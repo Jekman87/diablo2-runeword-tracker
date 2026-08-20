@@ -76,11 +76,10 @@ describe("orderedRunewords", () => {
   it("reads no availability field", () => {
     // Availability is decoration by requirement, and the row order is the one
     // piece of logic in this change that could have quietly started reading it.
-    // Clear all three fields on every record and the order must not move.
+    // Clear both fields on every record and the order must not move.
     const blind = runewords
       .map((runeword) => ({
         ...runeword,
-        ladderOnly: false,
         patch: undefined,
         note: undefined,
       }))
