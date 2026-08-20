@@ -1,9 +1,13 @@
+import { createElement } from "react";
+
 import { act, renderHook } from "@testing-library/react";
+import { renderToString } from "react-dom/server";
 
 import { itemTypes, runes, runewords } from "@/data";
 import {
   type Strings,
   resetLocaleForTests,
+  seedLocale,
   setLocale,
   useLocale,
   useStrings,
@@ -311,3 +315,116 @@ function copy(record: object, prefix = ""): [string, string][] {
 // Not a value the dataset holds, so a call site's interpolated arguments can
 // never look like leaked game text.
 const MARKER = " ";
+
+// `pnpm build` renders both entry documents to HTML strings in Node, where there
+// is no `document` and no storage. No server is involved — `renderToString` is
+// just React producing a string instead of DOM nodes. jsdom gives this file a
+// document, so those conditions are reproduced by taking it away for the
+// duration of one test, which is the only honest way to test a guard whose whole
+// point is the absence of a global.
+
+describe("rendering where there is no browser", () => {
+  it("renders a seeded locale to a string with no document", () => {
+    const { remove, restore } = withoutDocument();
+
+    remove();
+
+    try {
+      seedLocale("ru");
+
+      // The real build path: rendering to a string needs no document, and this
+      // is also what proves React's `getServerSnapshot` argument is in place —
+      // without it `useSyncExternalStore` throws instead of rendering.
+      expect(renderToString(createElement(Probe))).toContain(ru.app.title);
+    } finally {
+      restore();
+    }
+  });
+
+  it("renders English with neither storage, document nor seed", () => {
+    const { remove, restore } = withoutDocument();
+
+    remove();
+
+    try {
+      // `loadLocale` already survives a missing `window` — its reader catches
+      // the ReferenceError — so what is under test here is the document guard.
+      expect(renderToString(createElement(Probe))).toContain(en.app.title);
+    } finally {
+      restore();
+    }
+  });
+
+  it("does not throw when a switch happens with no document", () => {
+    const { remove, restore } = withoutDocument();
+
+    remove();
+
+    try {
+      expect(() => setLocale("ru")).not.toThrow();
+      expect(renderToString(createElement(Probe))).toContain(ru.app.title);
+    } finally {
+      restore();
+    }
+  });
+});
+
+describe("the browser's own resolution, unchanged", () => {
+  it("prefers the stored choice over the document's declaration", () => {
+    window.localStorage.setItem(LOCALE_STORAGE_KEY, JSON.stringify("ru"));
+    document.documentElement.lang = "en";
+
+    expect(activeRecord()).toBe(ru);
+  });
+
+  it("takes the document's declaration when nothing is stored", () => {
+    document.documentElement.lang = "ru";
+
+    expect(activeRecord()).toBe(ru);
+  });
+
+  it("still declares the language on the document it resolved for", () => {
+    window.localStorage.setItem(LOCALE_STORAGE_KEY, JSON.stringify("ru"));
+
+    activeRecord();
+
+    expect(document.documentElement.lang).toBe("ru");
+  });
+
+  it("is overridden by a seed, which is the renderer's path and not a reader's", () => {
+    document.documentElement.lang = "ru";
+    seedLocale("en");
+
+    // Seeding sets the active locale outright, so no detection runs at all.
+    expect(activeRecord()).toBe(en);
+    // And it writes nothing: a build is not an interaction.
+    expect(window.localStorage.getItem(LOCALE_STORAGE_KEY)).toBeNull();
+  });
+});
+
+/** The active record, read the way a component reads it. */
+function activeRecord(): Strings {
+  return renderHook(useStrings).result.current;
+}
+
+/** A component that renders one string, for the server-render tests. */
+function Probe() {
+  return useStrings().app.title;
+}
+
+/**
+ * Takes `document` away and gives it back, so a guard against its absence can
+ * be exercised in an environment that has one.
+ */
+function withoutDocument() {
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, "document");
+
+  return {
+    remove: () => {
+      Reflect.deleteProperty(globalThis, "document");
+    },
+    restore: () => {
+      if (descriptor) Object.defineProperty(globalThis, "document", descriptor);
+    },
+  };
+}

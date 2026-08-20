@@ -1,20 +1,20 @@
 ## 1. Make the locale store survive a render with no browser
 
-- [ ] 1.1 Add an explicit way to initialise the locale store with a stated locale,
+- [x] 1.1 Add an explicit way to initialise the locale store with a stated locale,
       for the renderer only: it sets the active locale, persists nothing, and
       touches no document attribute
-- [ ] 1.2 Guard the two `document.documentElement.lang` writes in
+- [x] 1.2 Guard the two `document.documentElement.lang` writes in
       `src/i18n/index.ts` on a document existing, and make `documentLocale()`
       return nothing where there is no document instead of throwing
-- [ ] 1.3 Give `useStrings` and `useLocale` a server snapshot as
+- [x] 1.3 Give `useStrings` and `useLocale` a server snapshot as
       `useSyncExternalStore`'s third argument, with a comment saying why the API
       requires it rather than leaving it looking redundant
-- [ ] 1.4 Unit-test the new behaviour in `src/i18n/index.test.ts`: a stated
+- [x] 1.4 Unit-test the new behaviour in `src/i18n/index.test.ts`: a stated
       locale resolves with no `document` present and without throwing; the
       browser's resolution order (stored → document `lang` → English) is
       unchanged; and `resetLocaleForTests` still returns the store to a fresh
       load
-- [ ] 1.5 `pnpm test` and `pnpm typecheck` green before any render pass exists
+- [x] 1.5 `pnpm test` and `pnpm typecheck` green before any render pass exists
 
 ## 2. Render the application to HTML
 
