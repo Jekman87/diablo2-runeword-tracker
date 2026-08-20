@@ -55,9 +55,7 @@ screenshot; regenerating it is a manual step, not part of the build.
 
 Each document head carries a title and one-sentence description in its own
 language (repeated as Open Graph), the canonical link, an `og:locale` pair, and
-one JSON-LD `WebApplication` block — inert data, not a script.
-
-"D2R" appears in
+one JSON-LD `WebApplication` block — inert data, not a script. "D2R" appears in
 both titles because it is the term players search, and both descriptions name
 the **Chronicle** («История (Хроники)» in Russian) because that is the in-game
 log the tracker fills and the word a player looking for exactly this tool would

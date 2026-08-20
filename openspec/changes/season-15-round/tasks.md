@@ -116,14 +116,14 @@
 
 ## 8. Verify the whole round
 
-- [ ] 8.1 `pnpm lint`, `pnpm typecheck`, `pnpm test` — all green
-- [ ] 8.2 Grep the whole repository, `dist/` excluded, for `ladder` and
+- [x] 8.1 `pnpm lint`, `pnpm typecheck`, `pnpm test` — all green
+- [x] 8.2 Grep the whole repository, `dist/` excluded, for `ladder` and
       `ладдер`, and account for every remaining hit: `Mosaic`'s note and prose,
       the vendor snapshot, the historical spec archive, and the rules that
       forbid reading availability
-- [ ] 8.3 Run the app and check by eye: no badge beside the eight, patch line
+- [x] 8.3 Run the app and check by eye: no badge beside the eight, patch line
       reads 3.3 and links to the Season 15 notes, help legend shows patch and
       note only, advice caveat and counter disclosure read correctly in both
       languages
-- [ ] 8.4 Work on the `season-15-round` branch, one commit per task group, and
+- [x] 8.4 Work on the `season-15-round` branch, one commit per task group, and
       stop for the owner's review before anything reaches `main`
