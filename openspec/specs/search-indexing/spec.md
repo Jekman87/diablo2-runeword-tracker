@@ -168,34 +168,50 @@ never behaviour.
 - **THEN** it is data of a non-executable type and loads nothing from another
   origin
 
-### Requirement: A second search engine's property is verified the same way
+### Requirement: A host-scoped search engine cannot be claimed from a sub-path
 
-Where the project claims a property with a search engine, ownership SHALL be
-proven with inert markup rather than an executable surface, and the tag SHALL
-stay in the document afterwards, because engines re-check it and drop a property
-whose proof disappeared. This holds for Yandex as it already does for Google:
-the Russian entry exists so Russian queries have a Russian document, and Russian
-search mostly happens on Yandex, so the property is worth claiming.
+Where a search engine defines a property by hostname rather than by URL prefix,
+this deployment SHALL NOT attempt to claim one, and SHALL record why instead. The
+site is a GitHub Pages project page served from `…github.io/diablo2-runeword-tracker/`,
+and the hostname's own home page belongs to an account root that does not exist —
+`https://jekman87.github.io/` answers 404.
 
-The verification value SHALL be held where the other site constants are and
-checked against the document copy, so a tag deleted by accident fails a test
-rather than silently unverifying the property. The submission steps SHALL be
-documented for the owner beside the existing Search Console steps, as an account
-action rather than a build step.
+**Yandex is the case that establishes this.** Yandex Webmaster treats a site as a
+host: entering the full address truncates it to `https://jekman87.github.io`, and
+verification by meta tag requires the tag in the `<head>` of that host's home
+page. A tag in this project's document verifies nothing, and the file-based
+method needs the same page. DNS verification is unavailable because the domain is
+GitHub's.
 
-#### Scenario: Ownership is proven without a script
+No verification tag for such an engine SHALL be carried in these documents. A tag
+that proves nothing is worse than no tag: it reads as a claim that ownership was
+established, invites tests that guard a mechanism which does not work, and
+invites documentation describing steps that fail at the second one.
+
+Google Search Console remains claimed, because it supports a **URL-prefix**
+property that includes the sub-path — which is why one engine is verified here
+and the other is not. That asymmetry is a property of the engines, not an
+oversight.
+
+The condition that would lift this SHALL be recorded rather than left to be
+rediscovered: an account-root repository, which would give the host a home page
+to carry the tag. Its absence blocks this concretely, not cosmetically.
+
+#### Scenario: No unverifiable proof is served
+
+- **WHEN** either document's head is read
+- **THEN** it carries no verification tag for an engine whose property is scoped
+  to the hostname
+
+#### Scenario: The engine that can be claimed still is
 
 - **WHEN** the root document's head is read
-- **THEN** it carries a Yandex verification meta tag alongside the Google one
-- **AND** neither is a script or loads anything from another origin
+- **THEN** it carries the Google Search Console verification as inert markup,
+  because a URL-prefix property covers this sub-path
 
-#### Scenario: A deleted verification tag fails a check
-
-- **WHEN** either verification tag is removed from the document
-- **THEN** a repository check fails naming it
-
-#### Scenario: The owner's steps are written down
+#### Scenario: The obstacle is written down, not remembered
 
 - **WHEN** a reader opens the site-constants documentation
-- **THEN** it names the Yandex Webmaster steps — add the site, verify with the
-  meta tag, submit the same sitemap — next to the Search Console ones
+- **THEN** it states that Yandex is scoped to the host, that the host's home page
+  answers 404, and what would unblock it — rather than steps that cannot be
+  completed

@@ -1695,13 +1695,28 @@ Neither is a defect, and both were investigated far enough to stop. Recorded so
 the next round does not rediscover them from scratch.
 
 **An account-root repository (`jekman87.github.io`).** `https://jekman87.github.io/`
-serves nothing — GitHub returns "Site not found" — which is why Google shows no
-favicon for a result on this sub-path, and why a Search Console property where
-`/sitemap.xml` means what the submit field implies cannot exist. One small
-repository with a `favicon.ico`, a `robots.txt` and perhaps a card page would
-close both. Costed and parked by the owner on 2026-08-20; the favicon is
-cosmetic and the sitemap status is ignorable, so neither justifies a second
-repository yet.
+serves nothing — GitHub returns "Site not found" — and that absence now blocks
+three things rather than one:
+
+- **Yandex cannot be claimed at all.** Yandex Webmaster scopes a property to the
+  host and wants its verification tag on the host's home page, so a project page
+  cannot be verified from its sub-path. Tried in August 2026, reverted, and
+  written up in [`docs/SITE.md`](docs/SITE.md). This is the concrete blocker; the
+  other two are cosmetic beside it.
+- **No favicon in Google results.** Google supports one favicon per hostname,
+  declared on that home page — which is why the rune the tracker declares for its
+  own tab never appears in the search result.
+- **No Search Console property where `/sitemap.xml` means what the field
+  implies**, which is the other half of the sitemap story below.
+
+One small repository — a card page listing the author's projects, a
+`favicon.ico`, a `robots.txt` naming the tracker's sitemap — closes all three.
+**With one constraint to decide first:** that favicon is host-wide, so it appears
+beside every result under `jekman87.github.io`, every future project included. It
+should be the author's mark, not this project's rune. Per-project icons in search
+results need per-project hostnames, i.e. a custom domain.
+
+Costed and parked by the owner on 2026-08-21, knowing all of the above.
 
 **The Search Console sitemap status.** «Couldn't fetch», against a sitemap
 verified sound from outside — 200, `application/xml`, well-formed, nothing

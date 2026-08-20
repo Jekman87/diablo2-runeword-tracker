@@ -118,26 +118,36 @@ After a deploy that includes these files, the owner does this once, by hand:
    to `/ru/`, and Search Console will not index a redirect, reporting it as a
    redirect error instead.
 
-**Yandex Webmaster is claimed too, and it is not optional any more.** The `/ru/`
-entry exists so a Russian query has a Russian document to match, and
-Russian-language search mostly happens on Yandex — a Google-only property leaves
-exactly the audience that entry was built for unmeasured. The steps, once, by
-hand:
+**Yandex is not claimed, and cannot be from here.** The `/ru/` entry exists so a
+Russian query has a Russian document, and Russian-language search mostly happens
+on Yandex — so this was tried, and it does not work on a project page. Recorded
+so it is not attempted a third time:
 
-1. Open [Yandex Webmaster](https://webmaster.yandex.ru/) and add the site
-   `https://jekman87.github.io/diablo2-runeword-tracker/`.
-2. Verify by **meta tag**. Yandex gives a `<meta name="yandex-verification" …>`
-   line; it is already in `index.html`, with its value pinned as
-   `YANDEX_VERIFICATION` in `src/header/site.ts` and held against the document by
-   `scripts/crawl-files.test.ts`. Press Verify after a deploy that carries it.
-3. Under **Файлы Sitemap**, submit the same
-   `…/diablo2-runeword-tracker/sitemap.xml`. It lists both entries, so `/ru/`
-   needs no second submission — and no tag of its own, because verification is
-   per site.
+- **Yandex Webmaster scopes a property to the host, not to a URL prefix.**
+  Entering the full address truncates it to `https://jekman87.github.io` — for
+  Yandex, `site.ru` and `www.site.ru` are already different sites and a
+  subdirectory is not a site at all. Google Search Console's URL-prefix property
+  is what makes the same thing possible there.
+- **Verification by meta tag needs the tag on the host's home page.** Yandex's
+  own wording: «Добавьте в HTML-код главной страницы сайта специальный
+  метатег… Если вы добавите метатег в другое место, то права подтвердить не
+  удастся.» The host's home page is `https://jekman87.github.io/`, which
+  **answers 404** — GitHub's "Site not found". The HTML-file method needs the
+  same page, and DNS verification is unavailable because the domain is GitHub's.
 
-**Leave the tag in place.** Yandex re-checks it and drops the property when the
-proof disappears, which fails silently: the site keeps working and the reports
-quietly stop.
+So no `yandex-verification` tag is carried here. One was added and then removed:
+a tag that proves nothing is worse than no tag, because it reads as a claim that
+ownership was established and it invites tests and instructions that guard a
+mechanism which does not exist. `scripts/crawl-files.test.ts` now asserts its
+absence.
+
+**What would unblock it:** an account-root repository (`jekman87.github.io`),
+giving the host a home page to carry the tag. That is parked in
+[`IDEAS.md`](../IDEAS.md), and this is the thing it blocks concretely rather than
+cosmetically. Note the constraint it comes with: Google supports **one favicon
+per hostname**, declared on that home page, so the root's icon would appear
+beside every result under this host — every future project included. The icon
+there should be the author's mark, not this project's rune.
 
 ### After a deploy that touches the render pass or either entry document
 

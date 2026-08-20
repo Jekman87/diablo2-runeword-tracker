@@ -7,7 +7,6 @@ import {
   OG_IMAGE_URL,
   SITE_URL,
   SITE_URL_RU,
-  YANDEX_VERIFICATION,
 } from "../src/header/site.ts";
 
 // What a crawler is given lives in files that no module imports: two entry
@@ -177,39 +176,27 @@ describe.each(Object.entries(documents))(
 );
 
 describe("search-engine ownership proofs", () => {
-  it("carries the Yandex verification the constant names", () => {
-    const content = attribute(
+  it("proves ownership with markup rather than a script", () => {
+    // Search Console offers a script-based method too; it is not used, because
+    // a verification script is executable third-party code on every page load
+    // for a one-time check.
+    const tag = /<meta[^>]*name="google-site-verification"[^>]*>/.exec(
       documents.en.html,
-      "meta",
-      "name",
-      "yandex-verification",
-      "content",
     );
 
-    // A verification tag deleted by accident is a property silently unverified:
-    // the site keeps working and the reports quietly stop, which is why this is
-    // a test and not a comment.
-    expect(content).toBe(YANDEX_VERIFICATION);
+    expect(tag?.[0]).toBeDefined();
+    expect(tag?.[0]).not.toContain("script");
   });
 
-  it("proves ownership with markup rather than a script", () => {
-    // Both engines offer a script-based option; neither is used, because a
-    // verification script is executable third-party code on every page load for
-    // a one-time check.
-    for (const name of ["google-site-verification", "yandex-verification"]) {
-      const tag = new RegExp(`<meta[^>]*name="${name}"[^>]*>`).exec(
-        documents.en.html,
-      );
-
-      expect(tag?.[0]).toBeDefined();
-      expect(tag?.[0]).not.toContain("script");
+  it("carries no proof for an engine that cannot be claimed from a sub-path", () => {
+    // Yandex Webmaster scopes a property to the hostname and wants its tag on
+    // the host's home page — which here is an account root that answers 404. A
+    // tag in these documents would verify nothing while reading as a claim that
+    // it had. See `docs/SITE.md`; the account-root repository is what would
+    // change this.
+    for (const doc of Object.values(documents)) {
+      expect(doc.html).not.toContain("yandex-verification");
     }
-  });
-
-  it("needs no second tag on the Russian entry", () => {
-    // Verification is per site and the sitemap lists both URLs, so the root
-    // document proving ownership is the whole of it.
-    expect(documents.ru.html).not.toContain("yandex-verification");
   });
 });
 
