@@ -205,7 +205,7 @@ describe("what the panel presents", () => {
     expect(panel.queryAllByRole("heading", { level: 4 })).toEqual([]);
   });
 
-  it("restates patch and the note in full words, without ladder status", async () => {
+  it("restates the patch and the note in full words", async () => {
     const user = userEvent.setup();
     renderTable();
 
@@ -216,9 +216,8 @@ describe("what the panel presents", () => {
     expect(
       panel.getByText(en.availability.patchMeaning("2.6")),
     ).toBeInTheDocument();
-    expect(
-      panel.queryByText(en.availability.ladderMeaning),
-    ).not.toBeInTheDocument();
+    // The note is where a ladder restriction lives now, as the dataset's own
+    // text rather than as a second sentence the strings layer supplies.
     expect(
       panel.getByText("Disabled on ladder! Can be crafted offline non-ladder."),
     ).toBeInTheDocument();

@@ -6,7 +6,7 @@ import { type Runeword, runewords } from "@/data";
 import { en } from "@/i18n/en";
 
 describe("AvailabilityBadges", () => {
-  it("renders patch and note for `Mosaic`, without a ladder marker", () => {
+  it("renders patch and note for `Mosaic`, and nothing else", () => {
     const mosaic = named("Mosaic");
 
     render(<AvailabilityBadges runeword={mosaic} />);
@@ -14,46 +14,45 @@ describe("AvailabilityBadges", () => {
     expect(
       screen.getByRole("img", { name: en.availability.patchMeaning("2.6") }),
     ).toHaveTextContent("2.6");
-    expect(
-      screen.queryByRole("img", { name: en.availability.ladderMeaning }),
-    ).not.toBeInTheDocument();
     expect(screen.getByRole("img", { name: mosaic.note })).toHaveTextContent(
       en.availability.noteMarker,
     );
+    // Two badges, not three. `Mosaic` is the record that carries the most
+    // availability there is to carry, so it is where a third would show up.
+    expect(screen.getAllByRole("img")).toHaveLength(2);
   });
 
-  it("states a badge's meaning rather than the letter it draws", () => {
-    render(<AvailabilityBadges runeword={named("Bulwark")} />);
+  it("states a badge's meaning rather than the marker it draws", () => {
+    render(<AvailabilityBadges runeword={named("Mosaic")} />);
 
-    const ladder = screen.getByRole("img", {
-      name: en.availability.ladderMeaning,
+    const patch = screen.getByRole("img", {
+      name: en.availability.patchMeaning("2.6"),
     });
 
-    expect(ladder).not.toHaveAccessibleName(en.availability.ladderMarker);
+    expect(patch).not.toHaveAccessibleName("2.6");
     // The browser's `title` is gone on purpose: the tip is a Floating UI
     // panel in the detail view's own surface, not OS chrome.
-    expect(ladder).not.toHaveAttribute("title");
+    expect(patch).not.toHaveAttribute("title");
   });
 
   it("shows the meaning in a tooltip on hover", async () => {
     const user = userEvent.setup();
-    render(<AvailabilityBadges runeword={named("Bulwark")} />);
+    render(<AvailabilityBadges runeword={named("Mosaic")} />);
 
     await user.hover(
-      screen.getByRole("img", { name: en.availability.ladderMeaning }),
+      screen.getByRole("img", { name: en.availability.patchMeaning("2.6") }),
     );
 
     expect(
       await screen.findByRole("tooltip", {
-        name: en.availability.ladderMeaning,
+        name: en.availability.patchMeaning("2.6"),
       }),
     ).toBeVisible();
   });
 
   it("renders nothing for a runeword predating patch tracking", () => {
     const untracked = runewords.find(
-      (runeword) =>
-        !runeword.patch && !runeword.ladderOnly && runeword.note === undefined,
+      (runeword) => !runeword.patch && runeword.note === undefined,
     );
 
     expect(untracked).toBeDefined();
@@ -66,8 +65,8 @@ describe("AvailabilityBadges", () => {
     expect(screen.queryAllByRole("img")).toEqual([]);
   });
 
-  it("marks exactly the 8 ladder-only runewords", () => {
-    const { container } = render(
+  it("draws only patch and note badges across the whole dataset", () => {
+    render(
       <ul>
         {runewords.map((runeword) => (
           <li key={runeword.name}>
@@ -77,11 +76,17 @@ describe("AvailabilityBadges", () => {
       </ul>,
     );
 
-    const ladder = container.querySelectorAll(
-      `[aria-label="${en.availability.ladderMeaning}"]`,
-    );
+    const patches = runewords.filter(
+      (runeword) => runeword.patch !== undefined,
+    ).length;
+    const notes = runewords.filter(
+      (runeword) => runeword.note !== undefined,
+    ).length;
 
-    expect(ladder).toHaveLength(8);
+    // The count is the whole assertion: a badge of any third kind — a ladder
+    // marker returning, say — would push the total past what the two fields
+    // account for, without any test needing to know its name.
+    expect(screen.getAllByRole("img")).toHaveLength(patches + notes);
   });
 
   it("marks exactly the one runeword carrying a note", () => {

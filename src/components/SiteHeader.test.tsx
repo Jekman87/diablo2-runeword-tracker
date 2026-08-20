@@ -159,7 +159,6 @@ describe("the help disclosure", () => {
     await userEvent.click(helpButton());
 
     expect(screen.getByText(en.header.helpBadgesIntro)).toBeVisible();
-    expect(screen.getByText(en.header.helpBadgeLadder)).toBeVisible();
     expect(screen.getByText(en.header.helpBadgeNote)).toBeVisible();
 
     for (const patch of ["1.10", "2.4", "2.6", "3.0"] as const) {
@@ -167,11 +166,13 @@ describe("the help disclosure", () => {
     }
 
     // Samples are decorative: present in the DOM, absent from the a11y tree.
+    // Five, not six — the ladder entry left with the badge, and the legend is
+    // required to lose an entry when a badge goes, not only to gain one.
     const samples = screen
       .getByText(en.header.helpBadgesIntro)
       .parentElement?.querySelectorAll("[aria-hidden]");
 
-    expect(samples && samples.length).toBeGreaterThanOrEqual(6);
+    expect(samples?.length).toBe(5);
   });
 
   it("opens beneath the divider, not above it", async () => {

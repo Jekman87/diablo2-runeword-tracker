@@ -505,28 +505,31 @@ describe("what a row carries", () => {
 });
 
 describe("availability across the table", () => {
-  it("marks exactly the 8 ladder-only rows", () => {
+  it("marks exactly the one row carrying a note", () => {
+    const note = runewords.find((entry) => entry.note !== undefined)?.note;
+
+    expect(note).toBeDefined();
+
     const { container } = renderTable();
 
     expect(
-      container.querySelectorAll(
-        `[aria-label="${en.availability.ladderMeaning}"]`,
-      ),
-    ).toHaveLength(8);
+      container.querySelectorAll(`[aria-label="${note ?? ""}"]`),
+    ).toHaveLength(1);
   });
 
-  it("shows patch and note on `Mosaic`, without a ladder marker", () => {
+  it("shows patch and note on `Mosaic`, and nothing beside them", () => {
     renderTable();
 
-    const row = within(rowFor("Mosaic"));
+    const row = rowFor("Mosaic");
+    const nameCell = within(nameButtonIn(row).closest("td") as HTMLElement);
 
     expect(
-      row.getByRole("img", { name: en.availability.patchMeaning("2.6") }),
+      nameCell.getByRole("img", { name: en.availability.patchMeaning("2.6") }),
     ).toBeVisible();
-    expect(
-      row.queryByRole("img", { name: en.availability.ladderMeaning }),
-    ).not.toBeInTheDocument();
-    expect(row.getByText(en.availability.noteMarker)).toBeVisible();
+    expect(nameCell.getByText(en.availability.noteMarker)).toBeVisible();
+    // Scoped to the name cell, because the row's other `img` roles are the rune
+    // icons. Two badges is the whole point: a returning third would fail here.
+    expect(nameCell.getAllByRole("img")).toHaveLength(2);
   });
 });
 

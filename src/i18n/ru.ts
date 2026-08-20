@@ -89,12 +89,11 @@ export const ru: Strings = {
     // «примечание» for the note marker. The classic-era explanation is project
     // prose.
     helpBadgesIntro:
-      "Цветные метки рядом с названием — украшение: когда слово добавили, только ли оно на ладдере, и есть ли у него оговорка:",
+      "Цветные метки рядом с названием — украшение: когда слово добавили и есть ли у него оговорка:",
     helpBadgePatch: (patch: string) =>
       patch === "1.10" || patch === "1.11"
         ? "Классическая эра (патчи 1.10 и 1.11), до Diablo II Resurrected"
         : `Добавлено в патче Diablo II Resurrected ${patch}`,
-    helpBadgeLadder: "Только ладдер — доступно в сезонах ладдера",
     helpBadgeNote:
       "Примечание — у рунного слова есть оговорка; откройте подробности, чтобы прочитать её",
     // The rune-tier paragraph was removed with its English counterpart — see
@@ -264,22 +263,13 @@ export const ru: Strings = {
   },
 
   availability: {
-    // **Corrected on review: the marker is now Cyrillic «Л».** It was Latin
-    // `L` on the reasoning that a Cyrillic letter would abbreviate a word the
-    // game does not use. Every source contradicts that: the official
-    // localisation's guide speaks of «рейтингового сезона ладдера» and
-    // «ладдерные слова», diablo2-resurrected.ru marks these records «Только для
-    // сезонных (ладдерных) персонажей», and duskworld.ru writes «в рейтинговом
-    // режиме (ладдере)». «Ладдер» is the audience's own loanword, so «Л»
-    // abbreviates a word that is genuinely used — and it stops one Latin letter
-    // sitting in a page that is otherwise entirely Russian.
-    //
-    // The meaning is the item text as diablo2-resurrected.ru transcribes it,
-    // which glosses the loanword with «сезонных» rather than assuming it:
-    // the sources between them use both words, and stating both is what a
-    // tooltip is for.
-    ladderMarker: "Л",
-    ladderMeaning: "Только для сезонных (ладдерных) персонажей",
+    // The ladder marker «Л» and its gloss «Только для сезонных (ладдерных)
+    // персонажей» stood here, sourced from the official localisation's guide and
+    // diablo2-resurrected.ru's transcription. Patch 3.3 released the last eight
+    // ladder-only runewords into Non-Ladder, so both went with the badge. The
+    // sourcing note is worth keeping in the history rather than the file: if a
+    // future patch brings ladder-only runewords back, the wording was settled
+    // once and does not need settling twice.
     noteMarker: "Примечание",
     patchMeaning: (patch: string) => `Добавлено в патче ${patch}`,
   },

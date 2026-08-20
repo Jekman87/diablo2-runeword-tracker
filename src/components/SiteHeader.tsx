@@ -204,10 +204,12 @@ export function SiteHeader() {
             ))}
           </ul>
 
-          {/* Badge legend and rune-tier note. Samples are the table's own
-              `Badge`, decorative here because the words beside them already say
-              what each means. All four patch colours, including the classic era —
-              a reader meeting the brown tag has nowhere else to learn it. */}
+          {/* Badge legend. Samples are the table's own `Badge`, decorative here
+              because the words beside them already say what each means. All four
+              patch colours, including the classic era — a reader meeting the
+              brown tag has nowhere else to learn it. The ladder entry left with
+              the badge: a legend explaining a marker the table can no longer
+              draw sends the reader looking for it. */}
           <div className="grid gap-2">
             <p>{strings.header.helpBadgesIntro}</p>
             <ul className="grid list-none gap-2">
@@ -223,15 +225,6 @@ export function SiteHeader() {
                   <span>{strings.header.helpBadgePatch(patch)}</span>
                 </li>
               ))}
-              <li className="flex flex-wrap items-center gap-2">
-                <Badge
-                  kind="ladder"
-                  marker={strings.availability.ladderMarker}
-                  meaning={strings.availability.ladderMeaning}
-                  decorative
-                />
-                <span>{strings.header.helpBadgeLadder}</span>
-              </li>
               <li className="flex flex-wrap items-center gap-2">
                 <Badge
                   kind="note"
