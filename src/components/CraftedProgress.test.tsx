@@ -117,6 +117,21 @@ describe("reaching the end of the list", () => {
     expect(screen.queryByText(en.progress.complete)).toBeNull();
   });
 
+  it("asks for the taller band, and only at 99", () => {
+    const { container, rerender } = render(<CraftedProgress crafted={98} />);
+
+    // The reservation and the offset the table header sticks at are one value in
+    // `src/index.css`, and this attribute is what selects the taller one. jsdom
+    // applies no stylesheet, so what is asserted here is the request; that the
+    // request is honoured — 104px reserved against 104px needed, the two bands
+    // meeting exactly — is a browser check.
+    expect(container.firstElementChild).not.toHaveAttribute("data-complete");
+
+    rerender(<CraftedProgress crafted={99} />);
+
+    expect(container.firstElementChild).toHaveAttribute("data-complete");
+  });
+
   it("congratulates in the active locale", () => {
     setLocale("ru");
     render(<CraftedProgress crafted={99} />);

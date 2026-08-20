@@ -467,14 +467,39 @@
    it would show only while scrolling, which is where nobody looks.
 
    0.5rem of padding above and below a 0.75rem bar and one line of text measures
-   3.5rem. Checked at 390px and with the count at its longest, where the line still
-   does not wrap; a locale that wraps it is a locale that has to raise this number.
+   3.5rem while the line is the counts alone. Checked at 390px and with the count at
+   its longest, where the line still does not wrap; a locale that wraps it is a
+   locale that has to raise this number.
 
-   The completion sentence is more text on the same line, not a taller band: raising
-   the reservation for it opened an empty strip under the count whenever the line
-   still fit in one, which is worse than a wrap that paints into the padding. */
+   **6.5rem once the completion sentence joins it, and that is a fix rather than a
+   refinement.** This block used to say the sentence was "more text on the same
+   line, not a taller band", on the grounds that a taller reservation opened an
+   empty strip under the count whenever the line still fitted in one. Two things
+   were wrong with that. The strip is invisible — the band's background is the page
+   ground, so what it costs is vertical space and not a visible gap. And the wrap it
+   accepted does not paint into the padding: measured with all 99 marked, the band
+   needs 104px at 390px in English and 80px at 640px, against 56px reserved, so up
+   to 48px of the congratulation painted over the panel beneath it. The band is
+   `z-index: 2`, so it painted *over* rather than behind. `crafted-tracking` requires
+   the reservation to accommodate the longer line "including when it wraps under a
+   narrow viewport or the Russian locale", which 3.5rem never did.
+
+   6.5rem is the worst measured case — three lines, at 320px and 360px in both
+   locales, and up to 414px in English. One value rather than one per breakpoint,
+   because the only thing a too-tall band costs in the completed state is scroll.
+
+   **Set here rather than on the band, because two elements read it.** The table
+   header sticks at exactly this value, so the number that reserves the space and
+   the number that positions the header beneath it have to be the same one — that is
+   why this is a variable at all. `:has()` is what lets the state reach both:
+   `CraftedProgress` marks the band complete, and the reservation follows without a
+   second component learning about progress. */
 :root {
   --progress-band-height: 3.5rem;
+}
+
+:root:has(.progress-band[data-complete]) {
+  --progress-band-height: 6.5rem;
 }
 
 /* Overall progress, held at the top of the viewport.

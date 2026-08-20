@@ -49,7 +49,16 @@ export function CraftedProgress({ crafted }: CraftedProgressProps) {
     crafted === total ? `${count} ${strings.progress.complete}` : count;
 
   return (
-    <div className="progress-band grid gap-1">
+    // `data-complete` is the whole of what this component says about layout, and
+    // it says it as state rather than as a height. The band's reserved height and
+    // the offset the table header sticks at are one number in `src/index.css`;
+    // this marks the case where that number has to be the taller one, and the
+    // stylesheet does the rest. Without it the congratulation wrapped to three
+    // lines at 390px inside a 56px band and painted over the panel below.
+    <div
+      className="progress-band grid gap-1"
+      {...(crafted === total ? { "data-complete": "" } : {})}
+    >
       <progress
         className="crafted-progress w-full"
         value={crafted}
