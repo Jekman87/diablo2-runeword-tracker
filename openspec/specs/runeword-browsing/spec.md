@@ -540,22 +540,25 @@ that a consumer entitled to find it in its own order still does.
 
 ### Requirement: No control reads an availability field
 
-No search, sort, filter or count in this capability SHALL read a runeword's
-ladder-only flag, the patch that introduced it, or its note. Availability changes
-between ladder seasons, and where a stale badge is a cosmetic inaccuracy a stale
-filter would hide runewords the player can craft and a stale sort would order the
-table by something untrue. These fields render badges, and that remains all they
-do.
+No search, sort, filter or count in this capability SHALL read the patch that
+introduced a runeword or its note. Availability changes between ladder seasons,
+and where a stale badge is a cosmetic inaccuracy a stale filter would hide
+runewords the player can craft and a stale sort would order the table by
+something untrue. These fields render badges, and that remains all they do.
+
+The rule SHALL be stated in terms of the fields that exist. The ladder-only flag
+it used to name is gone from the dataset, and a prohibition worded around a field
+no record carries reads as protection where there is nothing left to protect.
 
 #### Scenario: No filter over availability exists
 
 - **WHEN** the filter controls are inspected
-- **THEN** none filters by ladder-only status or by patch
+- **THEN** none filters by patch or by note
 
 #### Scenario: No column sorts on availability
 
 - **WHEN** the five sort keys are inspected
-- **THEN** none reads the ladder-only flag, the patch or the note
+- **THEN** none reads the patch or the note
 
 #### Scenario: Search ignores availability
 
@@ -565,4 +568,5 @@ do.
 #### Scenario: The count ignores availability
 
 - **WHEN** the presented count and its total are inspected
-- **THEN** neither is reduced by a runeword being ladder-only
+- **THEN** neither is reduced by any availability field, and the total is the
+  whole dataset

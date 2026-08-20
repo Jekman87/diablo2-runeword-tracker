@@ -17,7 +17,7 @@ literal colour value. Token names SHALL describe the role a colour plays rather
 than the colour itself, and SHALL cover the surfaces the backlog has already
 settled: the page ground, body text, the table header band, the gold display
 family a runeword's name is drawn from, the granted-property line and the
-emphasised values within it, the ladder badge, and the crafted-state accent. They
+emphasised values within it, and the crafted-state accent. They
 SHALL further cover the surfaces the runeword table introduces: the separation
 between table rows and the row's hover state, and the detail view's panel — its
 ground, its edge and its descriptive text, each a token of its own, because a
@@ -45,6 +45,11 @@ They SHALL further cover the surfaces the mark/unmark confirmation introduces: a
 confirm-action colour (green) for marking a runeword crafted, and a remove-action
 colour (red) for unmarking one. The transient undo notice's panel token SHALL be
 removed with that notice.
+
+The ladder badge's band and label tokens SHALL be removed with that badge. A
+token names a role some surface plays, and a surface the application no longer
+draws has no role to name; a palette that keeps colours for departed surfaces
+stops being a description of the page.
 
 Where the palette copies a source, it SHALL copy the source that owns the surface:
 the reference site for the surfaces the reference invented, and the game itself for
@@ -174,6 +179,13 @@ misdescribes its own subject SHALL NOT be copied.
   remove action are inspected
 - **THEN** each takes its background from a named role token (confirm / remove)
   rather than a literal colour value
+
+#### Scenario: The ladder badge tokens are gone
+
+- **WHEN** the palette is inspected after the ladder marker is removed from the
+  table
+- **THEN** it declares no token for that badge's band or its label, and no
+  utility class referring to either survives anywhere in the application
 
 #### Scenario: The undo notice token is gone
 
