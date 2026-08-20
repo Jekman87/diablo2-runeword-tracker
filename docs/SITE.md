@@ -59,15 +59,28 @@ one JSON-LD `WebApplication` block — inert data, not a script. "D2R" appears i
 both titles because it is the term players search, and both descriptions name
 the **Chronicle** («История (Хроники)» in Russian) because that is the in-game
 log the tracker fills and the word a player looking for exactly this tool would
-type. Only three fields are indexable static text — the title, the description
-and the `<noscript>` paragraph — so anything search should match has to be in
-one of them; everything else waits on Google rendering the bundle. A `<noscript>` paragraph
-says the same thing in each body, so a fetch without JavaScript is not an empty
-`#root`. Meta tags and static files only — **no verification script and no tag
-manager**, per the own-origin rule as it now stands: verification is available
-as inert markup, and the one third-party script this page loads is the page-view
-counter under **Counting visits** below. That counter narrows the rule; it does
-not repeal it.
+type.
+
+**The head used to be the only indexable text, and is not any more.** Until the
+entries were prerendered, the title, the description and a fallback paragraph
+were the whole of what a non-rendering crawler could read — which is why the
+description was written to carry the terms players search, and why "Chronicle"
+was put there at all. Now `pnpm build` renders the list into the body of both
+documents: every runeword, its runes, its bases, its level and its properties, in
+that document's language, before any script runs. The description still should
+not be stuffed with names — the names are in the list, and a description crowded
+with them describes nothing. See **The render pass** below.
+
+The `<noscript>` paragraph remains, saying what it should have said all along:
+the list is readable without JavaScript, and marking, search, sorting and
+progress transfer are what need it.
+
+Meta tags and static files only — **no verification script and no tag manager**,
+per the own-origin rule as it now stands: verification is available as inert
+markup, and the third-party script this page loads is the page-view counter under
+**Counting visits** below. That counter narrows the rule; it does not repeal it.
+The one other script in each document is our own, inline, six lines, and
+explained under the render pass.
 
 **`robots.txt` on a project page is advisory.** Crawlers read
 `https://jekman87.github.io/robots.txt`, which belongs to the user account, not
@@ -181,6 +194,46 @@ The one real fix is out of scope and parked: an account-root repository
 (`jekman87.github.io`) would give the host a real `robots.txt`, a host-level
 favicon for search results, and a Search Console property where `/sitemap.xml`
 means what the field implies.
+
+## The render pass
+
+`pnpm build` renders the application to a string twice — English into
+`index.html`, Russian into `ru/index.html` — and injects each into that
+document's `#root`. **No server is involved:** `renderToString` runs on the build
+machine, and GitHub Pages serves the same static files it always did. The name
+is React's, inherited from the days when rendering to a string only happened in
+one place.
+
+`src/prerender/entry.tsx` is the half Vite compiles (TSX, `@/` imports);
+`scripts/prerender.ts` is the half that reads and writes `dist/`, with its pure
+string work and assertions in `scripts/prerender-document.ts` so they can be
+unit-tested without a build. The language is stated by the build through
+`seedLocale`, not detected: at build time there is no reader and no document, only
+a decision about which file is being written.
+
+**A reader who has progress never sees the rendered snapshot.** It shows the
+default state — nothing crafted, the default sort — so showing it to someone with
+forty runewords marked would be a page they never left, which is the one thing
+the three storage-backed stores load eagerly to avoid. So the build also writes a
+six-line inline script, with the stores' own key constants interpolated into it,
+that hides `#root` before the first paint when this browser holds any of those
+keys. `src/main.tsx` reveals it again inside `flushSync`, after React has
+committed the real state and before a frame is painted — a `useEffect` there
+would run _after_ paint and produce exactly the flash this prevents.
+
+Measured at 50 KB/s with the cache disabled: a returning reader had 239 blank
+frames and **zero** frames showing content that was not theirs; a fresh profile
+had the full styled table painted from the first frame, while the bundle was
+still downloading. Test it that way or not at all — on a warm cache the bundle
+arrives before the gap it fills.
+
+**Why the build fails rather than warns.** A missing prerender breaks nothing a
+reader would notice: the page works, the bundle mounts, and the only casualty is
+everything a crawler was given. So the build asserts its own output — each
+document must carry its language's item-type label and not the other's — one CI
+step asserts the build step still exists, and the deploy check above asserts what
+the site actually serves. Three checks because each sees something the others
+cannot.
 
 ## Counting visits
 
