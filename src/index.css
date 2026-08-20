@@ -181,8 +181,9 @@
      does. */
   --color-property-varies: #7fd4ff;
 
-  /* Badges: the ladder marker's band and its label, the note marker's band and
-     its label, and one band per era of patch.
+  /* Badges: the note marker's band and its label, and one band per era of patch.
+     The ladder marker's own pair left with the badge in the Season 15 round —
+     a token names a role some surface plays, and that surface is gone.
 
      Four patch tokens for the dataset's five patch values. `1.10` and `1.11`
      share one because the project treats them as a single classic era, which is
@@ -196,14 +197,12 @@
      these, and `src/runewords/patch-colour.ts` is where that fallback lives.
 
      Each band carries its own foreground rather than reaching for the page
-     ground or the title colour, on the `--color-ladder` / `--color-ladder-label`
-     pattern already here. That is also the whole mitigation if the contrast
-     decision below is ever revisited: black on `--color-patch-classic` scores
-     2.01:1 and on `--color-patch-3-0` 3.67:1, both under WCAG AA, adopted from
-     the reference knowingly — and the fix is one of these foregrounds per band
-     and nothing else. */
-  --color-ladder: #501008;
-  --color-ladder-label: #a19999;
+     ground or the title colour, on the `--color-note` / `--color-note-label`
+     pattern. That is also the whole mitigation if the contrast decision below is
+     ever revisited: black on `--color-patch-classic` scores 2.01:1 and on
+     `--color-patch-3-0` 3.67:1, both under WCAG AA, adopted from the reference
+     knowingly — and the fix is one of these foregrounds per band and nothing
+     else. */
   --color-note: #7a1f1f;
   --color-note-label: #fff;
   --color-patch-label: #000;
@@ -365,9 +364,9 @@
      Applied as `rounded-xs` / `var(--radius-xs)` on the search field, chips,
      progress groove, table header band, detail panel and both confirmations.
 
-     The availability badges are exempt: their `2px 4px` on a 4px radius and the
-     round ladder marker are geometry copied from the reference, and a system for
-     our own surfaces does not overrule a deliberate copy. */
+     The availability badges are exempt: their `2px 4px` on a 4px radius is
+     geometry copied from the reference, and a system for our own surfaces does
+     not overrule a deliberate copy. */
   --radius-xs: 2px;
 
   /* Bellefair, then a fallback that is load-bearing rather than defensive:

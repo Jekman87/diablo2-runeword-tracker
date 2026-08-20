@@ -2,7 +2,12 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { OG_IMAGE_URL, SITE_URL, SITE_URL_RU } from "../src/header/site.ts";
+import {
+  ANALYTICS_TOKEN,
+  OG_IMAGE_URL,
+  SITE_URL,
+  SITE_URL_RU,
+} from "../src/header/site.ts";
 
 // What a crawler is given lives in files that no module imports: two entry
 // documents (`index.html` and `ru/index.html`), `public/robots.txt`,
@@ -131,6 +136,41 @@ describe.each(Object.entries(documents))("the %s document head", (_, doc) => {
 
     expect(text).toMatch(doc.lang === "ru" ? /рунн/i : /runeword/i);
     expect(text.length).toBeGreaterThan(80);
+  });
+});
+
+describe.each(Object.entries(documents))(
+  "the %s document's page-view counter",
+  (_, doc) => {
+    it("carries the beacon with the token the constant names", () => {
+      const token = /data-cf-beacon='{"token":\s*"([^"]+)"}'/.exec(
+        doc.html,
+      )?.[1];
+
+      // A document that quietly loses its beacon, or drifts from the constant,
+      // stops counting without anything else breaking — which is why this is a
+      // test and not a comment. Nobody goes looking for a counter they believe
+      // is running.
+      expect(token).toBe(ANALYTICS_TOKEN);
+    });
+
+    it("loads the beacon without blocking the tracker", () => {
+      const beacon =
+        /<script[^>]*cloudflareinsights\.com[^>]*>/.exec(doc.html)?.[0] ?? "";
+
+      // `type="module"` is deferred by definition, which is how Cloudflare's own
+      // snippet satisfies the rule; `defer` would satisfy it too. What must not
+      // appear is a plain blocking script.
+      expect(beacon).toMatch(/type="module"|defer/);
+    });
+  },
+);
+
+describe("the analytics token", () => {
+  it("is a real token rather than a placeholder", () => {
+    // Shape, not value: the point is that a `TODO` or an empty string cannot
+    // ship as a counter that reports nowhere while the page looks finished.
+    expect(ANALYTICS_TOKEN).toMatch(/^[0-9a-f]{32}$/);
   });
 });
 

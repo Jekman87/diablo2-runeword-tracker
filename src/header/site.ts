@@ -64,13 +64,24 @@ export const OG_IMAGE_URL = `${SITE_URL}og-image.png`;
  * Moves together with `UPDATE_NOTES_URL` below — they are on adjacent lines for
  * that reason. When the game patches, both change or neither does: a patch line
  * pointing at last patch's notes is worse than either alone.
+ *
+ * The first value here was `3.1.1`, and it was never right: it was read off the
+ * reference site's own header on 2026-07-28, and the reference was two releases
+ * behind — 3.1.2 had shipped in April and 3.2 with Season 14 in May. Reading a
+ * version off a third party states what that party believes, which is a
+ * different fact from the one this constant claims. Read it from Blizzard.
  */
-export const GAME_PATCH = "3.1.1";
+export const GAME_PATCH = "3.3";
 
 /**
- * The official patch notes for `GAME_PATCH`, the href the reference site's own
- * Update Notes link carries. Re-read it there if this ever goes dead; the
- * failure is a cosmetic dead link, not wrong data.
+ * The official patch notes for `GAME_PATCH`. Re-read it at Blizzard's news site
+ * if this ever goes dead; the failure is a cosmetic dead link, not wrong data.
+ *
+ * For 3.3 the Season 15 announcement *is* the patch notes — Blizzard published
+ * no separate "3.3 Patch Notes" article, and the item, terror-zone and bug-fix
+ * lists are in that one. So this href is a season announcement where its
+ * predecessors were patch-note pages; that is the source being faithful to what
+ * Blizzard published, not a shortcut.
  *
  * Reached from the patch number in the header's own patch line rather than from a
  * separate link labelled "Update Notes", which is where the reference puts it: the
@@ -78,7 +89,7 @@ export const GAME_PATCH = "3.1.1";
  * press.
  */
 export const UPDATE_NOTES_URL =
-  "https://news.blizzard.com/en-us/article/24244884/reign-of-the-warlock-3-1-1-patch-notes";
+  "https://news.blizzard.com/en-us/article/24296140/diablo-ii-resurrected-ladder-season-15-coming-soon";
 
 /**
  * Where to report that the list is wrong. GitHub Discussions is off by default
@@ -92,6 +103,29 @@ export const UPDATE_NOTES_URL =
  */
 export const FEEDBACK_URL =
   "https://github.com/Jekman87/diablo2-runeword-tracker/discussions";
+
+/**
+ * The Cloudflare Web Analytics site token, which is how the page-view counter in
+ * both entry documents identifies which site it is reporting for.
+ *
+ * **Public by nature and not a secret.** It ships in the page, in plain sight, on
+ * every request — it names a dashboard, it does not open one. Moving it into
+ * build-time configuration would hide it from readers of this repository without
+ * hiding it from anybody else.
+ *
+ * Here for the reason `SITE_URL` is here: the two entry documents are static
+ * files that cannot import a module, so each states the token itself and
+ * `scripts/crawl-files.test.ts` compares every copy against this constant. A
+ * document that loses its beacon, or drifts from this value, fails a test rather
+ * than silently stopping counting — which is the failure that would otherwise go
+ * unnoticed for weeks, since nobody goes looking for a counter they believe is
+ * running.
+ *
+ * The Cloudflare site is registered by **hostname** (`jekman87.github.io`),
+ * which is the only scope Web Analytics offers. Our two documents are what carry
+ * the beacon, so they are what reports; the dashboard separates them by path.
+ */
+export const ANALYTICS_TOKEN = "1f854178248c4131a1f8744b9e4121d7";
 
 /**
  * USDT (Jetton) receive address on The Open Network.

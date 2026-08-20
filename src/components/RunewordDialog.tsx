@@ -85,27 +85,18 @@ export function RunewordDialog({ runeword, titleId }: RunewordDialogProps) {
         <dt className="text-gold">{strings.detail.requiredLevel}</dt>
         <dd>{runeword.requiredLevel}</dd>
 
-        {/* Patch and ladder status in full words, not the row's markers.
-            This is the path that needs no pointer at all — a touch user
-            with no screen reader can reach neither a hover tooltip nor an
-            accessible name. */}
-        {runeword.patch || runeword.ladderOnly ? (
+        {/* The patch in full words, not the row's marker. This is the path
+            that needs no pointer at all — a touch user with no screen reader
+            can reach neither a hover tooltip nor an accessible name. Ladder
+            status used to be restated here beside it; patch 3.3 left no
+            runeword with any. */}
+        {runeword.patch ? (
           <>
             <dt className="text-gold">{strings.detail.availability}</dt>
-            {/* One `dd` holding both sentences rather than two, because the
-                two-column grid gives each `dd` the second column and a
-                second one would land back under the label. */}
             <dd>
-              {runeword.patch ? (
-                <span className="block">
-                  {strings.availability.patchMeaning(runeword.patch)}
-                </span>
-              ) : null}
-              {runeword.ladderOnly ? (
-                <span className="block">
-                  {strings.availability.ladderMeaning}
-                </span>
-              ) : null}
+              <span className="block">
+                {strings.availability.patchMeaning(runeword.patch)}
+              </span>
             </dd>
           </>
         ) : null}

@@ -2009,11 +2009,11 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
     usefulness: "situational",
     advice: {
       paragraphs: [
-        "A cheap 3-socket helm word (ladder-only, so you need a ladder character this season): life leech, physical damage taken reduced, +vitality, and life replenish from three low runes. Completed trades name Demonhead and Grand Crown most, but for a levelling or hardcore melee character any solid 3-socket helm you find on the way is fine — the mods, not the base, do the work. One exception: a barbarian should look for a white barbarian helm, since those roll their own +1-3 to a barbarian skill on top for free.",
+        "A cheap 3-socket helm word: life leech, physical damage taken reduced, +vitality, and life replenish from three low runes. Completed trades name Demonhead and Grand Crown most, but for a levelling or hardcore melee character any solid 3-socket helm you find on the way is fine — the mods, not the base, do the work. One exception: a barbarian should look for a white barbarian helm, since those roll their own +1-3 to a barbarian skill on top for free.",
         "Great value while levelling and a comfortable hardcore pick, but it gets replaced by endgame helms, so it sells only occasionally.",
       ],
       ru: [
-        "Дешёвое рунное слово для шлема на 3 гнезда (только для ладдера — в этом сезоне нужен ладдерный персонаж): кража жизни, снижение физического урона, +к живучести и реген жизни за три младшие руны. В сделках чаще всего Голова демона (Demonhead) и Большая корона (Grand Crown), но для прокачки или хардкорного мили-персонажа сгодится любой приличный шлем с 3 гнёздами, найденный по пути — работают моды, а не база. Одно исключение: варвару стоит поискать белый варварский шлем — такие сами катают +1-3 к навыку варвара сверху и бесплатно.",
+        "Дешёвое рунное слово для шлема на 3 гнезда: кража жизни, снижение физического урона, +к живучести и реген жизни за три младшие руны. В сделках чаще всего Голова демона (Demonhead) и Большая корона (Grand Crown), но для прокачки или хардкорного мили-персонажа сгодится любой приличный шлем с 3 гнёздами, найденный по пути — работают моды, а не база. Одно исключение: варвару стоит поискать белый варварский шлем — такие сами катают +1-3 к навыку варвара сверху и бесплатно.",
         "Отличная вещь на прокачке и уютный выбор для хардкора, но в эндгейме его вытесняют другие шлемы, так что продаётся лишь изредка.",
       ],
       sources: [
@@ -2028,17 +2028,17 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
       ],
     },
     source:
-      "Maxroll A; ladder-only; 50 trades in ~1337h (slow); top bases Demonhead 14, Grand Crown 13; judgement: levelling/HC melee helm; base-affix pass: melee-oriented helm word: barbarian helms are class items with well-known +1-3 barbarian skill staffmods, free upside over the generic bases the market shows",
+      "Maxroll A; 50 trades in ~1337h (slow); top bases Demonhead 14, Grand Crown 13; judgement: levelling/HC melee helm; base-affix pass: melee-oriented helm word: barbarian helms are class items with well-known +1-3 barbarian skill staffmods, free upside over the generic bases the market shows",
   },
   Cure: {
     usefulness: "meta",
     advice: {
       paragraphs: [
-        "A 3-socket helm word (ladder-only this season) built around a Cleansing aura and shortened poison duration — the go-to mercenary helm wherever poison is the killer. Craft it in an ethereal elite helm for your merc: completed trades are led by Spired Helm and Bone Visage, with Corona and Demonhead close behind; ethereal versions get extra defense and the merc never breaks them.",
+        "A 3-socket helm word built around a Cleansing aura and shortened poison duration — the go-to mercenary helm wherever poison is the killer. Craft it in an ethereal elite helm for your merc: completed trades are led by Spired Helm and Bone Visage, with Corona and Demonhead close behind; ethereal versions get extra defense and the merc never breaks them.",
         "Hardcore players and anyone farming poison-heavy zones keep buying these three cheap runes' worth of insurance. In constant demand — it crafts and sells well.",
       ],
       ru: [
-        "Рунное слово для шлема на 3 гнезда (в этом сезоне — только ладдер) вокруг ауры Cleansing и сокращения длительности яда — дежурный шлем наёмника везде, где убивает яд. Собирайте в эфирном элитном шлеме для наёмника: в сделках лидируют Островерхий шлем (Spired Helm) и Костяной лик (Bone Visage), следом Корона (Corona) и Голова демона; эфирка даёт больше защиты, а наёмник её не ломает.",
+        "Рунное слово для шлема на 3 гнезда вокруг ауры Cleansing и сокращения длительности яда — дежурный шлем наёмника везде, где убивает яд. Собирайте в эфирном элитном шлеме для наёмника: в сделках лидируют Островерхий шлем (Spired Helm) и Костяной лик (Bone Visage), следом Корона (Corona) и Голова демона; эфирка даёт больше защиты, а наёмник её не ломает.",
         "Хардкорщики и все, кто фармит ядовитые зоны, стабильно скупают эту «страховку» ценой в три дешёвые руны. Спрос постоянный — крафтится и продаётся отлично.",
       ],
       sources: [
@@ -2053,16 +2053,16 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
       ],
     },
     source:
-      "Maxroll B; ladder-only; 50 trades in ~36h (hottest in slice); top bases Spired Helm 21, Bone Visage 12; judgement: eth merc anti-poison helm, meta per JSON",
+      "Maxroll B; 50 trades in ~36h (hottest in slice); top bases Spired Helm 21, Bone Visage 12; judgement: eth merc anti-poison helm, meta per JSON",
   },
   Ground: {
     usefulness: "chronicle",
     advice: {
       paragraphs: [
-        "A ladder-only 3-socket helm with lightning resistance and lightning absorb. In theory it is a swap helm against Burning Souls and other lightning-heavy packs, but almost nobody trades it — craft it in the cheapest 3-socket helm you have lying around just to fill the Chronicle, then vendor it.",
+        "A 3-socket helm with lightning resistance and lightning absorb. In theory it is a swap helm against Burning Souls and other lightning-heavy packs, but almost nobody trades it — craft it in the cheapest 3-socket helm you have lying around just to fill the Chronicle, then vendor it.",
       ],
       ru: [
-        "Ладдерный шлем на 3 гнезда с сопротивлением молнии и поглощением молнии. В теории это свап-шлем против Горящих душ и прочих молниевых паков, но им почти никто не торгует — соберите в самом дешёвом шлеме с 3 гнёздами ради галочки в Истории и сдайте торговцу.",
+        "Шлем на 3 гнезда с сопротивлением молнии и поглощением молнии. В теории это свап-шлем против Горящих душ и прочих молниевых паков, но им почти никто не торгует — соберите в самом дешёвом шлеме с 3 гнёздами ради галочки в Истории и сдайте торговцу.",
       ],
       sources: [
         {
@@ -2072,16 +2072,16 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
       ],
     },
     source:
-      "Maxroll C; ladder-only; 46 trades over ~29195h (dead market); judgement: chronicle filler, lightning-absorb swap niche noted",
+      "Maxroll C; 46 trades over ~29195h (dead market); judgement: chronicle filler, lightning-absorb swap niche noted",
   },
   Hearth: {
     usefulness: "chronicle",
     advice: {
       paragraphs: [
-        "A ladder-only 3-socket helm with cold resistance, cold absorb, and Cannot be Frozen. The freeze immunity is its one redeeming niche as a cheap swap piece, but the market is dead — craft it in the cheapest valid 3-socket helm just to fill the Chronicle, then vendor it.",
+        "A 3-socket helm with cold resistance, cold absorb, and Cannot be Frozen. The freeze immunity is its one redeeming niche as a cheap swap piece, but the market is dead — craft it in the cheapest valid 3-socket helm just to fill the Chronicle, then vendor it.",
       ],
       ru: [
-        "Ладдерный шлем на 3 гнезда с сопротивлением холоду, поглощением холода и «не может быть заморожен». Иммунитет к заморозке — его единственная полезная ниша как дешёвого свапа, но рынок мёртв: соберите в самом дешёвом шлеме с 3 гнёздами ради Истории и сдайте торговцу.",
+        "Шлем на 3 гнезда с сопротивлением холоду, поглощением холода и «не может быть заморожен». Иммунитет к заморозке — его единственная полезная ниша как дешёвого свапа, но рынок мёртв: соберите в самом дешёвом шлеме с 3 гнёздами ради Истории и сдайте торговцу.",
       ],
       sources: [
         {
@@ -2091,16 +2091,16 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
       ],
     },
     source:
-      "Maxroll C; ladder-only; 50 trades over ~20806h (dead market); judgement: chronicle filler, CBF/cold-absorb niche noted",
+      "Maxroll C; 50 trades over ~20806h (dead market); judgement: chronicle filler, CBF/cold-absorb niche noted",
   },
   Temper: {
     usefulness: "chronicle",
     advice: {
       paragraphs: [
-        "A ladder-only 3-socket helm with fire resistance and fire absorb — a theoretical swap piece for fire-heavy fights that virtually nobody trades. Craft it in the cheapest valid 3-socket helm just to fill the Chronicle, then vendor it.",
+        "A 3-socket helm with fire resistance and fire absorb — a theoretical swap piece for fire-heavy fights that virtually nobody trades. Craft it in the cheapest valid 3-socket helm just to fill the Chronicle, then vendor it.",
       ],
       ru: [
-        "Ладдерный шлем на 3 гнезда с сопротивлением огню и поглощением огня — теоретический свап для боёв с сильным огнём, которым практически никто не торгует. Соберите в самом дешёвом шлеме с 3 гнёздами ради Истории и сдайте торговцу.",
+        "Шлем на 3 гнезда с сопротивлением огню и поглощением огня — теоретический свап для боёв с сильным огнём, которым практически никто не торгует. Соберите в самом дешёвом шлеме с 3 гнёздами ради Истории и сдайте торговцу.",
       ],
       sources: [
         {
@@ -2110,18 +2110,18 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
       ],
     },
     source:
-      "Maxroll C; ladder-only; 50 trades over ~7969h (dead market); judgement: chronicle filler, fire-absorb niche noted",
+      "Maxroll C; 50 trades over ~7969h (dead market); judgement: chronicle filler, fire-absorb niche noted",
   },
   Mosaic: {
     usefulness: "situational",
     advice: {
       paragraphs: [
         "The Martial Arts assassin claw: its 50% chance not to consume charges keeps Phoenix Strike and the other charge-up skills rolling, and the classic setup is one Mosaic in each hand. The base does half the work here — nearly every completed trade is a 3-socket Greater Talons or Runic Talons that already rolls +3 to Phoenix Strike, and the better ones add +1-3 to Claws of Thunder or Blades of Ice on top. The same three runes in a blank claw are worth a fraction of the same runes in a +3 base.",
-        "Important this season: Mosaic is disabled on ladder and can only be crafted offline or non-ladder. Within non-ladder it still trades briskly, and good +MA bases keep their value, so it sells well where it is legal.",
+        "Important this season: Mosaic is disabled on ladder. Both other places still work — non-ladder online and offline — so it is not an offline-only word. Within non-ladder it trades briskly, and good +MA bases keep their value, so it sells well where it is legal.",
       ],
       ru: [
         "Главные когти ассасина боевых искусств: 50% шанс не тратить заряды позволяет Phoenix Strike и другим зарядным навыкам работать без пауз, а классическая сборка — по Мозаике в каждой руке. Половину работы тут делает база: почти в каждой завершённой сделке это Большие когти (Greater Talons) или Рунические когти (Runic Talons) на 3 гнезда, у которых уже есть +3 к Phoenix Strike, а у лучших сверху ещё +1-3 к Claws of Thunder или Blades of Ice. Те же три руны в пустом когте стоят долю от того, что дадут они же в базе с +3.",
-        "Важно в этом сезоне: Мозаика отключён в ладдере — собрать его можно только офлайн или в нон-ладдере. Там он по-прежнему бодро торгуется, а хорошие базы с +MA держат цену, так что продаётся отлично — где разрешён.",
+        "Важно в этом сезоне: Мозаика отключён в ладдере. Оба остальных варианта работают — нон-ладдер онлайн и одиночная игра, — так что это не «только офлайн». В нон-ладдере он бодро торгуется, а хорошие базы с +MA держат цену, так что продаётся отлично — где разрешён.",
       ],
       sources: [
         {
@@ -2135,17 +2135,17 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
       ],
     },
     source:
-      "No Maxroll tier (disabled on ladder per note); 50 trades in ~124h (hot); top bases Greater Talons 21, Runic Talons 20; judgement: dual-wield MA sin claw, non-ladder/offline only; base-affix pass: 44/50 completed listings advertise +3 to Phoenix Strike (Assassin Only), which the runeword does not grant — it is a claw staffmod; secondary Claws of Thunder / Blades of Ice rolls confirm it",
+      "No Maxroll tier (disabled on ladder per note); 50 trades in ~124h (hot); top bases Greater Talons 21, Runic Talons 20; judgement: dual-wield MA sin claw, playable anywhere but ladder — non-ladder online and offline both allowed; base-affix pass: 44/50 completed listings advertise +3 to Phoenix Strike (Assassin Only), which the runeword does not grant — it is a claw staffmod; secondary Claws of Thunder / Blades of Ice rolls confirm it",
   },
   Metamorphosis: {
     usefulness: "situational",
     advice: {
       paragraphs: [
-        "The shapeshifter druid's pelt (druid-only, ladder-only this season): Mark of the Wolf and Mark of the Bear buffs plus crushing blow turn Fury and Rabies werewolves into much smoother killers. The base matters as much as the runes — more than half of completed trades are 3-socket pelts that already roll +3 to Fury on top of the word's +5 shapeshifting skills. Antlers leads by a wide margin, with the elite Earth Spirit and the cheaper Totemic Mask behind it; find a base with +3 to the skill you actually spam before you spend the Cham.",
+        "The shapeshifter druid's pelt (druid-only): Mark of the Wolf and Mark of the Bear buffs plus crushing blow turn Fury and Rabies werewolves into much smoother killers. The base matters as much as the runes — more than half of completed trades are 3-socket pelts that already roll +3 to Fury on top of the word's +5 shapeshifting skills. Antlers leads by a wide margin, with the elite Earth Spirit and the cheaper Totemic Mask behind it; find a base with +3 to the skill you actually spam before you spend the Cham.",
         "Only shapeshift druids want it, but for them it is a build-defining helm, so it sells steadily to that crowd.",
       ],
       ru: [
-        "Тотемный шлем друида-оборотня (только друид, в этом сезоне — только ладдер): баффы Метка волка и Метка медведя плюс сокрушающий удар делают вервольфа с Fury или Rabies заметно бодрее. База тут значит не меньше рун: больше половины завершённых сделок — тотемы на 3 гнезда, у которых сверх +5 к оборотничеству от слова есть ещё и +3 к Fury. С большим отрывом лидируют Рога (Antlers), за ними элитный Дух земли (Earth Spirit) и подешевле Тотемная маска; ищите базу с +3 к тому навыку, которым реально бьёте, прежде чем тратить Чам.",
+        "Тотемный шлем друида-оборотня (только друид): баффы Метка волка и Метка медведя плюс сокрушающий удар делают вервольфа с Fury или Rabies заметно бодрее. База тут значит не меньше рун: больше половины завершённых сделок — тотемы на 3 гнезда, у которых сверх +5 к оборотничеству от слова есть ещё и +3 к Fury. С большим отрывом лидируют Рога (Antlers), за ними элитный Дух земли (Earth Spirit) и подешевле Тотемная маска; ищите базу с +3 к тому навыку, которым реально бьёте, прежде чем тратить Чам.",
         "Нужен он только друидам-оборотням, но для них это билдообразующий шлем, так что своей аудитории продаётся стабильно.",
       ],
       sources: [
@@ -2160,7 +2160,7 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
       ],
     },
     source:
-      "Maxroll B; ladder-only; druid-only; 50 trades in ~403h (moderate); top bases Antlers 16, Earth Spirit 7; judgement: shapeshift druid core helm; base-affix pass: 26/50 completed listings advertise +3 to Fury (Druid Only), a pelt staffmod the runeword does not grant",
+      "Maxroll B; druid-only; 50 trades in ~403h (moderate); top bases Antlers 16, Earth Spirit 7; judgement: shapeshift druid core helm; base-affix pass: 26/50 completed listings advertise +3 to Fury (Druid Only), a pelt staffmod the runeword does not grant",
   },
   Authority: {
     usefulness: "meta",
@@ -2279,11 +2279,11 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
     usefulness: "situational",
     advice: {
       paragraphs: [
-        "A newer ladder-only 3-socket weapon word from cheap runes (Shael Ko Eld) at level 39, so you need a ladder character this season. Completed trades split between Phase Blade for melee self-wield and amazon bows like Matriarchal Bow — and for a bowazon the base is worth picking carefully, because a white amazon bow rolls its own +1-3 to Bow and Crossbow Skills, and Mania grants no skills at all by itself.",
+        "A newer 3-socket weapon word from cheap runes (Shael Ko Eld) at level 39. Completed trades split between Phase Blade for melee self-wield and amazon bows like Matriarchal Bow — and for a bowazon the base is worth picking carefully, because a white amazon bow rolls its own +1-3 to Bow and Crossbow Skills, and Mania grants no skills at all by itself.",
         "Maxroll rates it well for its bracket, but it is a stepping stone — it sells occasionally to levelling characters.",
       ],
       ru: [
-        "Новое ладдерное рунное слово для оружия на 3 гнезда из дешёвых рун (Шаэль Ко Элд) 39 уровня — в этом сезоне нужен ладдерный персонаж. Сделки делятся между Фазовым клинком для мили-персонажей и амазонскими луками вроде Лука матриарха — и для амазонки базу стоит выбирать вдумчиво: белый амазонский лук сам катает +1-3 к навыкам луков и арбалетов, а само слово скиллов не даёт вовсе.",
+        "Новое рунное слово для оружия на 3 гнезда из дешёвых рун (Шаэль Ко Элд) 39 уровня. Сделки делятся между Фазовым клинком для мили-персонажей и амазонскими луками вроде Лука матриарха — и для амазонки базу стоит выбирать вдумчиво: белый амазонский лук сам катает +1-3 к навыкам луков и арбалетов, а само слово скиллов не даёт вовсе.",
         "Maxroll оценивает его высоко для своей ниши, но это промежуточная ступень — продаётся изредка, качающимся персонажам.",
       ],
       sources: [
@@ -2298,17 +2298,17 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
       ],
     },
     source:
-      "Maxroll A; ladder-only; 50 trades in ~550h (moderate); top bases Phase Blade 11, Matriarchal Bow 8; judgement: newer 3.x word, kept modest — budget mid-game weapon per data; base-affix pass: amazon bows are a top base in completed trades and carry the well-known Bow and Crossbow staffmod, which this word grants nothing of",
+      "Maxroll A; 50 trades in ~550h (moderate); top bases Phase Blade 11, Matriarchal Bow 8; judgement: newer 3.x word, kept modest — budget mid-game weapon per data; base-affix pass: amazon bows are a top base in completed trades and carry the well-known Bow and Crossbow staffmod, which this word grants nothing of",
   },
   Hysteria: {
     usefulness: "situational",
     advice: {
       paragraphs: [
-        "The body-armor sibling of Mania (same Shael Ko Eld runes, ladder-only this season) — a cheap 3-socket chest for the level-39 bracket. Completed trades show light caster bases like Mage Plate and Dusk Shroud alongside Archon Plate, and not one sold copy was ethereal. Plain body armor has no affixes of its own to hold out for, so take the lightest 3-socket chest whose strength requirement you already meet and spend nothing extra on the base.",
+        "The body-armor sibling of Mania (same Shael Ko Eld runes) — a cheap 3-socket chest for the level-39 bracket. Completed trades show light caster bases like Mage Plate and Dusk Shroud alongside Archon Plate, and not one sold copy was ethereal. Plain body armor has no affixes of its own to hold out for, so take the lightest 3-socket chest whose strength requirement you already meet and spend nothing extra on the base.",
         "A decent stopgap until Fortitude or an endgame armor arrives; it sells occasionally to levelling characters.",
       ],
       ru: [
-        "Броневой близнец Мании (те же руны Шаэль Ко Элд, в этом сезоне — только ладдер) — дешёвая броня на 3 гнезда для уровня 39. В сделках лёгкие кастерские базы вроде Лат мага (Mage Plate) и Сумеречного савана рядом с Архонтскими латами, и ни одна проданная копия не была эфирной. Обычной броне нечего катать самой по себе, так что берите самый лёгкий нагрудник на 3 гнезда, требования которого уже вытягиваете, и не тратьтесь на базу.",
+        "Броневой близнец Мании (те же руны Шаэль Ко Элд) — дешёвая броня на 3 гнезда для уровня 39. В сделках лёгкие кастерские базы вроде Лат мага (Mage Plate) и Сумеречного савана рядом с Архонтскими латами, и ни одна проданная копия не была эфирной. Обычной броне нечего катать самой по себе, так что берите самый лёгкий нагрудник на 3 гнезда, требования которого уже вытягиваете, и не тратьтесь на базу.",
         "Нормальная затычка, пока не появится Сила духа или другая эндгеймовая броня; продаётся изредка — качающимся персонажам.",
       ],
       sources: [
@@ -2323,6 +2323,6 @@ export const runewordAdvice: Record<string, RunewordAdviceEntry> = {
       ],
     },
     source:
-      "Maxroll B; ladder-only; 50 trades in ~613h (moderate); top bases Mage Plate 11, Archon Plate 11, Dusk Shroud 9; judgement: newer 3.x word, kept modest — budget mid-game armor per data; base-affix pass: ethereal_share is 0/50, contradicting the previous ethereal-merc-chest suggestion; plain armor has no base affixes, so the advice now says explicitly not to pay for the base",
+      "Maxroll B; 50 trades in ~613h (moderate); top bases Mage Plate 11, Archon Plate 11, Dusk Shroud 9; judgement: newer 3.x word, kept modest — budget mid-game armor per data; base-affix pass: ethereal_share is 0/50, contradicting the previous ethereal-merc-chest suggestion; plain armor has no base affixes, so the advice now says explicitly not to pay for the base",
   },
 };

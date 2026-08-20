@@ -75,26 +75,33 @@ export const ru: Strings = {
       "«Оставшиеся руны и базы» складывают всё, что ещё нужно несобранным рунным словам, — список покупок на оставшиеся, а не на всю игру.",
       "Наведите указатель на название рунного слова — или коснитесь его на телефоне, — чтобы увидеть его свойства, руны по порядку, число гнёзд и требуемый уровень.",
       // The advice surfaces, with the same caveat the English point carries:
-      // season and collection date stated, «примерные» doing the work.
-      "Маленькая строка под названием говорит, насколько слово полезно — мета, ситуативное или только для Истории, — а наведение на базы (или касание на телефоне) открывает совет по крафту: какую базу и с какими свойствами искать, кому слово нужно и продаётся ли оно. И то и другое — примерные редакторские оценки по тир-листам сообщества и истории продаж за сезон «Власть чернокнижника» (август 2026); экономика игры меняется, так что читайте их как ориентир, а не прайс-лист.",
+      // season and collection date stated, «примерные» doing the work, and the
+      // Season 15 amendment — prices move between seasons, ladder and
+      // non-ladder are different markets, and the auction links in each card
+      // are where the current price is.
+      "Маленькая строка под названием говорит, насколько слово полезно — мета, ситуативное или только для Истории, — а наведение на базы (или касание на телефоне) открывает совет по крафту: какую базу и с какими свойствами искать, кому слово нужно и продаётся ли оно. И то и другое — примерные редакторские оценки по тир-листам сообщества и истории продаж за сезон «Власть чернокнижника» (август 2026); цены меняются от сезона к сезону и различаются в ладдере и вне ладдера, так что читайте их как ориентир, а актуальную цену проверяйте на аукционах по ссылкам в самой карточке.",
       // Amended when import and export shipped, as the English point was: the
       // claim is that nothing leaves the browser on its own, not that nothing
       // can be taken out of it.
       "Прогресс хранится в этом браузере и больше нигде. Ничего не отправляется в сеть и ничего не переносится между устройствами само по себе, а очистка данных сайта стирает и его.",
       "«Экспорт прогресса» сохраняет отмеченные рунные слова в небольшой CSV-файл, а «Импорт прогресса» читает его обратно — так список переносится в другой браузер или сохраняется про запас. В файле названия можно писать на любом из двух языков: русские названия распознаются так же, как английские. Импорт заменяет все ваши отметки, а не добавляет к ним, поэтому сначала спрашивает и показывает, сколько рунных слов будет отмечено из файла; отменить его потом нельзя. Так же сбрасывается и весь прогресс: загрузите пустой файл — и все отметки снимутся. Таблица тоже подойдёт, если сохранить её в CSV с названиями в первом столбце.",
+      // Last, after the two points about progress, as in the English record:
+      // the reader who has just been told the progress stays here is the one
+      // owed the single thing the page does report. The service is named, not
+      // merely alluded to.
+      "Чтобы автор знал, пользуются ли страницей вообще, заходы считает Cloudflare Web Analytics: только просмотры страниц и ничего, что вас опознаёт. Cookie не ставятся, а отмеченные рунные слова счётчик не читает и никуда не отправляет.",
     ],
 
     // Badge legend. Game terms from the same sources as the rest of this
-    // record: «ладдер» as already settled for ladder, «патч» as already settled,
-    // «примечание» for the note marker. The classic-era explanation is project
-    // prose.
+    // record: «патч» as already settled, «примечание» for the note marker. The
+    // classic-era explanation is project prose. The ladder entry left with the
+    // badge in the Season 15 round.
     helpBadgesIntro:
-      "Цветные метки рядом с названием — украшение: когда слово добавили, только ли оно на ладдере, и есть ли у него оговорка:",
+      "Цветные метки рядом с названием — украшение: когда слово добавили и есть ли у него оговорка:",
     helpBadgePatch: (patch: string) =>
       patch === "1.10" || patch === "1.11"
         ? "Классическая эра (патчи 1.10 и 1.11), до Diablo II Resurrected"
         : `Добавлено в патче Diablo II Resurrected ${patch}`,
-    helpBadgeLadder: "Только ладдер — доступно в сезонах ладдера",
     helpBadgeNote:
       "Примечание — у рунного слова есть оговорка; откройте подробности, чтобы прочитать её",
     // The rune-tier paragraph was removed with its English counterpart — see
@@ -264,22 +271,13 @@ export const ru: Strings = {
   },
 
   availability: {
-    // **Corrected on review: the marker is now Cyrillic «Л».** It was Latin
-    // `L` on the reasoning that a Cyrillic letter would abbreviate a word the
-    // game does not use. Every source contradicts that: the official
-    // localisation's guide speaks of «рейтингового сезона ладдера» and
-    // «ладдерные слова», diablo2-resurrected.ru marks these records «Только для
-    // сезонных (ладдерных) персонажей», and duskworld.ru writes «в рейтинговом
-    // режиме (ладдере)». «Ладдер» is the audience's own loanword, so «Л»
-    // abbreviates a word that is genuinely used — and it stops one Latin letter
-    // sitting in a page that is otherwise entirely Russian.
-    //
-    // The meaning is the item text as diablo2-resurrected.ru transcribes it,
-    // which glosses the loanword with «сезонных» rather than assuming it:
-    // the sources between them use both words, and stating both is what a
-    // tooltip is for.
-    ladderMarker: "Л",
-    ladderMeaning: "Только для сезонных (ладдерных) персонажей",
+    // The ladder marker «Л» and its gloss «Только для сезонных (ладдерных)
+    // персонажей» stood here, sourced from the official localisation's guide and
+    // diablo2-resurrected.ru's transcription. Patch 3.3 released the last eight
+    // ladder-only runewords into Non-Ladder, so both went with the badge. The
+    // sourcing note is worth keeping in the history rather than the file: if a
+    // future patch brings ladder-only runewords back, the wording was settled
+    // once and does not need settling twice.
     noteMarker: "Примечание",
     patchMeaning: (patch: string) => `Добавлено в патче ${patch}`,
   },

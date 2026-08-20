@@ -283,13 +283,16 @@ describe("required levels", () => {
 });
 
 describe("availability metadata", () => {
-  it("exposes a ladder-only boolean on all 99, set on exactly 8", () => {
-    const missing = runewords.filter(
-      (entry) => typeof entry.ladderOnly !== "boolean",
+  it("carries no ladder-only field on any record", () => {
+    // Patch 3.3 released the last eight into Non-Ladder, so the flag would be
+    // false on all 99 and render nothing. Asserted on the shipped records rather
+    // than on the schema, because a stray key in the generated JSON would type
+    // as `unknown` and pass a schema check silently.
+    const withLadderKey = runewords.filter((entry) =>
+      Object.hasOwn(entry, "ladderOnly"),
     );
 
-    expect(missing).toEqual([]);
-    expect(runewords.filter((entry) => entry.ladderOnly)).toHaveLength(8);
+    expect(withLadderKey).toEqual([]);
   });
 
   it("carries a patch on 74 records and none on the 25 that predate tracking", () => {
@@ -299,16 +302,16 @@ describe("availability metadata", () => {
     expect(runewords.length - withPatch.length).toBe(25);
   });
 
-  it("carries a note only on Mosaic, with patch and no ladder flag", () => {
+  it("carries a note only on Mosaic, with its patch", () => {
     const noted = runewords.filter((entry) => entry.note !== undefined);
 
     expect(noted.map((entry) => entry.name)).toEqual(["Mosaic"]);
 
     const mosaic = runeword("Mosaic");
 
-    // Vendor marks Mosaic ladder-only, but that contradicts the note (disabled
-    // on ladder). The generator clears the flag so the L badge does not lie.
-    expect(mosaic.ladderOnly).toBe(false);
+    // The note is the only place any ladder restriction is stated anywhere in
+    // the dataset, and it is free text the owner edits rather than a flag logic
+    // reads. The season number the vendor pinned is what must not come back.
     expect(mosaic.patch).toBe("2.6");
     expect(mosaic.note).toContain("ladder");
     expect(mosaic.note).not.toMatch(/Season \d+/);
@@ -320,8 +323,7 @@ describe("availability metadata", () => {
     // rule expressed as logic would silently miscount progress.
     expect(runewords.length).toBe(99);
     expect(
-      runewords.filter((entry) => entry.ladderOnly || entry.note !== undefined)
-        .length,
+      runewords.filter((entry) => entry.note !== undefined).length,
     ).toBeLessThan(runewords.length);
   });
 });

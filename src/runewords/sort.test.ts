@@ -271,7 +271,6 @@ describe("what no comparator may read", () => {
   it("orders the dataset identically with every availability field cleared", () => {
     const blind = runewords.map((runeword) => ({
       ...runeword,
-      ladderOnly: false,
       patch: undefined,
       note: undefined,
     }));

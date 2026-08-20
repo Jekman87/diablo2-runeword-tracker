@@ -199,8 +199,9 @@ flat list of 33 into three meaningful bands.
 - socket count is not stored; it equals `runes.length`
 - `ttypes` is a list of base categories, `tinfos` an optional restriction
   string. Class restrictions appear the same way: `(Assassin)`, `(Druid)`.
-- ladder-only and patch-of-introduction flags exist in the UI as badges; where
-  they live in the data still needs checking
+- `version` is the patch of introduction, which the UI renders as a badge.
+  `ladder` is in the snapshot too but is read by nothing since patch 3.3 — see
+  the ladder paragraph under **Resolved**
 
 ### `runewords-descriptions.ts`
 
@@ -230,34 +231,54 @@ patches that added runewords.
 account-wide and shared between ladder and non-ladder, so a runeword crafted
 on ladder still counts. The tracker therefore mirrors all 99.
 
-**Ladder-only runewords shipped: 8 of 99.** The vendor/reference still lists
-nine (including Mosaic); the generator clears Mosaic because its note says it
-is disabled on ladder. The eight that keep the flag:
+**Ladder-only runewords shipped: none, since patch 3.3.** Eight of the 99 used
+to carry the flag — Bulwark, Cure, Ground, Hearth, Temper and Metamorphosis from
+patch 2.6, Mania and Hysteria from 3.0 — and patch 3.3 released all eight into
+Non-Ladder on 2026-08-18. What survived the patch is a Lord of Destruction
+restriction, which the reference now words as "Still Ladder only in LoD / Can be
+made in Non-Ladder on RotW"; this tracker mirrors Reign of the Warlock, whose
+Chronicle is a RotW feature, so it is not our restriction to model. The
+`ladderOnly` field left the schema, the generated JSON and the badge with it.
 
-| Runeword                              | Patch |
-| ------------------------------------- | ----- |
-| Bulwark, Cure, Ground, Hearth, Temper | 2.6   |
-| Metamorphosis                         | 2.6   |
-| Mania, Hysteria                       | 3.0   |
+**Where to start if a future patch brings ladder-only runewords back.** The
+vendor snapshot still carries its own `ladder: true` on those records —
+`vendor/runewizard/data/runewords.ts`, untouched, as `vendor/` always is. The
+generator reads the flag from nowhere today; re-deriving one boolean from a field
+that is still there is an afternoon, which is why the field was removed rather
+than shipped as a uniform `false` nothing could render.
 
 **Availability is season-dependent and must live in data.** The reference
-renders three separate badges per row, each with a tooltip:
+renders these badges per row, each with a tooltip:
 
 | Badge   | Tooltip          | Class                             |
 | ------- | ---------------- | --------------------------------- |
-| `L`     | `Ladder Only`    | `rw-Md-ladder`                    |
 | `2.6`   | `Patch version`  | `rw-Table-tdTitlePatch patch-2-6` |
 | `Note!` | free-form caveat | `rw-Md-note`                      |
 
-Mosaic carries patch and note (not the ladder flag). Its note reads:
+The reference also draws an `L` / `Ladder Only` marker (`rw-Md-ladder`); we no
+longer do, per the paragraph above.
 
-> Disabled on ladder! Can be crafted offline non-ladder.
+Mosaic carries patch and note. Its note reads:
 
-The vendor snapshot still marks Mosaic ladder-only; that flag contradicts the
-note, so the generator clears it before shipping. Availability flips between
-seasons, which means any availability rule expressed as code will be wrong
-within a season or two. Model it as `ladderOnly`, `patch` and a free-text
-`note`, and edit the data rather than the logic.
+> Disabled on ladder! Can be crafted in non-ladder or offline.
+
+The vendor's own wording was "Can be crafted offline non-ladder", with no
+conjunction between the two words — which reads as offline-only, and that is
+wrong: non-ladder online and offline both work. Corrected in the shipped note
+and in the Russian variant, which named only the offline case.
+
+That note is now the only place a ladder restriction is stated anywhere in the
+dataset — free text the owner edits, not a field logic reads. Patch 3.3 said
+nothing about Mosaic, so it stands. Availability flips between seasons, which
+means any availability rule expressed as code will be wrong within a season or
+two. Model it as `patch` and a free-text `note`, and edit the data rather than
+the logic.
+
+**Not a missing runeword: `Hustle`.** The reference lists it and this dataset
+does not. Patch 3.0 renamed and split it into Mania (weapons) and Hysteria (body
+armor), both `Shael Ko Eld` at level 39, and the vendor snapshot records the
+split in a comment beside those two records. `Hustle` is the Lord of Destruction
+name for what RotW calls two runewords. The count stays 99.
 
 Decided consequence: the progress bar always shows all 99. Denominators
 derived from ladder status would be built on shifting ground.
@@ -267,12 +288,12 @@ derived from ladder status would be built on shifting ground.
 All seven files match the sizes reported by the GitHub API byte for byte, and
 the contents cross-check against what the live site renders:
 
-| Check                                  | Result                                           |
-| -------------------------------------- | ------------------------------------------------ |
-| Entries in `runewords.ts`              | 99                                               |
-| Entries in `runewords-descriptions.ts` | 99 — matches                                     |
-| `ladder:` occurrences                  | 9 in vendor (shipped UI shows 8; Mosaic cleared) |
-| `note:` occurrences                    | 1 — Mosaic, as expected                          |
+| Check                                  | Result                                 |
+| -------------------------------------- | -------------------------------------- |
+| Entries in `runewords.ts`              | 99                                     |
+| Entries in `runewords-descriptions.ts` | 99 — matches                           |
+| `ladder:` occurrences                  | 9 in vendor; none read since patch 3.3 |
+| `note:` occurrences                    | 1 — Mosaic, as expected                |
 
 ### Confirmed record schema
 
@@ -284,7 +305,7 @@ the contents cross-check against what the live site renders:
   ttypes:  string[]     // ["Claws"]
   tinfos?: string       // "(Assassin)"      — 15 entries have it
   version?: string      // patch badge       — 74 entries have it
-  ladder?: true         // ladder-only badge —  9 entries have it
+  ladder?: true         // read by nothing    —  9 entries have it
   note?:   string       // caveat badge      —  1 entry has it
 }
 ```
@@ -331,19 +352,19 @@ of `undefined`.
 
 ### Confirmed field mapping
 
-| Vendor           | Ours                  | Note                                                             |
-| ---------------- | --------------------- | ---------------------------------------------------------------- |
-| `title`          | `name`                | unique; the canonical identifier                                 |
-| `runes`          | `runes`               | order significant, repeats preserved                             |
-| `level`          | `requiredLevel`       | 13–69                                                            |
-| `ttypes`         | `itemTypes`           | each resolves to `item-types.json`                               |
-| `tinfos`         | `itemTypeRestriction` | parentheses stripped: `Assassin`, not `(…)`                      |
-| `version`        | `patch`               | omitted on the 25 pre-1.10 runewords                             |
-| `ladder`         | `ladderOnly`          | normalised boolean on all 99; 8 set (Mosaic overridden to false) |
-| `note`           | `note`                | omitted unless present; only `Mosaic` has one                    |
-| _(descriptions)_ | `propertyGroups`      | merged in, one entry per line, grouped                           |
-| `tier: 1\|2\|3`  | `tier`                | `common` / `semirare` / `rare`                                   |
-| _(none)_         | —                     | socket count stays derived                                       |
+| Vendor           | Ours                  | Note                                                         |
+| ---------------- | --------------------- | ------------------------------------------------------------ |
+| `title`          | `name`                | unique; the canonical identifier                             |
+| `runes`          | `runes`               | order significant, repeats preserved                         |
+| `level`          | `requiredLevel`       | 13–69                                                        |
+| `ttypes`         | `itemTypes`           | each resolves to `item-types.json`                           |
+| `tinfos`         | `itemTypeRestriction` | parentheses stripped: `Assassin`, not `(…)`                  |
+| `version`        | `patch`               | omitted on the 25 pre-1.10 runewords                         |
+| `ladder`         | _(dropped)_           | not emitted since patch 3.3; the vendor flag stays for later |
+| `note`           | `note`                | omitted unless present; only `Mosaic` has one                |
+| _(descriptions)_ | `propertyGroups`      | merged in, one entry per line, grouped                       |
+| `tier: 1\|2\|3`  | `tier`                | `common` / `semirare` / `rare`                               |
+| _(none)_         | —                     | socket count stays derived                                   |
 
 The description blocks of `Fortitude`, `Phoenix` and `Spirit` carry `####`
 sub-headings because those three grant different properties per base type. The

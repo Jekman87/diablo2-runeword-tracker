@@ -114,5 +114,15 @@
     </noscript>
 
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- The same counter as the root document carries, and it has to be the
+         same: a count of one language is not a count of the site, and the two
+         appear in the dashboard as separate paths. See the root document for
+         why the snippet ships in Cloudflare's own form. -->
+    <script
+      type="module"
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "1f854178248c4131a1f8744b9e4121d7"}'
+    ></script>
   </body>
 </html>
