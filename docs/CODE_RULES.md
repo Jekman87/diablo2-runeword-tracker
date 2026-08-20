@@ -184,3 +184,10 @@ the page where review is least likely to look.
 ## Commits
 
 Conventional commits, one line: `type(scope): subject`. In English.
+
+## Attribution
+
+Only the repository owner is credited. No code, comment, commit, PR, or other
+artifact may name an AI tool (Cursor, Claude, Copilot, ChatGPT, or similar) as
+author, co-author, or helper. No `Co-authored-by:` trailers for AI accounts.
+Strip any such trailer a tool tries to append.
