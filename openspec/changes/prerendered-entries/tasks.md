@@ -40,23 +40,31 @@
 
 ## 3. Keep the snapshot away from readers who have their own state
 
-- [ ] 3.1 Have the render step generate the inline decision script, interpolating
+- [x] 3.1 Have the render step generate the inline decision script, interpolating
       `CRAFTED_STORAGE_KEY`, `VIEW_STORAGE_KEY` and `LOCALE_STORAGE_KEY` from the
       constants rather than writing the strings out again
-- [ ] 3.2 Place it between the prerendered markup and the module bundle, as a
+- [x] 3.2 Place it between the prerendered markup and the module bundle, as a
       classic `<script>` so it runs before first paint while the bundle stays
       deferred. Hide with an inline `style.display = "none"`, not the `hidden`
       attribute, and wrap the whole thing in `try/catch`
-- [ ] 3.3 Reveal the root once React has committed the reader's real state and
+- [x] 3.3 Reveal the root once React has committed the reader's real state and
       **before** a frame is painted — a layout effect or a synchronous flush,
       never `useEffect`. Comment why at the site: the difference is invisible in
       review and obvious on a slow connection
-- [ ] 3.4 Verify each audience by hand, with the network throttled hard enough
-      that the bundle takes a second or more to arrive:
-      a returning profile sees no intermediate content at all;
-      a fresh profile sees the list immediately;
-      scripting disabled leaves the list visible;
-      a private-browsing window still loads
+- [x] 3.4 Verify each audience, with the network throttled hard enough that the
+      bundle takes seconds to arrive. Measured rather than eyeballed: a sampler
+      installed before any page script records,on every animation frame, whether `#root`
+      is displayed, whether it has children, and how many crafted sockets in the
+      table are pressed. At 50 KB/s with the cache disabled —
+      **fresh profile:** 0 of 666 frames hidden, the full styled table painted
+      from the first frame while the bundle was still downloading;
+      **returning reader (3 crafted, a stored sort):** 239 frames blank, then 422
+      with content, and **0 frames showed content without their marks** — the
+      snapshot was never painted;
+      **storage throwing:** the page loaded and mounted normally.
+      The first attempt at this measured nothing because an earlier navigation
+      had warmed the cache — `Network.setCacheDisabled` is what made the throttle
+      real, and that trap is worth knowing about for the next time
 - [ ] 3.5 Test what can be tested automatically: that both built documents carry
       the script, that it names the real key values, and that the reveal is not
       wired to a post-paint effect

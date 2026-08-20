@@ -35,9 +35,47 @@ const documents = [
   { file: path.join(DIST, "ru", "index.html"), locale: "ru" },
 ] as const;
 
-const { renderEntry } = (await import(pathToFileURL(SSR_ENTRY).href)) as {
+const { renderEntry, storageKeys } = (await import(
+  pathToFileURL(SSR_ENTRY).href
+)) as {
   renderEntry: (locale: "en" | "ru") => string;
+  storageKeys: readonly string[];
 };
+
+/**
+ * The script that decides, before the first paint, whether this reader should
+ * see the snapshot at all.
+ *
+ * A reader with saved progress must not: the snapshot is the default state, and
+ * showing it would be a page they never left. A reader with nothing saved — and
+ * every crawler, which never has anything saved — should, because for them it is
+ * simply the page, arriving without waiting for the bundle.
+ *
+ * Three things about its shape are load-bearing:
+ *
+ * - **It is a classic `<script>`, not a module.** Modules are deferred; this has
+ *   to run while the document is still being parsed, before anything is painted.
+ * - **It hides with an inline `display` property**, not the `hidden` attribute:
+ *   `[hidden] { display: none }` is a user-agent rule that any Tailwind display
+ *   utility outranks. `src/main.tsx` removes this property again once React has
+ *   committed the reader's real state.
+ * - **The keys are interpolated from the application's own constants**, never
+ *   retyped. A copy would be a second definition of one fact whose failure is
+ *   silent: rename a key to `v2`, this stops matching, and returning readers
+ *   start seeing the snapshot with nothing to report it.
+ *
+ * Wrapped in `try/catch` because reading storage throws outright in some privacy
+ * modes, and this is the earliest code on the page.
+ */
+function decisionScript(): string {
+  const keys = JSON.stringify(storageKeys);
+
+  return (
+    `<script>try{var k=${keys},r=document.getElementById("root"),i=0;` +
+    `for(;i<k.length;i++){if(localStorage.getItem(k[i])!==null){` +
+    `r.style.display="none";break}}}catch(e){}</script>`
+  );
+}
 
 for (const { file, locale } of documents) {
   const html = readFileSync(file, "utf8");
@@ -56,9 +94,14 @@ for (const { file, locale } of documents) {
     throw new Error(`Rendering the ${locale} document produced no markup.`);
   }
 
+  // The decision script goes immediately after the container, so it runs with
+  // `#root` already in the document and still before the deferred bundle.
   writeFileSync(
     file,
-    html.replace(EMPTY_ROOT, `<div id="root">${markup}</div>`),
+    html.replace(
+      EMPTY_ROOT,
+      `<div id="root">${markup}</div>${decisionScript()}`,
+    ),
     "utf8",
   );
 

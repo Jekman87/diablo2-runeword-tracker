@@ -1,7 +1,10 @@
 import { renderToString } from "react-dom/server";
 
 import { App } from "@/App";
+import { CRAFTED_STORAGE_KEY } from "@/crafted/storage";
 import { type Locale, seedLocale } from "@/i18n";
+import { LOCALE_STORAGE_KEY } from "@/i18n/storage";
+import { VIEW_STORAGE_KEY } from "@/view/storage";
 
 // The application, rendered to a string instead of into DOM nodes, so both entry
 // documents can ship the list in their HTML. No server is involved anywhere in
@@ -37,3 +40,24 @@ export function renderEntry(locale: Locale): string {
 
   return renderToString(<App />);
 }
+
+/**
+ * Every key the application persists, for the inline script that decides whether
+ * a reader should be shown the prerendered snapshot at all.
+ *
+ * Re-exported through this entry rather than restated in `scripts/prerender.ts`,
+ * because that script is plain Node and cannot resolve `@/`. The values
+ * therefore still have exactly one definition — each store's own constant — and
+ * renaming one reaches the built documents on the next build instead of leaving
+ * a check that quietly matches nothing.
+ *
+ * Any one of them being present means this browser holds state the snapshot does
+ * not reflect: progress, a chosen language, or a sort and filters. There is no
+ * attempt to decide *how much* it differs — a reader who has used the page is a
+ * reader whose page this is not.
+ */
+export const storageKeys = [
+  CRAFTED_STORAGE_KEY,
+  LOCALE_STORAGE_KEY,
+  VIEW_STORAGE_KEY,
+] as const;
