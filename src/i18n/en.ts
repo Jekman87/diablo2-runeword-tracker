@@ -85,13 +85,26 @@ export const en = {
       // the season and collection date are stated so a reader a year later can
       // tell how stale the judgements are, and "approximate" is the word doing
       // the work — the page makes claims about worth nowhere else.
-      "The small line under a runeword's name says how useful it is — meta, situational, or Chronicle only — and pointing at (or tapping) its base items opens crafting advice: which base and affixes to look for, who uses it, and whether it sells. Both are approximate editorial estimates, drawn from community tier lists and trade history during the Reign of the Warlock season (August 2026); the game's economy moves, so read them as a guide, not a price list.",
+      //
+      // Amended for Season 15. Two things the first wording left implicit are
+      // now said outright: prices move between seasons, and ladder and
+      // non-ladder are different markets — newly pointed, since patch 3.3
+      // released eight runewords into non-ladder. And the caveat now ends
+      // somewhere: the advice cards already link the auction sites, so the
+      // reader is sent to the current price rather than left holding an old one.
+      "The small line under a runeword's name says how useful it is — meta, situational, or Chronicle only — and pointing at (or tapping) its base items opens crafting advice: which base and affixes to look for, who uses it, and whether it sells. Both are approximate editorial estimates, drawn from community tier lists and trade history during the Reign of the Warlock season (August 2026); prices move from one ladder season to the next and differ between ladder and non-ladder, so read them as a guide and check the auction sites each card links for what a thing sells for now.",
       // Amended when import and export shipped. It used to end "nothing is
       // shared between devices", which the file below now makes false — the
       // point is that nothing leaves the browser *by itself*, not that nothing
       // can leave it at all.
       "Your progress is kept in this browser and nowhere else. Nothing is uploaded and nothing travels between devices on its own, and clearing this site's data clears it.",
       "Export progress saves your ticked runewords to a small CSV file, and Import progress reads one back — that is how you carry a list to another browser or keep a backup. The file may name runewords in either language: Russian labels are matched as readily as the English names. Importing replaces everything you have ticked rather than adding to it, so it asks first and tells you how many runewords the file will tick; there is no undo once it is done. That is also how you start over — import an empty file and every mark is cleared. A spreadsheet works too, as long as it is saved as CSV with the names in the first column.",
+      // Last, and after the two points about progress on purpose: a reader who
+      // has just been told their progress stays here is the reader owed the one
+      // thing the page does report. The counter reads none of it, sets no
+      // cookie, and is named rather than merely disclosed — a reader who blocks
+      // it should know what they are blocking.
+      "So the author knows whether the page is used at all, visits are counted by Cloudflare Web Analytics: page views, and nothing that identifies you. It sets no cookies, and it neither reads nor sends the runewords you have ticked.",
     ],
 
     // Badge legend: each sample is rendered by the table's own Badge component;

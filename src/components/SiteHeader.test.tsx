@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { SiteHeader } from "@/components/SiteHeader";
 import { FEEDBACK_URL, GAME_PATCH, UPDATE_NOTES_URL } from "@/header/site";
 import { en } from "@/i18n/en";
+import { ru } from "@/i18n/ru";
 
 // The band states what the page is, offers two destinations and hides the rest of
 // the answer behind a disclosure. Each of those has a way of going quietly wrong:
@@ -134,6 +135,78 @@ describe("the help disclosure", () => {
       expect(screen.getByText(point)).toBeVisible();
     }
   });
+
+  // The two claims below are asserted on the copy rather than on the rendered
+  // panel, because what is at stake is what the sentence says, not that it is
+  // displayed — the loop above already covers the display. Each locale is
+  // checked, since a wording that drops a claim in translation is exactly the
+  // failure a single-locale assertion would miss.
+  describe.each([["en", en] as const, ["ru", ru] as const])(
+    "the advice caveat in %s",
+    (locale, strings) => {
+      const caveat = strings.header.helpPoints.find((point) =>
+        /August 2026|август 2026/.test(point),
+      );
+
+      it("names the date, both kinds of drift, and where to check", () => {
+        expect(caveat).toBeDefined();
+
+        const claims =
+          locale === "en"
+            ? [
+                /approximate/i,
+                /season to the next/i,
+                /ladder and non-ladder/i,
+                /auction sites/i,
+              ]
+            : [
+                /примерные/i,
+                /от сезона к сезону/i,
+                /в ладдере и вне ладдера/i,
+                /аукцион/i,
+              ];
+
+        for (const claim of claims) {
+          expect(caveat).toMatch(claim);
+        }
+      });
+
+      it("is the only point that carries the caveat", () => {
+        const carrying = strings.header.helpPoints.filter((point) =>
+          /August 2026|август 2026/.test(point),
+        );
+
+        expect(carrying).toHaveLength(1);
+      });
+    },
+  );
+
+  describe.each([["en", en] as const, ["ru", ru] as const])(
+    "the counter disclosure in %s",
+    (locale, strings) => {
+      it("says views are counted and no cookie is set", () => {
+        const disclosure = strings.header.helpPoints.find((point) =>
+          /Cloudflare/.test(point),
+        );
+
+        expect(disclosure).toBeDefined();
+        expect(disclosure).toMatch(
+          locale === "en" ? /no cookies/i : /cookie не ставятся/i,
+        );
+      });
+
+      it("leaves the promise about progress intact", () => {
+        const progress = strings.header.helpPoints.find((point) =>
+          locale === "en"
+            ? /kept in this browser/.test(point)
+            : /хранится в этом браузере/.test(point),
+        );
+
+        expect(progress).toBeDefined();
+        expect(progress).not.toMatch(/Cloudflare/);
+      });
+    },
+  );
 
   it("keeps the divider full-bleed and the title at the page measure", () => {
     const { container } = render(<SiteHeader />);
