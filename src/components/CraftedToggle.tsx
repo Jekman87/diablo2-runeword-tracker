@@ -1,4 +1,5 @@
 import { cva } from "class-variance-authority";
+import { twMerge } from "tailwind-merge";
 
 import { useLocale, useStrings } from "@/i18n";
 import { displayRunewordName } from "@/runewords/display";
@@ -13,6 +14,12 @@ export interface CraftedToggleProps {
   crafted: boolean;
   /** Asks for the change. What it opens is the confirmation, not the toggle. */
   onToggle: () => void;
+  /**
+   * The row's own classes for this control — today, the narrow-viewport
+   * withdrawal in `src/index.css`. Merged over the variant's, so a use site can
+   * change where the box sits without restating what it looks like.
+   */
+  className?: string;
   ref?: React.Ref<HTMLButtonElement>;
 }
 
@@ -47,6 +54,7 @@ export function CraftedToggle({
   name,
   crafted,
   onToggle,
+  className,
   ref,
 }: CraftedToggleProps) {
   const strings = useStrings();
@@ -61,7 +69,7 @@ export function CraftedToggle({
         crafted ? strings.crafted.unmark(label) : strings.crafted.mark(label)
       }
       onClick={onToggle}
-      className={box({ crafted })}
+      className={twMerge(box({ crafted }), className)}
     >
       {/* Only when marked, so "empty or checked" is a difference in what is drawn
           and not only in what colour it is drawn in. `currentColor` rather than a
