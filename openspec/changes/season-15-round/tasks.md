@@ -20,33 +20,33 @@
 
 ## 2. Remove the ladder-only field from the data pipeline
 
-- [ ] 2.1 Delete `LADDER_OVERRIDES` and the `ladderOnly` mapping from
+- [x] 2.1 Delete `LADDER_OVERRIDES` and the `ladderOnly` mapping from
       `scripts/generate-dataset.ts`, leaving the note override in place
-- [ ] 2.2 Remove `ladderOnly` from `src/data/schema.ts`
-- [ ] 2.3 Run `pnpm data:build` and confirm `src/data/runewords.json` has 99
+- [x] 2.2 Remove `ladderOnly` from `src/data/schema.ts`
+- [x] 2.3 Run `pnpm data:build` and confirm `src/data/runewords.json` has 99
       records and no ladder key
-- [ ] 2.4 Update `src/data/index.test.ts`: replace the "set on exactly 8"
+- [x] 2.4 Update `src/data/index.test.ts`: replace the "set on exactly 8"
       assertion with one that no record carries the field, and restate the
       `Mosaic` assertions on patch and note alone
-- [ ] 2.5 Reword the comments in `src/runewords/search.ts`, `sort.ts` and
+- [x] 2.5 Reword the comments in `src/runewords/search.ts`, `sort.ts` and
       `display.ts` that name the removed field
 
 ## 3. Remove the badge and its copy
 
-- [ ] 3.1 Remove the `ladder` variant and its branch from
+- [x] 3.1 Remove the `ladder` variant and its branch from
       `src/components/AvailabilityBadges.tsx`
-- [ ] 3.2 Remove the ladder line from the availability block in
+- [x] 3.2 Remove the ladder line from the availability block in
       `src/components/RunewordDialog.tsx`, keeping patch and note
-- [ ] 3.3 Delete `ladderMarker`, `ladderMeaning` and `helpBadgeLadder` from
+- [x] 3.3 Delete `ladderMarker`, `ladderMeaning` and `helpBadgeLadder` from
       `src/i18n/en.ts` and `src/i18n/ru.ts`, and amend `helpBadgesIntro` in both
       so it no longer promises a ladder tag
-- [ ] 3.4 Delete `--color-ladder` and `--color-ladder-label` from
+- [x] 3.4 Delete `--color-ladder` and `--color-ladder-label` from
       `src/index.css` with the comment that explains them, and confirm no
       utility class references either
-- [ ] 3.5 Update `AvailabilityBadges.test.tsx` and `RunewordDialog.test.tsx`:
+- [x] 3.5 Update `AvailabilityBadges.test.tsx` and `RunewordDialog.test.tsx`:
       drop the ladder cases, and add one asserting no row can render a ladder
       marker
-- [ ] 3.6 Run `pnpm test` and `pnpm lint` — a leftover reference should surface
+- [x] 3.6 Run `pnpm test` and `pnpm lint` — a leftover reference should surface
       here rather than in review
 
 ## 4. Amend the help panel

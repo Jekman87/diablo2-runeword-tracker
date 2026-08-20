@@ -99,12 +99,11 @@ export const en = {
     // Four patch colours for five values — `1.10` stands for the classic era
     // that `1.11` shares.
     helpBadgesIntro:
-      "Coloured tags beside a runeword's name are decoration — they mark when it was added, whether it is ladder-only, and whether it carries a caveat:",
+      "Coloured tags beside a runeword's name are decoration — they mark when it was added and whether it carries a caveat:",
     helpBadgePatch: (patch: string) =>
       patch === "1.10" || patch === "1.11"
         ? "Classic era (patches 1.10 and 1.11), before Diablo II Resurrected"
         : `Added in Diablo II Resurrected patch ${patch}`,
-    helpBadgeLadder: "Ladder only — available in ladder seasons",
     helpBadgeNote:
       "Note! — the runeword carries a caveat; open its details to read it",
     // There was a paragraph here explaining that the rune tiers follow the
@@ -298,9 +297,11 @@ export const en = {
   availability: {
     // What the badge draws, and what it means. The marker is short enough to
     // sit beside a name; the meaning is what assistive technology and a
-    // pointer tooltip get, because a lone `L` explains nothing.
-    ladderMarker: "L",
-    ladderMeaning: "Ladder only",
+    // pointer tooltip get, because a lone `Note!` explains nothing.
+    //
+    // The ladder marker and its meaning were here until patch 3.3 released the
+    // last eight ladder-only runewords into Non-Ladder. Copy for a badge nothing
+    // renders is copy a translator maintains for nobody.
     noteMarker: "Note!",
     patchMeaning: (patch: string) => `Introduced in patch ${patch}`,
   },
