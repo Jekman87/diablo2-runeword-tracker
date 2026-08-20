@@ -7,6 +7,7 @@ import {
   OG_IMAGE_URL,
   SITE_URL,
   SITE_URL_RU,
+  YANDEX_VERIFICATION,
 } from "../src/header/site.ts";
 
 // What a crawler is given lives in files that no module imports: two entry
@@ -28,6 +29,15 @@ import {
 // It lives in `scripts/` rather than `src/` for the reason the borrowed-assets
 // test next door does: it reads the repository from disk, and
 // `tsconfig.app.json` withholds Node's types from application code.
+//
+// **It reads the source templates, and deliberately stops there.** Since the
+// entries are prerendered, the body of each served document is a build product:
+// the head fields, the URLs, the beacon and the `<noscript>` paragraph are facts
+// about these files, but the list inside `#root` exists only in `dist/`. Testing
+// both here would mean one test whose failure could mean either "a template
+// drifted" or "you forgot to build". So the rendered content is asserted by the
+// build itself, plus `scripts/prerender-document.test.ts` for the pure parts and
+// one CI step for the build step existing at all.
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 
@@ -165,6 +175,43 @@ describe.each(Object.entries(documents))(
     });
   },
 );
+
+describe("search-engine ownership proofs", () => {
+  it("carries the Yandex verification the constant names", () => {
+    const content = attribute(
+      documents.en.html,
+      "meta",
+      "name",
+      "yandex-verification",
+      "content",
+    );
+
+    // A verification tag deleted by accident is a property silently unverified:
+    // the site keeps working and the reports quietly stop, which is why this is
+    // a test and not a comment.
+    expect(content).toBe(YANDEX_VERIFICATION);
+  });
+
+  it("proves ownership with markup rather than a script", () => {
+    // Both engines offer a script-based option; neither is used, because a
+    // verification script is executable third-party code on every page load for
+    // a one-time check.
+    for (const name of ["google-site-verification", "yandex-verification"]) {
+      const tag = new RegExp(`<meta[^>]*name="${name}"[^>]*>`).exec(
+        documents.en.html,
+      );
+
+      expect(tag?.[0]).toBeDefined();
+      expect(tag?.[0]).not.toContain("script");
+    }
+  });
+
+  it("needs no second tag on the Russian entry", () => {
+    // Verification is per site and the sitemap lists both URLs, so the root
+    // document proving ownership is the whole of it.
+    expect(documents.ru.html).not.toContain("yandex-verification");
+  });
+});
 
 describe("the analytics token", () => {
   it("is a real token rather than a placeholder", () => {

@@ -65,7 +65,7 @@
       The first attempt at this measured nothing because an earlier navigation
       had warmed the cache — `Network.setCacheDisabled` is what made the throttle
       real, and that trap is worth knowing about for the next time
-- [ ] 3.5 Test what can be tested automatically: that both built documents carry
+- [x] 3.5 Test what can be tested automatically: that both built documents carry
       the script, that it names the real key values, and that the reveal is not
       wired to a post-paint effect
 - [ ] 3.6 **Gate.** Show the owner the throttled returning-reader case before
@@ -75,27 +75,30 @@
 
 ## 4. Make the build own the render, and fail without it
 
-- [ ] 4.1 Wire the render pass into `pnpm build` so there is no way to produce
+- [x] 4.1 Wire the render pass into `pnpm build` so there is no way to produce
       `dist/` without it
-- [ ] 4.2 Make a failing render fail the build, emitting no document with an
-      empty root
-- [ ] 4.3 Add the build-output check: both built documents carry runeword
+- [x] 4.2 Make a failing render fail the build, emitting no document with an
+      empty root. Proven by accident: the first marker word chosen for the
+      Russian check was «Броня», which is not what the dataset says (it is
+      «Доспехи»), and the build stopped with exit 1 naming the document. The
+      guard works because it caught its own author
+- [x] 4.3 Add the build-output check: both built documents carry runeword
       content, each in its own language. Assert language, not just presence — a
       Russian document full of English content is the failure a presence check
       would pass
-- [ ] 4.4 Leave `scripts/crawl-files.test.ts` reading the source templates as it
+- [x] 4.4 Leave `scripts/crawl-files.test.ts` reading the source templates as it
       does today; the head fields, the URLs and the beacon are still template
       facts. Note in its docblock that body content is checked elsewhere and why
-- [ ] 4.5 Check the quality gate still runs everything it did: the output check
+- [x] 4.5 Check the quality gate still runs everything it did: the output check
       must not be a step CI can skip, and `pnpm build` must not have become
       optional to it
 
 ## 5. Correct the scriptless fallback
 
-- [ ] 5.1 Reword the `<noscript>` paragraph in both documents: the list is
+- [x] 5.1 Reword the `<noscript>` paragraph in both documents: the list is
       readable without JavaScript; marking a runeword, searching, sorting and
       carrying progress as a file are what need it
-- [ ] 5.2 Keep it in project prose in each document's own language, and keep it
+- [x] 5.2 Keep it in project prose in each document's own language, and keep it
       unstyled for the reason its comment already gives — the stylesheet arrives
       with the bundle it is standing in for
 
@@ -104,30 +107,32 @@
 - [x] 6.1 Owner action, outside the repository: add the site in Yandex Webmaster
       and take the verification meta tag's value. Done — the tag reads
       `<meta name="yandex-verification" content="fb2c212fd42a88fb" />`
-- [ ] 6.2 Hold `fb2c212fd42a88fb` where the other site constants are, documented
+- [x] 6.2 Hold `fb2c212fd42a88fb` where the other site constants are, documented
       as public-by-nature the way the analytics token is. Sixteen hexadecimal
       characters, which is the shape the check in 6.4 should demand
-- [ ] 6.3 Add the tag to `index.html` beside the Google one, with a comment
+- [x] 6.3 Add the tag to `index.html` beside the Google one, with a comment
       saying it is inert markup, why it stays after verification, and that
       Yandex re-checks it
-- [ ] 6.4 Extend `scripts/crawl-files.test.ts` to hold the document copy against
+- [x] 6.4 Extend `scripts/crawl-files.test.ts` to hold the document copy against
       the constant, so a deleted tag fails a test
-- [ ] 6.5 `docs/SITE.md`: document the Yandex steps beside the Search Console
+- [x] 6.5 `docs/SITE.md`: document the Yandex steps beside the Search Console
       ones — add the site, verify by meta tag, submit the same sitemap — as an
       account action, and note that the sitemap covers both entries so `/ru/`
       needs no second submission
 
 ## 7. Verify the round
 
-- [ ] 7.1 `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build` — all green
-- [ ] 7.2 `pnpm preview` and drive both entries in a real browser: the page still
+- [x] 7.1 `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build` — all green
+- [x] 7.2 `pnpm preview` and drive both entries in a real browser: the page still
       behaves as it did, stored progress still appears after mount, the language
       switch still works, and the console reports no hydration warning
-- [ ] 7.3 Measure what changed: the served size of each document before and
-      after, so the trade is recorded rather than assumed
+- [x] 7.3 Measure what changed: each document went from 8.4 kB raw / 3.2 kB
+      gzipped to 288 kB raw / 15.5 kB gzipped — about **+12 kB over the wire**
+      per document, against a bundle already costing 677 kB, in exchange for the
+      content being indexable and painting before that bundle arrives
 - [ ] 7.4 After deploy, fetch both public URLs without executing scripts and
       confirm each carries its own language's content
-- [ ] 7.5 Work on a branch, one commit per task group, and stop for the owner's
+- [x] 7.5 Work on a branch, one commit per task group, and stop for the owner's
       review before anything reaches `main`
 - [ ] 7.6 After the deploy is indexed, worth a look but not a gate: whether
       Search Console's coverage and query reports change. Recorded so the next

@@ -105,10 +105,26 @@ After a deploy that includes these files, the owner does this once, by hand:
    to `/ru/`, and Search Console will not index a redirect, reporting it as a
    redirect error instead.
 
-Yandex Webmaster is optional and works the same way: add the site, verify with
-its meta tag, submit the same sitemap URL. With the Russian entry live it is
-worth the second property if Russian traffic matters — Yandex is where the
-Russian-language queries mostly come from.
+**Yandex Webmaster is claimed too, and it is not optional any more.** The `/ru/`
+entry exists so a Russian query has a Russian document to match, and
+Russian-language search mostly happens on Yandex — a Google-only property leaves
+exactly the audience that entry was built for unmeasured. The steps, once, by
+hand:
+
+1. Open [Yandex Webmaster](https://webmaster.yandex.ru/) and add the site
+   `https://jekman87.github.io/diablo2-runeword-tracker/`.
+2. Verify by **meta tag**. Yandex gives a `<meta name="yandex-verification" …>`
+   line; it is already in `index.html`, with its value pinned as
+   `YANDEX_VERIFICATION` in `src/header/site.ts` and held against the document by
+   `scripts/crawl-files.test.ts`. Press Verify after a deploy that carries it.
+3. Under **Файлы Sitemap**, submit the same
+   `…/diablo2-runeword-tracker/sitemap.xml`. It lists both entries, so `/ru/`
+   needs no second submission — and no tag of its own, because verification is
+   per site.
+
+**Leave the tag in place.** Yandex re-checks it and drops the property when the
+proof disappears, which fails silently: the site keeps working and the reports
+quietly stop.
 
 None of this is a CI gate. The build publishes the files; indexing is an account
 action outside the repository.
