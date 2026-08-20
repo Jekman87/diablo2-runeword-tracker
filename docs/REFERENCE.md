@@ -43,7 +43,9 @@ is the feature we decided **not** to build.
   with a sort arrow icon on the active one. Default sort is Level ascending.
   This is the pattern to copy: header-click sorting, no dropdown.
 - `Runes` column is hidden below the `md` breakpoint; on mobile the runes are
-  rendered inline under the runeword name instead. Sensible responsive trick.
+  rendered inline under the runeword name instead — **as their names in text, not
+  as icons**. See "The narrow viewport" below: that second half is the part that
+  matters, and it took `mobile-layout` to notice it.
 - Each row has a **pin** control — a diamond glyph (`rw-Table-pin`), sitting
   between the name and the runes. Our completion toggle can take this slot.
 - Item types read as a category list with a parenthetical restriction below:
@@ -74,6 +76,38 @@ Level 13 Cloak of Shadows (9 Charges)
 ```
 
 ---
+
+## The narrow viewport
+
+Measured on the live reference at a 390px viewport, alongside our own, while
+`mobile-layout` was deciding what the phone layout should be:
+
+|                 | reference | ours before | ours after |
+| --------------- | --------- | ----------- | ---------- |
+| Document width  | 390       | 620         | 390        |
+| Document height | 6 130     | 13 406      | 9 700      |
+| Median row      | 51px      | 127px       | 85px       |
+| Columns         | 3         | 4           | 4          |
+
+Its whole mobile mechanism is two lines of CSS — `md:hidden` / `md:table-cell` on
+the runes column, and a smaller stash cell below 640px — plus one decision that is
+not in the CSS at all: **below `md` it draws the rune names in text and no sprite
+at all**. That is what its 51px rows are made of, and it is the thing worth
+copying. `mobile-layout` copied it.
+
+Two differences remain, and both are ours by choice. The reference has **no
+crafted column**, because it tracks no progress — we withdraw ours below `md`
+rather than not having one. And it has **no usefulness badge**, which is about
+20px a row and most of what is left between its 51px and our 85px.
+
+One thing not copied: the reference wraps its hover rules in
+`@media (hover: hover)` by hand. We need no such rule — Tailwind 4.3.3 compiles
+every `hover:` utility that way already. The committed `dist/` stylesheet shows
+bare `:hover` and is simply an older build; read the installed compiler, not that
+file.
+
+The reference's own banner reads "Runewizard is now optimized for smartphones and
+tablets", so this was a deliberate pass on its side too, not a side effect.
 
 ## Search
 

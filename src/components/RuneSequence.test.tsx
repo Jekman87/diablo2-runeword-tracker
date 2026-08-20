@@ -82,7 +82,83 @@ describe("RuneSequence", () => {
     expect(JSON.stringify(strings.en)).not.toContain("Ber");
     expect(JSON.stringify(strings.en)).not.toContain("Shael");
   });
+
+  describe("in its names form", () => {
+    it("draws the names and no icon at all", () => {
+      const { container } = render(
+        <RuneSequence runeword={named("Steel")} form="names" />,
+      );
+
+      for (const rune of named("Steel").runes) {
+        expect(screen.getByText(rune)).toBeVisible();
+      }
+
+      // The whole point of the form: at a 390px viewport six 40px icons hold
+      // the name column at 276px, and the names hold it at 126px.
+      expect(container.querySelectorAll(".rune-icon")).toHaveLength(0);
+    });
+
+    it("keeps dataset order and repeats — `Infinity` is Ber Mal Ber Ist", () => {
+      const { container } = render(
+        <RuneSequence runeword={named("Infinity")} form="names" />,
+      );
+
+      expect(namesIn(container)).toEqual(["Ber", "Mal", "Ber", "Ist"]);
+    });
+
+    it("renders the whole dataset's sequences faithfully", () => {
+      const wrong = runewords.filter((runeword) => {
+        const { container, unmount } = render(
+          <RuneSequence runeword={runeword} form="names" />,
+        );
+        const rendered = namesIn(container);
+
+        unmount();
+
+        return String(rendered) !== String(runeword.runes);
+      });
+
+      expect(wrong).toEqual([]);
+    });
+
+    it("announces nothing twice, because there is no icon to announce", () => {
+      render(<RuneSequence runeword={named("Infinity")} form="names" />);
+
+      expect(screen.queryAllByRole("img")).toEqual([]);
+    });
+
+    it("styles a name exactly as the icon form styles its label", () => {
+      const icons = render(<RuneSequence runeword={named("Steel")} />);
+      const names = render(
+        <RuneSequence runeword={named("Steel")} form="names" />,
+      );
+
+      // The names form is the icon form with the sprite taken away, and should
+      // read as the same thing rather than as a second treatment of the word.
+      const label =
+        icons.container.querySelector(".rune-icon")?.nextElementSibling;
+      const name = names.container.firstElementChild?.firstElementChild;
+
+      expect(name?.className).toBe(label?.className);
+    });
+  });
 });
+
+/**
+ * The names the sequence draws, in order, whichever form drew them.
+ *
+ * The icon form puts the name in the icon's next sibling; the names form has no
+ * icon and the name is the whole of each item. Reading the text of the outer
+ * span's children covers both, so a test can assert the recipe without knowing
+ * which form produced it.
+ */
+function namesIn(scope: Element) {
+  const sequence = scope.firstElementChild;
+
+  return sequence === null
+    ? []
+    : [...sequence.children].map((item) => item.textContent);
+}
 
 /** The rune names drawn beside the icons, in order. */
 function labelsIn(scope: Element) {

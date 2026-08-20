@@ -1,10 +1,4 @@
-# scroll-to-top Specification
-
-## Purpose
-
-A control that returns the reader to the top of a table thousands of pixels tall.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: A control returns the reader to the top of a long page
 
@@ -78,11 +72,11 @@ Its copy SHALL resolve through the display-copy layer in both locales.
 - **THEN** it is nearer both the bottom and the trailing edge than it is above the
   breakpoint
 
-#### Scenario: The wide layout keeps the larger inset
+#### Scenario: The wide layout's position is unchanged
 
 - **WHEN** the control is measured at a desktop viewport
-- **THEN** it is further from both the bottom and the trailing edge than it is
-  below the breakpoint, clear of the crafted toggle a wide row presents
+- **THEN** its distance from the bottom and from the trailing edge is what it was
+  before this change
 
 #### Scenario: A reader who opened a panel keeps it in front
 

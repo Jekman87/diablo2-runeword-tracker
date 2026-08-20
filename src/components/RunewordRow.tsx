@@ -110,12 +110,17 @@ export const RunewordRow = memo(function RunewordRow({
             "border-l-transparent hover:bg-row-hover",
       )}
     >
-      <td className="p-2 align-top">
+      {/* `relative`, so the box has something to be positioned against once it is
+          withdrawn below `md`; inert above it, where the box is in flow. `p-0`
+          there for the same reason the header is `w-0`: a padded cell with an
+          out-of-flow child is still 16px of a table that has none to spare. */}
+      <td className="relative p-0 align-top md:p-2">
         <CraftedToggle
           ref={control}
           name={runeword.name}
           crafted={crafted}
           onToggle={toggle}
+          className="crafted-toggle"
         />
       </td>
 
@@ -148,7 +153,7 @@ export const RunewordRow = memo(function RunewordRow({
           </span>
         )}
 
-        {/* The rune sequence, a second time.
+        {/* The rune sequence, a second time — and in the other form.
 
             CSS cannot move content between table cells, so a runes column that
             collapses into the name cell has to exist in both places with one of
@@ -156,20 +161,40 @@ export const RunewordRow = memo(function RunewordRow({
             is the copy for wide ones, and each is `hidden` on the other side of
             `md`.
 
-            The cost is up to 686 icon spans in the document instead of 343,
-            half of them `display: none` — which is also what keeps the inactive
-            copy out of the accessibility tree, so exactly one sequence is
-            perceivable at any width. It costs more than it did: each copy now
-            carries a label as well as an icon, so the rune markup roughly
-            doubles again. Against 99 rows of table markup that is still not the
-            expensive part of the page, and the alternative — a `useMediaQuery`
-            hook driving a single copy — makes layout depend on script having run
-            and introduces a flash where CSS has none. */}
-        <RuneSequence runeword={runeword} className="mt-1 flex md:hidden" />
+            **This one draws the names alone.** Six 40px icons and their labels
+            hold the name column at 276px, where the whole table has 390px of
+            viewport to live in; the names hold it at 126px and take the row from
+            127px to 65px. Nothing is lost in the trade — the icons here are
+            `decorative`, so the names were always what a screen reader read out
+            — and nothing above `md` changes, because the copy below keeps the
+            sprite at its native size.
+
+            The cost of the two copies is unchanged in kind and smaller in
+            degree: the narrow copy is now text rather than 343 more icon spans,
+            and it is still `display: none` on the wide side, which is what keeps
+            it out of the accessibility tree so exactly one sequence is
+            perceivable at any width. The alternative — a `useMediaQuery` hook
+            driving a single copy — makes layout depend on script having run and
+            introduces a flash where CSS has none.
+
+            `flex-wrap`, because a six-rune recipe does not fit one line of a
+            126px column and a row is the right place for it to break. */}
+        <RuneSequence
+          runeword={runeword}
+          form="names"
+          className="mt-1 flex flex-wrap md:hidden"
+        />
       </td>
 
+      {/* `flex-wrap`, and it is a fix rather than a flourish. Six 40px icons and
+          their names need 268px; under `table-fixed` this column is a percentage,
+          which gives it 204px at a 768px viewport — so the longest recipes painted
+          64px over the base-items column beside them. Wrapping costs a second line
+          of icons on the few five- and six-rune rows at those widths and nothing at
+          all from about 1000px up, where 268px fits inside the percentage and no
+          row wraps. */}
       <td className="hidden p-2 align-top md:table-cell">
-        <RuneSequence runeword={runeword} className="flex" />
+        <RuneSequence runeword={runeword} className="flex flex-wrap" />
       </td>
 
       {/* `relative`, because the advice trigger inside stretches its hit area

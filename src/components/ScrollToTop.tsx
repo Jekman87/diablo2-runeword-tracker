@@ -48,7 +48,14 @@ export function ScrollToTop() {
       type="button"
       onClick={goTop}
       aria-label={strings.scrollToTop.label}
-      className="fixed right-8 bottom-40 z-[3] grid size-10 cursor-pointer place-items-center rounded-full border border-panel-edge bg-panel text-gold-mid hover:text-gold-light"
+      // Low in the corner on a phone and where it was on a desktop. `bottom-40`
+      // was measured against a row's crafted toggle at 390px — the control had to
+      // clear it — and there is no toggle in a narrow row to clear any more, so
+      // the value was holding the button in the middle of the reading area for a
+      // reason that had gone. Nearer the edge as well: 32px of inset is a
+      // desktop's margin, and a thumb reaching the corner of a phone wants the
+      // control in the corner.
+      className="fixed right-4 bottom-8 z-[3] grid size-10 cursor-pointer place-items-center rounded-full border border-panel-edge bg-panel text-gold-mid hover:text-gold-light md:right-8 md:bottom-40"
     >
       <svg
         viewBox="0 0 16 16"

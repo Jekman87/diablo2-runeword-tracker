@@ -634,3 +634,52 @@
     border-radius: var(--radius-xs);
   }
 }
+
+/* The crafted box, withdrawn from a narrow viewport but not from the keyboard.
+
+   Below the breakpoint the crafted column is given up: at a 390px viewport it
+   costs 84px of a table that has 390px to live in, and the row already says it is
+   crafted twice over — the accent border down its left edge and its tint, which
+   `crafted-tracking` requires so the state survives without colour. A third
+   statement of it is not worth a column.
+
+   **The control is not given up with the column, and this is why the withdrawal
+   is a rule here rather than a `hidden` class at the use site.** It is the only
+   way to mark a runeword without a pointer, and a narrow viewport is not only a
+   phone — a desktop window dragged under 768px is the same viewport, with the same
+   keyboard attached to it. `display: none` would take the button out of the tab
+   order and out of the accessibility tree; clipping leaves it in both while taking
+   its width out of the table, because an absolutely positioned box is not in the
+   cell's flow and the cell it sits in therefore measures zero.
+
+   Clipped, then, rather than hidden — and un-clipped the moment it takes keyboard
+   focus, because a control a reader can reach and cannot see is worse than one
+   that is simply gone. `:focus-visible` and not `:focus`, so a pointer press on
+   the row does not flash a box the pointer never needed.
+
+   `48rem` is Tailwind's `md`, written out because a media query cannot read a
+   variant and there is no config file to import the value from. This is the one
+   place in the project that restates it; everything else says `md:`. */
+@utility crafted-toggle {
+  position: absolute;
+  inset-block-start: 0.5rem;
+
+  /* Outward, into the page's own gutter, because the cell it is positioned
+     against has no width and everything to its inline-start is the row's accent
+     border. At `0.25rem` the box sat 16px over the start of the runeword's name
+     and covered its first character while focused; at `-0.75rem` its far edge
+     lands exactly on the name cell's, measured at 390px. It is a focus state, so
+     it may sit in the gutter — `<main>` has 1.5rem of it and this change
+     deliberately does not spend any. */
+  inset-inline-start: -0.75rem;
+  clip-path: inset(50%);
+
+  &:focus-visible {
+    clip-path: none;
+  }
+
+  @media (width >= 48rem) {
+    position: static;
+    clip-path: none;
+  }
+}

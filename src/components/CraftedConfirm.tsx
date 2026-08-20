@@ -104,7 +104,18 @@ export function CraftedConfirm({
   // viewport by the overlay's own layout rather than anchored to the control,
   // so there is nothing to measure and nothing to keep measuring.
   const interactions = useInteractions([
-    useDismiss(context),
+    // **`click`, not the default `pointerdown`, and the dim is the reason.**
+    // Dismissing on `pointerdown` unmounts the overlay between the press and the
+    // release, so the browser hit-tests the release against whatever the dim was
+    // covering and delivers `mousedown`, `mouseup` and `click` to the page
+    // underneath. Traced on a phone-sized viewport: one tap on the dim closed
+    // this and then landed on a row, opening that row's advice panel — or, a few
+    // pixels over, raising the crafted question again for a different runeword.
+    //
+    // Dismissing on `click` leaves the overlay mounted until the click is
+    // dispatched, so the click's target is the dim itself and the page never sees
+    // it. A backdrop exists to absorb the press; this is what makes it do that.
+    useDismiss(context, { outsidePressEvent: "click" }),
     useRole(context, { role: "dialog" }),
   ]);
 

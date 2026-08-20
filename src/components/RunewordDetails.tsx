@@ -166,7 +166,12 @@ export function RunewordDetails({
       <button
         ref={setReference}
         type="button"
-        className="cursor-pointer text-gold-mid hover:text-gold-light"
+        // `text-left` because a `<button>` centres its text by default, and a
+        // name that wraps then reads as centred inside a left-aligned column.
+        // Invisible until a name wraps, which is why it only showed once the
+        // narrow layout took this column to 140px: no name wraps at 768px or
+        // above in either locale, so this changes nothing there.
+        className="cursor-pointer text-left text-gold-mid hover:text-gold-light"
         {...interactions.getReferenceProps()}
       >
         {label}

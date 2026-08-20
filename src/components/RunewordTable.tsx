@@ -177,20 +177,35 @@ export function RunewordTable({
           {/* `rounded-tl-xs` here and `rounded-tr-xs` on the last column match the
               band's own corners in `table-header-band`. It only shows when one of
               these two is the sorted column — its lighter background would
-              otherwise paint a square corner over the rounded one. */}
+              otherwise paint a square corner over the rounded one.
+
+              **Below `md` this column is withdrawn, and the cell stays.** The
+              runes column above hides its `<th>` and its `<td>` together, which is
+              what a column may do; this one cannot, because its cells still hold
+              the only keyboard path to marking a runeword. So the header keeps its
+              place in the table's column count — a header row and a body row that
+              declare different numbers of cells misalign every column after the
+              difference — and gives up its width and its control instead. The
+              control goes because there is no crafted column to sort on screen;
+              `src/index.css` explains what happens to the box in the rows. */}
           <SortableHeader
             sortKey="crafted"
             label={strings.table.columnCrafted}
             direction={directionOf("crafted", sortKey, sortDirection)}
             onSort={onSort}
-            className="rounded-tl-xs md:w-[9%]"
+            className="w-0 rounded-tl-xs md:w-[13%] lg:w-[9%] [&>button]:hidden md:[&>button]:flex"
           />
+          {/* The band's left corner belongs to whichever column is first on
+              screen, so below `md` it is this one and from `md` up it is the
+              crafted column above. Stated on both rather than moved, because the
+              corner is a property of the band's edge and both cells can be the
+              edge. */}
           <SortableHeader
             sortKey="name"
             label={strings.table.columnName}
             direction={directionOf("name", sortKey, sortDirection)}
             onSort={onSort}
-            className="md:w-[20%]"
+            className="rounded-tl-xs md:w-[19%] md:rounded-tl-none lg:w-[20%]"
           />
           {/* Collapses with the cells it heads. Sorts on socket count, which is
               this column's readable magnitude — sorting the sequence as text
@@ -200,27 +215,29 @@ export function RunewordTable({
             label={strings.table.columnRunes}
             direction={directionOf("runes", sortKey, sortDirection)}
             onSort={onSort}
-            className="hidden md:table-cell md:w-[29%]"
+            className="hidden md:table-cell md:w-[37%] lg:w-[29%]"
           />
           <SortableHeader
             sortKey="itemTypes"
             label={strings.table.columnItemTypes}
             direction={directionOf("itemTypes", sortKey, sortDirection)}
             onSort={onSort}
-            className="md:w-[24%]"
+            className="md:w-[22%] lg:w-[24%]"
           />
-          {/* `whitespace-nowrap` rather than a width: "Required Level" broke
-              across two lines and made the header row taller than any of the
-              cells needed. Letting the text set the column's width keeps it one
-              line in every locale, where a fixed width would be measured against
-              English and then wrap again in Russian. */}
+          {/* `whitespace-nowrap` so the heading never breaks across two lines and
+              makes the header row taller than any of the cells needs. That was
+              written when the table was auto-laid-out and the text could widen its
+              own column; under `table-fixed` it cannot, so the same declaration now
+              means the heading paints over its neighbour instead. Which is why the
+              short form runs to `lg` here rather than to `md` — see below. */}
           <SortableHeader
             sortKey="requiredLevel"
             label={strings.table.columnRequiredLevel}
+            shortLabel={strings.table.columnRequiredLevelShort}
             direction={directionOf("requiredLevel", sortKey, sortDirection)}
             onSort={onSort}
             align="end"
-            className="rounded-tr-xs whitespace-nowrap md:w-[18%]"
+            className="rounded-tr-xs whitespace-nowrap md:w-[9%] lg:w-[18%]"
           />
         </tr>
       </thead>
