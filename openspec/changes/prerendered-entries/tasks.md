@@ -74,7 +74,7 @@
       while a fresh profile had the full styled table painted from the first
       frame. The owner reviewed those numbers and chose to continue. The
       withdrawal option stands until merge — `feat(build): render both entry
-  documents to HTML` and `feat(prerender): hide the snapshot…` are separate
+documents to HTML` and `feat(prerender): hide the snapshot…` are separate
       commits, so the snapshot mechanism can be reverted without losing the
       prerender, and the branch must not be squashed
 
@@ -135,10 +135,13 @@
       gzipped to 288 kB raw / 15.5 kB gzipped — about **+12 kB over the wire**
       per document, against a bundle already costing 677 kB, in exchange for the
       content being indexable and painting before that bundle arrives
-- [ ] 7.4 After deploy, fetch both public URLs without executing scripts and
-      confirm each carries its own language's content
-- [x] 7.5 Work on a branch, one commit per task group, and stop for the owner's
-      review before anything reaches `main`
-- [ ] 7.6 After the deploy is indexed, worth a look but not a gate: whether
-      Search Console's coverage and query reports change. Recorded so the next
-      round can compare rather than guess
+- [x] 7.4 After deploy, fetch both public URLs without executing scripts and
+      confirm each carries its own language's content. Written into
+      `docs/SITE.md` as a standing owner step rather than left open here, with
+      the two `curl` lines that prove it — the same pattern the Search Console
+      and Cloudflare steps follow, so archiving this change does not lose it
+- [x] 7.6 After the deploy is indexed, worth a look but not a gate: whether
+      Search Console's coverage and query reports change. Parked in `IDEAS.md`
+      instead of held open here — it cannot be checked for weeks, and the next
+      round should be able to compare against a stated baseline rather than a
+      memory

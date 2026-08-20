@@ -126,6 +126,28 @@ hand:
 proof disappears, which fails silently: the site keeps working and the reports
 quietly stop.
 
+### After a deploy that touches the render pass or either entry document
+
+Fetch both public URLs **without executing scripts** and confirm each carries its
+own language's list — `curl` is enough, since the point is precisely what arrives
+before any JavaScript runs:
+
+```bash
+curl -s https://jekman87.github.io/diablo2-runeword-tracker/ | grep -c "Body Armors"
+curl -s https://jekman87.github.io/diablo2-runeword-tracker/ru/ | grep -c "Доспехи"
+```
+
+Both must print a non-zero count, and each word must appear only in its own
+document — those two labels are the same item type in the two locale
+projections, so they prove the render happened _and_ happened in the right
+language.
+
+`pnpm build` asserts the same thing about `dist/`, and one CI step asserts the
+build step still exists. This is the third check because the first two cannot see
+a deploy: the build can be right and the artifact still not be what a crawler
+receives. And the failure is silent — the page works for every reader while
+crawlers get an empty container — so the only way to notice is to look.
+
 None of this is a CI gate. The build publishes the files; indexing is an account
 action outside the repository.
 
