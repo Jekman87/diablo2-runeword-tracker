@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 import { runewords } from "@/data";
 import { useStrings } from "@/i18n";
 
@@ -43,22 +45,66 @@ export interface CraftedProgressProps {
 export function CraftedProgress({ crafted }: CraftedProgressProps) {
   const strings = useStrings();
 
+  const band = useRef<HTMLDivElement>(null);
+
+  // The band reports how tall it turned out, because two elements need that
+  // number and only one of them can know it.
+  //
+  // The band is sticky at the top of the viewport and the table's header band
+  // sticks directly beneath it, at `--progress-band-height`. Nothing in CSS can
+  // ask an element how tall its sibling ended up, so that property used to be a
+  // constant — and a constant cannot be right: the band is one line of text while
+  // progress is partial and up to three once the completion sentence joins it,
+  // with the thresholds different in each locale. Too small and the congratulation
+  // painted over the panel below; too large and it left 48px of empty page under
+  // the line at every width where it fitted. Both were shipped, in that order.
+  //
+  // So the constant in `src/index.css` is now only what applies before this has
+  // run, and a `ResizeObserver` keeps it true afterwards — through a locale
+  // switch, a viewport resize, a font that lands late, and any copy written later.
+  // A plain effect, not a layout effect. There is nothing to measure before the
+  // first paint: the build's prerender pass has no layout at all, and the page it
+  // bakes is always the first-visit one, where the band is its usual single line
+  // and the stylesheet's own value is already right. The taller band only exists
+  // once a reader's progress has been read out of storage, which is after this
+  // has run. A layout effect would buy nothing and warn during `renderToString`.
+  useEffect(() => {
+    const element = band.current;
+    if (element === null || typeof ResizeObserver === "undefined") return;
+
+    const publish = () => {
+      const { height } = element.getBoundingClientRect();
+
+      // Zero is what a detached or hidden element measures, and publishing it
+      // would stick the table header under the top of the viewport.
+      if (height > 0) {
+        document.documentElement.style.setProperty(
+          "--progress-band-height",
+          `${height}px`,
+        );
+      }
+    };
+
+    publish();
+
+    const observer = new ResizeObserver(publish);
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+      // Back to the stylesheet's own value, so nothing is left behind pointing at
+      // a band that is no longer on the page.
+      document.documentElement.style.removeProperty("--progress-band-height");
+    };
+  }, []);
+
   const total = runewords.length;
   const count = strings.progress.count(crafted, total);
   const line =
     crafted === total ? `${count} ${strings.progress.complete}` : count;
 
   return (
-    // `data-complete` is the whole of what this component says about layout, and
-    // it says it as state rather than as a height. The band's reserved height and
-    // the offset the table header sticks at are one number in `src/index.css`;
-    // this marks the case where that number has to be the taller one, and the
-    // stylesheet does the rest. Without it the congratulation wrapped to three
-    // lines at 390px inside a 56px band and painted over the panel below.
-    <div
-      className="progress-band grid gap-1"
-      {...(crafted === total ? { "data-complete": "" } : {})}
-    >
+    <div ref={band} className="progress-band grid gap-1">
       <progress
         className="crafted-progress w-full"
         value={crafted}

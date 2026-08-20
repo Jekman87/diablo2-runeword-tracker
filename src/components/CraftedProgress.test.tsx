@@ -6,6 +6,21 @@ import { setLocale } from "@/i18n";
 import { en } from "@/i18n/en";
 import { ru } from "@/i18n/ru";
 
+// Two of the tests below stand in for what jsdom does not have — `ResizeObserver`
+// and a box with a height. Neither is restored automatically here, and a mocked
+// `getBoundingClientRect` left in place would answer for every test after it.
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
+
+/** What the band has told the stylesheet about its own height. */
+function published() {
+  return document.documentElement.style.getPropertyValue(
+    "--progress-band-height",
+  );
+}
+
 function bar() {
   const element = screen.getByRole("progressbar");
 
@@ -117,19 +132,56 @@ describe("reaching the end of the list", () => {
     expect(screen.queryByText(en.progress.complete)).toBeNull();
   });
 
-  it("asks for the taller band, and only at 99", () => {
-    const { container, rerender } = render(<CraftedProgress crafted={98} />);
+  it("publishes its measured height for the header that sticks beneath it", () => {
+    // jsdom measures every box as zero and has no `ResizeObserver`, so both are
+    // supplied here. What is being asserted is the contract — the band reports
+    // the height it turned out to be, rather than a constant guessing at it —
+    // and the heights themselves are a browser check: 56px with the counts
+    // alone, 104px at 390px once the line congratulates.
+    const observed: Element[] = [];
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        observe(element: Element) {
+          observed.push(element);
+        }
+        unobserve() {}
+        disconnect() {}
+      },
+    );
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({
+      height: 104,
+    } as DOMRect);
 
-    // The reservation and the offset the table header sticks at are one value in
-    // `src/index.css`, and this attribute is what selects the taller one. jsdom
-    // applies no stylesheet, so what is asserted here is the request; that the
-    // request is honoured — 104px reserved against 104px needed, the two bands
-    // meeting exactly — is a browser check.
-    expect(container.firstElementChild).not.toHaveAttribute("data-complete");
+    const { container, unmount } = render(<CraftedProgress crafted={99} />);
 
-    rerender(<CraftedProgress crafted={99} />);
+    expect(published()).toBe("104px");
+    expect(observed).toEqual([container.firstElementChild]);
 
-    expect(container.firstElementChild).toHaveAttribute("data-complete");
+    // And it takes it back, so nothing is left pointing at a band that has gone.
+    unmount();
+
+    expect(published()).toBe("");
+  });
+
+  it("publishes nothing rather than zero when it cannot be measured", () => {
+    // A detached or hidden band measures zero, and a zero here would stick the
+    // table header under the top of the viewport.
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      },
+    );
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({
+      height: 0,
+    } as DOMRect);
+
+    render(<CraftedProgress crafted={99} />);
+
+    expect(published()).toBe("");
   });
 
   it("congratulates in the active locale", () => {
