@@ -463,9 +463,17 @@ type VendorRuneword = z.infer<typeof vendorRunewordSchema>;
  * and the number became a lie. The restriction is "not on ladder", and that is
  * what the shipped note says. Kept here rather than in `vendor/`, which is
  * read-only.
+ *
+ * **Corrected on review: the note used to read "Can be crafted offline
+ * non-ladder", which the owner read as offline-only — and it is not.** Two
+ * places are allowed, not one: non-ladder online, and offline. The vendor's
+ * phrasing runs the two words together with no conjunction, so the sentence
+ * offers no way to tell whether "offline non-ladder" is one place or two. A
+ * note exists to answer exactly the question a player has before spending three
+ * runes, so it says "or".
  */
 const NOTE_OVERRIDES: Readonly<Record<string, string>> = {
-  Mosaic: "Disabled on ladder! Can be crafted offline non-ladder.",
+  Mosaic: "Disabled on ladder! Can be crafted in non-ladder or offline.",
 };
 
 // The vendor's `ladder` flag is deliberately not read. Patch 3.3 released the

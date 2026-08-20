@@ -260,7 +260,12 @@ longer do, per the paragraph above.
 
 Mosaic carries patch and note. Its note reads:
 
-> Disabled on ladder! Can be crafted offline non-ladder.
+> Disabled on ladder! Can be crafted in non-ladder or offline.
+
+The vendor's own wording was "Can be crafted offline non-ladder", with no
+conjunction between the two words — which reads as offline-only, and that is
+wrong: non-ladder online and offline both work. Corrected in the shipped note
+and in the Russian variant, which named only the offline case.
 
 That note is now the only place a ladder restriction is stated anywhere in the
 dataset — free text the owner edits, not a field logic reads. Patch 3.3 said
