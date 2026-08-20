@@ -10,8 +10,8 @@ import type { Locale } from "@/i18n";
  * A runeword as one locale presents it: the text a row and a detail panel
  * render, and the text search matches and sorting orders.
  *
- * Only the localisable fields are here. `requiredLevel`, `ladderOnly`, `patch`
- * and the group `itemTypes` labels are not text in any language — a level is a
+ * Only the localisable fields are here. `requiredLevel`, `patch` and the group
+ * `itemTypes` labels are not text in any language — a level is a
  * number and a patch is a version string — and the canonical name stays on the
  * record for every identity-keyed path to read. A projection carrying a copy of
  * the whole record would invite exactly the "which name is this" confusion the

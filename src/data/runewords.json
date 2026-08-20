@@ -4,7 +4,6 @@
     "runes": ["Ral", "Ort", "Tal"],
     "requiredLevel": 21,
     "itemTypes": ["Shields", "Grimoire"],
-    "ladderOnly": false,
     "usefulness": "situational",
     "advice": {
       "paragraphs": [
@@ -57,7 +56,6 @@
     "runes": ["Thul", "Io", "Nef"],
     "requiredLevel": 35,
     "itemTypes": ["Clubs", "Hammers", "Maces"],
-    "ladderOnly": false,
     "usefulness": "situational",
     "advice": {
       "paragraphs": [
@@ -120,7 +118,6 @@
     "runes": ["Jah", "Gul", "Eth"],
     "requiredLevel": 65,
     "itemTypes": ["Melee Weapons"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -185,7 +182,6 @@
     "runes": ["Eth", "Ral", "Ort", "Tal"],
     "requiredLevel": 21,
     "itemTypes": ["Scepters"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -248,7 +244,6 @@
     "runes": ["Amn", "El", "Ith", "Tir", "Sol"],
     "requiredLevel": 27,
     "itemTypes": ["Melee Weapons"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -313,7 +308,6 @@
     "runes": ["Amn", "Ral", "Thul"],
     "requiredLevel": 25,
     "itemTypes": ["Swords", "Scepters"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -371,7 +365,6 @@
     "requiredLevel": 19,
     "itemTypes": ["Staves"],
     "itemTypeRestriction": "Not Orbs/Wands",
-    "ladderOnly": false,
     "usefulness": "situational",
     "advice": {
       "paragraphs": [
@@ -433,7 +426,6 @@
     "runes": ["Hel", "Lum", "Fal"],
     "requiredLevel": 41,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -494,7 +486,6 @@
     "runes": ["Ort", "Sol"],
     "requiredLevel": 27,
     "itemTypes": ["Helms"],
-    "ladderOnly": false,
     "usefulness": "meta",
     "advice": {
       "paragraphs": [
@@ -551,7 +542,6 @@
     "runes": ["Ith", "El", "Eth"],
     "requiredLevel": 15,
     "itemTypes": ["Melee Weapons"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -606,7 +596,6 @@
     "runes": ["Shael", "Ko", "Nef"],
     "requiredLevel": 39,
     "itemTypes": ["Missile Weapons"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -670,7 +659,6 @@
     "requiredLevel": 37,
     "itemTypes": ["Staves"],
     "itemTypeRestriction": "Not Orbs/Wands",
-    "ladderOnly": false,
     "usefulness": "situational",
     "advice": {
       "paragraphs": [
@@ -738,7 +726,6 @@
     "runes": ["Nef", "Tir"],
     "requiredLevel": 13,
     "itemTypes": ["Helms"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -793,7 +780,6 @@
     "runes": ["Nef", "Sol", "Ith"],
     "requiredLevel": 27,
     "itemTypes": ["Helms"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -854,7 +840,6 @@
     "runes": ["Shael", "Eth"],
     "requiredLevel": 29,
     "itemTypes": ["Shields", "Grimoire"],
-    "ladderOnly": false,
     "usefulness": "situational",
     "advice": {
       "paragraphs": [
@@ -913,7 +898,6 @@
     "runes": ["Dol", "Eld", "Hel", "Ist", "Tir", "Vex"],
     "requiredLevel": 55,
     "itemTypes": ["Weapons"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -984,7 +968,6 @@
     "runes": ["Nef", "Lum"],
     "requiredLevel": 37,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "usefulness": "situational",
     "advice": {
       "paragraphs": [
@@ -1043,7 +1026,6 @@
     "runes": ["Tal", "Eth"],
     "requiredLevel": 17,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "usefulness": "meta",
     "advice": {
       "paragraphs": [
@@ -1104,7 +1086,6 @@
     "runes": ["Tir", "El"],
     "requiredLevel": 13,
     "itemTypes": ["Swords", "Axes", "Maces"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -1159,7 +1140,6 @@
     "runes": ["Amn", "Tir"],
     "requiredLevel": 25,
     "itemTypes": ["Melee Weapons"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -1210,7 +1190,6 @@
     "runes": ["Tal", "Dol", "Mal"],
     "requiredLevel": 49,
     "itemTypes": ["Weapons"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -1263,7 +1242,6 @@
     "runes": ["Lem", "Ko", "Tir"],
     "requiredLevel": 43,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "usefulness": "situational",
     "advice": {
       "paragraphs": [
@@ -1317,7 +1295,6 @@
     "requiredLevel": 35,
     "itemTypes": ["Wands"],
     "itemTypeRestriction": "Necromancer",
-    "ladderOnly": false,
     "usefulness": "situational",
     "advice": {
       "paragraphs": [
@@ -1381,7 +1358,6 @@
     "runes": ["Ort", "Eth"],
     "requiredLevel": 21,
     "itemTypes": ["Missile Weapons"],
-    "ladderOnly": false,
     "usefulness": "chronicle",
     "advice": {
       "paragraphs": [
@@ -1436,7 +1412,6 @@
     "runes": ["Ber", "Tir", "Um", "Mal", "Lum"],
     "requiredLevel": 63,
     "itemTypes": ["Axes", "Scepters", "Hammers"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -1506,7 +1481,6 @@
     "runes": ["Ral", "Ohm", "Sur", "Eth"],
     "requiredLevel": 61,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -1574,7 +1548,6 @@
     "runes": ["Vex", "Hel", "El", "Eld", "Zod", "Eth"],
     "requiredLevel": 69,
     "itemTypes": ["Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -1648,7 +1621,6 @@
     "runes": ["Amn", "Ral", "Mal", "Ist", "Ohm"],
     "requiredLevel": 57,
     "itemTypes": ["Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -1717,7 +1689,6 @@
     "requiredLevel": 57,
     "itemTypes": ["Claws"],
     "itemTypeRestriction": "Assassin",
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -1782,7 +1753,6 @@
     "runes": ["Dol", "Um", "Ber", "Ist"],
     "requiredLevel": 63,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -1848,7 +1818,6 @@
     "runes": ["Shael", "Um", "Tir"],
     "requiredLevel": 47,
     "itemTypes": ["Axes", "Swords", "Polearms"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -1914,7 +1883,6 @@
     "runes": ["Lem", "Ist", "Io"],
     "requiredLevel": 51,
     "itemTypes": ["Helms"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -1980,7 +1948,6 @@
     "runes": ["Hel", "Ohm", "Um", "Lo", "Cham"],
     "requiredLevel": 67,
     "itemTypes": ["Axes", "Polearms", "Hammers"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -2048,7 +2015,6 @@
     "runes": ["Shael", "Um", "Thul"],
     "requiredLevel": 47,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -2116,7 +2082,6 @@
     "runes": ["Jah", "Ith", "Ber"],
     "requiredLevel": 65,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -2182,7 +2147,6 @@
     "runes": ["Amn", "Ber", "Ist", "Sol", "Sur"],
     "requiredLevel": 63,
     "itemTypes": ["Melee Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "chronicle",
     "advice": {
@@ -2247,7 +2211,6 @@
     "requiredLevel": 57,
     "itemTypes": ["Paladin Shields"],
     "itemTypeRestriction": "Paladin",
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -2316,7 +2279,6 @@
     "runes": ["Fal", "Ohm", "Ort", "Jah"],
     "requiredLevel": 65,
     "itemTypes": ["Axes", "Hammers"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "chronicle",
     "advice": {
@@ -2376,7 +2338,6 @@
     "runes": ["Fal", "Um", "Pul"],
     "requiredLevel": 47,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "chronicle",
     "advice": {
@@ -2432,7 +2393,6 @@
     "runes": ["Sur", "Cham", "Amn", "Lo"],
     "requiredLevel": 67,
     "itemTypes": ["Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -2500,7 +2460,6 @@
     "runes": ["Ko", "Vex", "Pul", "Thul"],
     "requiredLevel": 55,
     "itemTypes": ["Staves", "Maces"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -2566,7 +2525,6 @@
     "runes": ["Mal", "Um", "Gul", "Fal"],
     "requiredLevel": 53,
     "itemTypes": ["Swords", "Axes"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -2632,7 +2590,6 @@
     "runes": ["Dol", "Ort", "Eld", "Lem"],
     "requiredLevel": 43,
     "itemTypes": ["Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "chronicle",
     "advice": {
@@ -2696,7 +2653,6 @@
     "runes": ["Mal", "Tir"],
     "requiredLevel": 49,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "chronicle",
     "advice": {
@@ -2752,7 +2708,6 @@
     "runes": ["Ko", "Ko", "Mal"],
     "requiredLevel": 49,
     "itemTypes": ["Shields", "Grimoire"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -2816,7 +2771,6 @@
     "runes": ["Eth", "Lum"],
     "requiredLevel": 37,
     "itemTypes": ["Shields", "Grimoire"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "chronicle",
     "advice": {
@@ -2874,7 +2828,6 @@
     "runes": ["Shael", "Um", "Pul", "Lum"],
     "requiredLevel": 47,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -2938,7 +2891,6 @@
     "runes": ["Sur", "El"],
     "requiredLevel": 61,
     "itemTypes": ["Melee Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "chronicle",
     "advice": {
@@ -2998,7 +2950,6 @@
     "runes": ["Jah", "Lo", "Mal", "Gul"],
     "requiredLevel": 65,
     "itemTypes": ["Missile Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -3064,7 +3015,6 @@
     "runes": ["Hel", "El", "Vex", "Ort", "Gul"],
     "requiredLevel": 55,
     "itemTypes": ["Swords", "Axes"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -3136,7 +3086,6 @@
     "runes": ["Vex", "Lo", "Ber", "Jah", "Ko"],
     "requiredLevel": 65,
     "itemTypes": ["Polearms", "Swords"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "chronicle",
     "advice": {
@@ -3204,7 +3153,6 @@
     "runes": ["Sur", "Lo", "Sol"],
     "requiredLevel": 61,
     "itemTypes": ["Body Armors", "Shields", "Grimoire"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -3272,7 +3220,6 @@
     "runes": ["Io", "Jah", "Pul"],
     "requiredLevel": 65,
     "itemTypes": ["Helms", "Shields", "Grimoire"],
-    "ladderOnly": false,
     "usefulness": "situational",
     "advice": {
       "paragraphs": [
@@ -3339,7 +3286,6 @@
     "runes": ["Tir", "Tal", "Amn"],
     "requiredLevel": 25,
     "itemTypes": ["Missile Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -3405,7 +3351,6 @@
     "runes": ["Ohm", "Jah", "Lem", "Eld"],
     "requiredLevel": 65,
     "itemTypes": ["Missile Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -3473,7 +3418,6 @@
     "runes": ["El", "Sol", "Dol", "Lo"],
     "requiredLevel": 59,
     "itemTypes": ["Weapons", "Body Armors"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -3577,7 +3521,6 @@
     "runes": ["Eth", "Tir", "Lo", "Mal", "Ral"],
     "requiredLevel": 59,
     "itemTypes": ["Swords", "Axes"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -3647,7 +3590,6 @@
     "runes": ["Tir", "Ith", "Sol", "Ko"],
     "requiredLevel": 39,
     "itemTypes": ["Missile Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -3719,7 +3661,6 @@
     "runes": ["Amn", "Shael", "Jah", "Lo"],
     "requiredLevel": 65,
     "itemTypes": ["Missile Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -3787,7 +3728,6 @@
     "runes": ["Ber", "Mal", "Ber", "Ist"],
     "requiredLevel": 63,
     "itemTypes": ["Polearms", "Spears"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -3853,7 +3793,6 @@
     "runes": ["Ral", "Tir", "Tal", "Sol"],
     "requiredLevel": 27,
     "itemTypes": ["Missile Weapons", "Polearms", "Staves"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -3921,7 +3860,6 @@
     "runes": ["Jah", "Mal", "Jah", "Sur", "Jah", "Ber"],
     "requiredLevel": 65,
     "itemTypes": ["Swords", "Hammers", "Axes"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -3987,7 +3925,6 @@
     "runes": ["Amn", "Lem", "Ko"],
     "requiredLevel": 43,
     "itemTypes": ["Swords", "Hammers", "Scepters"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -4053,7 +3990,6 @@
     "runes": ["Shael", "Pul", "Mal", "Lum"],
     "requiredLevel": 49,
     "itemTypes": ["Swords", "Axes", "Maces"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -4121,7 +4057,6 @@
     "runes": ["Hel", "Ko", "Thul", "Eth", "Fal"],
     "requiredLevel": 41,
     "itemTypes": ["Polearms", "Spears"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -4191,7 +4126,6 @@
     "runes": ["Vex", "Vex", "Lo", "Jah"],
     "requiredLevel": 65,
     "itemTypes": ["Weapons", "Shields"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -4287,7 +4221,6 @@
     "runes": ["Cham", "Sur", "Io", "Lo"],
     "requiredLevel": 67,
     "itemTypes": ["Polearms", "Spears"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -4355,7 +4288,6 @@
     "runes": ["Hel", "Ko", "Lem", "Gul"],
     "requiredLevel": 53,
     "itemTypes": ["Polearms", "Scepters"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "situational",
     "advice": {
@@ -4423,7 +4355,6 @@
     "runes": ["Tal", "Thul", "Ort", "Amn"],
     "requiredLevel": 25,
     "itemTypes": ["Swords", "Shields"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "meta",
     "advice": {
@@ -4523,7 +4454,6 @@
     "runes": ["Lem", "Ko", "El", "Eld"],
     "requiredLevel": 43,
     "itemTypes": ["Swords", "Maces"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "chronicle",
     "advice": {
@@ -4587,7 +4517,6 @@
     "runes": ["Pul", "Lum", "Ber", "Mal"],
     "requiredLevel": 63,
     "itemTypes": ["Missile Weapons"],
-    "ladderOnly": false,
     "patch": "1.10",
     "usefulness": "chronicle",
     "advice": {
@@ -4650,7 +4579,6 @@
     "requiredLevel": 47,
     "itemTypes": ["Body Armors"],
     "itemTypeRestriction": "Necromancer",
-    "ladderOnly": false,
     "patch": "1.11",
     "usefulness": "chronicle",
     "advice": {
@@ -4704,7 +4632,6 @@
     "requiredLevel": 45,
     "itemTypes": ["Body Armors"],
     "itemTypeRestriction": "Sorceress",
-    "ladderOnly": false,
     "patch": "1.11",
     "usefulness": "chronicle",
     "advice": {
@@ -4760,7 +4687,6 @@
     "requiredLevel": 25,
     "itemTypes": ["Body Armors"],
     "itemTypeRestriction": "Barbarian",
-    "ladderOnly": false,
     "patch": "1.11",
     "usefulness": "chronicle",
     "advice": {
@@ -4816,7 +4742,6 @@
     "requiredLevel": 29,
     "itemTypes": ["Body Armors"],
     "itemTypeRestriction": "Amazon",
-    "ladderOnly": false,
     "patch": "1.11",
     "usefulness": "situational",
     "advice": {
@@ -4878,7 +4803,6 @@
     "requiredLevel": 53,
     "itemTypes": ["Body Armors"],
     "itemTypeRestriction": "Paladin",
-    "ladderOnly": false,
     "patch": "1.11",
     "usefulness": "chronicle",
     "advice": {
@@ -4930,7 +4854,6 @@
     "requiredLevel": 49,
     "itemTypes": ["Body Armors"],
     "itemTypeRestriction": "Druid",
-    "ladderOnly": false,
     "patch": "1.11",
     "usefulness": "chronicle",
     "advice": {
@@ -4986,7 +4909,6 @@
     "requiredLevel": 43,
     "itemTypes": ["Body Armors"],
     "itemTypeRestriction": "Assassin",
-    "ladderOnly": false,
     "patch": "1.11",
     "usefulness": "meta",
     "advice": {
@@ -5047,7 +4969,6 @@
     "runes": ["Cham", "Shael", "Um"],
     "requiredLevel": 67,
     "itemTypes": ["Swords", "Claws", "Daggers"],
-    "ladderOnly": false,
     "patch": "2.4",
     "usefulness": "situational",
     "advice": {
@@ -5114,7 +5035,6 @@
     "requiredLevel": 23,
     "itemTypes": ["Claws"],
     "itemTypeRestriction": "Assassin",
-    "ladderOnly": false,
     "patch": "2.4",
     "usefulness": "chronicle",
     "advice": {
@@ -5175,7 +5095,6 @@
     "runes": ["Fal", "Io", "Ith", "Eld", "El", "Hel"],
     "requiredLevel": 41,
     "itemTypes": ["Swords"],
-    "ladderOnly": false,
     "patch": "2.4",
     "usefulness": "situational",
     "advice": {
@@ -5251,7 +5170,6 @@
     "runes": ["Pul", "Ith", "Eld"],
     "requiredLevel": 45,
     "itemTypes": ["Helms"],
-    "ladderOnly": false,
     "patch": "2.4",
     "usefulness": "situational",
     "advice": {
@@ -5315,7 +5233,6 @@
     "runes": ["Zod", "Ist", "Lem", "Lum", "Io", "Nef"],
     "requiredLevel": 69,
     "itemTypes": ["Staves"],
-    "ladderOnly": false,
     "patch": "2.4",
     "usefulness": "meta",
     "advice": {
@@ -5387,7 +5304,6 @@
     "runes": ["Nef", "Pul", "Vex"],
     "requiredLevel": 55,
     "itemTypes": ["Helms"],
-    "ladderOnly": false,
     "patch": "2.4",
     "usefulness": "meta",
     "advice": {
@@ -5451,7 +5367,6 @@
     "runes": ["Cham", "Shael", "Gul", "Thul", "Ith"],
     "requiredLevel": 67,
     "itemTypes": ["Missile Weapons"],
-    "ladderOnly": false,
     "patch": "2.4",
     "usefulness": "situational",
     "advice": {
@@ -5519,7 +5434,6 @@
     "runes": ["Shael", "Io", "Sol"],
     "requiredLevel": 35,
     "itemTypes": ["Helms"],
-    "ladderOnly": true,
     "patch": "2.6",
     "usefulness": "situational",
     "advice": {
@@ -5581,7 +5495,6 @@
     "runes": ["Shael", "Io", "Tal"],
     "requiredLevel": 35,
     "itemTypes": ["Helms"],
-    "ladderOnly": true,
     "patch": "2.6",
     "usefulness": "meta",
     "advice": {
@@ -5641,7 +5554,6 @@
     "runes": ["Shael", "Io", "Ort"],
     "requiredLevel": 35,
     "itemTypes": ["Helms"],
-    "ladderOnly": true,
     "patch": "2.6",
     "usefulness": "chronicle",
     "advice": {
@@ -5693,7 +5605,6 @@
     "runes": ["Shael", "Io", "Thul"],
     "requiredLevel": 35,
     "itemTypes": ["Helms"],
-    "ladderOnly": true,
     "patch": "2.6",
     "usefulness": "chronicle",
     "advice": {
@@ -5747,7 +5658,6 @@
     "runes": ["Shael", "Io", "Ral"],
     "requiredLevel": 35,
     "itemTypes": ["Helms"],
-    "ladderOnly": true,
     "patch": "2.6",
     "usefulness": "chronicle",
     "advice": {
@@ -5800,7 +5710,6 @@
     "requiredLevel": 53,
     "itemTypes": ["Claws"],
     "itemTypeRestriction": "Assassin",
-    "ladderOnly": false,
     "patch": "2.6",
     "note": "Disabled on ladder! Can be crafted offline non-ladder.",
     "usefulness": "situational",
@@ -5870,7 +5779,6 @@
     "requiredLevel": 67,
     "itemTypes": ["Helms"],
     "itemTypeRestriction": "Druid",
-    "ladderOnly": true,
     "patch": "2.6",
     "usefulness": "situational",
     "advice": {
@@ -5935,7 +5843,6 @@
     "runes": ["Hel", "Shael", "Ral"],
     "requiredLevel": 29,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": false,
     "patch": "3.0",
     "usefulness": "meta",
     "advice": {
@@ -5995,7 +5902,6 @@
     "runes": ["Ist", "Ral", "Io"],
     "requiredLevel": 51,
     "itemTypes": ["Helms"],
-    "ladderOnly": false,
     "patch": "3.0",
     "usefulness": "situational",
     "advice": {
@@ -6057,7 +5963,6 @@
     "runes": ["Thul", "Zod", "Ist"],
     "requiredLevel": 69,
     "itemTypes": ["Daggers"],
-    "ladderOnly": false,
     "patch": "3.0",
     "usefulness": "meta",
     "advice": {
@@ -6121,7 +6026,6 @@
     "runes": ["Dol", "Gul"],
     "requiredLevel": 53,
     "itemTypes": ["Shields", "Paladin Shields", "Grimoire", "Voodoo Heads"],
-    "ladderOnly": false,
     "patch": "3.0",
     "usefulness": "chronicle",
     "advice": {
@@ -6179,7 +6083,6 @@
     "runes": ["Amn", "Shael", "Ohm"],
     "requiredLevel": 57,
     "itemTypes": ["Daggers"],
-    "ladderOnly": false,
     "patch": "3.0",
     "usefulness": "chronicle",
     "advice": {
@@ -6235,7 +6138,6 @@
     "runes": ["Shael", "Ko", "Eld"],
     "requiredLevel": 39,
     "itemTypes": ["Weapons"],
-    "ladderOnly": true,
     "patch": "3.0",
     "usefulness": "situational",
     "advice": {
@@ -6295,7 +6197,6 @@
     "runes": ["Shael", "Ko", "Eld"],
     "requiredLevel": 39,
     "itemTypes": ["Body Armors"],
-    "ladderOnly": true,
     "patch": "3.0",
     "usefulness": "situational",
     "advice": {

@@ -468,17 +468,11 @@ const NOTE_OVERRIDES: Readonly<Record<string, string>> = {
   Mosaic: "Disabled on ladder! Can be crafted offline non-ladder.",
 };
 
-/**
- * Corrections to the vendor's ladder flag when it contradicts the note.
- *
- * Mosaic shipped as ladder-only, then became craftable only offline /
- * non-ladder while disabled on ladder. Showing an "L" badge next to that
- * note is a contradiction, so the shipped flag is cleared. `vendor/` stays
- * untouched.
- */
-const LADDER_OVERRIDES: Readonly<Record<string, boolean>> = {
-  Mosaic: false,
-};
+// The vendor's `ladder` flag is deliberately not read. Patch 3.3 released the
+// last eight ladder-only runewords into Non-Ladder, and what survives it is a
+// Lord of Destruction restriction — not the game mode this tracker mirrors. The
+// flag stays in the snapshot, so a future patch that brings ladder-only
+// runewords back has something to derive from; see docs/DATA-SOURCES.md.
 
 function buildRuneword(
   record: VendorRuneword,
@@ -491,7 +485,6 @@ function buildRuneword(
   // read-only. Only Mosaic has a note today; the map is the place a future
   // one would be corrected the same way.
   const note = NOTE_OVERRIDES[record.title] ?? record.note;
-  const ladderOnly = LADDER_OVERRIDES[record.title] ?? record.ladder === true;
 
   // Russian advice rides inside the Russian variant, so the whole-record
   // fallback covers it — which is also why advice prose cannot ship for a
@@ -512,9 +505,6 @@ function buildRuneword(
     ...(record.tinfos !== undefined && {
       itemTypeRestriction: stripParentheses(record.tinfos, record.title),
     }),
-    // Normalised to a real boolean on all 99 records, unlike the other three
-    // optional fields, so consumers read a boolean instead of testing a key.
-    ladderOnly,
     ...(record.version !== undefined && { patch: record.version }),
     ...(note !== undefined && { note }),
     ...(advice !== undefined && { usefulness: advice.usefulness }),

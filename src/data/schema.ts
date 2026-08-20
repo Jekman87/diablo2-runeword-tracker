@@ -72,10 +72,15 @@ const adviceSchema = z.object({
  * `runes.length` and is derived at each use site, so no second representation
  * of the same fact exists to drift from the first.
  *
- * `ladderOnly` is required on every record so consumers read a boolean instead
- * of testing for a key. `patch`, `note` and `itemTypeRestriction` stay absent
- * when they do not apply — none of them has a meaningful empty value, and
- * inventing `""` would only move the check somewhere else.
+ * There is deliberately no ladder-only field either. Patch 3.3 released the last
+ * eight ladder-only runewords into Non-Ladder, so the flag would be `false` on
+ * all 99 and render nothing; what outlived the patch is a Lord of Destruction
+ * restriction, and this tracker mirrors Reign of the Warlock. The vendor
+ * snapshot keeps its own flag for the day a patch needs one again.
+ *
+ * `patch`, `note` and `itemTypeRestriction` stay absent when they do not apply —
+ * none of them has a meaningful empty value, and inventing `""` would only move
+ * the check somewhere else.
  *
  * `ru` is the record's Russian variant, complete or absent — never partial, so
  * a half-translated record cannot exist and the Russian locale's whole-record
@@ -93,7 +98,6 @@ export const runewordSchema = z
     itemTypes: z.array(z.string().min(1)).min(1),
     // Bare text — `Assassin`, not `(Assassin)`. Punctuation is presentation.
     itemTypeRestriction: z.string().min(1).optional(),
-    ladderOnly: z.boolean(),
     patch: z.string().min(1).optional(),
     note: z.string().min(1).optional(),
     // Decoration on the availability-markers terms: no filter reads these two,
