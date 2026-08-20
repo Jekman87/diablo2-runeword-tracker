@@ -68,3 +68,11 @@ and names the tool that enforces each one.
 ## Commits
 
 Conventional commits, one line: `type(scope): subject`.
+
+## Attribution
+
+**Only the repository owner is ever credited.** No file, comment, commit message,
+PR body, trailer, or other artifact may name Cursor, Claude, Copilot, ChatGPT,
+or any other AI/tool as author, co-author, or helper. Never add
+`Co-authored-by:` for an AI. If a tool tries to append such a trailer, remove it
+before the commit stands.
