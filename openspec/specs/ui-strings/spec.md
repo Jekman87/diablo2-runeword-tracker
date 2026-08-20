@@ -102,6 +102,17 @@ locale requires — Russian plural forms among it — SHALL be implemented insid
 that locale's own value functions, so each record carries its own language's
 rules and no shared machinery exists for a rule only one of them has.
 
+**The layer SHALL work where there is no browser.** The accessor SHALL be usable
+in a render that has no `document`, no storage and no reader — the build's
+prerender pass — and SHALL resolve to a locale stated by the caller rather than
+detected. Detection stays the browser's path: stored preference first, then the
+entry document's declared language. Where neither exists, the layer SHALL neither
+throw nor guess.
+
+Reading or writing a document attribute SHALL happen only where a document
+exists, so the store's initialisation cannot be what breaks a render outside a
+browser.
+
 #### Scenario: Both locales are present and complete
 
 - **WHEN** the layer is inspected
@@ -126,6 +137,19 @@ rules and no shared machinery exists for a rule only one of them has.
 
 - **WHEN** the project's dependencies are inspected
 - **THEN** none is an internationalisation framework
+
+#### Scenario: The accessor resolves a stated locale outside a browser
+
+- **WHEN** the layer is asked for the Russian record in a render with no
+  `document` and no storage, having been told the locale is Russian
+- **THEN** it returns the Russian record without touching a document attribute
+  and without throwing
+
+#### Scenario: The browser's own resolution is unchanged
+
+- **WHEN** a reader loads either entry document
+- **THEN** the locale is still their stored preference if they have one, else the
+  document's declared language, else English
 
 ### Requirement: Game vocabulary in Russian copy comes from the game
 
