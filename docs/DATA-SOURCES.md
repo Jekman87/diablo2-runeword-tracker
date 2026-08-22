@@ -389,3 +389,58 @@ the missing URL removes the obvious way to check.
 The dataset carries categories verbatim and classifies nothing, so this blocks
 nothing at the data layer. The change that introduces the slot filter has to
 settle it against the game rather than rediscover the question.
+
+## The base-affix method, and the rule it needs
+
+The crafting advice tells a reader which base to hunt. Most of what it knows came
+from completed Traderie listings: a listing advertises the finished item's whole
+property set, so subtracting what the runeword grants leaves the **base's** own
+contribution. That is how the advice can say most sold `Mosaic` claws already
+rolled +3 Phoenix Strike.
+
+**A listing is a seller's prose, not the game's data**, and that is where the
+method broke. Fourteen of fifty `Delirium` listings advertised "+3 to Warcries
+(Barbarian Only)", and the pass wrote it up as something the base rolls. It is
+not, and it cannot be:
+
+- A **white** item carries only **staffmods** (automods). Prefixes and suffixes
+  need magic quality.
+- A whole **skill tab** — `+3 to Warcries` — comes from a prefix (`Echoing`).
+- A **runeword only goes into a non-magical item.** So a helm with the tab can
+  never hold `Delirium`, and the advice was pointing at an item nobody can socket.
+
+A reader on diablo2.io caught it. Four claims were wrong on this exact point:
+`Delirium` twice in one sentence (barbarian helm tab, druid pelt tab), `Plague`
+(assassin claw tree), `Flickering Flame` (druid pelt Elemental tree).
+
+**What staffmods actually grant, by item type.** Individual skills everywhere,
+with one exception — which is what makes the area easy to get wrong:
+
+| Item type                                                     | Its staffmods                                                                |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Barbarian helms                                               | up to three individual barbarian skills at +1-3, from any of the three trees |
+| Druid pelts                                                   | individual druid skills; tab bonuses exist only on unique pelts              |
+| Assassin claws                                                | 1–3 individual assassin skills at +1-3                                       |
+| Necromancer wands and heads, sorceress orbs, scepters, staves | individual skills, plus poison / mana / life mods                            |
+| Paladin shields                                               | resistances and enhanced damage, not skills                                  |
+| **Amazon bows**                                               | **+1-3 to the whole Bow and Crossbow Skills tab — the exception**            |
+
+The amazon bow tab is load-bearing: seven entries rely on it (`Melody`, `Brand`,
+`Faith`, `Harmony`, `Ice`, `Mist`, `Mania`). It survived the audit on two
+independent grounds — a source stating that nonmagic amazon bows can carry that
+automod, and the dataset's own evidence that 28 of 50 completed `Faith` copies
+advertise it while `Faith` can only exist in a white base. Noted because the rule
+is not "no tabs on white bases", it is "tabs only where that item type's
+staffmods include one".
+
+**So, before writing a listing's remainder as a base property:** check the item
+type can carry it. Where it cannot be checked — `Obsession` mentions a rare
+grimoire, and Reign of the Warlock publishes no staffmod tables — say so in the
+entry's `source` note instead of stating it in the prose. Rare items take affixes,
+so that particular claim is outside this rule.
+
+**Where this does not go.** Not into the advice panel and not into the help. A
+reader crafting runewords knows a runeword needs a white base; the panel's room is
+for what they cannot look up in the game, and the help panel's own rule already
+drops explanations of what the game teaches. This page is the audience for the
+mechanic — whoever runs the next base-affix pass.

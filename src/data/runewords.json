@@ -1888,7 +1888,7 @@
     "advice": {
       "paragraphs": [
         "A crowd-control helm: +2 all skills with constant Confuse and Mind Blast procs that turn packs against each other (and occasionally morph you into a bone fetish, which is half the charm). Any 3-socket helm works, and trades show a spread of Demonhead and Bone Visage.",
-        "The real value hides in the base. A barbarian helm that rolls +3 to Warcries puts extra Battle Orders on top of the runeword's +2 all skills, and a solid share of sold copies is exactly that — Slayer Guard, Avenger Guard and Carnage Helm all show up in completed trades. A druid pelt with +3 to a druid skill tab does the same job for a summoner. Buyers are summon necromancers and hardcore players who value chaos-as-defense; a fun, genuinely useful oddity that sells occasionally."
+        "The real value hides in the base. A white barbarian helm rolls +1-3 to as many as three individual barbarian skills, so one that came up with both Battle Orders and Battle Command stacks them on the runeword's +2 all skills and costs real money — Slayer Guard, Avenger Guard and Carnage Helm all show up in completed trades. A druid pelt does the same for a summoner with +1-3 to individual druid skills. Buyers are summon necromancers and hardcore players who value chaos-as-defense; a fun, genuinely useful oddity that sells occasionally."
       ],
       "sources": [
         {
@@ -1938,7 +1938,7 @@
       "advice": {
         "paragraphs": [
           "Шлем контроля толпы: +2 ко всем навыкам и постоянные проки Замешательства и Ментального удара, которые стравливают паки между собой (а иногда превращают вас в костяного фетиша — в этом половина обаяния). Подойдёт любой шлем с 3 гнёздами; в сделках мелькают Голова демона (Demonhead) и Костяной лик (Bone Visage).",
-          "Настоящая ценность прячется в базе. Варварский шлем с роллом +3 к Боевым кличам (Warcries) кладёт лишние уровни Боевого приказа поверх +2 ко всем навыкам от рунворда, и заметная часть проданных экземпляров именно такая — в сделках попадаются Стража убийцы (Slayer Guard), Стража мстителя (Avenger Guard) и Шлем бойни (Carnage Helm). Друидская шкура с +3 к ветке навыков друида делает то же самое для призывателя. Покупатели — некроманты-призыватели и хардкорщики, ценящие хаос как защиту. Забавная и реально полезная диковинка, изредка продаётся."
+          "Настоящая ценность прячется в базе. Белый варварский шлем катает +1-3 к отдельным навыкам варвара, до трёх навыков сразу, так что шлем с Боевым приказом и Боевым кличем разом кладёт их поверх +2 ко всем навыкам от рунворда и стоит заметно дороже — в сделках попадаются Стража убийцы (Slayer Guard), Стража мстителя (Avenger Guard) и Шлем бойни (Carnage Helm). Друидская шкура делает то же самое для призывателя: +1-3 к отдельным навыкам друида. Покупатели — некроманты-призыватели и хардкорщики, ценящие хаос как защиту. Забавная и реально полезная диковинка, изредка продаётся."
         ]
       }
     }
@@ -4974,7 +4974,7 @@
     "advice": {
       "paragraphs": [
         "Completed trades favor 3-socket elite swords — Mythical Sword and Cryptic Sword above all, with Phase Blade and assassin claws behind them. Half of the sold copies are ethereal: those are the sword versions destined for a mercenary, who never wears the base out. For your own hands take a non-ethereal base, or a Phase Blade, which is indestructible by nature and can never roll ethereal. The Cham rune makes it a pricey craft either way.",
-        "If you build it in an assassin claw, do not settle for a blank one: white claws roll their own +1-3 to an assassin skill tree and up to +3 to a single skill, and that stacks on top of the word's +1-2 all skills. The Cleansing aura and the Lower Resist proc when struck make it a support weapon that strips enemy resistances for elemental builds — popular as a claw or a party-play offhand. Sells occasionally to players building around the proc."
+        "If you build it in an assassin claw, do not settle for a blank one: white claws roll their own +1-3 to as many as three individual assassin skills, and that stacks on top of the word's +1-2 all skills. The Cleansing aura and the Lower Resist proc when struck make it a support weapon that strips enemy resistances for elemental builds — popular as a claw or a party-play offhand. Sells occasionally to players building around the proc."
       ],
       "sources": [
         {
@@ -5024,7 +5024,7 @@
       "advice": {
         "paragraphs": [
           "В завершённых сделках предпочитают элитные мечи на 3 гнезда — прежде всего Mythical Sword и Cryptic Sword, следом Фазовый клинок и ассасинские когти. Половина проданных копий эфирные: это мечи под наёмника, который прочность не тратит. Себе в руки берите неэфирную базу — или Фазовый клинок: он неразрушим по своей природе и эфирным не бывает. Из-за руны Чам крафт в любом случае недешёвый.",
-          "Если собираете в когте ассасина, не берите пустую базу: белые когти сами катают +1-3 к ветке навыков ассасина и до +3 к отдельному навыку, и это складывается с +1-2 ко всем навыкам от самого слова. Аура Очищения и прок Lower Resist при получении удара делают его оружием поддержки, снимающим сопротивления врагов для стихийных билдов — популярно как коготь или оффхенд для игры в группе. Изредка покупают те, кто строит билд вокруг прока."
+          "Если собираете в когте ассасина, не берите пустую базу: белые когти сами катают +1-3 к отдельным навыкам ассасина, до трёх навыков сразу, и это складывается с +1-2 ко всем навыкам от самого слова. Аура Очищения и прок Lower Resist при получении удара делают его оружием поддержки, снимающим сопротивления врагов для стихийных билдов — популярно как коготь или оффхенд для игры в группе. Изредка покупают те, кто строит билд вокруг прока."
         ]
       }
     }
@@ -5309,7 +5309,7 @@
     "advice": {
       "paragraphs": [
         "A 3-socket helm word and the fire-build helm: +3 fire skills, a Resist Fire aura, and minus enemy fire resistance that stacks with other pierce sources. Completed trades favor Bone Visage (high defense, light weight) and circlet bases — Diadem or Tiara — when you want low strength requirements; an ethereal Bone Visage is a fine pick for a mercenary carrying the aura for you.",
-        "A druid taking this helm should build it in a white druid pelt instead: pelts roll their own +1-3 to the Elemental tree, or up to +3 to a single druid skill, and that stacks with the word's +3 fire skills — a Fissure or Armageddon druid on a plain base is throwing away real damage. Fire sorceresses and any fire build that struggles with resistant monsters want one. In constant demand — it crafts and sells well, so a good Vex is rarely wasted here."
+        "A druid taking this helm should build it in a white druid pelt instead: pelts roll their own +1-3 to individual druid skills, so a base that came up with Fissure or Armageddon stacks it with the word's +3 fire skills — a fire druid on a plain base is throwing away real damage. Fire sorceresses and any fire build that struggles with resistant monsters want one. In constant demand — it crafts and sells well, so a good Vex is rarely wasted here."
       ],
       "sources": [
         {
@@ -5357,7 +5357,7 @@
       "advice": {
         "paragraphs": [
           "Рунное слово для шлема на 3 гнезда и главный шлем огненных билдов: +3 к навыкам огня, аура Resist Fire и снижение огненного сопротивления врагов, которое складывается с другими источниками пробития. В сделках чаще всего Костяной лик (Bone Visage) — высокая защита при малом весе — и «обручи» (Диадема, Тиара), если хочется минимальных требований к силе; эфирный Bone Visage хорош на наёмнике, который носит ауру за вас.",
-          "А вот друиду такой шлем лучше собирать в белом друидском тотеме: тотемы сами катают +1-3 к ветке Стихий или до +3 к отдельному навыку друида, и это складывается с +3 к навыкам огня от слова — друид с Fissure или Armageddon на пустой базе теряет реальный урон. Огненные волшебницы и вообще любой огненный билд, страдающий от резистентных монстров, хотят такой шлем. Спрос постоянный — крафтится и продаётся отлично, так что хороший Векс тут точно не пропадёт."
+          "А вот друиду такой шлем лучше собирать в белом друидском тотеме: тотемы сами катают +1-3 к отдельным навыкам друида, так что база, которой выпал Fissure или Armageddon, складывает его с +3 к навыкам огня от слова — огненный друид на пустой базе теряет реальный урон. Огненные волшебницы и вообще любой огненный билд, страдающий от резистентных монстров, хотят такой шлем. Спрос постоянный — крафтится и продаётся отлично, так что хороший Векс тут точно не пропадёт."
         ]
       }
     }

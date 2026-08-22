@@ -110,6 +110,16 @@ Maxroll tiers. It is a **one-time offline research input**, never a runtime
 integration: the page asks Maxroll and Traderie for nothing at run time, and the
 reader's browser never contacts them.
 
+**And the method has one blind spot, found the hard way.** A listing is a
+seller's prose, not the game's data. Four claims were derived from listings that
+advertised a whole skill tab — "+3 to Warcries (Barbarian Only)" on Delirium
+copies — and the subtraction concluded the base rolled it. It cannot: a tab comes
+from a prefix, a prefix makes the item magic, and a magic item holds no runeword,
+so the advice pointed at a base nobody can ever socket. A reader on diablo2.io
+caught it and was right. **Before writing a listing's remainder as a base
+property, check that the item type can actually carry it** — see the staffmod
+table in [`docs/DATA-SOURCES.md`](docs/DATA-SOURCES.md).
+
 **A dataset field that carries an opinion still has to be decoration.** The
 usefulness label and the advice prose are `runeword-dataset`'s newest fields and
 sit on exactly the terms `ladderOnly`, `patch` and `note` already set: no filter
