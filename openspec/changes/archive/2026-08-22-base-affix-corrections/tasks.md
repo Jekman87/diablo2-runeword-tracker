@@ -35,8 +35,9 @@
 
 ## 4. Owner review, then the rest
 
-- [ ] 4.1 Nothing committed until the owner has read the four corrected
-      paragraphs — that was the condition on this change
-- [ ] 4.2 Reply to the reader on diablo2.io: confirm, name both halves of the
+- [x] 4.1 Nothing committed until the owner has read the four corrected
+      paragraphs — that was the condition on this change. Read and approved, then
+      committed in three parts on the `base-affix-corrections` branch
+- [ ] 4.2 Owner action, outside the repository: reply to the reader on diablo2.io: confirm, name both halves of the
       Delirium mistake, say where it came from, and that the other claims were
       audited
